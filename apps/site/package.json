@@ -13,6 +13,8 @@
     "pages:preview": "vite preview --config vite.pages.config.ts"
   },
   "dependencies": {
+    "@material-tax-reporting/local-ollama": "file:../../packages/local-ollama",
+    "@material-tax-reporting/surface-kernel": "file:../../packages/surface-kernel",
     "react": "19.2.6",
     "react-dom": "19.2.6"
   },

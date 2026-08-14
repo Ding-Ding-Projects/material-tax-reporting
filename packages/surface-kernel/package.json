@@ -1,0 +1,26 @@
+{
+  "name": "@material-tax-reporting/surface-kernel",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Framework-neutral engines shared by the documentation site and the desktop application.",
+  "exports": {
+    ".": "./src/index.ts",
+    "./tokens.css": "./src/tokens.css"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "node --test --experimental-strip-types test/*.test.ts"
+  },
+  "files": [
+    "src",
+    "README.md"
+  ],
+  "sideEffects": [
+    "./src/tokens.css"
+  ],
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "license": "MIT"
+}
