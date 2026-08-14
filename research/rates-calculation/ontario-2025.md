@@ -82,9 +82,23 @@ The ON428/Worksheet ON428 relationship should be modelled as a worksheet-derived
 
 ## Ontario additional tax for minimum tax
 
-Worksheet ON428 contains the Ontario additional tax for minimum tax flow and the observed 2025 Ontario basic rate of 24.63%. This is an Ontario calculation that interacts with the federal minimum tax return flow; it should be activated only when the official federal minimum-tax forms and Worksheet ON428 instructions require it.
+Worksheet ON428 contains the complete Ontario additional tax for minimum tax purposes calculation for ON428 line 72. Complete this calculation only if the taxpayer entered an amount on line 11 of Part 5 of Form T691.
 
-Uncertainty for implementation: this research records the 24.63% official worksheet rate and the source form, but it does not fully transcribe the federal minimum-tax dependency graph. A calculation engine must import the relevant federal minimum-tax lines from the final 2025 forms before enabling a complete minimum-tax result.
+Line mapping from Worksheet ON428, line 72:
+
+- Line 1: amount from line 11 of Part 5 of Form T691 multiplied by 24.63%; this is the Ontario basic additional tax.
+- Line 2: amount from line 65 of Form ON428.
+- Line 3: line 1 plus line 2.
+- If line 3 is not more than $5,710, enter line 1 on line 72 of Form ON428.
+- If line 3 is more than $5,710, complete lines 4 to 9.
+- Line 4: line 3 minus $5,710, multiplied by 20%, with a zero floor.
+- Line 5: line 3 minus $7,307, multiplied by 36%, with a zero floor.
+- Line 6: line 4 plus line 5. These surtax components are additive; the 36% component does not replace the 20% component.
+- Line 7: amount from line 68 of Form ON428.
+- Line 8: line 6 minus line 7.
+- Line 9: line 1 plus line 8. Enter this amount on line 72 of Form ON428.
+
+Eligibility boundary: do not run this ON428 line-72 calculation unless Form T691 Part 5 line 11 supplies an amount. If the taxpayer is routed away from the ordinary ON428 flow, such as because Form T2203 applies for business income allocable to a permanent establishment outside Ontario, the future product must use the applicable official special-form flow instead of applying this ON428-only worksheet calculation.
 
 ## Ontario surtax
 
@@ -154,11 +168,80 @@ Observed official ON479 line mappings include:
 | ON479 line | Item |
 | ---: | --- |
 | 63050 | Ontario Childcare Access and Relief from Expenses (CARE) tax credit, from Schedule ON479-A |
-| 63110 | Ontario political contribution tax credit, calculated using Worksheet ON479 if contributions are less than $3,793 |
-| 63010 | Ontario focused flow-through share tax credit |
-| 63020 | Ontario co-operative education tax credit |
-| 63140 | Ontario seniors' public transit tax credit |
+| 63095 | Ontario seniors care at home tax credit |
+| 63100 | Ontario seniors' public transit tax credit eligible transit amount |
+| 63110 | Ontario political contributions made in 2025 |
+| ON479 line 16 | Ontario political contribution tax credit, calculated using Worksheet ON479 unless contributions are $3,793 or more |
+| 63220 / ON479 line 17 | Ontario focused flow-through share tax credit |
+| 63300 / ON479 line 20 | Ontario co-operative education tax credit |
 | 47900 | Ontario refundable credits total / amount carried to the return flow |
+
+The official ON479 form states that these refundable credits can be claimed even if no tax is payable, and that Form ON479 must be attached to a paper return when these calculations apply.
+
+### Ontario seniors care at home tax credit
+
+The 2025 ON479 form contains a deterministic Ontario seniors care at home tax credit calculation:
+
+- Line 3: medical expenses from line 58769 of Form ON428.
+- Line 4: allowable percentage, 25%.
+- Line 5: line 3 multiplied by 25%, maximum $1,500.
+- Line 6: taxpayer net income from line 23600 of the return.
+- Line 7: spouse or common-law partner net income from line 23600 of their return, if applicable.
+- Line 8: family net income, line 6 plus line 7.
+- If line 8 is $35,000 or less, enter the line 5 amount on line 13.
+- If line 8 is more than $65,000, enter $0 on line 13.
+- Otherwise, line 9 is $35,000, line 10 is line 8 minus line 9 with a zero floor, line 11 is 5%, line 12 is line 10 multiplied by 5%, and line 13 / line 63095 is line 5 minus line 12 with a zero floor.
+
+### Ontario seniors' public transit tax credit
+
+The 2025 ON479 form calculates the Ontario seniors' public transit tax credit on line 14. The form uses the amount paid in the year for eligible seniors' use of Ontario public transit services, capped at $3,000, entered at line 63100, multiplied by 15%.
+
+### Ontario political contribution tax credit
+
+The 2025 Ontario tax information page and Worksheet ON479 record total Ontario political contributions made in 2025 on Form ON479 line 63110. ON479 line 16 instructs the taxpayer to enter $1,666.82 when total contributions are $3,793 or more. If total contributions are less than $3,793, Worksheet ON479 supplies the calculation. The official Worksheet ON479 page is form 5006-D1, last update observed 2026-01-20, with direct PDF and e-text endpoints at:
+
+- https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-d1/5006-d1-25e.pdf
+- https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-d1/5006-d1-25e.txt
+
+Worksheet ON479, line 16, uses line 63110 of Form ON479 as the contribution input and has three official 2025 columns:
+
+| Contribution amount from ON479 line 63110 | Subtract | Rate | Add | Result |
+| --- | ---: | ---: | ---: | --- |
+| $500.05 or less | $0.00 | 75% | $0.00 | Enter line 7 on ON479 line 16 |
+| More than $500.05 and not more than $1,666.82 | $500.05 | 50% | $375.03 | Enter line 7 on ON479 line 16 |
+| More than $1,666.82 | $1,666.82 | 33.33% | $958.41 | Enter line 7 on ON479 line 16 |
+
+The ON479 form itself caps line 16 at $1,666.82. The implementation should therefore store both the ON479 direct cap rule for contributions of $3,793 or more and the Worksheet ON479 tier calculation for lower contributions.
+
+### Ontario focused flow-through share tax credit
+
+The 2025 ON479 form calculates the Ontario focused flow-through share tax credit on line 17 / line 63220 as total expenses from Form T1221 multiplied by 5%.
+
+### Ontario co-operative education tax credit
+
+The 2025 ON479 form collects the number of eligible work placements on line 63260, whether the claim is as a partnership member on line 63265, and the nine-digit business number on line 63270 when applicable. The credit amount is entered on line 20 / line 63300, with a maximum of $3,000 per student.
+
+The form gives these salary-and-wage rules for the 2024 taxation year:
+
+- $600,000 or more: enter 25% of total eligible expenditures for all students on line 20.
+- $400,000 or less: enter 30% of total eligible expenditures for all students on line 20.
+- More than $400,000 but less than $600,000: use Worksheet ON479.
+
+Worksheet ON479, line 20, supplies the phase-down calculation for each qualifying work placement that ended in 2025 when 2024 salaries and wages were between $400,000 and $600,000:
+
+- Line 1: amount of eligible expenditures incurred in 2025 multiplied by 25%.
+- Line 2: 5%.
+- Line 3: amount A multiplied by 5%.
+- Line 4: total salaries and wages paid in the 2024 taxation year.
+- Line 5: $400,000.
+- Line 6: line 4 minus line 5, zero floor.
+- Line 7: $200,000.
+- Line 8: line 6 divided by line 7.
+- Line 9: 1.00.
+- Line 10: amount from line 8.
+- Line 11: line 9 minus line 10, zero floor.
+- Line 12: line 3 multiplied by line 11.
+- Line 13: line 1 plus line 12, maximum $3,000 per student.
 
 ### CARE tax credit
 
@@ -168,6 +251,14 @@ Schedule ON479-A is the official 2025 CARE schedule. It requires completion of F
 - Calculates family adjusted income.
 - Applies a credit rate table from 75% down to 0%.
 - Enters the result on line 63050 of Form ON479.
+
+Schedule ON479-A line mapping:
+
+- Lines 1 to 4 calculate adjusted income for the taxpayer and, where applicable, supporting person(s): line 1 is net income from line 23600, line 2 is the child care expenses deduction from line 21400, line 3 is social benefits repayment from line 23500, and line 4 is lines 1 to 3 with a zero floor.
+- Line 5 is family adjusted income, the sum of line 4 for the taxpayer and supporting person column(s).
+- Line 6 is the child care expenses deduction from line 21400.
+- Line 7 is 75% when family adjusted income on line 5 is zero; otherwise it is the applicable rate from the schedule table.
+- Line 8 is line 6 multiplied by line 7 and is entered on ON479 line 63050.
 
 Captured rate table boundaries from Schedule ON479-A:
 
@@ -183,11 +274,24 @@ The implementation must store the full table in machine parameters, not interpol
 
 Form ON-BEN is part of the 2025 Ontario package and is used for the 2026 Ontario Trillium Benefit and Ontario Senior Homeowners' Property Tax Grant application flow. The form page is official and current for the 2025 package.
 
+ON-BEN is an application form, not a deterministic entitlement worksheet. The form states that payments for these benefits are issued separately from the tax refund. It also states that when the taxpayer had a spouse or common-law partner on December 31, 2025, only one spouse or common-law partner can apply for the Ontario energy and property tax credit, the Northern Ontario energy credit, and the Ontario senior homeowners' property tax grant for both of them; if only one spouse or common-law partner was 64 years of age or older on December 31, 2025, that spouse or common-law partner must apply for those credits and the grant for both of them.
+
+Official ON-BEN 2025 line mapping to capture in a paper package:
+
+- Line 61020: tick to apply for the 2026 Ontario energy and property tax credit when the listed conditions apply, then complete Part A and Part B.
+- Line 61040: tick to apply for the 2026 Northern Ontario energy credit when the listed Northern Ontario conditions apply, then complete Part A and Part B.
+- Line 61060: choice to wait until June 2027 to receive the 2026 Ontario Trillium Benefit entitlement as one payment at the end of the benefit year instead of monthly payments from July 2026 to June 2027.
+- Line 61070: tick to apply for the 2026 Ontario senior homeowners' property tax grant when age and principal-residence ownership/occupancy/property-tax conditions apply; enter property tax on line 61120 and complete Part B.
+- Line 61080: tick when the taxpayer and spouse or common-law partner occupied separate principal residences for medical reasons and the taxpayer chooses to apply individually for the OEPTC, NOEC, or OSHPTG; complete Part C.
+- Line 61100: total rent paid for the principal residence, including a private long-term care home, subject to the form's property-tax condition.
+- Line 61120: total property tax actually paid for the principal residence in Ontario for 2025.
+- Line 61140: tick when the taxpayer resided in a designated student residence in Ontario in 2025.
+- Line 61210: home energy costs paid for the principal residence on a reserve in Ontario in 2025.
+- Line 61230: accommodation paid for a public or non-profit long-term care home in Ontario in 2025.
+- Part B residence table: address, postal code, number of months resident in 2025, amount paid for 2025, long-term-care-home checkbox, and landlord/municipality/supplier name.
+- Part C: spouse or common-law partner address for involuntary separation where the medical-reasons condition applies.
+
 This research does not calculate OTB or grant entitlement amounts from unofficial sources. CRA-administered benefit amounts can depend on family status, residency, occupancy/rent/property-tax facts, age, care-home or reserve residence facts, and later CRA assessment/benefit administration. A future implementation should capture the official ON-BEN fields and eligibility screens, then treat CRA-calculated benefit results as outside the paper income-tax calculation unless an official 2025 worksheet supplies deterministic line formulas.
-
-### Worksheet ON479 gap
-
-Worksheet ON479 is listed in the official 2025 Ontario package. However, during this research pass the direct official Worksheet ON479 PDF/e-text endpoint was not consistently resolvable by the available tools. Therefore this file records the ON479 line 63110 dependency but does not transcribe the political-contribution formula. Do not fill the gap from third-party tax calculators or prior-year assumptions. Mark the formula as official-source unavailable until the 2025 Worksheet ON479 text/PDF is obtained and checked.
 
 ## Rounding and form arithmetic
 
@@ -236,9 +340,15 @@ The application must not store a permanent default mailing office for Ontario. I
 - Canada Revenue Agency, "5006-D Worksheet ON428", https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-d.html
 - Canada Revenue Agency, "5006-D Worksheet ON428" PDF, https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-d/5006-d-25e.pdf
 - Canada Revenue Agency, "5006-TC ON479 - Ontario Credits", https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-tc.html
+- Canada Revenue Agency, "5006-TC ON479 - Ontario Credits" PDF/e-text, https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-tc/5006-tc-25e.pdf and https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-tc/5006-tc-25e.txt
+- Canada Revenue Agency, "5006-D1 Worksheet ON479", https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-d1.html
+- Canada Revenue Agency, "5006-D1 Worksheet ON479" PDF/e-text, https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-d1/5006-d1-25e.pdf and https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-d1/5006-d1-25e.txt
 - Canada Revenue Agency, "5006-A Schedule ON428-A - Low-income Individuals and Families Tax (LIFT) Credit", https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-a.html
+- Canada Revenue Agency, "5006-A Schedule ON428-A - Low-income Individuals and Families Tax (LIFT) Credit" PDF/e-text, https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-a/5006-a-25e.pdf and https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-a/5006-a-25e.txt
 - Canada Revenue Agency, "5006-TCA Schedule ON479-A - Ontario Childcare Access and Relief from Expenses (CARE) Tax Credit", https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-tca.html
+- Canada Revenue Agency, "5006-TCA Schedule ON479-A - Ontario Childcare Access and Relief from Expenses (CARE) Tax Credit" PDF/e-text, https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-tca/5006-tca-25e.pdf and https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-tca/5006-tca-25e.txt
 - Canada Revenue Agency, "5006-TG ON-BEN - Application for the 2026 Ontario Trillium Benefit and Ontario Senior Homeowners' Property Tax Grant", https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-tg.html
+- Canada Revenue Agency, "5006-TG ON-BEN - Application for the 2026 Ontario Trillium Benefit and Ontario Senior Homeowners' Property Tax Grant" PDF/e-text, https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-tg/5006-tg-25e.pdf and https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-tg/5006-tg-25e.txt
 - Canada Revenue Agency, "Ontario tax information for 2025", https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-pc.html
 - Canada Revenue Agency, "Where to mail your paper T1 return", https://www.canada.ca/en/revenue-agency/corporate/contact-information/where-mail-your-paper-t1-return.html
 - Canada Revenue Agency, "Required tax instalments for individuals", https://www.canada.ca/en/revenue-agency/services/payments/payments-cra/individual-payments/income-tax-instalments.html

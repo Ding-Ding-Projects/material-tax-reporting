@@ -19,23 +19,26 @@ The authoritative composition is [`parameters-2025-v1.json`](parameters-2025-v1.
 | Ontario return | CRA Form 5006-R, `5006-r-25e` (fillable `5006-r-fill-25e`) | page updated 2026-01-20 |
 | Ontario tax | CRA Form 5006-C / ON428, `5006-c-25e` (fillable `5006-c-fill-25e`) | page updated 2026-01-20 |
 | Ontario worksheet | CRA Worksheet ON428, Form 5006-D, `5006-d-25e` | page updated 2026-01-20 |
-| Ontario credits | CRA ON479, Form 5006-TC, `5006-tc-25e`; Worksheet ON479 | page updated 2026-01-20; Worksheet ON479 formula unavailable |
+| Ontario credits | CRA ON479, Form 5006-TC, `5006-tc-25e`; Worksheet ON479 | page updated 2026-01-20; political-contribution formula captured |
 | Ontario schedules | ON428-A `5006-a-25e`, ON479-A `5006-tca-25e`, ON-BEN `5006-tg` | 2025 package; ON-BEN concerns 2026 benefit year |
 | Federal worksheet | CRA Form 5000-D1, `5000-d1-25e` PDF/text | page updated 2026-01-20 |
 | Capital gains | CRA Schedule 3, Form 5000-S3, final 2025 package | page updated 2026-01-20 |
-| Minimum tax | CRA Form T691, `t691-fill-25e` and `t691-25e` | final 2025 files; full mechanics unavailable |
-| Canada workers benefit | CRA Schedule 6, Form 5000-S6, `5000-s6` | page updated 2026-01-20 |
+| Minimum tax | CRA Form T691, `t691-fill-25e` and `t691-25e` | final 2025 files; direct line mechanics captured |
+| Canada workers benefit | CRA Schedule 6, Form 5000-S6, `5000-s6-25e` | page updated 2026-01-20 |
 
 The source fragment records CPP/CPP2 and EI parameters effective 2025-01-01. All form constants, line-level rounding, clamps, eligibility tests, and exceptions remain controlled by the final form or worksheet that states them.
 
 ## Calculation and line-mapping overview
 
 - Federal taxable income is return line 26000. The final 5006-R federal brackets are marginal; the calculated federal tax maps to line 76 and then line 119. Federal non-refundable credits use 14.5% only where the final worksheet directs that rate.
-- The federal basic personal amount is line 30000 and depends on net-income line 23600. The amount between the recorded endpoints is unavailable; use the final Federal Worksheet rather than inventing an interpolation.
-- Dividends map to lines 12000 and 12010; slips take precedence, otherwise the Federal Worksheet chart controls line 40425. The dividend-credit percentage is unavailable when no slip is present.
+- The federal basic personal amount is line 30000 and depends on net-income line 23600. Between $177,882 and $253,414, the final worksheet uses base $14,538 plus a $1,591 supplement phased out across $75,532: `line10 = max(0, 1591 - (((line23600 - 177882) / 75532) * 1591))`; line 30000 is `min(16129, 14538 + line10)`.
+- Dividends map to lines 12000 and 12010. For line 40425, slips take precedence (T3 boxes 39/51, T4PS 26/32, T5 12/26, T5013 131/134). For amounts not shown on slips, use 9.0301% for other-than-eligible and 15.0198% for the eligible residual, with the exact fragment formulas; foreign dividends do not qualify for this credit.
 - Schedule 3 controls taxable capital gains to line 12700. The recorded ordinary inclusion rate is one-half for gains before 2026-01-01 unless a final Schedule 3 rule changes the result.
-- CPP/CPP2, EI, AMT, refundable credits, instalments, interest, and penalties map only through the final schedules and lines named in the fragments. Missing mechanics stay unavailable.
-- Ontario ON428 takes line 26000 as line 1 and calculates Ontario tax through line 31. Its surtax is additive through lines 65–68; the Ontario Health Premium is the piecewise line-89 calculation and feeds line 90. Provincial tax is carried to the return's line 147/42800 flow. ON428-A, ON479-A, ON479, and ON-BEN are separate official branches, not guessed shortcuts.
+- T691 direct mechanics are captured: line 93 is adjusted taxable income (`line83 - line92`, floor at zero), line 94 is the $177,882 exemption, line 96 is 20.5%, line 97 is gross minimum tax, line 103 is after allowable credits, and a positive Part 5 result drives line 41700 while Part 8 line 12 drives line 40427. Linked special forms remain form-driven.
+- Ontario's additional minimum tax is now complete for the ordinary ON428 path: only when T691 Part 5 line 11 is entered, calculate basic additional tax as `line11 * 0.2463`; add ON428 line 65, apply additive 20% and 36% surtax components above $5,710 and $7,307, subtract ON428 line 68 for the incremental surtax, and enter `line1 + line8` on ON428 line 72. If the combined line 3 is at or below $5,710, enter line 1 on line 72; line 4 and line 5 use `max(0, ...)`, and the worksheet states no separate clamp on line 8. T2203 or another special-form route remains outside this ON428-only formula.
+- The refundable medical expense supplement maps to line 45200: `max(0, min((line21500 + line33200) * 0.25, 1504) - (max(0, adjustedFamilyNetIncome - 33294) * 0.05))`, with final worksheet eligibility inputs. Schedule 6 (`5000-s6-25e`) now supplies Ontario-context CWB constants/formulas, including line 45300 and advanced CWB line 41500 mapping; eligibility and RC210/spouse allocation remain schedule-driven.
+- CPP/CPP2, EI, instalments, interest, and penalties map only through the final schedules and lines named in the fragments. Missing exceptions stay unavailable.
+- Ontario ON428 takes line 26000 as line 1 and calculates Ontario tax through line 31. Its surtax is additive through lines 65–68; the Ontario Health Premium is the piecewise line-89 calculation and feeds line 90. Provincial tax is carried to the return's line 147/42800 flow. ON428-A, ON479-A, ON479, and ON-BEN are separate official branches, not guessed shortcuts. ON479 political contributions use line 15/63110 to line 16: contributions at least $3,793 yield $1,666.82; lower amounts use the captured Worksheet ON479 tiers and zero floor.
 
 No formula is inferred from another year, payroll tables, an unofficial calculator, or a narrative that conflicts with a final form. If a fragment disagrees internally, the conservative result is unavailable.
 
@@ -45,7 +48,7 @@ The Ontario package is selected only when official package-selection rules point
 
 ## Explicitly unavailable parameters
 
-Unavailable values are represented as `null` with a reason and required official source in the machine proposal. Important gaps include federal BPA interpolation, a no-slip federal dividend-credit percentage, complete credit and Schedule 3/8/RC381/Schedule 13/T691 mechanics, the Ontario ON479 political-contribution formula, the complete Ontario minimum-tax dependency graph, the refundable medical supplement and CWB formulas, quarterly prescribed interest rates, a universal rounding shortcut, and special residence/bankruptcy/deceased-return rules. Do not substitute secondary sources.
+Unavailable values are represented as `null` with a reason and required official source in the machine proposal. Important remaining gaps include complete credit-catalogue eligibility and reductions, Schedule 3 special cases, Schedule 8/RC381 and Schedule 13 mechanics, universal self-employed EI premium, T691-linked special-form calculations beyond the directly transcribed lines, quarterly prescribed interest rates, a universal rounding shortcut, and special residence/bankruptcy/deceased-return rules. Do not substitute secondary sources.
 
 ## Paper review and printing
 

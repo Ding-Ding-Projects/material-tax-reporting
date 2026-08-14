@@ -47,30 +47,38 @@
       "title": "ON479 - Ontario Credits",
       "pageUrl": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-tc.html",
       "pdfUrl": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-tc/5006-tc-25e.pdf",
+      "eTextUrl": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-tc/5006-tc-25e.txt",
       "lastUpdateObserved": "2026-01-20"
     },
     "WorksheetON479": {
       "formNumber": "5006-D1",
       "title": "Worksheet ON479",
       "pageUrl": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-d1.html",
-      "status": "Listed in the official 2025 Ontario package, but direct 2025 worksheet content was not resolvable through this research pass. Do not implement worksheet-only formulas from secondary sources."
+      "pdfUrl": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-d1/5006-d1-25e.pdf",
+      "eTextUrl": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-d1/5006-d1-25e.txt",
+      "lastUpdateObserved": "2026-01-20",
+      "status": "Official 2025 Worksheet ON479 content obtained and mapped for political contribution line 16 and co-operative education line 20 calculations."
     },
     "ON428A": {
       "formNumber": "5006-A",
       "title": "Schedule ON428-A - Low-income Individuals and Families Tax (LIFT) Credit",
       "pageUrl": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-a.html",
-      "pdfUrl": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-a/5006-a-25e.pdf"
+      "pdfUrl": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-a/5006-a-25e.pdf",
+      "eTextUrl": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-a/5006-a-25e.txt"
     },
     "ON479A": {
       "formNumber": "5006-TCA",
       "title": "Schedule ON479-A - Ontario Childcare Access and Relief from Expenses (CARE) Tax Credit",
       "pageUrl": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-tca.html",
-      "pdfUrl": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-tca/5006-tca-25e.pdf"
+      "pdfUrl": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-tca/5006-tca-25e.pdf",
+      "eTextUrl": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-tca/5006-tca-25e.txt"
     },
     "ONBEN": {
       "formNumber": "5006-TG",
       "title": "ON-BEN - Application for the 2026 Ontario Trillium Benefit and Ontario Senior Homeowners' Property Tax Grant",
-      "pageUrl": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-tg.html"
+      "pageUrl": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-tg.html",
+      "pdfUrl": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-tg/5006-tg-25e.pdf",
+      "eTextUrl": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-tg/5006-tg-25e.txt"
     }
   },
   "taxOnTaxableIncome": {
@@ -187,7 +195,76 @@
   "minimumTax": {
     "sourceForm": "Worksheet ON428",
     "ontarioAdditionalTaxForMinimumTaxBasicRate": 0.2463,
-    "status": "Rate captured from official Worksheet ON428. Full calculation requires the official federal minimum-tax dependency lines and should remain disabled until those lines are mapped."
+    "resultLine": "ON428 line 72",
+    "eligibilityBoundary": "Complete only if the taxpayer entered an amount on line 11 of Part 5 of Form T691.",
+    "federalInput": {
+      "form": "T691",
+      "part": "Part 5",
+      "line": "11",
+      "description": "Minimum-tax input amount used by Worksheet ON428 line 72."
+    },
+    "on428Inputs": {
+      "line65": "Ontario tax payable before surtax",
+      "line68": "Ontario surtax"
+    },
+    "formulaLines": [
+      {
+        "line": 1,
+        "formula": "T691 Part 5 line 11 * 0.2463",
+        "description": "Ontario basic additional tax"
+      },
+      {
+        "line": 2,
+        "formula": "ON428 line 65"
+      },
+      {
+        "line": 3,
+        "formula": "line1 + line2"
+      },
+      {
+        "condition": "if line3 <= 5710",
+        "result": "Enter line1 on ON428 line 72"
+      },
+      {
+        "line": 4,
+        "formula": "max(0, (line3 - 5710) * 0.20)"
+      },
+      {
+        "line": 5,
+        "formula": "max(0, (line3 - 7307) * 0.36)"
+      },
+      {
+        "line": 6,
+        "formula": "line4 + line5",
+        "description": "Ontario surtax on additional tax; the 20% and 36% components are additive."
+      },
+      {
+        "line": 7,
+        "formula": "ON428 line 68"
+      },
+      {
+        "line": 8,
+        "formula": "line6 - line7",
+        "description": "Incremental Ontario surtax on additional tax; no separate clamp is printed on Worksheet ON428 line 8."
+      },
+      {
+        "line": 9,
+        "formula": "line1 + line8",
+        "result": "Enter on ON428 line 72"
+      }
+    ],
+    "surtaxThresholds": [
+      {
+        "threshold": 5710,
+        "rate": 0.2
+      },
+      {
+        "threshold": 7307,
+        "rate": 0.36
+      }
+    ],
+    "specialFormBoundary": "If the taxpayer is routed away from the ordinary ON428 flow, including the Form T2203 permanent-establishment business-allocation boundary already recorded for Ontario, do not apply this ON428-only worksheet formula without the applicable official special-form flow.",
+    "status": "Complete 2025 Worksheet ON428 line-72 formula captured from official CRA 5006-D e-text/PDF."
   },
   "surtax": {
     "sourceForm": "ON428",
@@ -292,7 +369,54 @@
     "individualIncomeThreshold": 32500,
     "familyIncomeThreshold": 65000,
     "reductionRate": 0.05,
-    "adjustedIncomeRequired": true
+    "adjustedIncomeRequired": true,
+    "lineMapping": {
+      "line1": "Amount from line 10100 of the return.",
+      "line2": "Amount from line 10400 of the return.",
+      "line3": "Line 1 plus line 2.",
+      "line4": "Applicable rate, 5.05%.",
+      "line5": "Line 3 multiplied by line 4, maximum 875.",
+      "line6": "Net income from line 23600, preserving negative value if the federal instruction would otherwise bracket it.",
+      "line7": "Amount from line 21300.",
+      "line8": "RDSP income repayment included on line 23200.",
+      "line9": "Lines 6 to 8.",
+      "line10": "Amount from line 11700.",
+      "line11": "RDSP income included on line 12500.",
+      "line12": "Line 10 plus line 11.",
+      "line13": "Line 9 minus line 12, zero floor; adjusted net income.",
+      "singlePartA": {
+        "line14": "Amount from line 5, maximum 875.",
+        "line15": "Amount from line 13.",
+        "line16": "Individual income threshold, 32500.",
+        "line17": "Line 15 minus line 16, zero floor.",
+        "line18": "Applicable rate, 5%.",
+        "line19": "Line 17 multiplied by line 18.",
+        "line20": "Line 14 minus line 19, zero floor; enter on ON428 line 62140."
+      },
+      "spouseOrCommonLawPartnerPartB": {
+        "line21": "Spouse or common-law partner net income from line 23600, preserving negative value if the federal instruction would otherwise bracket it.",
+        "line22": "Amount from spouse or common-law partner line 21300.",
+        "line23": "Spouse or common-law partner RDSP income repayment included on line 23200.",
+        "line24": "Lines 21 to 23.",
+        "line25": "Amount from spouse or common-law partner line 11700.",
+        "line26": "Spouse or common-law partner RDSP income included on line 12500.",
+        "line27": "Line 25 plus line 26.",
+        "line28": "Line 24 minus line 27, zero floor; spouse or common-law partner adjusted net income.",
+        "line29": "Amount from line 5, maximum 875.",
+        "line30": "Amount from line 13.",
+        "line31": "Individual income threshold, 32500.",
+        "line32": "Line 30 minus line 31, zero floor.",
+        "line33": "Amount from line 30.",
+        "line34": "Amount from line 28.",
+        "line35": "Line 33 plus line 34; adjusted family net income.",
+        "line36": "Family income threshold, 65000.",
+        "line37": "Line 35 minus line 36, zero floor.",
+        "line38": "Greater of line 32 and line 37.",
+        "line39": "Applicable rate, 5%.",
+        "line40": "Line 38 multiplied by line 39.",
+        "line41": "Line 29 minus line 40, zero floor; enter on ON428 line 62140."
+      }
+    }
   },
   "refundableCredits": {
     "sourceForm": "ON479",
@@ -304,22 +428,131 @@
         "source": "Schedule ON479-A"
       },
       {
+        "line": "63095",
+        "name": "Ontario seniors care at home tax credit",
+        "source": "ON479 lines 3 to 13"
+      },
+      {
+        "line": "63100",
+        "name": "Ontario seniors' public transit tax credit eligible transit amount",
+        "source": "ON479 line 14"
+      },
+      {
         "line": "63110",
+        "name": "Ontario political contributions made in 2025",
+        "source": "ON479 line 15 / Ontario tax information for 2025 / Worksheet ON479"
+      },
+      {
+        "line": "ON479 line 16",
         "name": "Ontario political contribution tax credit",
         "source": "Worksheet ON479",
-        "status": "Official 2025 worksheet dependency captured; formula unavailable until direct official Worksheet ON479 content is obtained."
+        "status": "Official 2025 Worksheet ON479 formula captured."
       },
       {
-        "line": "63010",
-        "name": "Ontario focused flow-through share tax credit"
+        "line": "63220",
+        "name": "Ontario focused flow-through share tax credit",
+        "source": "ON479 line 17"
       },
       {
-        "line": "63020",
-        "name": "Ontario co-operative education tax credit"
+        "line": "63300",
+        "name": "Ontario co-operative education tax credit",
+        "source": "ON479 line 20 and Worksheet ON479 when 2024 salaries and wages are more than 400000 and less than 600000"
+      }
+    ]
+  },
+  "ontarioSeniorsCareAtHomeCredit": {
+    "sourceForm": "ON479",
+    "resultLine": "ON479 line 63095 / line 13",
+    "medicalExpensesLine": "ON428 line 58769",
+    "allowablePercentage": 0.25,
+    "maximumBeforeIncomeReduction": 1500,
+    "familyNetIncomeLines": [
+      "taxpayer return line 23600",
+      "spouse or common-law partner return line 23600, if applicable"
+    ],
+    "fullCreditFamilyIncomeMaximum": 35000,
+    "zeroCreditFamilyIncomeOver": 65000,
+    "phaseoutBase": 35000,
+    "phaseoutRate": 0.05,
+    "formula": "line5 = min(ON428 line 58769 * 0.25, 1500); familyNetIncome = taxpayer line23600 + spouseOrPartner line23600 if applicable; if familyNetIncome <= 35000 result = line5; if familyNetIncome > 65000 result = 0; otherwise result = max(0, line5 - max(0, familyNetIncome - 35000) * 0.05)."
+  },
+  "ontarioSeniorsPublicTransitTaxCredit": {
+    "sourceForm": "ON479",
+    "resultLine": "ON479 line 14",
+    "inputLine": "ON479 line 63100",
+    "eligibleTransitAmountMaximum": 3000,
+    "rate": 0.15,
+    "formula": "min(eligible seniors' Ontario public transit amount paid in the year, 3000) * 0.15"
+  },
+  "politicalContributionTaxCredit": {
+    "sourceForms": [
+      "ON479",
+      "Worksheet ON479"
+    ],
+    "inputLine": "ON479 line 15 / line 63110 for Ontario political contributions made in 2025; Worksheet ON479 uses this amount as its tier input.",
+    "resultLine": "ON479 line 16",
+    "directMaximumRule": {
+      "contributionsAtLeast": 3793,
+      "result": 1666.82,
+      "maximum": 1666.82
+    },
+    "worksheetTiers": [
+      {
+        "moreThan": null,
+        "notMoreThan": 500.05,
+        "subtract": 0,
+        "rate": 0.75,
+        "add": 0
       },
       {
-        "line": "63140",
-        "name": "Ontario seniors' public transit tax credit"
+        "moreThan": 500.05,
+        "notMoreThan": 1666.82,
+        "subtract": 500.05,
+        "rate": 0.5,
+        "add": 375.03
+      },
+      {
+        "moreThan": 1666.82,
+        "notMoreThan": null,
+        "subtract": 1666.82,
+        "rate": 0.3333,
+        "add": 958.41
+      }
+    ],
+    "formula": "If total contributions are 3793 or more, ON479 line 16 is 1666.82. Otherwise choose the Worksheet ON479 tier by contribution amount, calculate max(0, amount - subtract) * rate + add, and respect the ON479 maximum of 1666.82."
+  },
+  "focusedFlowThroughShareTaxCredit": {
+    "sourceForm": "ON479",
+    "inputLine": "ON479 line 17 / line 63220",
+    "sourceInput": "Total expenses from Form T1221",
+    "rate": 0.05,
+    "formula": "T1221 total expenses * 0.05"
+  },
+  "coOperativeEducationTaxCredit": {
+    "sourceForms": [
+      "ON479",
+      "Worksheet ON479"
+    ],
+    "resultLine": "ON479 line 20 / line 63300",
+    "workPlacementCountLine": "63260",
+    "partnershipClaimLine": "63265",
+    "businessNumberLine": "63270",
+    "maximumPerStudentPerQualifyingWorkPlacement": 3000,
+    "salaryWageRules": [
+      {
+        "totalSalariesAndWages2024": "600000 or more",
+        "rate": 0.25,
+        "formula": "total eligible expenditures for all students * 0.25"
+      },
+      {
+        "totalSalariesAndWages2024": "400000 or less",
+        "rate": 0.3,
+        "formula": "total eligible expenditures for all students * 0.30"
+      },
+      {
+        "totalSalariesAndWages2024": "more than 400000 but less than 600000",
+        "source": "Worksheet ON479 line 20",
+        "formula": "For each qualifying placement: line1 = eligible expenditures * 0.25; line3 = eligible expenditures * 0.05; line6 = max(0, salariesAndWages2024 - 400000); line8 = line6 / 200000; line11 = max(0, 1 - line8); line13 = min(line1 + line3 * line11, 3000). Enter total claimed for all qualifying work placements on ON479 line 20."
       }
     ]
   },
@@ -331,6 +564,16 @@
     "familyAdjustedIncomeLine": "Schedule ON479-A line 5",
     "creditBaseLine": "Schedule ON479-A line 6",
     "rateLine": "Schedule ON479-A line 7",
+    "lineMapping": {
+      "line1": "Net income from line 23600, preserving negative value if the federal instruction would otherwise bracket it.",
+      "line2": "Child care expenses deduction from line 21400.",
+      "line3": "Social benefits repayment from line 23500.",
+      "line4": "Lines 1 to 3, zero floor; adjusted income.",
+      "line5": "Family adjusted income, adding line 4 amounts for taxpayer and supporting person column(s).",
+      "line6": "Child care expenses deduction from line 21400.",
+      "line7": "If family adjusted income on line 5 is zero, use 75%; otherwise use the rate table.",
+      "line8": "Line 6 multiplied by line 7; enter on ON479 line 63050."
+    },
     "rateTable": [
       { "moreThan": 0, "notMoreThan": 20000, "rate": 0.75 },
       { "moreThan": 20000, "notMoreThan": 22500, "rate": 0.73 },
@@ -376,7 +619,70 @@
   "onBen": {
     "sourceForm": "ON-BEN",
     "benefitYear": 2026,
-    "status": "Application form captured as part of the 2025 package. Deterministic entitlement formulas were not transcribed in this pass; do not calculate Ontario Trillium Benefit or Ontario Senior Homeowners' Property Tax Grant from unofficial sources."
+    "status": "Application form captured as part of the 2025 package. ON-BEN is not a deterministic entitlement worksheet; do not calculate Ontario Trillium Benefit or Ontario Senior Homeowners' Property Tax Grant amounts from unofficial sources.",
+    "paymentBoundary": "ON-BEN states payments for these benefits are issued separately from the tax refund.",
+    "spouseOrCommonLawPartnerApplicationRule": "If the taxpayer had a spouse or common-law partner on December 31, 2025, only one of them can apply for OEPTC, NOEC, and OSHPTG for both of them. If only one spouse or common-law partner was 64 years of age or older on December 31, 2025, that spouse or common-law partner must apply for those credits and the grant for both of them.",
+    "applicationLines": [
+      {
+        "line": "61020",
+        "name": "Ontario energy and property tax credit application",
+        "action": "Tick if the 2026 OEPTC conditions apply and complete Part A and Part B."
+      },
+      {
+        "line": "61040",
+        "name": "Northern Ontario energy credit application",
+        "action": "Tick if the 2026 NOEC Northern Ontario conditions apply and complete Part A and Part B."
+      },
+      {
+        "line": "61060",
+        "name": "Delayed single Ontario Trillium Benefit payment choice",
+        "action": "Tick to wait until June 2027 to receive the 2026 OTB entitlement in one payment instead of monthly payments from July 2026 to June 2027."
+      },
+      {
+        "line": "61070",
+        "name": "Ontario senior homeowners' property tax grant application",
+        "action": "Tick if age and ownership/occupancy/property-tax conditions apply; enter property tax on line 61120 and complete Part B."
+      },
+      {
+        "line": "61080",
+        "name": "Separate principal residences for medical reasons",
+        "action": "Tick if the taxpayer and spouse or common-law partner occupied separate principal residences for medical reasons and the taxpayer chooses to apply individually for OEPTC, NOEC, or OSHPTG; enter spouse or common-law partner address in Part C."
+      },
+      {
+        "line": "61100",
+        "name": "Rent paid for principal residence",
+        "action": "Enter total rent paid for principal residence in Ontario for 2025, including a private long-term care home, subject to the form's property-tax condition."
+      },
+      {
+        "line": "61120",
+        "name": "Property tax paid for principal residence",
+        "action": "Enter total property tax actually paid for the principal residence in Ontario for 2025."
+      },
+      {
+        "line": "61140",
+        "name": "Designated student residence",
+        "action": "Tick if the taxpayer resided in a designated student residence in Ontario in 2025."
+      },
+      {
+        "line": "61210",
+        "name": "Home energy costs on reserve",
+        "action": "Enter home energy costs paid for the principal residence on a reserve in Ontario for 2025."
+      },
+      {
+        "line": "61230",
+        "name": "Public or non-profit long-term care home accommodation",
+        "action": "Enter accommodation paid for a public or non-profit long-term care home in Ontario for 2025."
+      }
+    ],
+    "partBResidenceTableColumns": [
+      "address",
+      "postalCode",
+      "numberOfMonthsResidentIn2025",
+      "amountPaidFor2025",
+      "longTermCareHomeCheckbox",
+      "landlordMunicipalityOrSupplierName"
+    ],
+    "partC": "Spouse or common-law partner address for involuntary separation where the medical-reasons condition applies."
   },
   "rounding": {
     "policy": "Use official form and guide rounding instructions at the line level. Preserve official whole-dollar constants and line-level clamps such as 'if negative, enter 0'.",
@@ -434,14 +740,9 @@
   },
   "unresolvedOfficialSourceGaps": [
     {
-      "item": "Worksheet ON479 political contribution formula",
-      "reason": "Worksheet ON479 is listed in the official package, but the direct 2025 worksheet content was not consistently resolvable through this research pass.",
-      "requiredAction": "Obtain official 2025 Worksheet ON479 PDF/e-text and map line 63110 before implementing."
-    },
-    {
-      "item": "Complete Ontario minimum-tax dependency graph",
-      "reason": "Worksheet ON428 rate was captured, but complete calculation depends on federal minimum-tax forms/lines.",
-      "requiredAction": "Map final 2025 federal minimum-tax lines before enabling complete minimum-tax calculation."
+      "item": "Ontario minimum-tax special-form routing outside ordinary ON428",
+      "reason": "Worksheet ON428 line 72 is now mapped for the ordinary ON428 flow, but it is not a substitute for an official special-form flow when the taxpayer is routed away from ON428, including the Form T2203 business-allocation boundary.",
+      "requiredAction": "Use the applicable official special-form calculation when ON428 is not the correct Ontario calculation path."
     },
     {
       "item": "Global Ontario rounding shortcut",
@@ -491,10 +792,35 @@
       "pageDateObserved": "2026-01-20"
     },
     {
+      "id": "cra-on479-2025-etext",
+      "publisher": "Canada Revenue Agency",
+      "title": "5006-TC ON479 - Ontario Credits e-text",
+      "url": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-tc/5006-tc-25e.txt"
+    },
+    {
+      "id": "cra-worksheet-on479-2025",
+      "publisher": "Canada Revenue Agency",
+      "title": "5006-D1 Worksheet ON479",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-d1.html",
+      "pageDateObserved": "2026-01-20"
+    },
+    {
+      "id": "cra-worksheet-on479-2025-etext",
+      "publisher": "Canada Revenue Agency",
+      "title": "5006-D1 Worksheet ON479 e-text",
+      "url": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-d1/5006-d1-25e.txt"
+    },
+    {
       "id": "cra-on428-a-2025",
       "publisher": "Canada Revenue Agency",
       "title": "5006-A Schedule ON428-A - Low-income Individuals and Families Tax (LIFT) Credit",
       "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-a.html"
+    },
+    {
+      "id": "cra-on428-a-2025-etext",
+      "publisher": "Canada Revenue Agency",
+      "title": "5006-A Schedule ON428-A - Low-income Individuals and Families Tax (LIFT) Credit e-text",
+      "url": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-a/5006-a-25e.txt"
     },
     {
       "id": "cra-on479-a-2025",
@@ -503,10 +829,22 @@
       "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-tca.html"
     },
     {
+      "id": "cra-on479-a-2025-etext",
+      "publisher": "Canada Revenue Agency",
+      "title": "5006-TCA Schedule ON479-A - Ontario Childcare Access and Relief from Expenses (CARE) Tax Credit e-text",
+      "url": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-tca/5006-tca-25e.txt"
+    },
+    {
       "id": "cra-on-ben-2025",
       "publisher": "Canada Revenue Agency",
       "title": "5006-TG ON-BEN - Application for the 2026 Ontario Trillium Benefit and Ontario Senior Homeowners' Property Tax Grant",
       "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-tg.html"
+    },
+    {
+      "id": "cra-on-ben-2025-etext",
+      "publisher": "Canada Revenue Agency",
+      "title": "5006-TG ON-BEN - Application for the 2026 Ontario Trillium Benefit and Ontario Senior Homeowners' Property Tax Grant e-text",
+      "url": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-tg/5006-tg-25e.txt"
     },
     {
       "id": "cra-ontario-tax-info-2025",
