@@ -44,6 +44,14 @@ Codex CLI and OpenCode assist with local preparation work and never replace taxp
 
 Retrieved on 2026-08-14.
 
+## Launch-plan regression
+
+`packages/local-coding-assistants/test/launch-preflight.test.ts` covers the boundary between an accepted preview and the process that is actually started. It builds a plan through the real preflight, then hands the launcher tampered copies of it: an extra argument, a replaced sandbox argument that keeps the argument count unchanged, an added environment override, a working directory that escapes the allowed roots, and an executable that is no longer in the discovery results. Each is refused and the recording launch host records no call, so an accepted preview cannot be edited into a different command afterwards. The clean plan is also launched once to confirm it reaches the host with `shell: false` and the profile's fixed argument array.
+
 ## Verification status
 
-Tests, lint, type checks, reviews, runtime launches, captures, builds, and packaging were intentionally not run for this ultra-speed implementation.
+The following were run in this repository and their output observed:
+
+- `node --test --experimental-strip-types packages/local-coding-assistants/test/*.test.ts` — 6 tests passed, 0 failed.
+
+Lint, type checks, reviews, real runtime launches of Codex CLI or OpenCode, captures, builds and packaging were not run, and no claim is made about them. The regression uses an injected launch host; no external process was started.

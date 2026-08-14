@@ -1,5 +1,6 @@
-export { OllamaClientError, OllamaHttpError, OllamaLoopbackClient } from "./client.js";
+export { OllamaClientError, OllamaHttpError, OllamaLoopbackClient } from "./client.ts";
 export {
+  catalogVariantHaystack,
   refreshOfficialCatalog,
   filterCatalogVariants,
   type CatalogFilter,
@@ -9,13 +10,13 @@ export {
   type OfficialCatalogModel,
   type OfficialCatalogSnapshot,
   type OfficialCatalogVariant,
-} from "./catalog.js";
+} from "./catalog.ts";
 export {
   OllamaHardwareEvidenceSource,
   OllamaPrivilegedBridgeAdapter,
   type OllamaInstallationProbe,
   type PlatformHardwareReader,
-} from "./bridge.js";
+} from "./bridge.ts";
 export {
   LocalOllamaSuiteController,
   type FolderPicker,
@@ -24,7 +25,7 @@ export {
   type LocalOllamaSuiteControllerOptions,
   type ObservablePullQueueStore,
   type RuntimeProbe,
-} from "./controller.js";
+} from "./controller.ts";
 export {
   LocalChatManager,
   DEFAULT_CHAT_LIMITS,
@@ -37,14 +38,14 @@ export {
   type LocalChatGateway,
   type LocalChatMessage,
   type LocalChatSession,
-} from "./chat.js";
+} from "./chat.ts";
 export {
   assessHardwareFit,
   type HardwareEvidence,
   type HardwareFitAssessment,
   type HardwareFitVerdict,
   type ModelFitEvidence,
-} from "./hardware-fit.js";
+} from "./hardware-fit.ts";
 export {
   AllowlistedHarnessManager,
   PREBUILT_HARNESS_PROFILES,
@@ -55,9 +56,11 @@ export {
   type HarnessSnapshot,
   type HarnessSnapshotStore,
   type ResolvedExecutable,
-} from "./harness.js";
+} from "./harness.ts";
 export {
   PersistentPullQueue,
+  PULL_STORAGE_HEADROOM,
+  requiredFreeBytesFor,
   type PullGateway,
   type PullProgress,
   type PullQueueItem,
@@ -66,15 +69,43 @@ export {
   type PullQueueStore,
   type PullQueueSummary,
   type StoragePreflight,
-} from "./pull-queue.js";
+} from "./pull-queue.ts";
 export {
-  mountLocalOllamaSuiteSurface,
+  CART_DISCLOSURE,
+  LOCAL_OLLAMA_TABS,
+  MODEL_DELETION_GATE,
+  RUNTIME_HEALTH_VALUES,
+  SEARCH_SCOPES,
+  applyRecovery,
+  cartShortfallBytes,
+  formatBytes,
+  runtimeSummary,
+  searchStateFor,
+  searchStatusFor,
+  type CartViewState,
+  type CatalogFacetValues,
+  type CatalogViewState,
+  type ChatTranscriptEntry,
+  type ChatViewState,
+  type ExecutableDetectionState,
+  type GuidedRecovery,
+  type HarnessSnapshotSummary,
+  type HarnessViewState,
   type LocalOllamaSuiteActions,
   type LocalOllamaSuiteState,
   type LocalOllamaTab,
+  type LocalOllamaTabDescriptor,
   type LocalRuntimeModel,
+  type PreviewHarnessInput,
+  type RecoveryActionId,
   type RuntimeHealth,
-} from "./surface.js";
+  type RuntimeViewState,
+  type SearchScope,
+  type SearchStatus,
+  type SendChatInput,
+  type TroubleshooterBranch,
+  type TroubleshooterViewState,
+} from "./view-model.ts";
 export type {
   OllamaChatMessage,
   OllamaChatRequest,
@@ -102,4 +133,4 @@ export type {
   OllamaShowModelRequest,
   OllamaShowModelResponse,
   OllamaVersionResponse,
-} from "./types.js";
+} from "./types.ts";
