@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "status": "foundation-only",
+  "toolchains": [],
+  "binaries": [],
+  "dependencies": [],
+  "note": "No toolchain, binary, or package dependency has been selected or pinned. Versions and digests will be added when real build requirements exist."
+}

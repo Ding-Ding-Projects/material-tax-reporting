@@ -1,0 +1,7 @@
+{
+  "name": "@material-tax-reporting/desktop",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Reserved workspace for the future Windows desktop application; no application or build is present.",
+  "license": "MIT"
+}
