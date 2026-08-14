@@ -12,6 +12,7 @@ const REQUIRED_CHECKLIST_KEYS: readonly (keyof ManualReviewChecklist)[] = Object
   "slipTypeConfirmed",
   "taxYearConfirmed",
   "everyCandidateReviewed",
+  "extractionEvidenceReviewed",
   "everyAmbiguityResolved",
   "missingFieldsReviewed",
   "officialMappingsReviewed",

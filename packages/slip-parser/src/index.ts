@@ -6,6 +6,10 @@ export {
 } from "./builtin-pdf-text-layer.js";
 export { classifySlip, detectTaxYear } from "./classification.js";
 export { confirmSlipDraft } from "./confirmation.js";
+export {
+  BUNDLED_OFFLINE_OCR_ADAPTER,
+  BUNDLED_OFFLINE_OCR_VERSIONS,
+} from "./offline-ocr.js";
 export { extractBoxCandidates } from "./extraction.js";
 export {
   OFFICIAL_CITATIONS,
@@ -31,6 +35,7 @@ export {
   type DocumentAdmissionResult,
   type ExtractedBoxCandidate,
   type ExtractedTextDocument,
+  type ExtractionContext,
   type ManualFieldDecision,
   type ManualReviewChecklist,
   type ManualReviewSubmission,

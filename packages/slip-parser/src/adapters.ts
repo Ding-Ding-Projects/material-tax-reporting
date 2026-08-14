@@ -77,6 +77,14 @@ export class AdapterRegistry {
     );
   }
 
+  selectAll(document: AdmittedDocument): readonly TextExtractionAdapter[] {
+    return Object.freeze(
+      this.#adapters.filter(
+        (adapter) => adapter.supportedKinds.includes(document.kind) && adapter.canExtract(document),
+      ),
+    );
+  }
+
   listEnabled(): readonly {
     readonly id: string;
     readonly supportedKinds: TextExtractionAdapter["supportedKinds"];

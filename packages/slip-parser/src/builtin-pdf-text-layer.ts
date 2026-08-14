@@ -6,6 +6,7 @@ import type {
   TextEvidence,
   TextExtractionAdapter,
 } from "./types.js";
+import { sha256Hex, stableJson } from "./digest.js";
 
 interface PdfObject {
   readonly id: number;
@@ -217,6 +218,8 @@ function textTokensFromStream(
   stream: string,
   page: number,
   adapterId: string,
+  sourceDigest: string,
+  pageDigest: string,
   tokenBudget: number,
 ): readonly TextEvidence[] {
   const lexemes = lexContent(stream, tokenBudget * 8);
@@ -244,13 +247,19 @@ function textTokensFromStream(
       width: Math.max(safeFontSize * 0.5, text.length * safeFontSize * 0.52),
       height: safeFontSize,
     };
-    evidence.push({
+    const evidenceBase = {
       text,
       page,
       bounds,
       coordinateSpace: "pdf-points-bottom-left",
       confidence: clampConfidence(0.91 - (text.includes("�") ? 0.25 : 0)),
       adapterId,
+      sourceDigest,
+      pageDigest,
+    } as const;
+    evidence.push({
+      ...evidenceBase,
+      evidenceDigest: sha256Hex(stableJson(evidenceBase)),
     });
     x += bounds.width;
   };
@@ -366,13 +375,21 @@ export const BUILTIN_PDF_TEXT_LAYER_ADAPTER: TextExtractionAdapter = Object.free
     telemetry: "none",
   },
   canExtract(document: AdmittedDocument): boolean {
-    return document.kind === "application/pdf" && document.pdf?.encrypted === false;
+    return (
+      document.kind === "application/pdf" &&
+      document.pdf?.encrypted === false &&
+      document.pdf.pageCount !== null
+    );
   },
   async extract(
     document: AdmittedDocument,
     limits: Readonly<ParserLimits>,
   ): Promise<AdapterExtractionResult> {
-    if (document.kind !== "application/pdf" || !document.pdf) {
+    if (
+      document.kind !== "application/pdf" ||
+      !document.pdf ||
+      document.pdf.pageCount === null
+    ) {
       return {
         state: "rejected",
         issue: {
@@ -383,6 +400,7 @@ export const BUILTIN_PDF_TEXT_LAYER_ADAPTER: TextExtractionAdapter = Object.free
         },
       };
     }
+    const pageCount = document.pdf.pageCount;
     const source = new TextDecoder("latin1").decode(document.bytes);
     const objects = parseObjects(source, limits.maxPdfObjects);
     const pages = contentObjectPages(objects);
@@ -398,11 +416,20 @@ export const BUILTIN_PDF_TEXT_LAYER_ADAPTER: TextExtractionAdapter = Object.free
         continue;
       }
       unfilteredStreams += 1;
-      const page = pages.get(object.id) ?? Math.min(fallbackPage, document.pdf.pageCount);
-      fallbackPage = Math.min(document.pdf.pageCount, fallbackPage + 1);
+      const page = pages.get(object.id) ?? Math.min(fallbackPage, pageCount);
+      fallbackPage = Math.min(pageCount, fallbackPage + 1);
       const remaining = limits.maxExtractedTokens - tokens.length;
       if (remaining <= 0) break;
-      tokens.push(...textTokensFromStream(stream, page, this.id, remaining));
+      tokens.push(
+        ...textTokensFromStream(
+          stream,
+          page,
+          this.id,
+          document.sourceDigest,
+          sha256Hex(`${document.sourceDigest}:pdf-text-page:${page}`),
+          remaining,
+        ),
+      );
     }
     const characters = tokens.reduce((total, token) => total + token.text.length, 0);
     if (tokens.length > limits.maxExtractedTokens || characters > limits.maxExtractedCharacters) {
@@ -433,7 +460,7 @@ export const BUILTIN_PDF_TEXT_LAYER_ADAPTER: TextExtractionAdapter = Object.free
     return {
       state: "extracted",
       document: {
-        pageCount: document.pdf.pageCount,
+        pageCount,
         tokens: Object.freeze(tokens.slice()),
         warnings:
           filteredStreams > 0
@@ -446,6 +473,14 @@ export const BUILTIN_PDF_TEXT_LAYER_ADAPTER: TextExtractionAdapter = Object.free
                 },
               ]
             : [],
+        evidenceDigest: sha256Hex(
+          stableJson({
+            sourceDigest: document.sourceDigest,
+            adapterId: this.id,
+            pageCount,
+            tokens,
+          }),
+        ),
       },
     };
   },

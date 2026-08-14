@@ -7,10 +7,29 @@
   "exports": {
     ".": "./src/index.ts"
   },
+  "scripts": {
+    "stage:offline-ocr-assets": "node scripts/stage-offline-ocr-assets.mjs"
+  },
   "files": [
     "src",
+    "assets",
+    "scripts",
     "README.md"
   ],
   "sideEffects": false,
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@napi-rs/canvas": "1.0.6",
+    "@tesseract.js-data/eng": "1.0.0",
+    "@tesseract.js-data/fra": "1.0.0",
+    "pdfjs-dist": "6.1.200",
+    "tesseract.js": "7.0.0",
+    "tesseract.js-core": "7.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "24.13.3"
+  },
+  "engines": {
+    "node": ">=22.13.0 || >=24"
+  }
 }

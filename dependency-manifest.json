@@ -1,8 +1,66 @@
 {
   "schemaVersion": 1,
-  "status": "foundation-only",
-  "toolchains": [],
-  "binaries": [],
-  "dependencies": [],
-  "note": "No toolchain, binary, or package dependency has been selected or pinned. Versions and digests will be added when real build requirements exist."
+  "status": "package-runtime-declared",
+  "toolchains": [
+    {
+      "name": "Node.js",
+      "constraint": ">=22.13.0 || >=24",
+      "purpose": "Local slip-parser OCR worker and PDF rasterization runtime"
+    }
+  ],
+  "binaries": [
+    {
+      "name": "@napi-rs/canvas Windows native addon",
+      "version": "1.0.6",
+      "source": "https://github.com/Brooooooklyn/canvas",
+      "delivery": "npm optional platform package staged into installer resources",
+      "networkAtRuntime": false
+    },
+    {
+      "name": "Tesseract.js WebAssembly core",
+      "version": "7.0.0",
+      "source": "https://github.com/naptha/tesseract.js-core",
+      "delivery": "tesseract.js-core package staged into installer resources",
+      "networkAtRuntime": false
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "tesseract.js",
+      "version": "7.0.0",
+      "license": "Apache-2.0",
+      "source": "https://github.com/naptha/tesseract.js"
+    },
+    {
+      "name": "tesseract.js-core",
+      "version": "7.0.0",
+      "license": "Apache-2.0",
+      "source": "https://github.com/naptha/tesseract.js-core"
+    },
+    {
+      "name": "pdfjs-dist",
+      "version": "6.1.200",
+      "license": "Apache-2.0",
+      "source": "https://github.com/mozilla/pdf.js"
+    },
+    {
+      "name": "@napi-rs/canvas",
+      "version": "1.0.6",
+      "license": "MIT",
+      "source": "https://github.com/Brooooooklyn/canvas"
+    },
+    {
+      "name": "@tesseract.js-data/eng",
+      "version": "1.0.0",
+      "license": "MIT",
+      "source": "https://github.com/naptha/tessdata"
+    },
+    {
+      "name": "@tesseract.js-data/fra",
+      "version": "1.0.0",
+      "license": "MIT",
+      "source": "https://github.com/naptha/tessdata"
+    }
+  ],
+  "note": "The OCR dependency closure is pinned by package-lock.json and staged by packages/slip-parser/scripts/stage-offline-ocr-assets.mjs. It performs no PATH discovery or runtime download. Other repository packages remain foundation-only until they declare their own build requirements."
 }
