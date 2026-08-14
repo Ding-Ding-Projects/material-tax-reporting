@@ -1,7 +1,15 @@
 {
   "name": "@material-tax-reporting/desktop",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
-  "description": "Reserved workspace for the future Windows desktop application; no application or build is present.",
+  "description": "Windows desktop application for guided preparation of a manually reviewed CRA mail-in PDF package.",
+  "main": "src/main/main.cjs",
+  "type": "commonjs",
+  "scripts": {
+    "start": "electron ."
+  },
+  "dependencies": {
+    "electron": "38.0.0"
+  },
   "license": "MIT"
 }

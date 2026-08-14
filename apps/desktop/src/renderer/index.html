@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Guided desktop preparation for a manually reviewed CRA mail-in PDF package."
+    />
+    <title>Material Tax Reporting</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="titlebar">
+      <div class="brand" aria-label="Material Tax Reporting">
+        <span class="brand-mark" aria-hidden="true">MT</span>
+        <span>Material Tax Reporting</span>
+      </div>
+      <div class="window-actions" aria-label="Window controls">
+        <button id="minimize-window" class="window-button" type="button" aria-label="Minimize">—</button>
+        <button id="maximize-window" class="window-button" type="button" aria-label="Maximize">□</button>
+        <button id="close-window" class="window-button close" type="button" aria-label="Close">×</button>
+      </div>
+    </header>
+
+    <div class="app-shell">
+      <nav class="tab-rail" aria-label="Application pages" role="tablist" aria-orientation="vertical">
+        <button class="rail-tab active" role="tab" aria-selected="true" aria-controls="wizard-panel" data-panel="wizard-panel">
+          <span aria-hidden="true">🧭</span><span>Guided return</span>
+        </button>
+        <button class="rail-tab" role="tab" aria-selected="false" aria-controls="history-panel" data-panel="history-panel">
+          <span aria-hidden="true">↶</span><span>Local history</span>
+        </button>
+        <button class="rail-tab" role="tab" aria-selected="false" aria-controls="settings-panel" data-panel="settings-panel">
+          <span aria-hidden="true">⚙</span><span>Settings</span>
+        </button>
+        <button class="rail-tab" role="tab" aria-selected="false" aria-controls="help-panel" data-panel="help-panel">
+          <span aria-hidden="true">?</span><span>How this works</span>
+        </button>
+        <div class="rail-spacer"></div>
+        <button id="open-palette" class="palette-launch" type="button">
+          <span>Command palette</span><kbd>Ctrl</kbd><span>+</span><kbd>Shift</kbd><span>+</span><kbd>F</kbd>
+        </button>
+      </nav>
+
+      <main id="main-content">
+        <section id="wizard-panel" class="page-panel active" role="tabpanel" tabindex="0">
+          <div class="page-heading">
+            <div>
+              <p class="eyebrow">Beginner-guided preparation</p>
+              <h1>One clear question at a time</h1>
+              <p>No tax knowledge is expected. Each answer shows exactly where it is used.</p>
+            </div>
+            <button id="save-progress" class="tonal-button" type="button">Save and resume later</button>
+          </div>
+
+          <div class="boundary-banner" role="note">
+            <strong>Mail-in preparation only.</strong> This app does not offer NETFILE, EFILE, electronic submission,
+            direct CRA transmission, or automatic filing. You must inspect the complete package before exporting or printing it.
+          </div>
+
+          <div class="wizard-layout">
+            <aside class="progress-card" aria-label="Return progress">
+              <div class="progress-summary">
+                <span id="progress-text">Step 1 of 7</span>
+                <span id="progress-percent">0%</span>
+              </div>
+              <div class="progress-track" aria-hidden="true"><span id="progress-fill"></span></div>
+              <ol id="progress-map"></ol>
+            </aside>
+
+            <article class="question-card" aria-live="polite">
+              <div class="question-topline">
+                <span id="step-number" class="step-chip">Step 1</span>
+                <span id="required-chip" class="required-chip">Required</span>
+              </div>
+              <h2 id="question-title"></h2>
+              <p id="question-description" class="question-description"></p>
+
+              <details class="explanation" open>
+                <summary>Why we ask</summary>
+                <p id="why-text"></p>
+              </details>
+              <details class="explanation">
+                <summary>Where to find the answer</summary>
+                <p id="where-text"></p>
+              </details>
+
+              <div id="answer-host" class="answer-host"></div>
+              <p id="validation-message" class="validation-message" role="alert"></p>
+
+              <div class="example-card">
+                <strong>Synthetic example — not taxpayer data</strong>
+                <p id="example-text"></p>
+              </div>
+
+              <div class="impact-card" aria-live="polite">
+                <span class="impact-label">This answer affects</span>
+                <strong id="impact-text"></strong>
+                <a id="show-impact" class="text-link" href="#review-map">View the exact form and line mapping</a>
+              </div>
+
+              <div class="wizard-actions">
+                <button id="back-step" class="text-button" type="button">Back</button>
+                <button id="next-step" class="filled-button" type="button">Save answer and continue</button>
+              </div>
+            </article>
+          </div>
+
+          <section id="review-map" class="review-map" tabindex="-1" aria-labelledby="review-map-heading">
+            <p class="eyebrow">Answer-to-form reference</p>
+            <h2 id="review-map-heading">Exact review map</h2>
+            <p>These links identify where an accepted answer can be used. They do not decide eligibility; any line applies only after its later eligibility question is completed.</p>
+            <ol id="review-map-list"></ol>
+          </section>
+        </section>
+
+        <section id="history-panel" class="page-panel" role="tabpanel" tabindex="0" hidden>
+          <div class="page-heading">
+            <div>
+              <p class="eyebrow">Private, append-only, and local</p>
+              <h1>Local history</h1>
+              <p>Tax values stay encrypted. Revision titles and exports contain redacted metadata only.</p>
+            </div>
+            <div class="heading-actions">
+              <button id="export-history" class="tonal-button" type="button">Export redacted history</button>
+              <button id="open-prune" class="danger-text-button" type="button">Prune selected revisions…</button>
+            </div>
+          </div>
+
+          <div class="history-toolbar">
+            <label class="search-field">
+              <span>Search revision metadata</span>
+              <span class="field-row"><input id="history-search" type="search" autocomplete="off" /><button class="regex-button" data-regex-for="history-search" type="button" aria-label="Build a regular expression for history search">.*</button></span>
+            </label>
+            <label><span>From</span><input id="history-from" type="date" /></label>
+            <label><span>To</span><input id="history-to" type="date" /></label>
+            <label><span>Action</span><select id="history-action"><option value="">All actions</option></select></label>
+          </div>
+          <div class="storage-card"><strong id="storage-use">Storage use: loading…</strong><span>No automatic expiry or revision-count limit is applied.</span></div>
+          <div class="history-layout">
+            <div id="history-list" class="history-list" role="listbox" aria-label="History revisions"></div>
+            <article class="diff-card">
+              <h2>Selected revision</h2>
+              <div id="history-detail" class="empty-state">Choose a revision to inspect its redacted diff and available actions.</div>
+            </article>
+          </div>
+        </section>
+
+        <section id="settings-panel" class="page-panel" role="tabpanel" tabindex="0" hidden>
+          <div class="page-heading"><div><p class="eyebrow">Local preferences</p><h1>Settings</h1><p>Every setting change receives its own local history revision.</p></div></div>
+          <label class="search-field settings-search"><span>Search settings</span><span class="field-row"><input id="settings-search" type="search" /><button class="regex-button" data-regex-for="settings-search" type="button" aria-label="Build a regular expression for settings search">.*</button></span></label>
+          <div id="settings-list" class="settings-list">
+            <section class="settings-card" data-search="language english cantonese bilingual">
+              <div><h2>Language</h2><p>Choose English, playful Hong Kong-style Cantonese, or both.</p></div>
+              <select id="language-setting"><option value="en">English</option><option value="zh-HK">Playful Hong Kong-style Cantonese</option><option value="bilingual">Bilingual</option></select>
+            </section>
+            <section class="settings-card" data-search="english funny level serious playful">
+              <div><h2>English funny level</h2><p>Changes voice, never tax facts. Level 1 is fully professional.</p></div>
+              <input id="english-funny" type="range" min="1" max="5" value="1" aria-label="English funny level" />
+            </section>
+            <section class="settings-card" data-search="cantonese funny level serious playful">
+              <div><h2>Cantonese funny level</h2><p>Changes voice, never tax facts. Level 1 is fully professional.</p></div>
+              <input id="cantonese-funny" type="range" min="1" max="5" value="1" aria-label="Cantonese funny level" />
+            </section>
+            <section class="settings-card" data-search="theme light dark system appearance">
+              <div><h2>Theme</h2><p>Use the system theme or choose light or dark explicitly.</p></div>
+              <select id="theme-setting"><option value="system">Use system setting</option><option value="light">Light</option><option value="dark">Dark</option></select>
+            </section>
+            <section class="settings-card" data-search="emoji dialogs messages">
+              <div><h2>Show emojis in dialogs and messages</h2><p>Emojis are decorative; factual wording never depends on them.</p></div>
+              <input id="emoji-setting" type="checkbox" aria-label="Show emojis in dialogs and messages" checked />
+            </section>
+          </div>
+        </section>
+
+        <section id="help-panel" class="page-panel" role="tabpanel" tabindex="0" hidden>
+          <div class="page-heading"><div><p class="eyebrow">Important boundaries</p><h1>How this works</h1></div></div>
+          <div class="help-grid">
+            <article class="settings-card"><div><h2>You answer in plain language</h2><p>The guided return asks one question at a time, explains why it matters, and points to where the answer can be found.</p></div></article>
+            <article class="settings-card"><div><h2>Every change is recorded locally</h2><p>Encrypted snapshots are committed to an isolated local repository with no remote. Restores, undo, and redo append new revisions.</p></div></article>
+            <article class="settings-card"><div><h2>You review before export</h2><p>Export and print remain locked until you acknowledge the form, calculation, attachment, mailing-address, and signature checks.</p></div></article>
+            <article class="settings-card"><div><h2>You mail the package yourself</h2><p>There is no electronic filing or direct transmission. The final reviewed PDF package is intended for printing and mailing only.</p></div></article>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div id="notification-region" class="notification-region" aria-live="polite" aria-relevant="additions"></div>
+
+    <dialog id="palette-dialog" class="palette-dialog">
+      <form method="dialog" class="palette-surface">
+        <div class="palette-heading"><h2>Command palette</h2><button value="cancel" class="icon-button" aria-label="Close command palette">×</button></div>
+        <label class="search-field"><span>Find a page, setting, or action</span><span class="field-row"><input id="palette-search" type="search" autofocus /><button class="regex-button" data-regex-for="palette-search" type="button" aria-label="Build a regular expression for command palette search">.*</button></span></label>
+        <div id="palette-results" class="palette-results" role="listbox"></div>
+      </form>
+    </dialog>
+
+    <dialog id="regex-dialog" class="regex-dialog">
+      <form method="dialog" class="regex-surface">
+        <div class="palette-heading"><h2>Regular expression builder</h2><button value="cancel" class="icon-button" aria-label="Close regular expression builder">×</button></div>
+        <p>Plain-text search remains the default. Turn on regex only when you need it.</p>
+        <label class="switch-row"><input id="regex-enabled" type="checkbox" /> Use a regular expression</label>
+        <label><span>Pattern</span><input id="regex-pattern" type="text" /></label>
+        <fieldset><legend>Flags</legend><label><input id="regex-ignore-case" type="checkbox" checked /> Ignore case</label><label><input id="regex-multiline" type="checkbox" /> Multiline</label></fieldset>
+        <div class="builder-parts" aria-label="Pattern helpers">
+          <button type="button" data-pattern="^">Start anchor</button><button type="button" data-pattern="$">End anchor</button><button type="button" data-pattern="[A-Za-z]">Character class</button><button type="button" data-pattern="()">Capture group</button><button type="button" data-pattern="|">Alternative</button><button type="button" data-pattern="+">One or more</button>
+        </div>
+        <label><span>Sample text</span><textarea id="regex-sample" rows="4"></textarea></label>
+        <p id="regex-feedback" role="status"></p>
+        <menu><button value="cancel" class="text-button">Cancel</button><button id="apply-regex" value="default" class="filled-button">Apply to search</button></menu>
+      </form>
+    </dialog>
+
+    <dialog id="prune-dialog" class="confirmation-dialog">
+      <form method="dialog" class="confirmation-surface">
+        <h2>Prune selected local revisions?</h2>
+        <p>Pruning reduces local history and cannot be undone. It never happens automatically.</p>
+        <label><input id="prune-key-one" type="checkbox" /> I understand selected revisions will be removed.</label>
+        <label><input id="prune-key-two" type="checkbox" /> I have exported any redacted metadata I need.</label>
+        <label><span>Final confirmation</span><input id="prune-slider" type="range" min="0" max="100" value="0" disabled /></label>
+        <p id="prune-status">Operate both acknowledgements to enable the final slider.</p>
+        <menu><button value="cancel" class="text-button">Emergency exit</button><button id="confirm-prune" value="default" class="danger-button" disabled>Prune selected revisions</button></menu>
+      </form>
+    </dialog>
+
+    <script src="renderer.js"></script>
+  </body>
+</html>
