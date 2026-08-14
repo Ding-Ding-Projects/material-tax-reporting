@@ -8,50 +8,50 @@
   <style>/* BUILD:STYLES */</style>
 </head>
 <body>
-  <header class="titlebar">
-    <div class="brand" aria-label="Material Tax Reporting">
-      <span class="brand-mark" aria-hidden="true">M</span>
-      <span>Material Tax Reporting</span>
+  <header class="titlebar" id="titlebar" data-appearance-id="titlebar">
+    <div class="brand" id="brand" data-appearance-id="brand">
+      <span class="brand-mark" id="brand-mark" aria-hidden="true">M</span>
+      <img id="brand-logo" class="brand-logo hidden" alt="" width="32" height="32">
+      <span id="brand-name">Material Tax Reporting</span>
     </div>
-    <div class="window-actions" aria-label="Window controls">
-      <button id="minimize" class="icon-button" aria-label="Minimize">—</button>
-      <button id="maximize" class="icon-button" aria-label="Maximize or restore">□</button>
-      <button id="close" class="icon-button close" aria-label="Close">×</button>
+    <div class="titlebar-actions">
+      <button id="open-palette" class="titlebar-button" type="button" aria-haspopup="dialog">Commands (Ctrl+Shift+F)</button>
+      <div class="window-actions" aria-label="Window controls">
+        <button id="minimize" class="icon-button" type="button" aria-label="Minimize">—</button>
+        <button id="maximize" class="icon-button" type="button" aria-label="Maximize or restore">□</button>
+        <button id="close" class="icon-button close" type="button" aria-label="Close">×</button>
+      </div>
     </div>
   </header>
 
-  <div class="app-shell">
-    <nav class="rail" aria-label="Application destinations">
-      <button class="rail-item selected" data-page="wizard"><span aria-hidden="true">→</span><span>Guided report</span></button>
-      <button class="rail-item" data-page="history"><span aria-hidden="true">↶</span><span>History</span></button>
-      <button class="rail-item" data-page="project"><span aria-hidden="true">▣</span><span>Project file</span></button>
-    </nav>
+  <div class="app-shell" id="app-shell" data-dock="left">
+    <nav class="tabstrip" id="tabstrip" data-dock="left" aria-label="Open destinations"></nav>
 
-    <main>
-      <section id="welcome" class="page">
-        <div class="hero card">
-          <p class="eyebrow">Private, local, and guided</p>
-          <h1>Prepare one tax report without guessing what comes next</h1>
-          <p>This desktop application asks one plain-language question at a time. It prepares information for a CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing.</p>
+    <main id="main-region">
+      <section id="panel-welcome" class="page" role="tabpanel" aria-labelledby="tab-welcome" tabindex="-1">
+        <div class="hero card" id="welcome-hero" data-appearance-id="welcome-hero">
+          <p class="eyebrow" id="welcome-eyebrow">Private, local, and guided</p>
+          <h1 id="welcome-heading">Prepare one tax report without guessing what comes next</h1>
+          <p id="welcome-boundary-statement" data-appearance-id="welcome-boundary-statement">This desktop application asks one plain-language question at a time. It prepares information for a CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing.</p>
         </div>
         <div class="start-grid">
-          <form id="create-form" class="card" autocomplete="off">
+          <form id="create-form" class="card" autocomplete="off" data-appearance-id="create-form">
             <h2>Create a new encrypted project</h2>
             <p>The project file contains the encrypted current report, encrypted attachments, and the complete local Git history. The app-private working history stays outside your document folders.</p>
-            <label>Tax year
+            <label for="create-tax-year">Tax year
               <input id="create-tax-year" type="number" min="2025" max="2100" required placeholder="For example: 2025">
             </label>
-            <label>Project password
+            <label for="create-password">Project password
               <input id="create-password" type="password" minlength="12" maxlength="1024" required autocomplete="new-password" aria-describedby="create-password-help">
             </label>
             <p id="create-password-help" class="supporting">At least 12 characters. This password wraps the portable project key with a memory-hard KDF. It is never logged or stored as text.</p>
             <button class="filled" type="submit">Choose file and create project</button>
           </form>
 
-          <form id="open-form" class="card" autocomplete="off">
+          <form id="open-form" class="card" autocomplete="off" data-appearance-id="open-form">
             <h2>Open and preview an existing project</h2>
             <p>The file is authenticated, decrypted, bounded, hash-checked, and its embedded Git object graph is validated before any local project can change.</p>
-            <label>Project password
+            <label for="open-password">Project password
               <input id="open-password" type="password" minlength="12" maxlength="1024" required autocomplete="current-password">
             </label>
             <button class="tonal" type="submit">Choose project and preview</button>
@@ -59,43 +59,51 @@
         </div>
       </section>
 
-      <section id="wizard-page" class="page hidden" aria-labelledby="wizard-heading">
+      <section id="panel-wizard" class="page hidden" role="tabpanel" aria-labelledby="tab-wizard" tabindex="-1">
         <div class="page-heading">
-          <div><p class="eyebrow">One question at a time</p><h1 id="wizard-heading">Guided tax report</h1></div>
-          <div id="project-chip" class="status-chip">No project open</div>
+          <div><p class="eyebrow" id="wizard-eyebrow">One question at a time</p><h1 id="wizard-heading">Guided tax report</h1></div>
+          <div id="project-chip" class="status-chip" data-appearance-id="project-chip">No project open</div>
         </div>
         <div class="progress-row" aria-label="Wizard progress">
           <div class="progress-track"><div id="progress-bar" class="progress-bar"></div></div>
           <span id="progress-label">Step 1</span>
         </div>
-        <article id="question-card" class="question-card card" aria-live="polite"></article>
+        <article id="question-card" class="question-card card" data-appearance-id="question-card" aria-live="polite" tabindex="-1"></article>
         <div class="wizard-actions">
           <button id="previous-step" class="text-button" type="button">Previous</button>
           <button id="next-step" class="filled" type="button">Save answer and continue</button>
+          <button id="read-step" class="text-button" type="button">Read this question aloud</button>
+          <button id="open-step-article" class="text-button" type="button">Open the article for this step</button>
         </div>
       </section>
 
-      <section id="history-page" class="page hidden" aria-labelledby="history-heading">
+      <section id="panel-history" class="page hidden" role="tabpanel" aria-labelledby="tab-history" tabindex="-1">
         <div class="page-heading">
           <div><p class="eyebrow">Append-only local Git history</p><h1 id="history-heading">History browser</h1></div>
           <button id="verify-history" class="tonal" type="button">Verify Git object graph</button>
         </div>
-        <div class="history-tools card">
-          <label>Search summaries and labels<input id="history-search" type="search" placeholder="Type part of an action or label"></label>
-          <label>Action<select id="history-action"><option value="">All actions</option></select></label>
-          <label>From<input id="history-from" type="date"></label>
-          <label>To<input id="history-to" type="date"></label>
+        <div class="history-tools card" id="history-tools" data-appearance-id="history-tools">
+          <div id="history-search-host"></div>
+          <div id="history-action-host"></div>
+          <label for="history-from">From<input id="history-from" type="date"></label>
+          <label for="history-to">To<input id="history-to" type="date"></label>
           <button id="refresh-history" class="text-button" type="button">Refresh</button>
           <button id="undo-history" class="tonal" type="button">Undo to previous revision</button>
+          <button id="export-history" class="tonal" type="button">Export the filtered view</button>
+        </div>
+        <p id="history-bulk-preview" class="supporting" aria-live="polite"></p>
+        <div class="button-row">
+          <button id="history-label-selected" class="text-button" type="button">Label the selection</button>
+          <button id="history-clear-selection" class="text-button" type="button">Clear the selection</button>
         </div>
         <div id="history-empty" class="empty card">Create or open a project to browse its history.</div>
         <div id="history-list" class="history-list" role="list"></div>
       </section>
 
-      <section id="project-page" class="page hidden" aria-labelledby="project-heading">
+      <section id="panel-project" class="page hidden" role="tabpanel" aria-labelledby="tab-project" tabindex="-1">
         <div class="page-heading"><div><p class="eyebrow">One portable file</p><h1 id="project-heading">Project file</h1></div></div>
         <div class="project-grid">
-          <div class="card">
+          <div class="card" id="project-card" data-appearance-id="project-card">
             <h2>Current project</h2>
             <dl id="project-details"><div><dt>Status</dt><dd>No project open</dd></div></dl>
             <div class="button-row">
@@ -103,19 +111,28 @@
               <button id="close-project" class="text-button" type="button">Save and close</button>
             </div>
           </div>
-          <form id="save-copy-form" class="card" autocomplete="off">
+          <form id="save-copy-form" class="card" autocomplete="off" data-appearance-id="save-copy-form">
             <h2>Save a separately password-wrapped copy</h2>
             <p>The copy keeps the full encrypted state, attachments, refs, objects, and history. Existing files are never silently overwritten.</p>
-            <label>New copy password<input id="copy-password" type="password" minlength="12" maxlength="1024" required autocomplete="new-password"></label>
+            <label for="copy-password">New copy password<input id="copy-password" type="password" minlength="12" maxlength="1024" required autocomplete="new-password"></label>
             <button class="tonal" type="submit">Choose destination and save copy</button>
           </form>
-          <div class="card">
+          <div class="card" id="ocr-card" data-appearance-id="ocr-card">
             <h2>Bundled offline OCR resources</h2>
             <p id="ocr-status">Checking packaged resource locations…</p>
             <details><summary>Searched locations</summary><ul id="ocr-locations"></ul></details>
           </div>
         </div>
       </section>
+
+      <section id="panel-settings" class="page hidden" role="tabpanel" aria-labelledby="tab-settings" tabindex="-1"></section>
+      <section id="panel-appearance" class="page hidden" role="tabpanel" aria-labelledby="tab-appearance" tabindex="-1"></section>
+      <section id="panel-documentation" class="page hidden" role="tabpanel" aria-labelledby="tab-documentation" tabindex="-1"></section>
+      <section id="panel-changelog" class="page hidden" role="tabpanel" aria-labelledby="tab-changelog" tabindex="-1"></section>
+      <section id="panel-notifications" class="page hidden" role="tabpanel" aria-labelledby="tab-notifications" tabindex="-1"></section>
+      <section id="panel-converter" class="page hidden" role="tabpanel" aria-labelledby="tab-converter" tabindex="-1"></section>
+      <section id="panel-models" class="page hidden" role="tabpanel" aria-labelledby="tab-models" tabindex="-1"></section>
+      <section id="panel-support" class="page hidden" role="tabpanel" aria-labelledby="tab-support" tabindex="-1"></section>
     </main>
   </div>
 
@@ -129,13 +146,42 @@
         <label class="choice"><input type="radio" name="import-strategy" value="reconcile"><span><strong>Reconcile</strong><small id="choice-reconcile"></small></span></label>
         <label class="choice"><input type="radio" name="import-strategy" value="replace"><span><strong>Replace open local project</strong><small id="choice-replace"></small></span></label>
       </fieldset>
-      <label id="replace-confirmation-wrap" class="hidden">Type REPLACE LOCAL PROJECT to confirm<input id="replace-confirmation" autocomplete="off"></label>
+      <label id="replace-confirmation-wrap" class="hidden" for="replace-confirmation">Type REPLACE LOCAL PROJECT to confirm<input id="replace-confirmation" autocomplete="off"></label>
       <div class="dialog-actions"><button id="discard-import" class="text-button" value="cancel">Cancel</button><button id="activate-import" class="filled" value="default">Continue</button></div>
     </form>
   </dialog>
 
   <dialog id="diff-dialog" aria-labelledby="diff-title"><div class="dialog-card"><h2 id="diff-title">Revision difference</h2><div id="diff-content"></div><div class="dialog-actions"><button class="filled" data-close-dialog="diff-dialog">Close</button></div></div></dialog>
+
+  <dialog id="app-dialog" aria-labelledby="app-dialog-title">
+    <div class="dialog-card">
+      <h2 id="app-dialog-title">Confirm</h2>
+      <div id="app-dialog-content"></div>
+      <label id="app-dialog-typed" class="hidden" for="app-dialog-typed-input"><span id="app-dialog-typed-label">Type to confirm</span><input id="app-dialog-typed-input" autocomplete="off"></label>
+      <div class="dialog-actions">
+        <button id="app-dialog-cancel" class="text-button" type="button">Cancel</button>
+        <button id="app-dialog-confirm" class="filled" type="button">Continue</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="export-dialog" aria-labelledby="export-title">
+    <div class="dialog-card">
+      <h2 id="export-title">Export the filtered view</h2>
+      <p class="supporting">The export carries a header block stating the encoding, the schema version, the exact filter, the row count and what was deliberately left out.</p>
+      <label for="export-format">Format<select id="export-format"><option value="json">JSON</option><option value="csv">CSV</option><option value="markdown">Markdown</option><option value="text">Plain text</option></select></label>
+      <label class="inline-check" for="export-identity"><input id="export-identity" type="checkbox"><span>Include the identity answers instead of replacing them with a marker</span></label>
+      <label id="export-confirmation-wrap" class="hidden" for="export-confirmation">Type INCLUDE IDENTITY ANSWERS to confirm<input id="export-confirmation" autocomplete="off"></label>
+      <p id="export-scope" class="supporting" aria-live="polite"></p>
+      <div class="dialog-actions">
+        <button id="export-cancel" class="text-button" type="button">Cancel</button>
+        <button id="export-run" class="filled" type="button">Choose a destination</button>
+      </div>
+    </div>
+  </dialog>
+
   <div id="notifications" class="notifications" aria-live="polite" aria-atomic="false"></div>
+  <div id="live-region" class="visually-hidden" role="status" aria-live="polite"></div>
   <script>/* BUILD:SCRIPT */</script>
 </body>
 </html>

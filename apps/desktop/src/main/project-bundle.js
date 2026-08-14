@@ -282,19 +282,42 @@ function verifyGitGraph(projectRoot) {
   return head.stdout.trim();
 }
 
-function atomicContainerWrite(destinationPath, container) {
+const CONTAINER_CHUNK_BYTES = 4 * 1024 * 1024;
+
+/**
+ * Writes the container in bounded chunks so a transfer surface can report
+ * bytes written and offer a working cancel. Cancelling removes the partial
+ * temporary file and never touches the destination.
+ */
+function atomicContainerWrite(destinationPath, container, progress = null) {
   const destination = path.resolve(destinationPath);
   fs.mkdirSync(path.dirname(destination), { recursive: true });
   const temporary = `${destination}.${process.pid}.${crypto.randomUUID()}.tmp`;
   const handle = fs.openSync(temporary, 'wx', 0o600);
+  const removeTemporary = () => { try { fs.rmSync(temporary, { force: true }); } catch { /* already gone */ } };
+  progress?.onTemporaryPath?.(removeTemporary);
   try {
-    fs.writeFileSync(handle, container);
+    let written = 0;
+    while (written < container.length) {
+      if (progress?.signal?.aborted) {
+        throw new ProjectBundleError('PROJECT_SAVE_CANCELLED', 'The save was cancelled before it finished.', 'The existing project file was not replaced.');
+      }
+      const end = Math.min(written + CONTAINER_CHUNK_BYTES, container.length);
+      fs.writeSync(handle, container, written, end - written, written);
+      written = end;
+      progress?.onBytes?.(written);
+    }
     fs.fsyncSync(handle);
-  } finally { fs.closeSync(handle); }
+  } catch (error) {
+    fs.closeSync(handle);
+    removeTemporary();
+    throw error;
+  }
+  fs.closeSync(handle);
   fs.renameSync(temporary, destination);
 }
 
-function saveBundle({ projectRoot, destinationPath, dataKey, metadata, portableKey }) {
+function saveBundle({ projectRoot, destinationPath, dataKey, metadata, portableKey, progress = null }) {
   validateMetadata(metadata);
   const archive = encodeArchive(projectRoot, metadata);
   const aad = Buffer.from('material-tax-reporting.project-payload.v2', 'utf8');
@@ -317,7 +340,8 @@ function saveBundle({ projectRoot, destinationPath, dataKey, metadata, portableK
     const length = Buffer.allocUnsafe(4); length.writeUInt32BE(headerBytes.length);
     const container = Buffer.concat([MAGIC, length, headerBytes, encrypted.ciphertext]);
     if (container.length > MAX_CONTAINER_BYTES) fail('PROJECT_TOO_LARGE', 'The encrypted project exceeds its size limit.', 'Remove large attachments and retry Save.');
-    atomicContainerWrite(destinationPath, container);
+    progress?.onSize?.(container.length);
+    atomicContainerWrite(destinationPath, container, progress);
     return { bytes: container.length, sha256: crypto.createHash('sha256').update(container).digest('hex') };
   } finally { archive.fill(0); aad.fill(0); }
 }

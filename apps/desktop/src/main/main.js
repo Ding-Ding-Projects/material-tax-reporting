@@ -4,7 +4,7 @@ const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
-const { app, BrowserWindow, dialog, ipcMain } = require('electron');
+const { app, BrowserWindow, dialog, ipcMain, shell } = require('electron');
 const { HistoryStore } = require('./history-store');
 const { KeyVault, atomicWrite } = require('./key-vault');
 const {
@@ -16,6 +16,31 @@ const {
   storeProjectMetadata,
   validateEncryptedAttachment,
 } = require('./project-bundle');
+const { PreferencesStore } = require('./preferences-store');
+const { VocabularyStore } = require('./vocabulary-store');
+const { NotificationLog } = require('./notification-log');
+const { ElementLocks } = require('./element-locks');
+const { Authenticator } = require('./totp');
+const { SupportTickets } = require('./support-tickets');
+const { FileConverter } = require('./converter');
+const { DocsLibrary } = require('./docs-library');
+const { ChangelogLibrary } = require('./changelog-library');
+const { OllamaSuite } = require('./ollama-bridge');
+const { TransferCoordinator } = require('./transfer-progress');
+const { buildExport, writeExport } = require('./exports');
+const { editorStatus, openInEditor, revealInFolder } = require('./editor-handoff');
+const scheduleSettings = require('./settings-schedule');
+const {
+  APPEARANCE_PROPERTIES,
+  contrastRatio,
+  createSearchState,
+  exportAppearancePreset,
+  importAppearancePreset,
+  parseColor,
+  resolveDisplayName,
+  setAppearanceProperty,
+  validateLogoUpload,
+} = require('@material-tax-reporting/surface-kernel');
 
 const APP_NAME = 'Material Tax Reporting';
 const PROJECT_EXTENSION = 'mtrproject';
@@ -41,6 +66,32 @@ let session = null;
 let pendingImport = null;
 let vault = null;
 let instancesRoot = null;
+let preferences = null;
+let vocabulary = null;
+let notifications = null;
+let locks = null;
+let authenticator = null;
+let tickets = null;
+let converter = null;
+let docsLibrary = null;
+let changelogLibrary = null;
+let ollamaSuite = null;
+let transfers = null;
+
+/**
+ * Elements that carry a required disclosure. An appearance override is refused
+ * when it would make one of them unreadable, and a lock may never cover them.
+ */
+const PROTECTED_DISCLOSURE_ELEMENTS = new Set([
+  'wizard-validation',
+  'wizard-boundary-statement',
+  'welcome-boundary-statement',
+  'review-boundary-statement',
+]);
+
+const MIN_DISCLOSURE_CONTRAST = 4.5;
+const MIN_DISCLOSURE_FONT_PX = 12;
+const MAX_LOGO_DIMENSION = 512;
 
 function initialState(taxYear) {
   return {
@@ -191,7 +242,7 @@ function serializeSessionStatus() {
   };
 }
 
-function persistSession() {
+function persistSession(progress = null) {
   const active = ensureSession();
   active.metadata = metadataFor(
     active.metadata.projectId,
@@ -207,6 +258,7 @@ function persistSession() {
     dataKey: active.dataKey,
     metadata: active.metadata,
     portableKey: active.portableKey,
+    progress,
   });
   return { ...result, status: serializeSessionStatus() };
 }
@@ -412,6 +464,247 @@ function resolveOfflineOcrRuntime() {
   };
 }
 
+function sendToRenderer(channel, payload) {
+  if (!mainWindow || mainWindow.isDestroyed()) return;
+  mainWindow.webContents.send(channel, payload);
+}
+
+/**
+ * Records an application-level action in the project history when a project is
+ * open. Preferences themselves are never written into a history record; only
+ * the fact that a named setting changed is recorded.
+ */
+function recordAppAction(action, summary) {
+  if (!session) return null;
+  try {
+    return session.history.transact({ action, stableId: `app:${action}`, summary: summary.slice(0, 200), state: session.state });
+  } catch {
+    return null;
+  }
+}
+
+function searchStateFrom(raw) {
+  return { ...createSearchState(), ...(raw && typeof raw === 'object' ? raw : {}) };
+}
+
+function resolvedColor(value, fallback) {
+  const parsed = parseColor(String(value ?? ''));
+  return 'error' in parsed ? parseColor(fallback) : parsed;
+}
+
+/**
+ * Refuses an appearance override that would make a required disclosure
+ * unreadable: too little contrast, or text below the readable floor.
+ */
+function guardAppearanceOverride(elementId, property, value) {
+  if (!APPEARANCE_PROPERTIES.includes(property)) {
+    return { ok: false, reason: `"${property}" is not one of the overridable appearance properties.` };
+  }
+  if (!PROTECTED_DISCLOSURE_ELEMENTS.has(elementId)) return { ok: true };
+  if (property === '--element-font-size') {
+    const pixels = Number.parseFloat(String(value));
+    if (!Number.isFinite(pixels) || (String(value).includes('px') && pixels < MIN_DISCLOSURE_FONT_PX)) {
+      return { ok: false, reason: `This element carries a required disclosure, so its text stays at least ${MIN_DISCLOSURE_FONT_PX} pixels.` };
+    }
+  }
+  if (property === '--element-on-surface' || property === '--element-surface') {
+    const current = preferences.appearance()[elementId] || {};
+    const foreground = resolvedColor(property === '--element-on-surface' ? value : current['--element-on-surface'], '#1b1b1f');
+    const background = resolvedColor(property === '--element-surface' ? value : current['--element-surface'], '#fdfbff');
+    if ('error' in foreground || 'error' in background) {
+      return { ok: false, reason: 'That colour could not be read, so the override was refused.' };
+    }
+    const ratio = contrastRatio(foreground, background);
+    if (ratio < MIN_DISCLOSURE_CONTRAST) {
+      return { ok: false, reason: `This element carries a required disclosure. The requested colours reach ${ratio.toFixed(2)} to 1, below the ${MIN_DISCLOSURE_CONTRAST} to 1 minimum.` };
+    }
+  }
+  return { ok: true };
+}
+
+function applyIdentityToWindow() {
+  if (!mainWindow || mainWindow.isDestroyed()) return;
+  mainWindow.setTitle(resolveDisplayName(preferences.preferences(), APP_NAME));
+}
+
+/** The composed record the settings and appearance surfaces render. */
+function settingsSnapshot() {
+  const snapshot = preferences.snapshot();
+  return {
+    ...snapshot,
+    identity: {
+      displayName: snapshot.preferences.displayName,
+      resolvedName: resolveDisplayName(snapshot.preferences, APP_NAME),
+      shippedName: APP_NAME,
+      logo: snapshot.preferences.logo,
+      presentationOnly:
+        `Renaming is presentation only. The package name, the .${PROJECT_EXTENSION} extension, the file-dialog filter labels and the application data location are unchanged, so a renamed application still opens the same project files.`,
+    },
+    vocabularyStatus: vocabulary.status(),
+    lockRecords: locks.list(),
+    lockDisclosure: locks.disclosure(),
+    authenticator: authenticator.status(),
+    schedule: scheduleSettings.evaluate(snapshot.preferences, snapshot.schedules),
+    schedulableTargets: scheduleSettings.SCHEDULABLE_TARGETS,
+    appearanceProperties: APPEARANCE_PROPERTIES,
+    protectedElements: [...PROTECTED_DISCLOSURE_ELEMENTS],
+  };
+}
+
+function addAttachmentFromPath(selectedPath) {
+  const active = ensureSession();
+  const stat = fs.statSync(selectedPath);
+  if (!stat.isFile() || stat.size < 1 || stat.size > MAX_ATTACHMENT_BYTES) throw new Error('Choose a regular file between 1 byte and 96 MB.');
+  const attachmentId = crypto.randomUUID();
+  const bytes = fs.readFileSync(selectedPath);
+  try {
+    const encrypted = encryptAttachment(active.dataKey, attachmentId, bytes);
+    atomicWrite(path.join(active.projectRoot, 'attachments', `${attachmentId}.enc`), encrypted);
+  } finally { bytes.fill(0); }
+  const nextState = clone(active.state);
+  nextState.attachments.push({ id: attachmentId, displayName: path.basename(selectedPath), bytes: stat.size, addedAt: new Date().toISOString(), parserConfirmed: false });
+  validateStateShape(nextState, active.metadata, active.projectRoot);
+  const revision = active.history.transact({ action: 'attachment-add', stableId: `attachment:${attachmentId}`, summary: 'Added an encrypted local attachment for manual parser confirmation', state: nextState });
+  active.state = nextState;
+  persistSession();
+  return { state: clone(active.state), revision, bytes: stat.size };
+}
+
+/**
+ * Builds a transfer pre-flight plan. Every destination is chosen here, before
+ * any bytes are written, so the Start surface can name the source, the exact
+ * destination, the expected size and the unsigned status.
+ */
+async function planTransfer(request) {
+  const kind = String(request?.kind || '');
+  if (kind === 'project-save') {
+    const active = ensureSession();
+    let expectedBytes = null;
+    try { expectedBytes = fs.statSync(active.filePath).size; } catch { expectedBytes = null; }
+    return transfers.plan({ kind, sourceDescription: 'The open project in application-private storage', destinationPath: active.filePath, expectedBytes });
+  }
+  if (kind === 'project-save-copy' || kind === 'project-import-copy') {
+    const selected = await dialog.showSaveDialog(mainWindow, {
+      title: kind === 'project-save-copy' ? 'Save encrypted project copy' : 'Create validated project copy',
+      defaultPath: `tax-report-copy.${PROJECT_EXTENSION}`,
+      filters: [{ name: 'Material Tax Reporting project', extensions: [PROJECT_EXTENSION] }],
+    });
+    if (selected.canceled || !selected.filePath) return { cancelled: true };
+    let expectedBytes = null;
+    if (kind === 'project-save-copy' && session) {
+      try { expectedBytes = fs.statSync(session.filePath).size; } catch { expectedBytes = null; }
+    }
+    return transfers.plan({
+      kind,
+      sourceDescription: kind === 'project-save-copy' ? 'The open project in application-private storage' : 'The validated project preview',
+      destinationPath: ensureProjectFilePath(selected.filePath),
+      expectedBytes,
+    });
+  }
+  if (kind === 'attachment-intake') {
+    const selected = await dialog.showOpenDialog(mainWindow, { title: 'Attach a local tax document', properties: ['openFile'] });
+    if (selected.canceled || selected.filePaths.length !== 1) return { cancelled: true };
+    const chosen = selected.filePaths[0];
+    let expectedBytes = null;
+    try { expectedBytes = fs.statSync(chosen).size; } catch { expectedBytes = null; }
+    const planned = transfers.plan({ kind, sourceDescription: path.basename(chosen), destinationPath: null, expectedBytes });
+    planned.plan.sourcePath = chosen;
+    planned.plan.destinationName = 'Encrypted attachment inside the open project';
+    return planned;
+  }
+  if (kind === 'converter-output') {
+    const selected = await dialog.showOpenDialog(mainWindow, { title: 'Choose a destination folder for converted files', properties: ['openDirectory', 'createDirectory'] });
+    if (selected.canceled || selected.filePaths.length !== 1) return { cancelled: true };
+    const planned = transfers.plan({ kind, sourceDescription: 'Files staged for conversion', destinationPath: selected.filePaths[0], expectedBytes: null });
+    planned.plan.jobId = String(request?.jobId || '');
+    return planned;
+  }
+  if (kind === 'export') {
+    const built = buildExport({ ...request.export, surface: APP_NAME });
+    const selected = await dialog.showSaveDialog(mainWindow, { title: 'Save export', defaultPath: built.fileName });
+    if (selected.canceled || !selected.filePath) return { cancelled: true };
+    const planned = transfers.plan({
+      kind,
+      sourceDescription: `${built.manifest.rowCount} row${built.manifest.rowCount === 1 ? '' : 's'} from ${built.manifest.collection}`,
+      destinationPath: selected.filePath,
+      expectedBytes: Buffer.byteLength(built.body, 'utf8'),
+    });
+    planned.plan.manifest = built.manifest;
+    planned.plan.identityIncluded = built.identityIncluded;
+    planned.body = built.body;
+    transfers.get(planned.plan.transferId).body = built.body;
+    return { plan: planned.plan, state: planned.state, description: planned.description };
+  }
+  throw new Error('That transfer kind is not one this application performs.');
+}
+
+/** Performs a confirmed transfer, reporting progress and honest completion. */
+async function commitTransfer(request) {
+  const transferId = String(request?.transferId || '');
+  const entry = transfers.get(transferId);
+  const kind = entry.plan.kind;
+  transfers.confirm(transferId);
+  try {
+    if (kind === 'project-save' || kind === 'project-save-copy') {
+      const active = ensureSession();
+      const progress = {
+        signal: transfers.signal(transferId),
+        onSize: (size) => transfers.begin(transferId, size),
+        onBytes: (written) => transfers.report(transferId, written),
+        onTemporaryPath: (cleanup) => transfers.registerCleanup(transferId, cleanup),
+      };
+      if (kind === 'project-save') {
+        const result = persistSession(progress);
+        const finished = transfers.finish(transferId, result.bytes, result.sha256);
+        return { kind, finished, status: result.status, path: entry.plan.destinationPath, bytes: result.bytes, sha256: result.sha256 };
+      }
+      const destination = entry.plan.destinationPath;
+      if (fs.existsSync(destination)) throw new Error('Choose a new file name; Save copy never overwrites.');
+      const portableKey = createPortableKey(active.dataKey, String(request?.password || ''));
+      const result = saveBundle({ projectRoot: active.projectRoot, destinationPath: destination, dataKey: active.dataKey, metadata: active.metadata, portableKey, progress });
+      const finished = transfers.finish(transferId, result.bytes, result.sha256);
+      return { kind, finished, path: destination, bytes: result.bytes, sha256: result.sha256 };
+    }
+    if (kind === 'attachment-intake') {
+      transfers.begin(transferId, entry.plan.expectedBytes);
+      const result = addAttachmentFromPath(entry.plan.sourcePath);
+      transfers.report(transferId, result.bytes);
+      const finished = transfers.finish(transferId, result.bytes, null);
+      return { kind, finished, state: result.state, revision: result.revision };
+    }
+    if (kind === 'converter-output') {
+      transfers.begin(transferId, null);
+      const outcome = await converter.run(entry.plan.jobId, entry.plan.destinationPath);
+      const bytes = outcome.results.filter((row) => row.ok).reduce((total, row) => total + row.bytes, 0);
+      const finished = bytes > 0
+        ? transfers.finish(transferId, bytes, null)
+        : transfers.fail(transferId, 'No file was converted, so nothing was written.');
+      recordAppAction('conversion', `Converted ${outcome.succeeded} file(s) with ${outcome.adapterId}`);
+      return { kind, finished, outcome, folder: entry.plan.destinationPath };
+    }
+    if (kind === 'export') {
+      const body = entry.body;
+      if (typeof body !== 'string') throw new Error('The export body is no longer available. Build the export again.');
+      transfers.begin(transferId, Buffer.byteLength(body, 'utf8'));
+      const written = writeExport(entry.plan.destinationPath, body);
+      transfers.report(transferId, written.bytes);
+      const finished = transfers.finish(transferId, written.bytes, crypto.createHash('sha256').update(body, 'utf8').digest('hex'));
+      recordAppAction('export', `Exported ${entry.plan.manifest?.rowCount ?? 0} row(s) from ${entry.plan.manifest?.collection ?? 'a local collection'}`);
+      return { kind, finished, path: written.path, fileName: written.fileName, bytes: written.bytes, manifest: entry.plan.manifest };
+    }
+    if (kind === 'project-import-copy') {
+      transfers.begin(transferId, entry.plan.expectedBytes);
+      const destinationPath = entry.plan.destinationPath;
+      transfers.report(transferId, 1);
+      return { kind, destinationPath, finished: transfers.finish(transferId, 1, null) };
+    }
+    throw new Error('That transfer kind is not one this application performs.');
+  } catch (error) {
+    transfers.fail(transferId, error instanceof Error ? error.message : 'The transfer did not complete.');
+    throw error;
+  }
+}
+
 function registerIpc() {
   ipcMain.handle('window:minimize', () => mainWindow?.minimize());
   ipcMain.handle('window:maximize', () => { if (mainWindow) mainWindow.isMaximized() ? mainWindow.unmaximize() : mainWindow.maximize(); });
@@ -496,7 +789,11 @@ function registerIpc() {
 
   ipcMain.handle('project:activate-import', async (_event, request) => {
     let selectedCopyPath = null;
-    if (request.strategy === 'create-copy') {
+    // A confirmed transfer plan may already carry the chosen destination, so
+    // the person is not asked for the same path twice.
+    if (request.strategy === 'create-copy' && typeof request.destinationPath === 'string' && request.destinationPath.length > 0) {
+      selectedCopyPath = ensureProjectFilePath(request.destinationPath);
+    } else if (request.strategy === 'create-copy') {
       const selected = await dialog.showSaveDialog(mainWindow, {
         title: 'Create validated project copy',
         defaultPath: `tax-report-copy.${PROJECT_EXTENSION}`,
@@ -549,24 +846,7 @@ function registerIpc() {
   ipcMain.handle('attachment:add', async () => {
     const selected = await dialog.showOpenDialog(mainWindow, { title: 'Attach a local tax document', properties: ['openFile'] });
     if (selected.canceled || selected.filePaths.length !== 1) return { ok: false, error: { code: 'CANCELLED', message: 'No attachment was added.', recovery: 'Choose Add document when ready.' } };
-    return envelope(() => {
-      const active = ensureSession();
-      const selectedPath = selected.filePaths[0];
-      const stat = fs.statSync(selectedPath);
-      if (!stat.isFile() || stat.size < 1 || stat.size > MAX_ATTACHMENT_BYTES) throw new Error('Choose a regular file between 1 byte and 96 MB.');
-      const attachmentId = crypto.randomUUID();
-      const bytes = fs.readFileSync(selectedPath);
-      try {
-        const encrypted = encryptAttachment(active.dataKey, attachmentId, bytes);
-        atomicWrite(path.join(active.projectRoot, 'attachments', `${attachmentId}.enc`), encrypted);
-      } finally { bytes.fill(0); }
-      const nextState = clone(active.state);
-      nextState.attachments.push({ id: attachmentId, displayName: path.basename(selectedPath), bytes: stat.size, addedAt: new Date().toISOString(), parserConfirmed: false });
-      validateStateShape(nextState, active.metadata, active.projectRoot);
-      const revision = active.history.transact({ action: 'attachment-add', stableId: `attachment:${attachmentId}`, summary: 'Added an encrypted local attachment for manual parser confirmation', state: nextState });
-      active.state = nextState; persistSession();
-      return { state: clone(active.state), revision };
-    }, { code: 'ATTACHMENT_NOT_ADDED', message: 'The document was not attached.', recovery: 'The project remains unchanged; choose a smaller local file and retry.' });
+    return envelope(() => addAttachmentFromPath(selected.filePaths[0]), { code: 'ATTACHMENT_NOT_ADDED', message: 'The document was not attached.', recovery: 'The project remains unchanged; choose a smaller local file and retry.' });
   });
 
   ipcMain.handle('attachment:confirm', (_event, attachmentId) => envelope(() => {
@@ -607,6 +887,408 @@ function registerIpc() {
   }, { code: 'HISTORY_UNDO_FAILED', message: 'The previous revision was not restored.', recovery: 'The current revision is unchanged.' }));
   ipcMain.handle('history:label', (_event, revisionId, label) => envelope(() => { const active = ensureSession(); const result = active.history.label(revisionId, label); persistSession(); return result; }, { code: 'HISTORY_LABEL_FAILED', message: 'The revision label was not saved.' }));
   ipcMain.handle('history:verify', () => envelope(() => ensureSession().history.verify(), { code: 'HISTORY_VERIFY_FAILED', message: 'The local Git history did not pass object-graph validation.', recovery: 'Keep the project open and use an earlier validated project copy.' }));
+
+  // --- Settings, appearance and identity ----------------------------------
+
+  ipcMain.handle('settings:load', () => envelope(() => settingsSnapshot(), { code: 'SETTINGS_LOAD_FAILED', message: 'The local settings record could not be read.', recovery: 'The shipped defaults are in use; change a setting to write a new record.' }));
+  ipcMain.handle('settings:update', (_event, request) => envelope(() => {
+    if (request && typeof request.preferences === 'object' && request.preferences !== null) {
+      preferences.updatePreferences(request.preferences);
+      recordAppAction('preference-change', `Changed the application preferences: ${Object.keys(request.preferences).join(', ')}`);
+      applyIdentityToWindow();
+    }
+    if (Array.isArray(request?.appearance)) {
+      let store = preferences.appearance();
+      const refused = [];
+      for (const change of request.appearance.slice(0, 60)) {
+        const elementId = String(change?.elementId || '');
+        const property = String(change?.property || '');
+        const value = String(change?.value ?? '');
+        const verdict = guardAppearanceOverride(elementId, property, value);
+        if (!verdict.ok) { refused.push({ elementId, property, reason: verdict.reason }); continue; }
+        store = setAppearanceProperty(store, elementId, property, value);
+      }
+      preferences.writeAppearance(store);
+      recordAppAction('appearance-change', `Changed ${request.appearance.length} appearance override(s)`);
+      return { ...settingsSnapshot(), refused };
+    }
+    return settingsSnapshot();
+  }, { code: 'SETTINGS_NOT_SAVED', message: 'The setting was not saved.', recovery: 'The previous value is unchanged; correct the value and retry.' }));
+
+  ipcMain.handle('settings:reset-appearance', (_event, request) => envelope(() => {
+    let store = preferences.appearance();
+    const elementId = String(request?.elementId || '');
+    if (request?.property) {
+      const current = { ...(store[elementId] || {}) };
+      delete current[String(request.property)];
+      store = { ...store, [elementId]: current };
+      if (Object.keys(current).length === 0) delete store[elementId];
+    } else if (elementId) {
+      store = { ...store };
+      delete store[elementId];
+    } else {
+      store = {};
+    }
+    preferences.writeAppearance(store);
+    recordAppAction('appearance-reset', elementId ? `Reset appearance overrides for ${elementId}` : 'Reset every appearance override');
+    return settingsSnapshot();
+  }, { code: 'APPEARANCE_NOT_RESET', message: 'The appearance override was not reset.' }));
+
+  ipcMain.handle('settings:export-preset', async (_event, request) => {
+    const selected = await dialog.showSaveDialog(mainWindow, { title: 'Save appearance preset', defaultPath: 'appearance-preset.json', filters: [{ name: 'Appearance preset', extensions: ['json'] }] });
+    if (selected.canceled || !selected.filePath) return { ok: false, error: { code: 'CANCELLED', message: 'The preset was not saved.', recovery: 'Choose Export preset when ready.' } };
+    return envelope(() => {
+      const body = exportAppearancePreset(preferences.appearance(), String(request?.name || 'Appearance preset'));
+      atomicWrite(path.resolve(selected.filePath), Buffer.from(body, 'utf8'));
+      return { fileName: path.basename(selected.filePath), bytes: Buffer.byteLength(body, 'utf8') };
+    }, { code: 'PRESET_NOT_SAVED', message: 'The appearance preset was not written.' });
+  });
+
+  ipcMain.handle('settings:import-preset', async () => {
+    const selected = await dialog.showOpenDialog(mainWindow, { title: 'Choose an appearance preset', properties: ['openFile'], filters: [{ name: 'Appearance preset', extensions: ['json'] }] });
+    if (selected.canceled || selected.filePaths.length !== 1) return { ok: false, error: { code: 'CANCELLED', message: 'No preset was imported.', recovery: 'The current appearance is unchanged.' } };
+    return envelope(() => {
+      const raw = fs.readFileSync(selected.filePaths[0], 'utf8');
+      const verdict = importAppearancePreset(raw);
+      if (!verdict.ok) throw new Error(verdict.reason);
+      let store = preferences.appearance();
+      const refused = [];
+      for (const [elementId, propertyMap] of Object.entries(verdict.store)) {
+        for (const [property, value] of Object.entries(propertyMap)) {
+          const guard = guardAppearanceOverride(elementId, property, value);
+          if (!guard.ok) { refused.push({ elementId, property, reason: guard.reason }); continue; }
+          store = setAppearanceProperty(store, elementId, property, value);
+        }
+      }
+      preferences.writeAppearance(store);
+      recordAppAction('appearance-change', 'Imported an appearance preset');
+      return { ...settingsSnapshot(), refused };
+    }, { code: 'PRESET_NOT_IMPORTED', message: 'The appearance preset was not accepted.', recovery: 'The current appearance is unchanged.' });
+  });
+
+  ipcMain.handle('settings:save-tabs', (_event, request) => envelope(() => preferences.writeTabs(request), { code: 'TABS_NOT_SAVED', message: 'The tab layout was not saved.' }));
+
+  ipcMain.handle('logo:choose', async () => {
+    const selected = await dialog.showOpenDialog(mainWindow, { title: 'Choose a logo image', properties: ['openFile'], filters: [{ name: 'Raster image', extensions: ['png', 'jpg', 'jpeg'] }] });
+    if (selected.canceled || selected.filePaths.length !== 1) return { ok: false, error: { code: 'CANCELLED', message: 'No image was chosen.', recovery: 'The current logo is unchanged.' } };
+    const chosen = selected.filePaths[0];
+    try {
+      const stat = fs.statSync(chosen);
+      const declaredType = path.extname(chosen).toLowerCase() === '.png' ? 'image/png' : 'image/jpeg';
+      const bytes = fs.readFileSync(chosen);
+      const verdict = await validateLogoUpload(
+        { name: path.basename(chosen), byteLength: stat.size, read: async () => new Uint8Array(bytes) },
+        declaredType,
+      );
+      if (!verdict.ok) throw new Error(verdict.reason);
+      // The declared byte cap is enforced by the kernel; the pixel cap is a
+      // presentation limit enforced here, where the header can be read.
+      if (declaredType === 'image/png' && bytes.length > 24) {
+        const width = bytes.readUInt32BE(16);
+        const height = bytes.readUInt32BE(20);
+        if (width > MAX_LOGO_DIMENSION || height > MAX_LOGO_DIMENSION) {
+          throw new Error(`Choose an image no larger than ${MAX_LOGO_DIMENSION} by ${MAX_LOGO_DIMENSION} pixels.`);
+        }
+      }
+      preferences.updatePreferences({ logo: { kind: 'local', dataUrl: `data:${verdict.type};base64,${bytes.toString('base64')}` } });
+      recordAppAction('identity-change', 'Changed the application logo to a locally chosen image');
+      return { ok: true, data: settingsSnapshot() };
+    } catch (error) {
+      return { ok: false, error: publicError(error, { code: 'LOGO_NOT_ACCEPTED', message: 'The image was not accepted as a logo.', recovery: 'Choose a PNG or JPEG image no larger than 256 KB.' }) };
+    }
+  });
+
+  // --- Personal vocabulary -------------------------------------------------
+
+  ipcMain.handle('vocabulary:status', () => envelope(() => vocabulary.status(), { code: 'VOCABULARY_STATUS_FAILED', message: 'The vocabulary status could not be read.' }));
+  ipcMain.handle('vocabulary:choose', async () => {
+    const selected = await dialog.showOpenDialog(mainWindow, { title: 'Choose a personal vocabulary file', properties: ['openFile'], filters: [{ name: 'Vocabulary document', extensions: ['json'] }] });
+    if (selected.canceled || selected.filePaths.length !== 1) return { ok: false, error: { code: 'CANCELLED', message: 'No vocabulary file was chosen.', recovery: 'The current wording is unchanged.' } };
+    return envelope(() => {
+      const raw = fs.readFileSync(selected.filePaths[0], 'utf8');
+      const result = vocabulary.accept(raw, path.basename(selected.filePaths[0]));
+      if (!result.ok) throw new Error(result.reason);
+      recordAppAction('vocabulary-import', `Accepted a personal vocabulary file with ${result.entryCount} replacement(s)`);
+      return result.status;
+    }, { code: 'VOCABULARY_NOT_ACCEPTED', message: 'The vocabulary file was not accepted.', recovery: 'The wording already in use is unchanged.' });
+  });
+  ipcMain.handle('vocabulary:clear', () => envelope(() => {
+    const status = vocabulary.clear();
+    recordAppAction('vocabulary-clear', 'Removed the accepted personal vocabulary');
+    return status;
+  }, { code: 'VOCABULARY_NOT_CLEARED', message: 'The vocabulary was not removed.' }));
+  ipcMain.handle('vocabulary:shared-mode', (_event, request) => envelope(() => vocabulary.setSharedMode(request?.active === true, request?.name), { code: 'SHARED_MODE_NOT_CHANGED', message: 'The shared mode was not changed.' }));
+
+  // --- Schedules and external presentation settings ------------------------
+
+  ipcMain.handle('schedule:evaluate', () => envelope(() => scheduleSettings.evaluate(preferences.preferences(), preferences.schedules()), { code: 'SCHEDULE_EVALUATION_FAILED', message: 'The schedule could not be evaluated.' }));
+  ipcMain.handle('schedule:save', (_event, request) => envelope(() => {
+    const saved = preferences.writeSchedules(request);
+    recordAppAction('schedule-change', 'Changed the presentation schedule rules');
+    const evaluated = scheduleSettings.evaluate(preferences.preferences(), saved);
+    sendToRenderer('schedule:applied', evaluated);
+    return { schedules: saved, schedule: evaluated };
+  }, { code: 'SCHEDULE_NOT_SAVED', message: 'The schedule was not saved.', recovery: 'The previous rules are unchanged.' }));
+  ipcMain.handle('schedule:read-external', async () => {
+    try {
+      const outcome = await scheduleSettings.readExternalSettings(preferences.schedules());
+      const schedules = preferences.schedules();
+      preferences.writeSchedules({
+        ...schedules,
+        external: { ...schedules.external, lastReceivedAt: new Date().toISOString(), lastVerdict: outcome.message, lastValues: outcome.values },
+      });
+      return { ok: true, data: outcome };
+    } catch {
+      return { ok: false, error: { code: 'EXTERNAL_SETTINGS_FAILED', message: 'The external presentation settings could not be read.', recovery: 'The last applied local value stays in force.' } };
+    }
+  });
+  ipcMain.handle('schedule:apply-external', () => envelope(() => {
+    const schedules = preferences.schedules();
+    const values = schedules.external.lastValues;
+    if (!values || Object.keys(values).length === 0) throw new Error('No validated external document is waiting to be applied.');
+    const saved = preferences.writeSchedules({
+      ...schedules,
+      manualOverrides: { ...schedules.manualOverrides, ...values },
+      external: { ...schedules.external, lastAppliedAt: new Date().toISOString() },
+    });
+    recordAppAction('schedule-change', 'Applied a validated external presentation-settings document');
+    const evaluated = scheduleSettings.evaluate(preferences.preferences(), saved);
+    sendToRenderer('schedule:applied', evaluated);
+    return { schedules: saved, schedule: evaluated };
+  }, { code: 'EXTERNAL_SETTINGS_NOT_APPLIED', message: 'The external document was not applied.', recovery: 'The last applied local value stays in force.' }));
+
+  // --- File converter ------------------------------------------------------
+
+  ipcMain.handle('converter:catalog', () => envelope(() => converter.catalog(), { code: 'CONVERTER_CATALOG_FAILED', message: 'The converter catalogue could not be read.' }));
+  ipcMain.handle('converter:preview', async (_event, request) => {
+    const selected = await dialog.showOpenDialog(mainWindow, { title: 'Choose files to convert', properties: ['openFile', 'multiSelections'] });
+    if (selected.canceled || selected.filePaths.length === 0) return { ok: false, error: { code: 'CANCELLED', message: 'No files were chosen.', recovery: 'Choose Preview files when ready.' } };
+    return envelope(() => converter.preview(selected.filePaths, String(request?.adapterId || '')), { code: 'CONVERTER_PREVIEW_FAILED', message: 'The chosen files could not be inspected.' });
+  });
+  ipcMain.handle('converter:run', async (_event, request) => {
+    try {
+      return { ok: true, data: await commitTransfer(request) };
+    } catch (error) {
+      return { ok: false, error: publicError(error, { code: 'CONVERSION_FAILED', message: 'The conversion did not complete.', recovery: 'No source file was changed; correct the reported reason and retry.' }) };
+    }
+  });
+  ipcMain.handle('converter:cancel', (_event, jobId) => envelope(() => converter.cancel(String(jobId || '')), { code: 'CONVERSION_NOT_CANCELLED', message: 'The conversion could not be cancelled.' }));
+
+  // --- Local model suite ---------------------------------------------------
+
+  const ollamaEnvelope = async (work, fallback) => {
+    try {
+      await ollamaSuite.ensureInitialized();
+      const data = await work();
+      return { ok: true, data: { result: data ?? null, state: ollamaSuite.snapshot(), descriptors: ollamaSuite.descriptors() } };
+    } catch (error) {
+      return { ok: false, error: publicError(error, fallback) };
+    }
+  };
+  ipcMain.handle('ollama:runtime-status', () => ollamaEnvelope(() => ollamaSuite.controller.refreshRuntime(), { code: 'OLLAMA_RUNTIME_UNKNOWN', message: 'The local runtime status could not be read.' }));
+  ipcMain.handle('ollama:catalog-refresh', () => ollamaEnvelope(() => ollamaSuite.controller.refreshCatalog(), { code: 'OLLAMA_CATALOG_UNAVAILABLE', message: 'The official catalogue could not be refreshed.' }));
+  ipcMain.handle('ollama:fit', (_event, reference) => ollamaEnvelope(async () => ollamaSuite.snapshot().fitByReference[String(reference || '')] ?? null, { code: 'OLLAMA_FIT_UNKNOWN', message: 'The hardware fit could not be assessed.' }));
+  ipcMain.handle('ollama:cart-add', (_event, reference) => ollamaEnvelope(() => ollamaSuite.controller.addToCart(String(reference || '')), { code: 'OLLAMA_CART_REFUSED', message: 'That model could not be added to the reviewed batch.' }));
+  ipcMain.handle('ollama:cart-commit', () => ollamaEnvelope(() => ollamaSuite.controller.commitCart(), { code: 'OLLAMA_CART_NOT_COMMITTED', message: 'The reviewed batch was not committed.' }));
+  ipcMain.handle('ollama:queue-cancel', (_event, id) => ollamaEnvelope(() => ollamaSuite.controller.cancelPull(String(id || '')), { code: 'OLLAMA_QUEUE_NOT_CANCELLED', message: 'That queued download was not cancelled.' }));
+  ipcMain.handle('ollama:chat-send', (_event, request) => ollamaEnvelope(() => ollamaSuite.controller.sendChat({
+    model: String(request?.model || ''),
+    systemPrompt: String(request?.systemPrompt || ''),
+    content: String(request?.content || ''),
+    attachments: Array.isArray(request?.attachments) ? request.attachments.slice(0, 4) : [],
+    containsTaxData: request?.containsTaxData === true,
+    reviewedTaxData: request?.reviewedTaxData === true,
+  }), { code: 'OLLAMA_CHAT_FAILED', message: 'The local chat message was not sent.' }));
+  ipcMain.handle('ollama:harness-preflight', (_event, request) => ollamaEnvelope(() => ollamaSuite.controller.previewHarness({
+    profileId: String(request?.profileId || ''),
+    executableId: String(request?.executableId || ''),
+    workingDirectory: String(request?.workingDirectory || ''),
+    model: String(request?.model || ''),
+  }), { code: 'OLLAMA_HARNESS_PREFLIGHT_FAILED', message: 'The harness pre-flight did not complete.' }));
+  ipcMain.handle('ollama:harness-launch', () => ollamaEnvelope(() => ollamaSuite.controller.launchHarness(), { code: 'OLLAMA_HARNESS_LAUNCH_FAILED', message: 'The harness did not launch.' }));
+  ipcMain.handle('ollama:harness-rollback', () => ollamaEnvelope(() => ollamaSuite.controller.refreshHarnessSnapshots(), { code: 'OLLAMA_HARNESS_ROLLBACK_FAILED', message: 'The recorded snapshots could not be listed.' }));
+  ipcMain.handle('ollama:harness-restore', (_event, snapshotId) => ollamaEnvelope(() => ollamaSuite.controller.restoreHarnessSnapshot(String(snapshotId || '')), { code: 'OLLAMA_HARNESS_RESTORE_FAILED', message: 'That snapshot was not restored.' }));
+  ipcMain.handle('ollama:action', (_event, request) => ollamaEnvelope(async () => {
+    const name = String(request?.name || '');
+    const controller = ollamaSuite.controller;
+    if (name === 'select-tab') return controller.selectTab(request.tab);
+    if (name === 'set-search') return controller.setSearch(request.scope, request.patch || {});
+    if (name === 'insert-token') return controller.insertSearchToken(request.scope, request.token);
+    if (name === 'set-facets') return controller.setCatalogFacets(request.selection || {});
+    if (name === 'enqueue-pull') return controller.enqueuePull(String(request.reference || ''));
+    if (name === 'remove-from-cart') return controller.removeFromCart(String(request.reference || ''));
+    if (name === 'clear-cart') return controller.clearCart();
+    if (name === 'pause-queue') return controller.pauseQueue();
+    if (name === 'resume-queue') return controller.resumeQueue();
+    if (name === 'retry-pull') return controller.retryPull(String(request.id || ''));
+    if (name === 'delete-model') {
+      if (request.confirmationOne !== true || request.confirmationTwo !== true || request.completion !== 1) {
+        throw new Error('Deleting a model needs two separate confirmations and the completion control.');
+      }
+      return controller.deleteModel(String(request.reference || ''));
+    }
+    if (name === 'deletion-warning') return ollamaSuite.deletionWarning(request.reference);
+    if (name === 'copy-model') return controller.copyModel(String(request.source || ''), String(request.destination || ''));
+    if (name === 'select-chat-model') return controller.selectChatModel(String(request.reference || ''));
+    if (name === 'stop-chat') return controller.stopChat();
+    if (name === 'select-profile') return controller.selectHarnessProfile(String(request.profileId || ''));
+    if (name === 'refresh-executables') return controller.refreshHarnessExecutables();
+    if (name === 'select-executable') return controller.selectHarnessExecutable(String(request.executableId || ''));
+    if (name === 'select-harness-model') return controller.selectHarnessModel(String(request.reference || ''));
+    if (name === 'choose-working-directory') return controller.chooseWorkingDirectory();
+    if (name === 'apply-recovery') return ollamaSuite.applyRecovery(request.recovery);
+    throw new Error('That local model action is not one this application exposes.');
+  }, { code: 'OLLAMA_ACTION_FAILED', message: 'That local model action did not complete.' }));
+
+  // --- Element locks -------------------------------------------------------
+
+  ipcMain.handle('locks:list', () => envelope(() => ({ records: locks.list(), disclosure: locks.disclosure() }), { code: 'LOCKS_LIST_FAILED', message: 'The lock list could not be read.' }));
+  ipcMain.handle('locks:create', async (_event, request) => {
+    try {
+      if (request?.credential === 'authenticator' && !(await authenticator.verify(request?.answer))) {
+        return { ok: false, error: { code: 'LOCK_NOT_CREATED', message: 'That authenticator code was not accepted.', recovery: 'Enter the current code from the paired authenticator.' } };
+      }
+      const created = await locks.create(request || {});
+      recordAppAction('lock-create', `Created a presentation lock on ${created.elementId}`);
+      return { ok: true, data: { created, records: locks.list(), disclosure: locks.disclosure() } };
+    } catch (error) {
+      return { ok: false, error: publicError(error, { code: 'LOCK_NOT_CREATED', message: 'The lock was not created.', recovery: 'The element is unchanged.' }) };
+    }
+  });
+  ipcMain.handle('locks:attempt', async (_event, request) => {
+    try {
+      const result = await locks.attempt(String(request?.id || ''), request?.answer);
+      recordAppAction(result.ok ? 'lock-release' : 'lock-create', result.ok ? 'Unlocked a presentation lock for the grace period' : 'Recorded an unsuccessful presentation-lock attempt');
+      return { ok: true, data: { ...result, records: locks.list() } };
+    } catch (error) {
+      return { ok: false, error: publicError(error, { code: 'LOCK_ATTEMPT_FAILED', message: 'The unlock attempt did not complete.' }) };
+    }
+  });
+  ipcMain.handle('locks:release', (_event, id) => envelope(() => {
+    const released = locks.release(String(id || ''));
+    recordAppAction('lock-release', `Relocked ${released.elementId}`);
+    return { released, records: locks.list() };
+  }, { code: 'LOCK_NOT_RELEASED', message: 'The lock was not relocked.' }));
+  ipcMain.handle('locks:reset', (_event, id) => envelope(() => {
+    const reset = locks.reset(String(id || ''));
+    recordAppAction('lock-release', `Reset and removed the presentation lock on ${reset.elementId}`);
+    return { reset, records: locks.list() };
+  }, { code: 'LOCK_NOT_RESET', message: 'The lock was not reset.' }));
+
+  // --- Authenticator and support tickets ----------------------------------
+
+  ipcMain.handle('totp:status', () => envelope(() => authenticator.status(), { code: 'AUTHENTICATOR_STATUS_FAILED', message: 'The authenticator status could not be read.' }));
+  ipcMain.handle('totp:register', (_event, request) => envelope(() => authenticator.register(request?.account), { code: 'AUTHENTICATOR_NOT_REGISTERED', message: 'A pairing could not be generated.' }));
+  ipcMain.handle('totp:confirm', async (_event, request) => {
+    try {
+      return { ok: true, data: await authenticator.confirm(request?.code) };
+    } catch (error) {
+      return { ok: false, error: publicError(error, { code: 'AUTHENTICATOR_NOT_CONFIRMED', message: 'The pairing was not confirmed.' }) };
+    }
+  });
+  ipcMain.handle('totp:current', async () => {
+    try {
+      return { ok: true, data: await authenticator.current() };
+    } catch (error) {
+      return { ok: false, error: publicError(error, { code: 'AUTHENTICATOR_CODE_UNAVAILABLE', message: 'No current code is available.' }) };
+    }
+  });
+  ipcMain.handle('totp:remove', () => envelope(() => authenticator.remove(), { code: 'AUTHENTICATOR_NOT_REMOVED', message: 'The pairing was not removed.' }));
+
+  ipcMain.handle('tickets:list', (_event, request) => envelope(() => tickets.list(searchStateFrom(request?.search)), { code: 'TICKETS_LIST_FAILED', message: 'The local tickets could not be listed.' }));
+  ipcMain.handle('tickets:create', (_event, request) => envelope(() => {
+    const created = tickets.create(request || {});
+    recordAppAction('ticket-create', 'Created a local support ticket');
+    return created;
+  }, { code: 'TICKET_NOT_CREATED', message: 'The ticket was not created.' }));
+  ipcMain.handle('tickets:advance', (_event, request) => envelope(() => {
+    const advanced = tickets.advance(String(request?.id || ''), String(request?.state || ''));
+    recordAppAction('ticket-advance', `Moved a local support ticket to ${advanced.state}`);
+    return advanced;
+  }, { code: 'TICKET_NOT_ADVANCED', message: 'The ticket state was not changed.' }));
+  ipcMain.handle('tickets:remove', (_event, id) => envelope(() => tickets.remove(String(id || '')), { code: 'TICKET_NOT_REMOVED', message: 'The ticket was not removed.' }));
+
+  // --- Notification centre -------------------------------------------------
+
+  ipcMain.handle('notifications:list', (_event, request) => envelope(() => notifications.list(request?.filter || {}, searchStateFrom(request?.search)), { code: 'NOTIFICATIONS_LIST_FAILED', message: 'The notification log could not be read.' }));
+  ipcMain.handle('notifications:append', (_event, request) => envelope(() => {
+    const entry = notifications.append(request || {});
+    sendToRenderer('notification:push', entry);
+    return entry;
+  }, { code: 'NOTIFICATION_NOT_RECORDED', message: 'The notice was not recorded.' }));
+  ipcMain.handle('notifications:update', (_event, action) => envelope(() => notifications.update(action), { code: 'NOTIFICATION_NOT_UPDATED', message: 'The notice was not updated.' }));
+  ipcMain.handle('notifications:preview-scope', (_event, request) => envelope(() => notifications.previewScope(request?.selection, request?.filter || {}, searchStateFrom(request?.search)), { code: 'NOTIFICATION_SCOPE_FAILED', message: 'The bulk scope could not be resolved.' }));
+  ipcMain.handle('notifications:delete', (_event, request) => envelope(() => ({ removed: notifications.deleteScope(request?.ids) }), { code: 'NOTIFICATIONS_NOT_DELETED', message: 'The selected notices were not removed.' }));
+
+  // --- Documentation and changelog ----------------------------------------
+
+  ipcMain.handle('docs:list', () => envelope(() => docsLibrary.list(), { code: 'DOCS_LIST_FAILED', message: 'The packaged documentation could not be listed.' }));
+  ipcMain.handle('docs:read', (_event, request) => envelope(() => docsLibrary.read(String(request?.area || ''), String(request?.slug || '')), { code: 'DOCS_READ_FAILED', message: 'That article could not be read.' }));
+  ipcMain.handle('changelog:load', () => envelope(() => changelogLibrary.load(), { code: 'CHANGELOG_LOAD_FAILED', message: 'The packaged changelog record could not be read.' }));
+  ipcMain.handle('changelog:open-commit', async (_event, request) => {
+    const url = String(request?.url || '');
+    if (request?.confirmed !== true) {
+      return { ok: false, error: { code: 'CONFIRMATION_REQUIRED', message: 'Opening a commit link leaves this application.', recovery: 'Confirm that you want to open the link in your browser.' } };
+    }
+    if (!/^https:\/\/[^\s]+$/i.test(url)) {
+      return { ok: false, error: { code: 'LINK_REFUSED', message: 'Only a complete https link can be opened.', recovery: 'The entry is shown exactly as generated; no link was opened.' } };
+    }
+    await shell.openExternal(url);
+    return { ok: true, data: { opened: true } };
+  });
+
+  // --- Exports and handoff -------------------------------------------------
+
+  ipcMain.handle('export:run', async (_event, request) => {
+    try {
+      const planned = await planTransfer({ kind: 'export', export: request });
+      if (planned.cancelled) return { ok: false, error: { code: 'CANCELLED', message: 'The export was cancelled.', recovery: 'Nothing was written.' } };
+      return { ok: true, data: planned };
+    } catch (error) {
+      return { ok: false, error: publicError(error, { code: 'EXPORT_NOT_PREPARED', message: 'The export was not prepared.', recovery: 'Nothing was written; correct the reported reason and retry.' }) };
+    }
+  });
+  ipcMain.handle('export:editor-status', async (_event, request) => {
+    try {
+      return { ok: true, data: await editorStatus({ refresh: request?.refresh === true }) };
+    } catch {
+      return { ok: false, error: { code: 'EDITOR_STATUS_FAILED', message: 'Local editor detection did not complete.', recovery: 'Use Reveal in folder instead.' } };
+    }
+  });
+  ipcMain.handle('export:reveal', async (_event, filePath) => {
+    try {
+      return { ok: true, data: await revealInFolder(String(filePath || '')) };
+    } catch (error) {
+      return { ok: false, error: publicError(error, { code: 'REVEAL_FAILED', message: 'That file could not be revealed.' }) };
+    }
+  });
+  ipcMain.handle('export:open-in-editor', async (_event, filePath) => {
+    try {
+      return { ok: true, data: await openInEditor(String(filePath || '')) };
+    } catch (error) {
+      return { ok: false, error: publicError(error, { code: 'EDITOR_OPEN_FAILED', message: 'That file could not be opened in a detected editor.', recovery: 'Use Reveal in folder instead.' }) };
+    }
+  });
+
+  // --- Transfer decision surfaces -----------------------------------------
+
+  ipcMain.handle('transfer:plan', async (_event, request) => {
+    try {
+      const planned = await planTransfer(request || {});
+      if (planned.cancelled) return { ok: false, error: { code: 'CANCELLED', message: 'No destination was chosen, so nothing was written.', recovery: 'Start the transfer again when ready.' } };
+      return { ok: true, data: planned };
+    } catch (error) {
+      return { ok: false, error: publicError(error, { code: 'TRANSFER_NOT_PLANNED', message: 'The transfer pre-flight did not complete.', recovery: 'Nothing was written.' }) };
+    }
+  });
+  ipcMain.handle('transfer:commit', async (_event, request) => {
+    try {
+      return { ok: true, data: await commitTransfer(request || {}) };
+    } catch (error) {
+      return { ok: false, error: publicError(error, { code: 'TRANSFER_FAILED', message: 'The transfer did not complete.', recovery: 'Any partial temporary file was removed and the destination was not replaced.' }) };
+    }
+  });
+  ipcMain.handle('transfer:cancel', (_event, transferId) => envelope(() => transfers.cancel(String(transferId || '')), { code: 'TRANSFER_NOT_CANCELLED', message: 'The transfer could not be cancelled.' }));
 }
 
 function createWindow() {
@@ -616,8 +1298,8 @@ function createWindow() {
     minWidth: 760,
     minHeight: 620,
     frame: false,
-    backgroundColor: '#fff8fb',
-    title: APP_NAME,
+    backgroundColor: '#fdfbff',
+    title: preferences ? resolveDisplayName(preferences.preferences(), APP_NAME) : APP_NAME,
     webPreferences: {
       preload: path.join(__dirname, '..', 'preload', 'index.cjs'),
       contextIsolation: true,
@@ -633,10 +1315,29 @@ app.whenReady().then(() => {
   instancesRoot = path.join(appDataRoot, 'instances');
   fs.mkdirSync(instancesRoot, { recursive: true });
   vault = new KeyVault(path.join(appDataRoot, 'vault'));
+
+  // Application-level records live beside the instances root and the key
+  // vault. They are never written into an encrypted project bundle.
+  const settingsRoot = path.join(appDataRoot, 'app-settings');
+  fs.mkdirSync(settingsRoot, { recursive: true });
+  preferences = new PreferencesStore(settingsRoot);
+  vocabulary = new VocabularyStore(settingsRoot, preferences);
+  vocabulary.load();
+  notifications = new NotificationLog(settingsRoot, preferences);
+  locks = new ElementLocks(settingsRoot, preferences);
+  authenticator = new Authenticator(settingsRoot, APP_NAME);
+  tickets = new SupportTickets(settingsRoot);
+  converter = new FileConverter({ maxBytes: MAX_ATTACHMENT_BYTES, offlineOcrStatus: resolveOfflineOcrRuntime });
+  docsLibrary = new DocsLibrary({ resourcesPath: process.resourcesPath, appPath: app.getAppPath() });
+  changelogLibrary = new ChangelogLibrary({ resourcesPath: process.resourcesPath, appPath: app.getAppPath() });
+  ollamaSuite = new OllamaSuite({ rootPath: path.join(settingsRoot, 'local-models'), send: sendToRenderer });
+  transfers = new TransferCoordinator(sendToRenderer);
+
   registerIpc();
   createWindow();
+  applyIdentityToWindow();
   app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) createWindow(); });
 });
 
-app.on('before-quit', () => { discardPendingImport(); closeSession(); });
+app.on('before-quit', () => { discardPendingImport(); closeSession(); ollamaSuite?.dispose(); });
 app.on('window-all-closed', () => app.quit());
