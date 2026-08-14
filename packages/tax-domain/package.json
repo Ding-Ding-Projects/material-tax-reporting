@@ -1,0 +1,7 @@
+{
+  "name": "@material-tax-reporting/tax-domain",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Reserved workspace for future Canadian and Ontario tax-domain code; no tax engine is present.",
+  "license": "MIT"
+}
