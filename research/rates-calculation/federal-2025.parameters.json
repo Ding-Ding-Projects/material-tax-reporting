@@ -82,6 +82,9 @@
     "taxResultLine": "76",
     "federalTaxTransferLine": "119",
     "creditRate": "0.145",
+    "annualRateEffectiveForTaxYear": "2025-01-01/2025-12-31",
+    "lowestLegislatedRateChange": {"from": "0.15", "to": "0.14", "effectiveOn": "2025-07-01", "fullYear2025Rate": "0.145"},
+    "federalIndexingFactor": "0.027",
     "brackets": [
       {"lowerInclusive": "0.00", "upperInclusive": "57375.00", "rate": "0.145", "baseTax": "0.00", "baseIncome": "0.00"},
       {"lowerExclusive": "57375.00", "upperInclusive": "114750.00", "rate": "0.205", "baseTax": "8319.38", "baseIncome": "57375.00"},
@@ -98,10 +101,22 @@
     "amountAtOrBelowNetIncome": {"threshold": "177882.00", "amount": "16129.00"},
     "amountAtOrAboveNetIncome": {"threshold": "253414.00", "amount": "14538.00"},
     "betweenThresholds": {
-      "formula": null,
-      "availability": "unavailable; use the final Federal Worksheet and do not infer an interpolation"
+      "formula": "14538.00 + max(0, 1591.00 - (((netIncome - 177882.00) / 75532.00) * 1591.00))",
+      "baseAmount": "14538.00",
+      "supplementAmount": "1591.00",
+      "phaseOutWidth": "75532.00",
+      "maximum": "16129.00",
+      "availability": "available from final 5000-D1 Federal Worksheet"
     },
     "sourceIds": ["src-5006-r", "src-5000-d1"]
+  },
+  "topUpTaxCredit": {
+    "returnLine": "34990",
+    "inputLines": ["33800", "Schedule 9 line 22"],
+    "threshold": "8319.38",
+    "rate": "0.0345",
+    "formula": "max(0, line33800 + schedule9Line22 - 8319.38) * 0.0345",
+    "sourceIds": ["src-5000-d1"]
   },
   "listedConstants": [
     {"name": "age amount", "returnLine": "30100", "maximum": "9028.00", "sourceIds": ["src-5006-r", "src-5000-d1"]},
@@ -235,10 +250,17 @@
   "rounding": {
     "universalRule": null,
     "availability": "unavailable; preserve exact constants and apply form-line rounding and clamps",
-    "requirement": "Do not invent a global rounding rule."
+    "requirement": "Do not invent a global rounding rule.",
+    "deterministicImplementationConvention": "Store Canadian cents as integers, rates as exact rational fractions, preserve printed base-tax constants, and round each non-negative multiplication to the nearest cent with half-cent values upward.",
+    "manualReviewRequiredAtFractionalCentBoundaries": true
+  },
+  "unavailablePolicy": {
+    "status": "unavailable",
+    "manualReviewRequired": true,
+    "automaticCalculationAllowed": false,
+    "requiredAction": "Use the final official form or worksheet and obtain explicit manual review; do not infer a value."
   },
   "unavailable": [
-    "basic-personal-amount interpolation between thresholds",
     "dividend-credit percentage when no slip is present",
     "complete credit catalogue, eligibility, and reductions",
     "complete Schedule 3 special-case mechanics",
@@ -254,6 +276,7 @@
   "sources": [
     {"id": "src-5006-r", "title": "Ontario Form 5006-R and 2025 e-text", "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-r.html", "eTextUrl": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-r/5006-r-25e.txt", "lastUpdated": "2026-01-20"},
     {"id": "src-5000-d1", "title": "Federal Worksheet 5000-D1", "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/5000-d1.html", "files": ["5000-d1-25e.pdf", "5000-d1-25e.txt"], "lastUpdated": "2026-01-20"},
+    {"id": "src-t4127-jul-2025", "title": "Payroll Deductions Formulas - 121st Edition Effective July 1, 2025", "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/payroll/payroll-deductions-t4127-payroll-deductions-formulas/t4127-jul-121st-edition-effective-july-1-2025/t4127-jul-payroll-deductions-formulas.html", "effectiveOn": "2025-07-01"},
     {"id": "src-5000-s3", "title": "Schedule 3 5000-S3", "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/5000-s3.html", "lastUpdated": "2026-01-20"},
     {"id": "src-dividend-income", "title": "Lines 12000 and 12010 taxable dividends", "url": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/personal-income/line-12000-taxable-amount-dividends-eligible-other-than-eligible-taxable-canadian-corporations.html"},
     {"id": "src-dividend-credit", "title": "Line 40425 federal dividend tax credit", "url": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/deductions-credits-expenses/line-40425-federal-dividend-tax-credit.html"},

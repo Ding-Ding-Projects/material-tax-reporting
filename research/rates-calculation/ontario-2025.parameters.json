@@ -76,7 +76,8 @@
   "taxOnTaxableIncome": {
     "sourceForm": "ON428",
     "taxableIncomeLine": "26000",
-    "resultLine": "ON428 line 31",
+    "resultLine": "ON428 line 8 (carried to line 51)",
+    "ontarioIndexingFactor": 0.028,
     "brackets": [
       {
         "lowerExclusive": null,
@@ -89,28 +90,28 @@
         "lowerExclusive": 52886,
         "upperInclusive": 105775,
         "rate": 0.0915,
-        "baseTax": 2671,
+        "baseTax": 2670.74,
         "baseIncome": 52886
       },
       {
         "lowerExclusive": 105775,
         "upperInclusive": 150000,
         "rate": 0.1116,
-        "baseTax": 7510,
+        "baseTax": 7510.09,
         "baseIncome": 105775
       },
       {
         "lowerExclusive": 150000,
         "upperInclusive": 220000,
         "rate": 0.1216,
-        "baseTax": 12446,
+        "baseTax": 12445.60,
         "baseIncome": 150000
       },
       {
         "lowerExclusive": 220000,
         "upperInclusive": null,
         "rate": 0.1316,
-        "baseTax": 20958,
+        "baseTax": 20957.60,
         "baseIncome": 220000
       }
     ]
@@ -159,7 +160,7 @@
       {
         "line": "58729",
         "name": "Allowable medical expenses for other dependants",
-        "maximumAmount": 15046
+        "maximumAmount": 15551
       },
       {
         "line": "58560",
@@ -379,8 +380,10 @@
     "status": "Application form captured as part of the 2025 package. Deterministic entitlement formulas were not transcribed in this pass; do not calculate Ontario Trillium Benefit or Ontario Senior Homeowners' Property Tax Grant from unofficial sources."
   },
   "rounding": {
-    "policy": "Use official form and guide rounding instructions at the line level. Preserve official whole-dollar constants and line-level clamps such as 'if negative, enter 0'.",
-    "openItem": "No Ontario-specific global rounding shortcut was located in this pass."
+    "policy": "Use official form and guide rounding instructions at the line level. Preserve official base-tax constants to the cent and line-level clamps such as 'if negative, enter 0'.",
+    "openItem": "No Ontario-specific global rounding shortcut was located in this pass.",
+    "deterministicImplementationConvention": "Store Canadian cents as integers, rates as exact rational fractions, and round each non-negative multiplication to the nearest cent with half-cent values upward.",
+    "manualReviewRequiredAtFractionalCentBoundaries": true
   },
   "instalmentsInterestPenalties": {
     "administeredBy": "Canada Revenue Agency",
@@ -449,6 +452,12 @@
       "requiredAction": "Use official per-form/per-line rounding and clamps."
     }
   ],
+  "unresolvedOfficialSourcePolicy": {
+    "status": "unavailable",
+    "manualReviewRequired": true,
+    "automaticCalculationAllowed": false,
+    "requiredAction": "Use the final official Ontario or CRA form or worksheet and obtain explicit manual review; do not infer a value."
+  },
   "officialSources": [
     {
       "id": "cra-ontario-package-2025",
@@ -482,6 +491,13 @@
       "title": "5006-D Worksheet ON428",
       "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-d.html",
       "pageDateObserved": "2026-01-20"
+    },
+    {
+      "id": "cra-t4127-jul-2025",
+      "publisher": "Canada Revenue Agency",
+      "title": "Payroll Deductions Formulas - 121st Edition Effective July 1, 2025",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/payroll/payroll-deductions-t4127-payroll-deductions-formulas/t4127-jul-121st-edition-effective-july-1-2025/t4127-jul-payroll-deductions-formulas.html",
+      "effectiveOn": "2025-07-01"
     },
     {
       "id": "cra-on479-2025",

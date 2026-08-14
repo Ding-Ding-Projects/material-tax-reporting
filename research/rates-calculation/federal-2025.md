@@ -34,13 +34,15 @@ Taxable income is line **26000**. The final 5006-R federal tax brackets are marg
 
 The corresponding piecewise expression is `baseTax + (line26000 - baseIncome) × rate` for the selected row, with the first row using `line26000 × 0.145`. Negative taxable income is outside this proposal's calculation input and must be rejected or handled by the final form rules. The federal tax result maps to line **76**, then to line **119** as directed by the final return. Federal non-refundable credits use the federal credit rate **14.5%** where the final worksheet directs that rate; a credit with its own schedule or rate must not be forced through this rate.
 
+The 14.5% rate is the full-year 2025 return rate. CRA's July 2025 payroll formula publication records that the lowest legislated rate changed from 15% to 14% effective 2025-07-01 and that the resulting full-year 2025 rate is 14.5%. The federal 2025 indexing factor is 2.7%. Payroll proration must not be substituted for the final annual return table above.
+
 ## Basic personal amount and listed constants
 
 The basic personal amount is line **30000**, based on net income line **23600**:
 
 - `$16,129` when line 23600 is at or below `$177,882`;
 - `$14,538` when line 23600 is at or above `$253,414`;
-- between those thresholds, the final Federal Worksheet is authoritative. The interpolation formula was not transcribed here and is therefore **unavailable**; do not invent one.
+- between those thresholds, the final Federal Worksheet starts with $14,538, subtracts `$1,591 × (line 23600 − $177,882) ÷ $75,532` from the $1,591 supplement without going below zero, adds the remainder to $14,538, and caps the result at $16,129.
 
 Other final constants supplied for this research are:
 
@@ -58,6 +60,10 @@ Other final constants supplied for this research are:
 | Political contribution credit, line 41000 | Maximum federal political contribution tax credit $650 | Complete credit formula and brackets unavailable. |
 
 This is not a complete federal-credit catalogue. Every unlisted amount, rate, eligibility test, or reduction is unavailable pending complete extraction from the final 5006-R/5000-D1 and applicable schedules.
+
+### 2025 top-up tax credit
+
+The final Federal Worksheet calculates line 34990 by adding line 33800 and Schedule 9 line 22, subtracting $8,319.38 without going below zero, and multiplying the remainder by 3.45%. The top-up is a separate credit in the final return sequence; it must not be folded into the 14.5% non-refundable-credit rate or omitted from a 2025 calculation when the worksheet inputs exceed the threshold.
 
 ## Dividends from taxable Canadian corporations
 
@@ -131,7 +137,7 @@ The CRA [instalment interest and penalty guidance](https://www.canada.ca/en/reve
 
 ## Rounding and fail-closed gaps
 
-Preserve exact form constants, clamps, and line-level rounding. There is no invented global rounding rule. Apply the instruction attached to each line in 5006-R, 5000-D1, T691, Schedule 3, Schedule 6, Schedule 8, Schedule 13, or RC381. Any area not transcribed above is unavailable, including complete BPA interpolation, dividend-credit percentage, full CWB and medical-supplement formulas, full Schedule 8/RC381 and Schedule 13 calculations, T691 mechanics, quarterly interest rates, and special bankruptcy, non-residence, immigration, emigration, deceased-return, or multi-jurisdiction rules.
+Preserve exact form constants, clamps, and line-level rounding. There is no invented global rounding rule. Apply the instruction attached to each line in 5006-R, 5000-D1, T691, Schedule 3, Schedule 6, Schedule 8, Schedule 13, or RC381. The deterministic source table uses integer Canadian cents, exact rational rates, and the printed base-tax constants so it does not recompute a band base from previously rounded arithmetic. Fractional-cent ties remain subject to mandatory manual comparison with the official form because no universal T1 tie-breaking rule was established. Any area not transcribed above is unavailable, including the no-slip dividend-credit percentage, full CWB and medical-supplement formulas, full Schedule 8/RC381 and Schedule 13 calculations, T691 mechanics, quarterly interest rates, and special bankruptcy, non-residence, immigration, emigration, deceased-return, or multi-jurisdiction rules.
 
 ## Official sources
 
