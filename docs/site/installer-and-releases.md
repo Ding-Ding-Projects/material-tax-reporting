@@ -8,6 +8,8 @@
 
 The website may include an installer area, but it must remain explicitly unavailable and must not expose a download button until a published release asset has been verified. A repository archive, source checkout, placeholder URL, guessed release path, or workflow artifact is not a desktop installer.
 
+The site's transfer states, and the release manifest that drives them, are documented in [the website download surfaces article](../features/site/download-surfaces.md). That manifest carries no assets, because none has been published and verified, so the site renders its unavailable state and no download control, link, asset name, size, or digest appears anywhere. The desktop equivalent, which covers only transfers the application itself performs on the user's computer, is documented in [the desktop transfer surfaces article](../features/desktop/transfer-surfaces.md).
+
 When an installer becomes available, the website should identify:
 
 - the exact application version;
@@ -45,6 +47,7 @@ No installer, release asset, download URL, digest, installation flow, update flo
 
 ## Related articles
 
+- [Website download surfaces](../features/site/download-surfaces.md)
 - [Canadian tax-report preparation](canadian-tax-report-preparation.md)
 - [Mail-in PDF and manual review](mail-in-pdf-and-manual-review.md)
 - [Local-first privacy](local-first-privacy.md)

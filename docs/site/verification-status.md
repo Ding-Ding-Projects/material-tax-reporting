@@ -2,31 +2,47 @@
 
 ## Status recorded by this change
 
-This is the initial public website documentation change. It creates the documentation structure and records product boundaries, privacy intent, website behavior, installer availability, the permanent prohibition on electronic filing, and the mandatory manual-review workflow without treating documentation as proof of a released desktop application.
+Implementation source now exists for the website, the desktop application, and the shared packages, and the documentation describes that source. Source is not a released product: no article here treats the presence of a file as proof that a person built, packaged, installed, launched, or used anything. The product boundaries, privacy model, website behavior, installer position, the permanent prohibition on electronic filing, and the mandatory manual-review workflow are recorded as requirements, not as verified behavior.
+
+The per-capability record, including each capability's implementation files, its state, and its explicit evidence gaps, is `docs/features/feature-inventory.json`. Its states describe source only.
+
+## What was verified
+
+Exactly four things were run and their results observed:
+
+- The shared surface-kernel package compiled with no diagnostics, and its 89 tests passed.
+- The local model package compiled with no diagnostics, and its 37 tests passed, along with the 6 tests of the local coding-assistant package.
+- The website's production build completed and emitted its static bundle.
+- The desktop application's build completed and all of its generated bundles parsed.
+
+Nothing beyond those four results is established. A successful build shows that source compiles and is emitted; it shows nothing about how a surface looks or behaves.
 
 ## What was not run
 
-This accelerated implementation did not run:
+This change did not run:
 
-- tests;
+- application launches of the website or the desktop application;
+- screenshots, recordings, or other captures;
 - lint checks;
-- type checks;
+- type checks beyond the packages' own compilation;
 - accessibility checks;
-- reviews;
-- screenshots or other captures; or
-- browser-based user-interface quality assurance.
+- browser-based user-interface quality assurance;
+- desktop user-interface quality assurance;
+- packaging, installer, tag, or release steps; or
+- performance measurement or native-speaker review of any Cantonese wording.
 
 No statement in these articles should be read as evidence from one of those activities.
 
 ## What is not yet verified
 
-- A public desktop release or installer.
+- A public desktop release, installer, release asset, or download control. None exists.
 - A packaged desktop runtime.
 - Supported tax years, forms, schedules, calculations, imports, exports, or a CRA mail-in PDF package.
 - The mandatory review of every populated form, calculation, attachment, mailing destination, and signature field, including acknowledgement invalidation after a change.
 - PDF generation, export, printing, package completeness, or official-link handling.
 - Local desktop storage, encryption, backup, retention, deletion, or recovery behavior.
 - Browser behavior, accessibility conformance, responsive layout, or deployment at the public site URL.
+- Any behavior of the website or desktop capabilities listed in the feature inventory. Every one of them is source that no person has exercised.
 
 ## Evidence required for future status updates
 

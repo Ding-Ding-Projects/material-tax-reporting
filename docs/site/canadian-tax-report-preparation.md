@@ -42,7 +42,7 @@ Tax information can be highly sensitive. The intended product model is local-fir
 
 ## Verification status
 
-This initial documentation change did not verify desktop behavior, calculations, form coverage, the mandatory review workflow, PDF generation, printing, or packaged application behavior. Electronic submission is not awaiting verification; it is prohibited by the product contract.
+Tax-domain, paper-package, and slip-parsing source exists in the repository, and no automated test exercises any of it. Nothing here verified desktop behavior, calculations, form coverage, the mandatory review workflow, PDF generation, printing, or packaged application behavior, and no generated package has been compared against an official form. Electronic submission is not awaiting verification; it is prohibited by the product contract.
 
 ## Related articles
 

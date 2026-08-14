@@ -4,9 +4,13 @@ These instructions apply to automated and human contributors working in this pub
 
 ## Project state
 
-- Treat the repository as a foundation only. There is no shipped application, installer, tax engine, PDF generator, documentation site, test suite, or release workflow.
+- Implementation source is present, and it is source only. The repository contains a documentation site in `apps/site`, a desktop application in `apps/desktop`, and the `surface-kernel`, `tax-domain`, `cra-pdf`, `slip-parser`, `local-ollama`, and `local-coding-assistants` packages under `packages/`.
+- A workflow that builds and publishes the documentation site is defined at `.github/workflows/pages.yml`. No run of it has been observed and recorded in this repository.
+- There is no installer, no release asset, and no download control, and neither application has been packaged, installed, launched, or exercised by a person. The root build scripts remain fail-closed.
+- Distinguish source from behaviour in every statement. That a capability is written in source does not establish that it was built, packaged, installed, launched, captured, or exercised by a person; say which of those actually happened and name the rest as not performed.
 - Keep claims in source files, documentation, commits, and hosted records factual and tied to obtained evidence.
 - Do not add demonstration taxpayer records, fabricated forms, or sample data that could be mistaken for product output.
+- The repository's own feature-completeness record is `docs/features/feature-inventory.json`. Keep it accurate when a change adds, removes, or verifies a capability, and never raise a row's verification state without the evidence that row names.
 
 ## Product boundary
 
