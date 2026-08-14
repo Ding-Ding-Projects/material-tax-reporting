@@ -1,0 +1,1031 @@
+{
+  "schemaVersion": "1.0.0",
+  "accessDate": "2026-08-14",
+  "taxYear": 2025,
+  "ordinaryFilingYear": 2026,
+  "scope": {
+    "taxpayerClass": "Canadian-resident individual",
+    "jurisdictionFocus": "Federal, with Ontario as the province-specific T1 example",
+    "excludedResearch": [
+      "complete provincial and territorial tax calculations",
+      "Quebec provincial return",
+      "non-resident and deemed-resident return packages",
+      "deceased-person, bankruptcy, trust, and estate return packages"
+    ],
+    "notAdvice": true,
+    "craCertificationClaimed": false
+  },
+  "productBoundary": {
+    "terminalOutput": "CRA mail-in PDF package",
+    "packageStateAfterExport": "prepared_for_mailing_not_filed",
+    "prohibitedCapabilities": [
+      "NETFILE",
+      "EFILE",
+      "electronic submission",
+      "direct CRA transmission",
+      "simulated filing",
+      "automatic filing"
+    ],
+    "signaturePolicy": "Never infer, generate, apply, or simulate a taxpayer signature.",
+    "certificationPolicy": "Never claim CRA approval or certification."
+  },
+  "versionPolicy": {
+    "packageSelectionBasis": "Province or territory of residence on 2025-12-31, subject to CRA special-situation rules.",
+    "mixedTaxYearsAllowed": false,
+    "refreshRequiredForEveryTaxYear": true,
+    "sameYearRevisionCheckRequired": true,
+    "mailingAddressRefreshRequiredBeforeExport": true,
+    "currentOntarioExample": {
+      "formNumber": "5006-R",
+      "title": "Income Tax and Benefit Return",
+      "revision": "E (25)",
+      "taxYear": 2025,
+      "lastUpdated": "2026-01-20",
+      "pageUrl": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-r.html",
+      "pdfUrl": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-r/5006-r-25e.pdf",
+      "fillablePdfUrl": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-r/5006-r-fill-25e.pdf",
+      "textUrl": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-r/5006-r-25e.txt"
+    },
+    "mailedPackageOmissionsStarting2025": [
+      "Schedule 2",
+      "Schedule 3",
+      "Schedule 5",
+      "Schedule 6",
+      "Schedule 7",
+      "Schedule 9",
+      "Schedule 11",
+      "Schedule 12",
+      "Schedule 13",
+      "Schedule 15"
+    ]
+  },
+  "manualReview": {
+    "requiredBeforePrintOrExport": true,
+    "explicitFinalAcknowledgementRequired": true,
+    "craPrescribedSoftwareWorkflow": false,
+    "invalidationRule": "Any data, calculation, form, attachment, address, or signature-field change invalidates affected review items and the final acknowledgement.",
+    "items": [
+      "tax year, form revision, and province or territory package",
+      "identity, address, tax number, birth or death date, marital status, residence, and email-notification choice",
+      "spouse, common-law partner, and dependant information",
+      "every populated T1 line and source or calculation",
+      "every populated schedule, conditional form, election, and transfer",
+      "every proposed mailed attachment and every retain-only document",
+      "total payable, total credits, instalments, refund or balance, and refund-transfer note",
+      "current mailing destination and envelope grouping",
+      "certification, signature, date, telephone, and representative fields",
+      "final acknowledgement that the package is not filed and must still be printed, signed where required, and mailed"
+    ],
+    "forbiddenApplicationStates": [
+      "submitted",
+      "accepted",
+      "transmitted",
+      "filed",
+      "CRA certified"
+    ]
+  },
+  "t1Stages": [
+    {
+      "stage": 1,
+      "name": "Identification and other information",
+      "reviewTopics": [
+        "identity",
+        "mailing address",
+        "residence and province or territory",
+        "marital status",
+        "spouse or partner information",
+        "foreign property indicator",
+        "Indian Act-exempt income indicator"
+      ]
+    },
+    {
+      "stage": 2,
+      "name": "Total income",
+      "resultLine": "15000"
+    },
+    {
+      "stage": 3,
+      "name": "Net income",
+      "resultLine": "23600"
+    },
+    {
+      "stage": 4,
+      "name": "Taxable income",
+      "resultLine": "26000"
+    },
+    {
+      "stage": 5,
+      "name": "Federal tax and non-refundable tax credits",
+      "resultLines": [
+        "35000",
+        "40400",
+        "41700",
+        "42000"
+      ]
+    },
+    {
+      "stage": 6,
+      "name": "Refund or balance owing and certification",
+      "resultLines": [
+        "43500",
+        "47600",
+        "48200",
+        "48400",
+        "48500"
+      ]
+    }
+  ],
+  "federalTax2025": {
+    "nonRefundableCreditRate": 0.145,
+    "basicPersonalAmount": {
+      "line": "30000",
+      "maximum": 16129,
+      "maximumAppliesThroughNetIncome": 177882,
+      "minimum": 14538,
+      "minimumAppliesAtOrAboveNetIncome": 253414,
+      "betweenThresholds": "Use the official 2025 Federal Worksheet."
+    },
+    "brackets": [
+      {
+        "lowerExclusive": null,
+        "upperInclusive": 57375,
+        "rate": 0.145,
+        "baseTax": 0
+      },
+      {
+        "lowerExclusive": 57375,
+        "upperInclusive": 114750,
+        "rate": 0.205,
+        "baseTax": 8319.38
+      },
+      {
+        "lowerExclusive": 114750,
+        "upperInclusive": 177882,
+        "rate": 0.26,
+        "baseTax": 20081.25
+      },
+      {
+        "lowerExclusive": 177882,
+        "upperInclusive": 253414,
+        "rate": 0.29,
+        "baseTax": 36495.57
+      },
+      {
+        "lowerExclusive": 253414,
+        "upperInclusive": null,
+        "rate": 0.33,
+        "baseTax": 58399.85
+      }
+    ]
+  },
+  "resultLines": [
+    {
+      "line": "43500",
+      "name": "Total payable"
+    },
+    {
+      "line": "47600",
+      "name": "Tax paid by instalments",
+      "rule": "Use total valid 2025 instalment payments, including valid payments absent from INNS1 or INNS2 records."
+    },
+    {
+      "line": "48200",
+      "name": "Total credits"
+    },
+    {
+      "line": "48400",
+      "name": "Refund",
+      "calculation": "absolute_value(43500 - 48200) when the result is negative",
+      "smallDifferenceRule": "CRA generally does not issue a refund of $2 or less."
+    },
+    {
+      "line": "48500",
+      "name": "Balance owing",
+      "calculation": "43500 - 48200 when the result is positive",
+      "smallDifferenceRule": "CRA generally does not charge a difference of $2 or less."
+    }
+  ],
+  "schedules": [
+    {
+      "formNumber": "5000-S2",
+      "name": "Federal Amounts Transferred from your Spouse or Common-Law Partner",
+      "revision": "E (25)",
+      "taxYear": 2025,
+      "jurisdictionBoundary": "Generic form excludes Quebec and non-residents.",
+      "trigger": "Claiming unused eligible spouse or common-law partner amounts.",
+      "eligibilityBoundary": "Not available after a qualifying separation of 90 days or more that includes December 31.",
+      "t1Lines": [
+        "32600"
+      ],
+      "inputLines": [
+        "30100",
+        "30500",
+        "31400",
+        "31600",
+        "designated tuition"
+      ],
+      "paperAttachmentPolicy": "attach",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/5000-s2.html"
+    },
+    {
+      "formNumber": "5000-S3",
+      "name": "Capital Gains (or Losses)",
+      "revision": "E (25)",
+      "taxYear": 2025,
+      "trigger": "Capital disposition, gain or loss, principal-residence designation, or potentially flipped property.",
+      "t1Lines": [
+        "12700"
+      ],
+      "calculationBoundary": "Positive taxable result transfers to 12700; a net capital loss does not transfer there and may support T1A.",
+      "paperAttachmentPolicy": "attach",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/5000-s3.html"
+    },
+    {
+      "formNumber": "5000-S5",
+      "name": "Amounts for Spouse or Common-Law Partner and Dependants",
+      "revision": "E (25)",
+      "taxYear": 2025,
+      "trigger": "Spouse, eligible dependant, caregiver, or infirm-child claims.",
+      "t1Lines": [
+        "30300",
+        "30400",
+        "30425",
+        "30450",
+        "30500"
+      ],
+      "paperAttachmentPolicy": "attach",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/5000-s5.html"
+    },
+    {
+      "formNumber": "5000-S6",
+      "name": "Canada Workers Benefit",
+      "revision": "E (25)",
+      "taxYear": 2025,
+      "jurisdictionBoundary": "Generic form excludes Quebec, Alberta, and Nunavut.",
+      "trigger": "Potential Canada workers benefit or advanced Canada workers benefit reconciliation.",
+      "eligibilityBoundary": "Residence, working-income, age and family conditions apply; specified student, imprisonment, and diplomatic-status exclusions apply.",
+      "t1Lines": [
+        "41500",
+        "45300"
+      ],
+      "paperAttachmentPolicy": "attach",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/5000-s6.html"
+    },
+    {
+      "formNumber": "5000-S7",
+      "name": "RRSP, PRPP, and SPP Contributions and Transfers, and HBP and LLP Activities",
+      "revision": "E (25)",
+      "taxYear": 2025,
+      "trigger": "RRSP, PRPP, or SPP contributions, transfers, carryforward, HBP/LLP withdrawals or repayments, or employer PRPP interaction.",
+      "t1Lines": [
+        "20800"
+      ],
+      "activityLines": [
+        "24500",
+        "24600",
+        "24620",
+        "24640",
+        "24700",
+        "26300"
+      ],
+      "paperAttachmentPolicy": "attach_if_required",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/5000-s7.html"
+    },
+    {
+      "formNumber": "5000-S8",
+      "name": "Canada Pension Plan Contributions and Overpayment",
+      "revision": "E (25)",
+      "taxYear": 2025,
+      "jurisdictionBoundary": "For a non-Quebec resident with no Quebec earnings; use RC381 when CPP/QPP interaction applies.",
+      "trigger": "CPP contribution, deduction, payable, or overpayment calculation.",
+      "t1Lines": [
+        "22200",
+        "22215",
+        "30800",
+        "31000",
+        "42100",
+        "44800"
+      ],
+      "paperAttachmentPolicy": "attach",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/5000-s8.html"
+    },
+    {
+      "formNumber": "5000-S9",
+      "name": "Donations and Gifts",
+      "revision": "E (25)",
+      "taxYear": 2025,
+      "trigger": "Current gifts or unused gifts from the applicable carryforward period.",
+      "eligibilityBoundary": "General unused gifts use five prior years; ecological gifts may use ten prior years.",
+      "t1Lines": [
+        "34900"
+      ],
+      "paperAttachmentPolicy": "attach",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/5000-s9.html"
+    },
+    {
+      "formNumber": "5005-S10",
+      "name": "Employment Insurance and Provincial Parental Insurance Plan Premiums",
+      "revision": "E (25)",
+      "taxYear": 2025,
+      "jurisdictionBoundary": "Quebec and specified non-resident situations only.",
+      "t1Lines": [
+        "22300",
+        "31200",
+        "31210",
+        "31215",
+        "45000"
+      ],
+      "paperAttachmentPolicy": "attach_if_applicable",
+      "url": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5005-s10/5005-s10-25e.pdf"
+    },
+    {
+      "formNumber": "5000-S11",
+      "name": "Federal Tuition, Education, and Textbook Amounts and Canada Training Credit",
+      "revision": "E (25)",
+      "taxYear": 2025,
+      "jurisdictionBoundary": "Generic form excludes Quebec and non-residents.",
+      "trigger": "Tuition, Canada training credit, transfer, or carryforward.",
+      "t1Lines": [
+        "32300",
+        "45350"
+      ],
+      "activityLines": [
+        "32700"
+      ],
+      "paperAttachmentPolicy": "attach",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/5000-s11.html"
+    },
+    {
+      "formNumber": "5000-S12",
+      "name": "Multigenerational Home Renovation Tax Credit",
+      "revision": "E (25)",
+      "taxYear": 2025,
+      "trigger": "Eligible renovation creating a qualifying secondary unit.",
+      "eligibilityBoundary": "Residence, qualifying-individual, qualifying-relation, dwelling, and expenditure rules apply.",
+      "t1Lines": [
+        "45355"
+      ],
+      "calculation": {
+        "rate": 0.145,
+        "maximumQualifyingExpenditures": 50000,
+        "maximumCredit": 7250
+      },
+      "paperAttachmentPolicy": "attach",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/5000-s12.html"
+    },
+    {
+      "formNumber": "5000-S13",
+      "name": "Employment Insurance Premiums on Self-Employment and Other Eligible Earnings",
+      "revision": "E (25)",
+      "taxYear": 2025,
+      "trigger": "Existing agreement with the Canada Employment Insurance Commission for self-employed special benefits.",
+      "t1Lines": [
+        "31217",
+        "42120"
+      ],
+      "paperAttachmentPolicy": "attach",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/5000-s13.html"
+    },
+    {
+      "formNumber": "5000-S15",
+      "name": "FHSA Contributions, Transfers and Activities",
+      "revision": "E (25)",
+      "taxYear": 2025,
+      "trigger": "FHSA opening or successor status, contributions, transfers, deduction, withdrawal, or taxable activity.",
+      "eligibilityBoundary": "Opening a first FHSA in 2025 may require the schedule even without transactions.",
+      "t1Lines": [
+        "20805"
+      ],
+      "activityLines": [
+        "68960"
+      ],
+      "paperAttachmentPolicy": "attach_if_required",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/5000-s15.html"
+    }
+  ],
+  "absentCurrentSchedules": [
+    {
+      "schedule": "Schedule 1",
+      "status": "not listed in the current 2025 resident package",
+      "replacement": "T1 Step 5 and 5000-D1 Federal Worksheet"
+    },
+    {
+      "schedule": "Schedule 4",
+      "status": "not listed in the current 2025 resident package",
+      "replacement": "Current T1 lines and 5000-D1 Federal Worksheet as applicable"
+    },
+    {
+      "schedule": "Schedule 14",
+      "status": "not listed in the current 2025 resident package",
+      "replacement": null
+    }
+  ],
+  "conditionalForms": [
+    {
+      "formNumber": "T1032",
+      "name": "Joint Election to Split Pension Income",
+      "trigger": "Joint election to split eligible pension income.",
+      "t1Lines": [
+        "11600",
+        "21000",
+        "31400"
+      ],
+      "paperAttachmentPolicy": "attach_to_both_returns",
+      "signatureRequirement": "Both spouses or common-law partners complete and sign identical forms.",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/forms/t1032.html"
+    },
+    {
+      "formNumber": "T776",
+      "name": "Statement of Real Estate Rentals",
+      "trigger": "Rental income and expenses.",
+      "t1Lines": [
+        "12599",
+        "12600"
+      ],
+      "paperAttachmentPolicy": "attach_or_equivalent_statement",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/forms/t776.html"
+    },
+    {
+      "formNumber": "T2125",
+      "name": "Statement of Business or Professional Activities",
+      "trigger": "Business, professional, or self-employed commission activity; use a separate form for each activity.",
+      "t1Lines": [
+        "13499",
+        "13500",
+        "13699",
+        "13700",
+        "13899",
+        "13900"
+      ],
+      "paperAttachmentPolicy": "attach_or_accepted_financial_statement",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/forms/t2125.html"
+    },
+    {
+      "formNumber": "T2042",
+      "name": "Statement of Farming Activities",
+      "trigger": "Farming activity.",
+      "t1Lines": [
+        "14099",
+        "14100"
+      ],
+      "paperAttachmentPolicy": "attach_or_accepted_financial_statement",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/forms/t2042.html"
+    },
+    {
+      "formNumber": "T2121",
+      "name": "Statement of Fishing Activities",
+      "trigger": "Fishing activity.",
+      "t1Lines": [
+        "14299",
+        "14300"
+      ],
+      "paperAttachmentPolicy": "attach_or_accepted_financial_statement",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/forms/t2121.html"
+    },
+    {
+      "formNumber": "T778",
+      "name": "Child Care Expenses Deduction",
+      "trigger": "Claim at line 21400.",
+      "t1Lines": [
+        "21400"
+      ],
+      "paperAttachmentPolicy": "attach_form_retain_receipts",
+      "url": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/deductions-credits-expenses/line-21400-child-care-expenses/how-claim.html"
+    },
+    {
+      "formNumber": "T929",
+      "name": "Disability Supports Deduction",
+      "trigger": "Claim at line 21500.",
+      "t1Lines": [
+        "21500"
+      ],
+      "paperAttachmentPolicy": "retain_form_and_receipts",
+      "url": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/deductions-credits-expenses/line-21500-disability-supports-deduction.html"
+    },
+    {
+      "formNumber": "T1-M",
+      "name": "Moving Expenses Deduction",
+      "trigger": "Claim at line 21900.",
+      "t1Lines": [
+        "21900"
+      ],
+      "paperAttachmentPolicy": "manual_confirmation",
+      "uncertainty": "Current instructions clearly require retaining supporting records but are not sufficiently explicit here about attaching the completed T1-M.",
+      "url": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/deductions-credits-expenses/line-21900-moving-expenses.html"
+    },
+    {
+      "formNumber": "T777",
+      "name": "Statement of Employment Expenses",
+      "trigger": "Employment-expense claim at line 22900.",
+      "t1Lines": [
+        "22900"
+      ],
+      "paperAttachmentPolicy": "attach_form_retain_t2200_and_receipts",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/publications/t4044/employment-expenses.html"
+    },
+    {
+      "formNumber": "T1229",
+      "name": "Statement of Resource Expenses and Depletion Allowance",
+      "t1Lines": [
+        "22400"
+      ],
+      "paperAttachmentPolicy": "attach_if_instructed",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/forms/t1229.html"
+    },
+    {
+      "formNumber": "T1223",
+      "name": "Clergy Residence Deduction",
+      "t1Lines": [
+        "23100"
+      ],
+      "paperAttachmentPolicy": "attach_if_instructed",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/forms/t1223.html"
+    },
+    {
+      "formNumber": "T1A",
+      "name": "Request for Loss Carryback",
+      "trigger": "Eligible current-year loss and election to carry it back.",
+      "paperAttachmentPolicy": "attach_if_applicable",
+      "eligibilityBoundary": "Do not infer eligibility from a negative T1 line alone.",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/forms/t1a.html"
+    },
+    {
+      "formNumber": "T1212",
+      "name": "Statement of Deferred Security Options Benefits",
+      "t1Lines": [
+        "24900"
+      ],
+      "paperAttachmentPolicy": "attach_if_instructed",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/forms/t1212.html"
+    },
+    {
+      "formNumber": "T2048",
+      "name": "Capital Gains Deduction for Qualifying Business Transfers",
+      "t1Lines": [
+        "25395"
+      ],
+      "paperAttachmentPolicy": "attach_if_applicable",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/forms/t2048.html"
+    },
+    {
+      "formNumber": "T657",
+      "name": "Calculation of Capital Gains Deduction",
+      "t1Lines": [
+        "25400"
+      ],
+      "paperAttachmentPolicy": "attach_if_applicable",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/forms/t657.html"
+    },
+    {
+      "formNumber": "T2222",
+      "name": "Northern Residents Deductions",
+      "t1Lines": [
+        "25500"
+      ],
+      "paperAttachmentPolicy": "attach_if_instructed",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/forms/t2222.html"
+    },
+    {
+      "formNumber": "T2201",
+      "name": "Disability Tax Credit Certificate",
+      "t1Lines": [
+        "31600",
+        "31800"
+      ],
+      "paperAttachmentPolicy": "attach_if_new_claim_or_instructed",
+      "eligibilityBoundary": "Do not infer current approval from a prior-year value.",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/forms/t2201.html"
+    },
+    {
+      "formNumber": "T1206",
+      "name": "Tax on Split Income",
+      "t1Lines": [
+        "40424"
+      ],
+      "paperAttachmentPolicy": "attach_if_applicable",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/forms/t1206.html"
+    },
+    {
+      "formNumber": "T691",
+      "name": "Alternative Minimum Tax",
+      "t1Lines": [
+        "40427"
+      ],
+      "paperAttachmentPolicy": "attach_if_applicable",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/forms/t691.html"
+    },
+    {
+      "formNumber": "T2209",
+      "name": "Federal Foreign Tax Credits",
+      "t1Lines": [
+        "40500"
+      ],
+      "paperAttachmentPolicy": "attach_form_receipts_calculation_note_and_situation_specific_records",
+      "url": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/deductions-credits-expenses/line-40500-federal-foreign-tax-credit.html"
+    },
+    {
+      "formNumber": "T2038(IND)",
+      "name": "Investment Tax Credit (Individuals)",
+      "t1Lines": [
+        "41200",
+        "45400"
+      ],
+      "paperAttachmentPolicy": "attach_if_applicable",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/forms/t2038-ind.html"
+    },
+    {
+      "formNumber": "RC381",
+      "name": "Inter-provincial Calculation for CPP and QPP Contributions and Overpayments",
+      "t1Lines": [
+        "22200",
+        "22215",
+        "30800",
+        "31000",
+        "42100",
+        "44800"
+      ],
+      "paperAttachmentPolicy": "attach_if_applicable",
+      "jurisdictionBoundary": "Use instead of generic Schedule 8 where CPP/QPP interaction requires it.",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/forms/rc381.html"
+    },
+    {
+      "formNumber": "T2203",
+      "name": "Provincial and Territorial Taxes for Multiple Jurisdictions",
+      "t1Lines": [
+        "42800"
+      ],
+      "paperAttachmentPolicy": "attach_if_applicable",
+      "jurisdictionBoundary": "Replaces the ordinary single-province Form 428 in applicable multiple-jurisdiction cases.",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/forms/t2203.html"
+    },
+    {
+      "formNumber": "GST370",
+      "name": "Employee and Partner GST/HST Rebate Application",
+      "t1Lines": [
+        "45700"
+      ],
+      "paperAttachmentPolicy": "attach_if_applicable",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/forms/gst370.html"
+    },
+    {
+      "formNumber": "T2043",
+      "name": "Return of Fuel Charge Proceeds to Farmers Tax Credit",
+      "t1Lines": [
+        "47556"
+      ],
+      "paperAttachmentPolicy": "attach_if_applicable",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/forms/t2043.html"
+    },
+    {
+      "formNumber": "T1135",
+      "name": "Foreign Income Verification Statement",
+      "formRevision": "2023",
+      "formRevisionIsNotTaxYear": true,
+      "trigger": "Specified foreign property cost exceeded CAN$100,000 at any time in the year.",
+      "t1Lines": [
+        "26600"
+      ],
+      "paperAttachmentPolicy": "separate_information_return_due_with_individual_return",
+      "deadlineRule": "Same filing deadline as the individual's income tax return.",
+      "reportingBoundary": "Part A is available only when total cost was more than CAN$100,000 but less than CAN$250,000 throughout the year; otherwise Part B applies.",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/forms/t1135.html"
+    },
+    {
+      "formNumber": "T1139",
+      "name": "Reconciliation of 2025 Business Income for Tax Purposes",
+      "trigger": "Applicable off-calendar fiscal-period business-income situation.",
+      "paperAttachmentPolicy": "attach_if_applicable",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/forms/t1139.html"
+    },
+    {
+      "formNumber": "T1248 Schedule D",
+      "name": "Information About Your Residency Status",
+      "trigger": "Factual-resident or other special residence situation identified by the current package instructions.",
+      "paperAttachmentPolicy": "attach_if_instructed",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/forms.html"
+    },
+    {
+      "formNumber": "T2036",
+      "name": "Provincial or Territorial Foreign Tax Credit",
+      "trigger": "Applicable provincial or territorial foreign tax credit outside Quebec.",
+      "paperAttachmentPolicy": "attach_if_applicable",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/forms.html"
+    },
+    {
+      "formNumber": "T5003/T5004",
+      "name": "Tax shelter information and loss or deduction statement",
+      "trigger": "Tax shelter slip, loss, or deduction applies.",
+      "paperAttachmentPolicy": "attach_if_instructed",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/forms.html"
+    },
+    {
+      "formNumber": "T1198",
+      "name": "Statement of Qualifying Retroactive Lump-Sum Payment",
+      "trigger": "Payer issued the statement for a qualifying retroactive lump-sum payment.",
+      "paperAttachmentPolicy": "attach_if_instructed",
+      "eligibilityBoundary": "Do not infer qualification or the alternative CRA calculation from the payment amount alone.",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/forms.html"
+    },
+    {
+      "formNumber": "T1-OVP/T1-OVP-S",
+      "name": "Individual Tax Return for RRSP, PRPP and SPP Excess Contributions",
+      "trigger": "Potential excess-contribution tax obligation.",
+      "paperAttachmentPolicy": "separate_return_manual_confirmation",
+      "eligibilityBoundary": "These are separate returns, not ordinary T1 schedules; do not hide their filing or payment obligation inside the annual T1 package.",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/forms.html"
+    },
+    {
+      "formNumber": "T90",
+      "name": "Income Exempt from Tax under the Indian Act",
+      "trigger": "Indian Act-exempt income indicator is selected.",
+      "paperAttachmentPolicy": "attach_if_instructed",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/forms/t90.html"
+    },
+    {
+      "formNumber": "T2091(IND) or T1255",
+      "name": "Principal residence designation",
+      "trigger": "Disposition designated as a principal residence by an individual or a deceased person's representative.",
+      "paperAttachmentPolicy": "attach_applicable_designation_form",
+      "url": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/personal-income/line-12700-capital-gains/principal-residence-other-real-estate/sale-your-principal-residence.html"
+    }
+  ],
+  "spousePartnerFields": [
+    "first name",
+    "SIN, TTN, or ITN",
+    "self-employed indicator",
+    "net income from line 23600 or amount that would be reported, including zero",
+    "UCCB amount from line 11700",
+    "UCCB repayment from line 21300"
+  ],
+  "dependantRecordRequirements": [
+    "relationship",
+    "birth date where relevant",
+    "residence and support facts",
+    "net income",
+    "infirmity or disability facts",
+    "custody facts",
+    "specific claim lines",
+    "required proof or retained records"
+  ],
+  "attachmentPolicies": {
+    "allowedStates": [
+      "attach",
+      "retain",
+      "attach_if_instructed",
+      "attach_if_requested",
+      "manual_confirmation"
+    ],
+    "generalAttach": [
+      "one copy of each applicable information slip",
+      "completed forms and schedules when instructed",
+      "T776 or an equivalent rental-income statement"
+    ],
+    "missingSlip": {
+      "attach": [
+        "copy of final pay statement or other statement",
+        "note naming payer",
+        "payer address",
+        "income type",
+        "action being taken to obtain the slip"
+      ],
+      "retainOriginals": true
+    },
+    "retentionYears": 6,
+    "retain": [
+      "supporting documents not specifically required with the return",
+      "copy of the return",
+      "notice of assessment",
+      "notice of reassessment"
+    ],
+    "excludeBlankOrIrrelevantForms": true
+  },
+  "mailing": {
+    "deliveryMethod": "mail_only",
+    "separateEnvelopePerPerson": true,
+    "currentAndLateReturnsForSamePersonMayShareEnvelope": true,
+    "sourceDate": "2025-09-26",
+    "sourceUrl": "https://www.canada.ca/en/revenue-agency/corporate/contact-information/where-mail-your-paper-t1-return.html",
+    "manualConfirmationRequired": true,
+    "postalCodeInferenceAllowed": false,
+    "destinations": [
+      {
+        "taxCentre": "Winnipeg Tax Centre",
+        "addressLines": [
+          "Post Office Box 14001",
+          "Station Main",
+          "Winnipeg MB R3C 3M3"
+        ],
+        "residentAreas": [
+          "Alberta",
+          "British Columbia",
+          "Manitoba",
+          "Saskatchewan",
+          "Northwest Territories",
+          "Yukon",
+          "Ontario: Hamilton",
+          "Ontario: Kitchener",
+          "Ontario: Waterloo",
+          "Ontario: London",
+          "Ontario: Thunder Bay",
+          "Ontario: Windsor"
+        ]
+      },
+      {
+        "taxCentre": "Sudbury Tax Centre",
+        "addressLines": [
+          "1050 Notre Dame Avenue",
+          "Sudbury ON P3A 5C2"
+        ],
+        "residentAreas": [
+          "New Brunswick",
+          "Newfoundland and Labrador",
+          "Nova Scotia",
+          "Nunavut",
+          "Prince Edward Island",
+          "Ontario: Barrie",
+          "Ontario: Belleville",
+          "Ontario: Kingston",
+          "Ontario: Ottawa",
+          "Ontario: Peterborough",
+          "Ontario: St. Catharines",
+          "Ontario: Sudbury",
+          "Ontario: Toronto",
+          "Quebec: Montreal",
+          "Quebec: Outaouais",
+          "Quebec: Sherbrooke"
+        ]
+      },
+      {
+        "taxCentre": "Jonquiere Tax Centre",
+        "addressLines": [
+          "2251 Rene-Levesque Boulevard",
+          "Jonquiere QC G7S 5J2"
+        ],
+        "residentAreas": [
+          "Quebec: all areas other than Montreal, Outaouais, or Sherbrooke"
+        ]
+      }
+    ]
+  },
+  "deadlines": {
+    "mostIndividuals": {
+      "filing": "2026-04-30",
+      "payment": "2026-04-30"
+    },
+    "selfEmployedIndividualOrSpouse": {
+      "filing": "2026-06-15",
+      "payment": "2026-04-30",
+      "exception": "The extended filing date does not apply where business expenditures relate mainly to a tax-shelter investment."
+    },
+    "deceasedPerson": "Situation-specific; use current deceased-person rules.",
+    "weekendHolidayRule": "Return is timely when received or postmarked by the next business day; payment is timely when received by the next business day.",
+    "ordinaryDeadlinesPassedAtAccessDate": true,
+    "latePreparationAllowed": true,
+    "automaticPenaltyCalculationAllowed": false
+  },
+  "instalments": {
+    "t1Line": "47600",
+    "sourceForms": [
+      "INNS1",
+      "INNS2"
+    ],
+    "outsideQuebec2026Threshold": 3000,
+    "quebec2026Threshold": 1800,
+    "comparisonYears": [
+      2025,
+      2024
+    ],
+    "standardDueDates": [
+      "2026-03-15",
+      "2026-06-15",
+      "2026-09-15",
+      "2026-12-15"
+    ],
+    "farmerFisherException": "Qualifying farmers and fishers generally have one December 31 due date.",
+    "sourceUrl": "https://www.canada.ca/en/revenue-agency/services/payments/payments-cra/individual-payments/income-tax-instalments.html"
+  },
+  "refundAndPayment": {
+    "refundTransferTo2026InstalmentAccount": {
+      "allowedByPaperNote": true,
+      "fullRefundOnly": true,
+      "otherPersonAccountAllowed": false
+    },
+    "balanceDueDate": "2026-04-30",
+    "interest": "Daily compound interest begins after the balance-due date on outstanding amounts.",
+    "cashInReturnPackageAllowed": false,
+    "paymentExecutionInProduct": false,
+    "paymentAddressMayDifferFromReturnAddress": true
+  },
+  "certificationAndSignature": {
+    "certificationMeaning": "The filer certifies that the return and attached documents are correct, complete, and fully disclose income.",
+    "reviewFields": [
+      "taxpayer signature",
+      "telephone number",
+      "date",
+      "false-return warning",
+      "tax-professional fields where applicable"
+    ],
+    "autoSignatureAllowed": false,
+    "embeddedSignatureAcceptanceEstablished": false,
+    "nativeEfileFieldTreatment": "Preserve as part of the official form but never expose as an application filing capability."
+  },
+  "postMail": {
+    "noticeOfAssessmentExpected": true,
+    "noticeOutcomes": [
+      "refund",
+      "zero balance",
+      "balance owing"
+    ],
+    "paperProcessingTargetWeeks": 12,
+    "processingTargetIsGuarantee": false,
+    "duplicateReturnAfterNewInformation": false,
+    "adjustmentRoute": "Wait for the notice of assessment, then use the applicable adjustment route, including T1-ADJ by mail where appropriate."
+  },
+  "uncertainties": [
+    "The inventory does not determine an individual's eligibility.",
+    "Complete provincial and territorial calculations remain outside this federal slice.",
+    "Exact current revisions for every conditional non-schedule form were not individually verified.",
+    "T1-M paper attachment status requires claim-specific manual confirmation.",
+    "Donation and foreign-tax-credit attachment requirements vary by claim type.",
+    "Ontario and Quebec mailing-area boundaries are not published as a complete postal-code mapping.",
+    "Acceptance of automatically embedded signatures on mailed T1 returns was not established.",
+    "The explicit application acknowledgement is a product control, not a CRA-prescribed software workflow.",
+    "IC97-2 creates format and approval boundaries for customized or software-generated returns.",
+    "CRA may require situation-specific forms not enumerated here; unknown conditions must fail closed to manual review."
+  ],
+  "sources": [
+    {
+      "id": "packageHub",
+      "title": "Get a T1 income tax package",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package.html",
+      "accessed": "2026-08-14"
+    },
+    {
+      "id": "allPackages",
+      "title": "All personal income tax packages",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years.html",
+      "accessed": "2026-08-14"
+    },
+    {
+      "id": "federalGuide2025",
+      "title": "Federal Income Tax and Benefit Information for 2025",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/5000-g.html",
+      "accessed": "2026-08-14"
+    },
+    {
+      "id": "otherFormsIndex",
+      "title": "Other forms and publications you may need to complete the return",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/other-forms-publications.html",
+      "accessed": "2026-08-14"
+    },
+    {
+      "id": "paperFiling",
+      "title": "Filing a paper tax return",
+      "url": "https://www.canada.ca/en/services/taxes/income-tax/personal-income-tax/how-file/paper.html",
+      "accessed": "2026-08-14"
+    },
+    {
+      "id": "mailing",
+      "title": "Where to mail your paper T1 return",
+      "url": "https://www.canada.ca/en/revenue-agency/corporate/contact-information/where-mail-your-paper-t1-return.html",
+      "accessed": "2026-08-14",
+      "pageDate": "2025-09-26"
+    },
+    {
+      "id": "ontarioPackage",
+      "title": "Ontario 2025 income tax package",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario.html",
+      "accessed": "2026-08-14"
+    },
+    {
+      "id": "deadlines",
+      "title": "Filing due dates for the 2025 tax return",
+      "url": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/important-dates-individuals/filing-dates-tax-return.html",
+      "accessed": "2026-08-14"
+    },
+    {
+      "id": "instalments",
+      "title": "Required tax instalments for individuals",
+      "url": "https://www.canada.ca/en/revenue-agency/services/payments/payments-cra/individual-payments/income-tax-instalments.html",
+      "accessed": "2026-08-14"
+    },
+    {
+      "id": "refund",
+      "title": "Line 48400 - Refund",
+      "url": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/deductions-credits-expenses/line-48400-refund.html",
+      "accessed": "2026-08-14"
+    },
+    {
+      "id": "balance",
+      "title": "Line 48500 - Balance owing",
+      "url": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/deductions-credits-expenses/line-48500-balance-owing.html",
+      "accessed": "2026-08-14"
+    },
+    {
+      "id": "customizedForms",
+      "title": "IC97-2 Customized Forms",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/publications/ic97-2/customized-forms.html",
+      "accessed": "2026-08-14"
+    }
+  ]
+}
