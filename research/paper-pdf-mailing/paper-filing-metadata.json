@@ -1,0 +1,328 @@
+{
+  "schema_version": 1,
+  "accessed_on": "2026-08-14",
+  "jurisdiction": "Canada",
+  "tax_years": [2025],
+  "advice_disclaimer": "Official-source product research only; not tax or legal advice.",
+  "product_contract": {
+    "output": "cra_mail_in_pdf_package",
+    "manual_review_required": true,
+    "manual_review_acknowledgement_required": true,
+    "export_locked_until_acknowledged": true,
+    "invalidate_acknowledgement_on_any_package_change": true,
+    "prohibited_capabilities": [
+      "NETFILE",
+      "EFILE",
+      "electronic_submission",
+      "fax_submission",
+      "direct_CRA_transmission",
+      "automatic_filing",
+      "automatic_signature",
+      "claim_of_CRA_approval_or_certification"
+    ],
+    "review_items": [
+      "all_populated_forms_schedules_worksheets",
+      "all_calculations_and_transfers",
+      "all_attachments_and_retained_documents",
+      "tax_year_return_category_and_jurisdiction",
+      "residency_and_special_return_facts",
+      "mailing_destination_and_source_currency",
+      "all_signature_and_date_fields",
+      "all_special_labels_elections_and_deadlines"
+    ]
+  },
+  "form_catalog": [
+    {
+      "form_number": "5006-R",
+      "form_name": "T1 Income Tax and Benefit Return for Ontario",
+      "tax_year": 2025,
+      "revision_identifier": "5006-R E (25)",
+      "pages": 8,
+      "effective_for": "2025 Ontario T1 return",
+      "landing_page_updated_on": "2026-01-20",
+      "landing_page_url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-r.html",
+      "standard_pdf_url": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-r/5006-r-25e.pdf",
+      "fillable_pdf_url": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-r/5006-r-fill-25e.pdf",
+      "alternate_formats": ["e_text", "large_print"],
+      "signature_requirement": "Form has Sign here and Date fields; CRA PDF guidance says required signatures are printed and signed by hand.",
+      "line_mappings": [
+        {"source": "ON428 line 90", "destination": "T1 line 42800", "meaning": "Ontario tax"},
+        {"source": "ON479 line 21", "destination": "T1 line 47900", "meaning": "Ontario credits"},
+        {"source": "T1 refund or balance calculation", "destination": "T1 line 48400", "meaning": "refund when negative"},
+        {"source": "T1 refund or balance calculation", "destination": "T1 line 48500", "meaning": "balance owing when positive"}
+      ]
+    },
+    {
+      "form_number": "5006-C",
+      "form_name": "ON428 Ontario Tax",
+      "tax_year": 2025,
+      "revision_identifier": "5006-C E (25)",
+      "pages": 4,
+      "effective_for": "2025 Ontario tax calculation",
+      "landing_page_updated_on": "2026-01-20",
+      "landing_page_url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-c.html",
+      "standard_pdf_url": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-c/5006-c-25e.pdf",
+      "fillable_pdf_url": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-c/5006-c-fill-25e.pdf",
+      "alternate_formats": ["e_text", "large_print"],
+      "line_mappings": [
+        {"source": "ON428 line 90", "destination": "T1 line 42800", "meaning": "Ontario tax"}
+      ],
+      "attachment_rule": "Complete and attach Form 428 even when the result is zero."
+    },
+    {
+      "form_number": "5006-TC",
+      "form_name": "ON479 Ontario Credits",
+      "tax_year": 2025,
+      "revision_identifier": "5006-TC E (25)",
+      "pages": 2,
+      "effective_for": "2025 Ontario refundable credits when applicable",
+      "landing_page_updated_on": "2026-01-20",
+      "landing_page_url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-tc.html",
+      "standard_pdf_url": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-tc/5006-tc-25e.pdf",
+      "fillable_pdf_url": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-tc/5006-tc-fill-25e.pdf",
+      "alternate_formats": ["e_text", "large_print"],
+      "line_mappings": [
+        {"source": "ON479 line 21", "destination": "T1 line 47900", "meaning": "Ontario credits"}
+      ],
+      "attachment_rule": "Attach a copy to a paper return when completed."
+    },
+    {
+      "form_number": "5006-TG",
+      "form_name": "ON-BEN Application for the 2026 Ontario Trillium Benefit and Ontario Senior Homeowners' Property Tax Grant",
+      "tax_year": 2025,
+      "benefit_year": 2026,
+      "revision_identifier": "5006-TG E (25)",
+      "pages": 2,
+      "landing_page_updated_on": "2026-01-20",
+      "landing_page_url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-tg.html",
+      "standard_pdf_url": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-tg/5006-tg-25e.pdf",
+      "fillable_pdf_url": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-tg/5006-tg-fill-25e.pdf",
+      "alternate_formats": ["e_text", "large_print"],
+      "attachment_rule": "Attach to the 2025 return when applying for the form's applicable credits or grant."
+    },
+    {
+      "form_number": "T1-ADJ",
+      "form_name": "T1 Adjustment Request",
+      "revision_family": "23e",
+      "landing_page_updated_on": "2023-10-24",
+      "landing_page_url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/forms/t1-adj.html",
+      "standard_pdf_url": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/t1-adj/t1-adj-23e.pdf",
+      "fillable_pdf_url": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/t1-adj/t1-adj-fill-23e.pdf",
+      "large_print_pdf_url": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/t1-adj/t1-adj-lp-23e.pdf",
+      "e_text_url": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/t1-adj/t1-adj-23e.txt",
+      "package_rule": "Send separately after the notice of assessment; do not attach to the current-year return."
+    },
+    {
+      "form_number": "T7DR",
+      "form_name": "Amount Owing Remittance Voucher",
+      "revision_family": "19e",
+      "pages": 1,
+      "landing_page_updated_on": "2024-06-04",
+      "landing_page_url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/forms/t7dr.html",
+      "standard_pdf_url": null,
+      "fillable_pdf_url": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/t7dr/t7dr-fill-19e.pdf",
+      "alternate_formats": ["digital_audio", "e_text", "braille", "large_print"]
+    }
+  ],
+  "pdf_and_print_rules": {
+    "source_url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/publications/ic97-2/customized-forms.html",
+    "fillable_pdf_guidance_url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/about-forms-publications.html",
+    "page_size_most_documents": {"centimetres": "21.5 x 28", "inches": "8.5 x 11"},
+    "paper": ["white", "unlined"],
+    "print_constraints": [
+      "choose_paper_source_by_pdf_page_size",
+      "use_correct_scaling",
+      "one_document_page_per_sheet_side",
+      "preserve_page_and_line_format",
+      "preserve_field_order_and_reserved_areas",
+      "font_quality_density_and_clarity_similar_to_CRA_forms",
+      "bold_titles_keying_numbers_identification_and_amount_entries",
+      "no_unrequested_zeros_in_keying_fields"
+    ],
+    "fillable_viewer": "Adobe Reader 10 or later is the CRA-tested route; other PDF viewers may not function optimally.",
+    "mobile_recommended": false
+  },
+  "generated_form_boundary": {
+    "source_url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/publications/ic97-2/customized-forms.html",
+    "cra_approval_required_to_generate_forms": true,
+    "customized_preprinted_t1_accepted": false,
+    "supported_product_output_without_separate_approval": "populate_unmodified_official_CRA_fillable_PDF",
+    "unsupported_outputs": ["custom_T1_layout", "condensed_return", "reflowed_form", "fabricated_2D_barcode", "suppressed_2D_barcode"],
+    "certification_claim_allowed": false,
+    "notes": "IC97-2 contains current-certification and 2D-barcode requirements and a limited free-software exception. These do not establish approval for this product."
+  },
+  "assembly_rules": {
+    "sources": [
+      "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/5000-g.html",
+      "https://www.canada.ca/en/revenue-agency/services/forms-publications/publications/ic97-2/customized-forms.html",
+      "https://www.canada.ca/en/services/taxes/income-tax/personal-income-tax/how-file/paper.html"
+    ],
+    "rules": [
+      "attach_only_relevant_completed_forms_and_schedules",
+      "attach_requested_supporting_documents",
+      "do_not_include_blank_forms",
+      "order_documents_according_to_current_CRA_instructions",
+      "staple_top_left_without_obscuring_information",
+      "separate_envelope_per_person",
+      "same_person_current_and_late_returns_may_share_one_envelope_after_review"
+    ]
+  },
+  "routing": {
+    "source_page_updated_on": "2025-09-26",
+    "source_url": "https://www.canada.ca/en/revenue-agency/corporate/contact-information/where-mail-your-paper-t1-return.html",
+    "revalidate_before_export": true,
+    "rules": [
+      {
+        "id": "resident_winnipeg_2025_09_26",
+        "classification": "resident",
+        "locations": {
+          "provinces_territories": ["AB", "BC", "MB", "SK", "NT", "YT"],
+          "ontario_cities": ["Hamilton", "Kitchener", "Waterloo", "London", "Thunder Bay", "Windsor"]
+        },
+        "destination": ["Winnipeg Tax Centre", "PO Box 14001, Station Main", "Winnipeg MB R3C 3M3"]
+      },
+      {
+        "id": "resident_sudbury_2025_09_26",
+        "classification": "resident",
+        "locations": {
+          "provinces_territories": ["NB", "NL", "NS", "NU", "PE"],
+          "ontario_cities": ["Barrie", "Belleville", "Kingston", "Ottawa", "Peterborough", "St. Catharines", "Sudbury", "Toronto"],
+          "quebec_areas": ["Montréal", "Outaouais", "Sherbrooke"]
+        },
+        "destination": ["Sudbury Tax Centre", "1050 Notre Dame Avenue", "Sudbury ON P3A 5C2"]
+      },
+      {
+        "id": "resident_jonquiere_2025_09_26",
+        "classification": "resident",
+        "locations": {"quebec_excluding_areas": ["Montréal", "Outaouais", "Sherbrooke"]},
+        "destination": ["Jonquière Tax Centre", "2251 René-Lévesque Boulevard", "Jonquière QC G7S 5J2"]
+      },
+      {
+        "id": "nonresident_winnipeg_country_group_2025_09_26",
+        "classification": "non_resident",
+        "countries": ["Denmark", "France", "Netherlands", "United Kingdom", "United States"],
+        "destination": ["Winnipeg Tax Centre", "PO Box 14001, Station Main", "Winnipeg MB R3C 3M3", "Canada"]
+      },
+      {
+        "id": "nonresident_sudbury_other_countries_2025_09_26",
+        "classification": "non_resident",
+        "countries": ["all_other_countries"],
+        "destination": ["Sudbury Tax Centre", "1050 Notre Dame Avenue", "Sudbury ON P3A 5C2", "Canada"]
+      }
+    ],
+    "automatic_route_prohibited_when": [
+      "location_not_an_exact_current_matrix_match",
+      "residency_classification_uncertain",
+      "deemed_resident_or_deemed_non_resident",
+      "factual_resident",
+      "bankruptcy",
+      "deceased_or_optional_return",
+      "section_216_216_1_or_217",
+      "multiple_jurisdictions",
+      "source_page_changed_or_not_revalidated"
+    ],
+    "excluded_temporary_routes": ["fax"]
+  },
+  "special_returns": [
+    {
+      "kind": "section_216",
+      "form": "T1159",
+      "manual_review_required": true,
+      "filing_deadlines_2025": [
+        {"condition": "capital_cost_allowance_recapture_after_disposition", "date": "2026-04-30"},
+        {"condition": "approved_NR6", "date": "2026-06-30"},
+        {"condition": "general_two_year_deadline", "date": "2027-12-31"}
+      ],
+      "sources": [
+        "https://www.canada.ca/en/revenue-agency/services/tax/international-non-residents/individuals-leaving-entering-canada-non-residents/electing-under-section-216/when-file.html",
+        "https://www.canada.ca/en/revenue-agency/services/tax/international-non-residents/individuals-leaving-entering-canada-non-residents/electing-under-section-216/how-complete-return.html"
+      ]
+    },
+    {
+      "kind": "section_217",
+      "manual_review_required": true,
+      "required_page_1_label": "SECTION 217",
+      "general_filing_deadline_2025": "2026-06-30",
+      "general_payment_deadline_2025": "2026-04-30",
+      "source": "https://www.canada.ca/en/revenue-agency/services/tax/international-non-residents/individuals-leaving-entering-canada-non-residents/electing-under-section-217/how-complete-section-217-return.html"
+    },
+    {
+      "kind": "section_216_1_actor_election",
+      "manual_review_required": true,
+      "required_page_1_label": "Section 216.1 (ACTOR'S ELECTION)",
+      "destination_rule": "Current Film Services Unit serving the province or territory where services were provided.",
+      "automatic_destination": null,
+      "source": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/non-residents/5013-g/guide-non-residents-deemed-residents-canada-completing-your-return.html"
+    },
+    {
+      "kind": "bankruptcy",
+      "manual_review_required": true,
+      "automatic_destination": null,
+      "unresolved": "No complete current special mailing matrix was found in the reviewed official sources.",
+      "source": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/information-on-bankruptcy.html"
+    },
+    {
+      "kind": "deceased_or_optional_return",
+      "manual_review_required": true,
+      "automatic_destination": null,
+      "source": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/life-events/doing-taxes-someone-died/prepare-returns/file-final-return.html"
+    }
+  ],
+  "deadlines": {
+    "source_page_updated_on": "2026-01-20",
+    "source_url": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/important-dates-individuals/filing-dates-tax-return.html",
+    "tax_year": 2025,
+    "general_filing_deadline": "2026-04-30",
+    "general_payment_deadline": "2026-04-30",
+    "self_employed_filing_deadline": "2026-06-15",
+    "self_employed_payment_deadline": "2026-04-30",
+    "self_employed_tax_shelter_exception": "General April 30 filing deadline applies when business expenditures relate mainly to a tax-shelter investment.",
+    "weekend_holiday_rule": "Return is timely when received or postmarked by the next business day; payment must be received by the first business day after the due date.",
+    "paper_processing_guidance_weeks": 12,
+    "processing_guidance_is_extension": false
+  },
+  "payments": {
+    "source_url": "https://www.canada.ca/en/revenue-agency/services/about-canada-revenue-agency-cra/pay-cheque.html",
+    "mail_address": ["Canada Revenue Agency", "PO Box 3800 STN A", "Sudbury ON P3A 0C3"],
+    "payee": "Receiver General for Canada",
+    "accepted_mail_instrument": "Cheque or postdated cheques in Canadian funds drawn on a Canadian bank or credit union.",
+    "include": ["remittance_voucher_when_available", "relevant_tax_identifier", "application_details"],
+    "never_accepted": ["cash_by_mail", "foreign_funds", "travellers_cheques", "gift_cards", "cryptocurrency"],
+    "considered_paid": "when delivered to the CRA",
+    "custom_voucher_generation_allowed": false,
+    "return_and_payment_addresses_must_not_be_conflated": true
+  },
+  "amendments": {
+    "source_page_updated_on": "2026-06-12",
+    "source_url": "https://www.canada.ca/en/services/taxes/income-tax/personal-income-tax/after-you-file/change-return.html",
+    "wait_for_notice_of_assessment": true,
+    "file_another_t1": false,
+    "mail_form": "T1-ADJ",
+    "send_separately": true,
+    "mail_processing_guidance_weeks": 10,
+    "general_refund_limit_calendar_years": 10,
+    "manual_case_review": ["bankruptcy", "deceased", "wrong_province", "non_resident_or_international", "multiple_jurisdictions"]
+  },
+  "records_retention": {
+    "source_url": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/long-should-you-keep-your-income-tax-records.html",
+    "minimum_years": 6,
+    "retain_return_and_assessment_notices": true,
+    "automatic_deletion_allowed": false,
+    "longer_retention_may_apply": ["late_filing", "property_history", "audit_or_objection", "CRA_direction", "special_return_rule"]
+  },
+  "accessibility": {
+    "source_url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/help-forms-publications/about-multiple-formats.html",
+    "formats": ["digital_audio_MP3", "e_text", "braille", "large_print_18_point"],
+    "individual_enquiries": "1-800-959-8281",
+    "tty": "1-800-665-0354",
+    "alternate_format_is_not_automatically_a_complete_filing_artifact": true
+  },
+  "unresolved_gaps": [
+    "No complete automatic postal-code-to-tax-centre mapping was found.",
+    "No complete current bankruptcy mailing matrix was found.",
+    "Film Services Unit routing needs a current official lookup.",
+    "Residency and treaty status cannot be safely inferred by this metadata.",
+    "Alternate formats may have different field and filing characteristics.",
+    "This research does not establish CRA approval or certification for the product, calculations, or output."
+  ]
+}
