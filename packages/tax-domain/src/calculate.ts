@@ -5,24 +5,29 @@ import type {
   TaxLineResult,
   TaxReturnInput,
 } from "./model.js";
-import { getTaxYearRules, OFFICIAL_SOURCES_2025, type ProgressiveBracket } from "./rules.js";
+import {
+  getTaxYearRules,
+  OFFICIAL_SOURCES_2025,
+  type ProgressiveBracket,
+  type RateFraction,
+} from "./rules.js";
 import { validateTaxReturn } from "./validation.js";
 
 const round = (value: number): Money => Math.round(value);
 const clampAtZero = (value: Money): Money => Math.max(0, value);
 const sum = (values: readonly Money[]): Money => values.reduce((total, value) => total + value, 0);
 
+function multiplyRate(amount: Money, rate: RateFraction): Money {
+  return Math.floor((amount * rate.numerator + rate.denominator / 2) / rate.denominator);
+}
+
 function progressiveTax(taxableIncome: Money, brackets: readonly ProgressiveBracket[]): Money {
-  let lowerBound = 0;
-  let tax = 0;
   for (const bracket of brackets) {
-    const upperBound = bracket.upperBound ?? taxableIncome;
-    const amountInBracket = Math.max(0, Math.min(taxableIncome, upperBound) - lowerBound);
-    tax += amountInBracket * bracket.rate;
-    if (taxableIncome <= upperBound || bracket.upperBound === null) break;
-    lowerBound = upperBound;
+    if (bracket.upperBound === null || taxableIncome <= bracket.upperBound) {
+      return bracket.baseTax + multiplyRate(Math.max(0, taxableIncome - bracket.lowerBound), bracket.rate);
+    }
   }
-  return round(tax);
+  throw new RangeError("Progressive bracket table has no terminal band.");
 }
 
 function federalBasicPersonalAmount(netIncome: Money): Money {
@@ -35,12 +40,14 @@ function federalBasicPersonalAmount(netIncome: Money): Money {
 }
 
 function ontarioHealthPremium(taxableIncome: Money): Money {
-  if (taxableIncome <= 2_000_000) return 0;
-  if (taxableIncome <= 3_600_000) return Math.min(30_000, round((taxableIncome - 2_000_000) * 0.06));
-  if (taxableIncome <= 4_800_000) return Math.min(45_000, 30_000 + round((taxableIncome - 3_600_000) * 0.06));
-  if (taxableIncome <= 7_200_000) return Math.min(60_000, 45_000 + round((taxableIncome - 4_800_000) * 0.25));
-  if (taxableIncome <= 20_000_000) return Math.min(75_000, 60_000 + round((taxableIncome - 7_200_000) * 0.25));
-  return Math.min(90_000, 75_000 + round((taxableIncome - 20_000_000) * 0.25));
+  const bands = getTaxYearRules(2025).ontarioHealthPremium;
+  for (const band of bands) {
+    if (band.upperBound === null || taxableIncome <= band.upperBound) {
+      const excess = band.excessOver === null ? 0 : Math.max(0, taxableIncome - band.excessOver);
+      return band.baseAmount + multiplyRate(excess, band.rate);
+    }
+  }
+  throw new RangeError("Ontario health premium table has no terminal band.");
 }
 
 function addLine(
@@ -66,8 +73,11 @@ function calculateDonationCredits(
   const at33 = Math.min(remainder, amountAt33Percent);
   const at29 = remainder - at33;
   return {
-    federal: round(first200 * rates.first200Federal + at29 * rates.remainderFederal + at33 * rates.topFederal),
-    ontario: round(first200 * rates.first200Ontario + remainder * rates.remainderOntario),
+    federal: multiplyRate(first200, rates.first200Federal) +
+      multiplyRate(at29, rates.remainderFederal) +
+      multiplyRate(at33, rates.topFederal),
+    ontario: multiplyRate(first200, rates.first200Ontario) +
+      multiplyRate(remainder, rates.remainderOntario),
   };
 }
 
@@ -121,27 +131,32 @@ export function calculateTaxReturn(input: TaxReturnInput, calculatedAt = new Dat
     ? 0
     : clampAtZero(input.credits.medical.eligibleExpensesForSelfSpouseAndMinorChildren - medicalThreshold);
   const federalNonRefundableBase = bpa + employmentAmount + cppCredit + eiCredit + federalClaimBase + medicalClaim;
-  const federalNonRefundableCredit = round(federalNonRefundableBase * rules.federalLowestRate);
+  const federalNonRefundableCredit = multiplyRate(federalNonRefundableBase, rules.federalLowestRate);
   const ontarioNonRefundableBase = rules.ontarioBasicPersonalAmount + cppCredit + eiCredit + ontarioClaimBase;
-  const ontarioNonRefundableCredit = round(ontarioNonRefundableBase * rules.ontarioLowestRate);
+  const ontarioNonRefundableCredit = multiplyRate(ontarioNonRefundableBase, rules.ontarioLowestRate);
 
   const donationLimit = round(netIncome * 0.75);
   const donationInput = input.credits.donations?.eligibleAmount ?? 0;
   const donationsClaimed = Math.min(donationInput, donationLimit);
   const donationCredits = calculateDonationCredits(donationsClaimed, input.credits.donations?.amountEligibleFor33PercentRate ?? 0);
+  const federalTopUpTaxCredit = multiplyRate(
+    Math.max(0, federalNonRefundableCredit + donationCredits.federal - rules.federalTopUpTaxCredit.threshold),
+    rules.federalTopUpTaxCredit.rate,
+  );
 
   const federalTaxOnIncome = progressiveTax(taxableIncome, rules.federalBrackets);
   const federalDividendCreditFromSlips = sum(input.t5Slips.map((slip) => (slip.box26EligibleDividendTaxCredit ?? 0) + (slip.box16OtherThanEligibleDividendTaxCredit ?? 0)));
   const federalTax = clampAtZero(
     federalTaxOnIncome - federalNonRefundableCredit - donationCredits.federal -
+    federalTopUpTaxCredit -
     federalDividendCreditFromSlips - (input.credits.federalDividendTaxCredit ?? 0) - (input.credits.foreignTaxCredits ?? 0),
   );
 
   const ontarioTaxOnIncome = progressiveTax(taxableIncome, rules.ontarioBrackets);
   const basicOntarioTax = clampAtZero(ontarioTaxOnIncome - ontarioNonRefundableCredit - donationCredits.ontario);
   const surtax =
-    round(Math.max(0, basicOntarioTax - rules.ontarioSurtax.firstThreshold) * rules.ontarioSurtax.firstRate) +
-    round(Math.max(0, basicOntarioTax - rules.ontarioSurtax.secondThreshold) * rules.ontarioSurtax.secondRate);
+    multiplyRate(Math.max(0, basicOntarioTax - rules.ontarioSurtax.firstThreshold), rules.ontarioSurtax.firstRate) +
+    multiplyRate(Math.max(0, basicOntarioTax - rules.ontarioSurtax.secondThreshold), rules.ontarioSurtax.secondRate);
   const ontarioTaxBeforeReduction = clampAtZero(basicOntarioTax + surtax - (input.credits.ontarioDividendTaxCredit ?? 0));
   const reductionAmounts = rules.ontarioTaxReduction.basic +
     input.ontarioTaxReduction.dependentChildrenUnder18 * rules.ontarioTaxReduction.childUnder18 +
@@ -153,12 +168,13 @@ export function calculateTaxReturn(input: TaxReturnInput, calculatedAt = new Dat
   const healthPremium = ontarioHealthPremium(taxableIncome);
   const ontarioTax = ontarioTaxAfterReduction + healthPremium;
 
-  addLine(lines, "30000", "Basic personal amount", bpa, ["cra-2025-payroll-formulas"]);
+  addLine(lines, "30000", "Basic personal amount", bpa, ["cra-2025-federal-worksheet"]);
   addLine(lines, "31260", "Canada employment amount", employmentAmount, ["cra-2025-canada-employment-amount"]);
+  addLine(lines, "34990", "Top-up tax credit", federalTopUpTaxCredit, ["cra-2025-federal-worksheet"]);
   addLine(lines, "40400", "Federal tax", federalTax, ["cra-2025-tax-rates"]);
-  addLine(lines, "42800", "Ontario tax", ontarioTax, ["cra-2025-ontario-tax-information"]);
-  addLine(lines, "ON-SURTAX", "Ontario surtax", surtax, ["cra-2025-payroll-formulas"]);
-  addLine(lines, "ON-HEALTH-PREMIUM", "Ontario health premium", healthPremium, ["cra-2025-ontario-tax-information"]);
+  addLine(lines, "42800", "Ontario tax", ontarioTax, ["cra-2025-ontario-on428"]);
+  addLine(lines, "ON-SURTAX", "Ontario surtax", surtax, ["cra-2025-ontario-on428"]);
+  addLine(lines, "ON-HEALTH-PREMIUM", "Ontario health premium", healthPremium, ["cra-2025-ontario-on428"]);
 
   const totalPayable = federalTax + ontarioTax;
   const withholding = sum(input.t4Slips.map((slip) => slip.box22IncomeTaxDeducted ?? 0)) +

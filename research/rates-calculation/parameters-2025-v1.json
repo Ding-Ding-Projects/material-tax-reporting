@@ -6,6 +6,14 @@
   "taxYear": 2025,
   "jurisdiction": "CA-ON",
   "currency": "CAD",
+  "deterministicCalculationPolicy": {
+    "moneyUnit": "integer Canadian cents",
+    "rateRepresentation": "exact numerator and denominator",
+    "progressiveTaxMethod": "select one final-form band and add its printed base-tax constant to the rounded tax on income above that band base",
+    "nonNegativeMultiplicationRounding": "nearest cent; half-cent values upward",
+    "officialUniversalTieBreakingRuleAvailable": false,
+    "manualReviewRequiredAtFractionalCentBoundaries": true
+  },
   "composition": {
     "mode": "authoritative-fragment-manifest",
     "reconciliation": "Final form or worksheet instructions take precedence over narrative summaries. If a source fragment disagrees internally, retain unavailable/null state and require the final official source before implementation.",
@@ -90,6 +98,13 @@
       "revisionOrPageDate": "2026-01-20"
     },
     {
+      "id": "cra-t4127-jul-2025",
+      "publisher": "Canada Revenue Agency",
+      "title": "Payroll Deductions Formulas - 121st Edition Effective July 1, 2025",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/payroll/payroll-deductions-t4127-payroll-deductions-formulas/t4127-jul-121st-edition-effective-july-1-2025/t4127-jul-payroll-deductions-formulas.html",
+      "effectiveOn": "2025-07-01"
+    },
+    {
       "id": "cra-schedule3-2025",
       "publisher": "Canada Revenue Agency",
       "title": "Schedule 3, Capital Gains or Losses (5000-S3)",
@@ -144,6 +159,9 @@
     "taxResultLine": "76",
     "taxTransferLine": "119",
     "creditRateWhereDirected": "0.145",
+    "annualRateEffectiveForTaxYear": "2025-01-01/2025-12-31",
+    "lowestLegislatedRateChange": {"from": "0.15", "to": "0.14", "effectiveOn": "2025-07-01", "fullYear2025Rate": "0.145"},
+    "federalIndexingFactor": "0.027",
     "brackets": [
       {"lowerInclusive": "0.00", "upperInclusive": "57375.00", "rate": "0.145", "baseTax": "0.00", "baseIncome": "0.00"},
       {"lowerExclusive": "57375.00", "upperInclusive": "114750.00", "rate": "0.205", "baseTax": "8319.38", "baseIncome": "57375.00"},
@@ -157,8 +175,9 @@
       "netIncomeLine": "23600",
       "atOrBelowThreshold": {"threshold": "177882.00", "amount": "16129.00"},
       "atOrAboveThreshold": {"threshold": "253414.00", "amount": "14538.00"},
-      "betweenThresholds": {"formula": null, "availability": "unavailable", "reason": "Interpolation was not transcribed", "sourceNeeded": "Final 5000-D1 Federal Worksheet"}
+      "betweenThresholds": {"formula": "14538.00 + max(0, 1591.00 - (((netIncome - 177882.00) / 75532.00) * 1591.00))", "baseAmount": "14538.00", "supplementAmount": "1591.00", "phaseOutWidth": "75532.00", "maximum": "16129.00", "availability": "available", "source": "Final 5000-D1 Federal Worksheet"}
     },
+    "topUpTaxCredit": {"returnLine": "34990", "inputLines": ["33800", "Schedule 9 line 22"], "threshold": "8319.38", "rate": "0.0345", "formula": "max(0, line33800 + schedule9Line22 - 8319.38) * 0.0345", "source": "Final 5000-D1 Federal Worksheet"},
     "dividends": {
       "eligibleLine": "12000",
       "eligibleGrossUp": "1.38",
@@ -179,13 +198,15 @@
     "fragmentPath": "research/rates-calculation/ontario-2025.parameters.json",
     "packageEligibility": "Use Ontario package only when official residence and routing rules point to Ontario; business income allocable to a permanent establishment outside Ontario requires the official T2203 route.",
     "taxableIncomeLine": "26000",
-    "on428TaxLine": "31",
+    "on428TaxLine": "8",
+    "on428TaxCarryLine": "51",
+    "ontarioIndexingFactor": "0.028",
     "brackets": [
       {"lowerInclusive": "0", "upperInclusive": "52886", "rate": "0.0505", "baseTax": "0", "baseIncome": "0"},
-      {"lowerExclusive": "52886", "upperInclusive": "105775", "rate": "0.0915", "baseTax": "2671", "baseIncome": "52886"},
-      {"lowerExclusive": "105775", "upperInclusive": "150000", "rate": "0.1116", "baseTax": "7510", "baseIncome": "105775"},
-      {"lowerExclusive": "150000", "upperInclusive": "220000", "rate": "0.1216", "baseTax": "12446", "baseIncome": "150000"},
-      {"lowerExclusive": "220000", "upperInclusive": null, "rate": "0.1316", "baseTax": "20958", "baseIncome": "220000"}
+      {"lowerExclusive": "52886", "upperInclusive": "105775", "rate": "0.0915", "baseTax": "2670.74", "baseIncome": "52886"},
+      {"lowerExclusive": "105775", "upperInclusive": "150000", "rate": "0.1116", "baseTax": "7510.09", "baseIncome": "105775"},
+      {"lowerExclusive": "150000", "upperInclusive": "220000", "rate": "0.1216", "baseTax": "12445.60", "baseIncome": "150000"},
+      {"lowerExclusive": "220000", "upperInclusive": null, "rate": "0.1316", "baseTax": "20957.60", "baseIncome": "220000"}
     ],
     "nonRefundableCreditRate": "0.0505",
     "basicPersonalAmount": {"line": "58040", "amount": "12747"},
@@ -213,8 +234,13 @@
     {"boundary": "Business permanent establishment outside Ontario", "rule": "Use T2203 instead of ON428 when the official condition applies", "sourceNeeded": "CRA Ontario package guide"},
     {"boundary": "Other special situations", "rule": "Quebec, deceased, newcomer, emigrant, multiple ties, factual/deemed resident, non-resident, and other listed cases require their official route", "sourceNeeded": "CRA 2025 federal and provincial guides"}
   ],
+  "unresolvedPolicy": {
+    "status": "unavailable",
+    "manualReviewRequired": true,
+    "automaticCalculationAllowed": false,
+    "requiredAction": "Use the named final official source and obtain explicit manual review; never infer or silently default the missing mechanic."
+  },
   "unresolvedGaps": [
-    {"item": "Federal basic-personal-amount interpolation", "value": null, "reason": "Not transcribed between $177,882 and $253,414", "sourceNeeded": "Final 5000-D1 Federal Worksheet"},
     {"item": "Federal no-slip dividend-credit percentage", "value": null, "reason": "No percentage transcribed", "sourceNeeded": "Final Federal Worksheet chart"},
     {"item": "Complete federal credit and schedule mechanics", "value": null, "reason": "Eligibility, reductions, and exceptions are form-driven and incomplete here", "sourceNeeded": "Final 5006-R, 5000-D1, Schedules 3, 6, 8, 13, RC381, and T691"},
     {"item": "Ontario Worksheet ON479 political-contribution formula", "value": null, "reason": "Direct 2025 worksheet content was not consistently resolvable", "sourceNeeded": "Official 2025 Worksheet ON479"},

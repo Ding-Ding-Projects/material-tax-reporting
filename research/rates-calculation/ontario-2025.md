@@ -29,16 +29,16 @@ Form ON428, Part A, calculates Ontario tax on taxable income from line 26000 of 
 | Taxable income band | Rate | Base tax carried into band |
 | --- | ---: | ---: |
 | $0 to $52,886 | 5.05% | $0 |
-| Over $52,886 to $105,775 | 9.15% | $2,671 |
-| Over $105,775 to $150,000 | 11.16% | $7,510 |
-| Over $150,000 to $220,000 | 12.16% | $12,446 |
-| Over $220,000 | 13.16% | $20,958 |
+| Over $52,886 to $105,775 | 9.15% | $2,670.74 |
+| Over $105,775 to $150,000 | 11.16% | $7,510.09 |
+| Over $150,000 to $220,000 | 12.16% | $12,445.60 |
+| Over $220,000 | 13.16% | $20,957.60 |
 
 Line mapping from ON428:
 
 - Line 1: taxable income from line 26000 of the return.
-- Lines 2 to 30: bracket-specific calculations.
-- Line 31: Ontario tax on taxable income.
+- Lines 2 to 7: bracket-specific calculation.
+- Line 8: Ontario tax on taxable income, carried to line 51.
 
 The line amounts above are form constants for 2025 and should be stored as official form constants, not recomputed from rounded intermediate values unless a future implementation explicitly matches the official form's rounding sequence.
 
@@ -66,7 +66,7 @@ Form ON428 applies the 5.05% Ontario credit rate to the total Ontario non-refund
 | 58560 | Unused tuition and education amounts | From Schedule ON(S11) |
 | 58640 | Amounts transferred from spouse or common-law partner | From Schedule ON(S2) |
 | 58689 | Medical expenses for self, spouse/common-law partner, and dependent children | Eligible medical expenses minus the lesser of 3% of net income or $2,834 |
-| 58729 | Allowable medical expenses for other dependants | Maximum $15,046 per eligible dependant calculation |
+| 58729 | Allowable medical expenses for other dependants | Maximum $15,551 per eligible dependant calculation |
 | 58969 | Donations and gifts | Worksheet/form-driven |
 
 ON428 totals the applicable amounts, multiplies the total by 5.05%, and applies the result as Ontario non-refundable tax credits. The implementation must keep line references and source-form ownership because several values are imported from federal schedules or Ontario schedules rather than calculated in ON428 itself.
@@ -199,6 +199,8 @@ The 2025 T1 package and ON428 are dollar-form calculations. Amounts that flow on
 4. Record whether a value is a form entry, intermediate worksheet value, or final carry-forward line.
 
 Open implementation item: this research did not locate a single Ontario-specific global rounding rule beyond the official line-by-line form arithmetic. The calculation engine should keep a source-backed rounding policy per form/line and should not invent a province-wide rounding shortcut.
+
+The deterministic source table therefore stores integer Canadian cents, exact rational rates, the printed ON428 base-tax constants to the cent, and the exact piecewise line-89 health-premium bands. It rounds each non-negative rational multiplication once to the nearest cent with half-cent values upward as an explicit implementation convention. Because the final source does not state a universal tie-breaking rule, every resulting form line remains subject to mandatory manual comparison with ON428 before export or print.
 
 ## Instalments, interest, and penalties
 

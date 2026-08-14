@@ -5,8 +5,9 @@
 The package provides:
 
 - guided T4, T4A, T5, other-income, deduction, credit, and carry-forward records;
-- federal and Ontario progressive tax calculations for tax year 2025;
+- federal and Ontario progressive tax calculations for tax year 2025 using the final forms' printed base-tax constants;
 - the 2025 federal basic personal amount phase-out, Canada employment amount, Ontario surtax, Ontario tax reduction, and Ontario health premium;
+- the Federal Worksheet line 34990 top-up tax credit;
 - bounded, versioned JSON import and a redacted portable export;
 - source-linked validation and fail-closed handling for unsupported tax situations.
 
@@ -15,6 +16,8 @@ The package provides:
 This package does not implement or support NETFILE, EFILE, electronic submission, direct CRA transmission, simulated filing, or automatic filing. It produces preparation data only. The application may use that data solely to prepare a CRA mail-in PDF package after the user manually inspects every populated form, calculation, attachment, mailing destination, and signature field and explicitly acknowledges that review.
 
 It is not CRA-certified, does not determine universal eligibility, and is not tax, legal, accounting, or financial advice.
+
+Rates are stored as exact integer fractions and amounts as Canadian cents. Progressive bands use the base-tax constants printed on the final 2025 return and ON428 instead of recomputing prior bands. Rational multiplications round non-negative half-cent values upward as an explicit deterministic implementation convention; the official forms and mandatory manual review remain authoritative because no universal T1 tie-breaking rule was established.
 
 ## Supported scope
 

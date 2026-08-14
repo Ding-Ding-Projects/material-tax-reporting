@@ -31,11 +31,12 @@ The source fragment records CPP/CPP2 and EI parameters effective 2025-01-01. All
 ## Calculation and line-mapping overview
 
 - Federal taxable income is return line 26000. The final 5006-R federal brackets are marginal; the calculated federal tax maps to line 76 and then line 119. Federal non-refundable credits use 14.5% only where the final worksheet directs that rate.
-- The federal basic personal amount is line 30000 and depends on net-income line 23600. The amount between the recorded endpoints is unavailable; use the final Federal Worksheet rather than inventing an interpolation.
+- The federal basic personal amount is line 30000 and depends on net-income line 23600. The final Federal Worksheet supplies the complete 2025 phase-out: start with $14,538, add the positive remainder of $1,591 minus `$1,591 × (line 23600 − $177,882) ÷ $75,532`, and cap the result at $16,129.
+- The final Federal Worksheet supplies the line 34990 top-up tax credit: add line 33800 and Schedule 9 line 22, subtract $8,319.38 without going below zero, and multiply the remainder by 3.45%.
 - Dividends map to lines 12000 and 12010; slips take precedence, otherwise the Federal Worksheet chart controls line 40425. The dividend-credit percentage is unavailable when no slip is present.
 - Schedule 3 controls taxable capital gains to line 12700. The recorded ordinary inclusion rate is one-half for gains before 2026-01-01 unless a final Schedule 3 rule changes the result.
 - CPP/CPP2, EI, AMT, refundable credits, instalments, interest, and penalties map only through the final schedules and lines named in the fragments. Missing mechanics stay unavailable.
-- Ontario ON428 takes line 26000 as line 1 and calculates Ontario tax through line 31. Its surtax is additive through lines 65–68; the Ontario Health Premium is the piecewise line-89 calculation and feeds line 90. Provincial tax is carried to the return's line 147/42800 flow. ON428-A, ON479-A, ON479, and ON-BEN are separate official branches, not guessed shortcuts.
+- Ontario ON428 takes line 26000 as line 1, calculates tax on taxable income on line 8, carries that amount to line 51, and completes Ontario tax at line 90. Its surtax is additive through lines 65–68; the Ontario Health Premium is the piecewise line-89 calculation. Provincial tax is carried to return line 42800. ON428-A, ON479-A, ON479, and ON-BEN are separate official branches, not guessed shortcuts.
 
 No formula is inferred from another year, payroll tables, an unofficial calculator, or a narrative that conflicts with a final form. If a fragment disagrees internally, the conservative result is unavailable.
 
@@ -45,7 +46,7 @@ The Ontario package is selected only when official package-selection rules point
 
 ## Explicitly unavailable parameters
 
-Unavailable values are represented as `null` with a reason and required official source in the machine proposal. Important gaps include federal BPA interpolation, a no-slip federal dividend-credit percentage, complete credit and Schedule 3/8/RC381/Schedule 13/T691 mechanics, the Ontario ON479 political-contribution formula, the complete Ontario minimum-tax dependency graph, the refundable medical supplement and CWB formulas, quarterly prescribed interest rates, a universal rounding shortcut, and special residence/bankruptcy/deceased-return rules. Do not substitute secondary sources.
+Unavailable values are represented as `null` with a reason and required official source in the machine proposal. Important gaps include a no-slip federal dividend-credit percentage, complete credit and Schedule 3/8/RC381/Schedule 13/T691 mechanics, the Ontario ON479 political-contribution formula, the complete Ontario minimum-tax dependency graph, the refundable medical supplement and CWB formulas, quarterly prescribed interest rates, a universal rounding shortcut, and special residence/bankruptcy/deceased-return rules. Do not substitute secondary sources.
 
 ## Paper review and printing
 
