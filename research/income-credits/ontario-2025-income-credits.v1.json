@@ -1,0 +1,299 @@
+{
+  "schemaVersion": "1.0.0",
+  "title": "Ontario 2025 personal-income inputs and credits official-source inventory",
+  "accessedOn": "2026-08-14",
+  "jurisdiction": {
+    "country": "Canada",
+    "province": "Ontario",
+    "residencyBasis": "Province of residence on 2025-12-31"
+  },
+  "applicableTaxYears": [2025],
+  "scope": {
+    "returnType": "T1 Individual Income Tax and Benefit Return",
+    "filingMode": "paper-mail",
+    "disclaimer": "Factual implementation research only; not tax or legal advice and not CRA certification or approval."
+  },
+  "boundaries": {
+    "craFacts": {
+      "sourceIds": ["federal-guide-2025", "paper-filing", "ontario-package-2025", "mailing-addresses"],
+      "statements": [
+        "Use the Ontario package for an individual who resided in Ontario on 2025-12-31.",
+        "A paper return is sent by mail and includes the supporting documents, forms, and schedules required by the current guide.",
+        "Mailing destinations are location-dependent and mutable."
+      ]
+    },
+    "productContract": {
+      "authority": "product-only",
+      "prohibitedCapabilities": [
+        "NETFILE",
+        "EFILE",
+        "electronic submission",
+        "direct CRA transmission",
+        "automatic filing"
+      ],
+      "output": "CRA mail-in PDF package",
+      "mandatoryReview": {
+        "requiredBefore": ["export", "print"],
+        "items": [
+          "every populated form and schedule",
+          "every calculation and transferred amount",
+          "every attachment and retain-only document decision",
+          "mailing destination",
+          "every signature and date field"
+        ],
+        "explicitAcknowledgementRequired": true,
+        "notClaimedAsCraRequirement": true
+      }
+    }
+  },
+  "officialSources": [
+    {"id":"federal-guide-2025","publisher":"Canada Revenue Agency","title":"2025 Federal Income Tax and Benefit Guide (5000-G)","url":"https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/5000-g.html","accessedOn":"2026-08-14","taxYears":[2025],"revision":"2025"},
+    {"id":"paper-filing","publisher":"Canada Revenue Agency","title":"File income tax by paper","url":"https://www.canada.ca/en/services/taxes/income-tax/personal-income-tax/how-file/paper.html","accessedOn":"2026-08-14","taxYears":[2025],"revision":null},
+    {"id":"mailing-addresses","publisher":"Canada Revenue Agency","title":"Where to mail a paper T1 return","url":"https://www.canada.ca/en/revenue-agency/corporate/contact-information/where-mail-your-paper-t1-return.html","accessedOn":"2026-08-14","taxYears":[2025],"revision":"mutable-current-page"},
+    {"id":"ontario-package-2025","publisher":"Canada Revenue Agency","title":"Ontario 2025 income tax package","url":"https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario.html","accessedOn":"2026-08-14","taxYears":[2025],"revision":"2025"},
+    {"id":"ontario-return-2025","publisher":"Canada Revenue Agency","title":"T1 5006-R E(25)","url":"https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-r/5006-r-25e.txt","accessedOn":"2026-08-14","taxYears":[2025],"revision":"E(25)","pageLastUpdated":"2026-01-20"},
+    {"id":"t4","publisher":"Canada Revenue Agency","title":"T4 Statement of Remuneration Paid","url":"https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/tax-slips/understand-your-tax-slips/t4-slips/t4-statement-remuneration-paid.html","accessedOn":"2026-08-14","taxYears":[2025],"revision":"T4(25)"},
+    {"id":"t4a","publisher":"Canada Revenue Agency","title":"T4A slip guidance","url":"https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/tax-slips/understand-your-tax-slips/t4-slips/t4a-slip.html","accessedOn":"2026-08-14","taxYears":[2025],"revision":"T4A(25)"},
+    {"id":"t4ap","publisher":"Canada Revenue Agency","title":"T4A(P) CPP benefits","url":"https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/personal-income/line-11400-cpp-qpp-benefits.html","accessedOn":"2026-08-14","taxYears":[2025],"revision":null},
+    {"id":"t4aoas","publisher":"Canada Revenue Agency","title":"T4A(OAS) slip guidance","url":"https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/tax-slips/understand-your-tax-slips/t4-slips/t4a-oas-statement-old-security.html","accessedOn":"2026-08-14","taxYears":[2025],"revision":null},
+    {"id":"t4e","publisher":"Canada Revenue Agency","title":"T4E slip guidance","url":"https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/tax-slips/understand-your-tax-slips/t4-slips/t4e-statement-employment-insurance-other-benefits.html","accessedOn":"2026-08-14","taxYears":[2025],"revision":null},
+    {"id":"t5","publisher":"Canada Revenue Agency","title":"T5 slip guidance","url":"https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/tax-slips/understand-your-tax-slips/t5-slips/t5-statement-investment-income-slip-information-individuals.html","accessedOn":"2026-08-14","taxYears":[2025],"revision":"2025"},
+    {"id":"t3","publisher":"Canada Revenue Agency","title":"T3 slip guidance","url":"https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/tax-slips/understand-your-tax-slips/t3-statement-trust-income-allocations-designations-slip-information-individuals.html","accessedOn":"2026-08-14","taxYears":[2025],"revision":"2025"},
+    {"id":"t5008","publisher":"Canada Revenue Agency","title":"T5008 slip guidance","url":"https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/tax-slips/understand-your-tax-slips/t5-slips/t5008-statement-securities-transactions-slip-information-individuals.html/1000?wbdisable=true","accessedOn":"2026-08-14","taxYears":[2025],"revision":null},
+    {"id":"t2202","publisher":"Canada Revenue Agency","title":"T2202 Tuition and Enrolment Certificate guidance","url":"https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/tax-slips/understand-your-tax-slips/t2202-tuition-enrolment-certificate.html","accessedOn":"2026-08-14","taxYears":[2025],"revision":null},
+    {"id":"rrsp-receipt","publisher":"Canada Revenue Agency","title":"RRSP contribution receipt guidance","url":"https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/tax-slips/understand-your-tax-slips/rrsp-contribution-receipt-slip-information-individuals.html","accessedOn":"2026-08-14","taxYears":[2025],"revision":null},
+    {"id":"t4rsp","publisher":"Canada Revenue Agency","title":"RRSP income, line 12900","url":"https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/personal-income/line-129-registered-retirement-savings-plan-rrsp-income.html","accessedOn":"2026-08-14","taxYears":[2025],"revision":null},
+    {"id":"t4rif","publisher":"Canada Revenue Agency","title":"T4RIF slip guidance","url":"https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/tax-slips/understand-your-tax-slips/t4-slips/t4rif-statement-income-a-registered-retirement-income-fund-slip-information-individuals.html","accessedOn":"2026-08-14","taxYears":[2025],"revision":null},
+    {"id":"t5007","publisher":"Canada Revenue Agency","title":"T5007 Statement of Benefits guidance","url":"https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/tax-slips/statement-benefits-t5007.html","accessedOn":"2026-08-14","taxYears":[2025],"revision":null},
+    {"id":"t5013","publisher":"Canada Revenue Agency","title":"Part XII.2 trust tax credit, line 45600","url":"https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/deductions-credits-expenses/line-45600-part-2-trust-tax-credit.html","accessedOn":"2026-08-14","taxYears":[2025],"revision":null},
+    {"id":"prpp","publisher":"Canada Revenue Agency","title":"PRPP contribution receipt","url":"https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/pooled-registered-pension-plan-prpp-information-individuals/prpp-contribution-receipt-slip.html","accessedOn":"2026-08-14","taxYears":[2025],"revision":null},
+    {"id":"t4ps-employment","publisher":"Canada Revenue Agency","title":"Other employment income, line 10400","url":"https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/personal-income/line-10400-other-employment-income.html","accessedOn":"2026-08-14","taxYears":[2025],"revision":null},
+    {"id":"t4ps-dividends","publisher":"Canada Revenue Agency","title":"Taxable Canadian dividends, line 12000","url":"https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/personal-income/line-12000-taxable-amount-dividends-eligible-other-than-eligible-taxable-canadian-corporations.html","accessedOn":"2026-08-14","taxYears":[2025],"revision":null},
+    {"id":"schedule7","publisher":"Canada Revenue Agency","title":"Schedule 7, RRSP, PRPP and SPP contributions and transfers","url":"https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/5000-s7.html","accessedOn":"2026-08-14","taxYears":[2025],"revision":"5000-S7 E(25)"},
+    {"id":"employment","publisher":"Canada Revenue Agency","title":"Guide T4044 Employment Expenses","url":"https://www.canada.ca/en/revenue-agency/services/forms-publications/publications/t4044/employment-expenses.html","accessedOn":"2026-08-14","taxYears":[2025],"revision":"2025"},
+    {"id":"pension-split","publisher":"Canada Revenue Agency","title":"Form T1032 Joint Election to Split Pension Income","url":"https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/t1032/t1032-25e.txt","accessedOn":"2026-08-14","taxYears":[2025],"revision":"E(25)"},
+    {"id":"medical","publisher":"Canada Revenue Agency","title":"Medical expenses, lines 33099 and 33199","url":"https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/deductions-credits-expenses/lines-33099-33199-eligible-medical-expenses-you-claim-on-your-tax-return.html","accessedOn":"2026-08-14","taxYears":[2025],"revision":"2025"},
+    {"id":"donations","publisher":"Canada Revenue Agency","title":"Schedule 9 E(25)","url":"https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5000-s9/5000-s9-25e.txt","accessedOn":"2026-08-14","taxYears":[2025],"revision":"E(25)"},
+    {"id":"dtc","publisher":"Canada Revenue Agency","title":"Claiming the disability tax credit","url":"https://www.canada.ca/en/revenue-agency/services/tax/individuals/segments/tax-credits-deductions-persons-disabilities/disability-tax-credit/claiming-dtc.html","accessedOn":"2026-08-14","taxYears":[2025],"revision":null},
+    {"id":"caregiver","publisher":"Canada Revenue Agency","title":"Schedule 5 E(25)","url":"https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5000-s5/5000-s5-25e.txt","accessedOn":"2026-08-14","taxYears":[2025],"revision":"E(25)"},
+    {"id":"moving","publisher":"Canada Revenue Agency","title":"Moving expenses, line 21900","url":"https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/deductions-credits-expenses/line-21900-moving-expenses.html","accessedOn":"2026-08-14","taxYears":[2025],"revision":null},
+    {"id":"child-care","publisher":"Canada Revenue Agency","title":"Form T778 E(25)","url":"https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/t778/t778-25e.txt","accessedOn":"2026-08-14","taxYears":[2025],"revision":"E(25)"},
+    {"id":"tuition-federal","publisher":"Canada Revenue Agency","title":"Federal Schedule 11 E(25)","url":"https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5000-s11/5000-s11-25e.txt","accessedOn":"2026-08-14","taxYears":[2025],"revision":"E(25)"},
+    {"id":"tuition-ontario","publisher":"Canada Revenue Agency","title":"Ontario Schedule 11 E(25)","url":"https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-s11/5006-s11-25e.txt","accessedOn":"2026-08-14","taxYears":[2025],"revision":"E(25)"},
+    {"id":"fhsa","publisher":"Canada Revenue Agency","title":"Report FHSA activities","url":"https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/first-home-savings-account/reporting-fhsa-activities-income-benefit-return.html","accessedOn":"2026-08-14","taxYears":[2025],"revision":"2025"},
+    {"id":"schedule15","publisher":"Canada Revenue Agency","title":"Schedule 15, FHSA contributions, transfers and activities","url":"https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/5000-s15.html","accessedOn":"2026-08-14","taxYears":[2025],"revision":"5000-S15 E(25)"},
+    {"id":"hbp","publisher":"Canada Revenue Agency","title":"What is the Home Buyers' Plan","url":"https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/rrsps-related-plans/what-home-buyers-plan.html","accessedOn":"2026-08-14","taxYears":[2025],"revision":null},
+    {"id":"llp","publisher":"Canada Revenue Agency","title":"Lifelong Learning Plan","url":"https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/rrsps-related-plans/lifelong-learning-plan.html","accessedOn":"2026-08-14","taxYears":[2025],"revision":null}
+  ],
+  "records": [
+    {
+      "id":"paper-return-assembly",
+      "category":"paper-filing",
+      "name":"Ontario T1 paper return assembly",
+      "formNumber":"5006-R",
+      "revision":"E(25)",
+      "sourceIds":["federal-guide-2025","paper-filing","mailing-addresses","ontario-package-2025","ontario-return-2025"],
+      "paperReturn":{"attachmentStatus":"attach-required-documents","instructions":["Attach requested slip copies, forms, and schedules.","Attach a final pay statement and explanatory payer/type/efforts note when a required slip remains unavailable.","Use a separate envelope for each taxpayer.","Verify the current location-specific mailing address immediately before export or print."],"retention":"Keep the return, notices, and supporting documents for six years unless a specific rule requires longer."},
+      "uncertainties":["Mailing address is mutable and no unmatched Ontario location may be inferred."]
+    },
+    {
+      "id":"t4",
+      "category":"income-slip",
+      "name":"T4 Statement of Remuneration Paid",
+      "formNumber":"T4",
+      "revision":"T4(25)",
+      "sourceIds":["t4"],
+      "mappings":[
+        {"box":"14","destination":"10100"},{"box":"16/17","destination":"Schedule 8 or RC381; 30800 and 22215"},{"box":"16A/17A","destination":"Schedule 8 or RC381; 22215"},{"box":"18","destination":"31200"},{"box":"20","destination":"20700"},{"box":"22","destination":"43700"},{"box":"39/41/91/92","destination":"24900"},{"box":"42","destination":"10120","calculation":"Already included in box 14"},{"box":"43","destination":"24400","calculation":"Already included in box 14"},{"box":"44","destination":"21200"},{"box":"46","destination":"Schedule 9"},{"box":"52","destination":"20600"},{"box":"55","destination":"31200","conditions":["Ontario"]},{"box":"66/67","destination":"13000"},{"box":"74/75","destination":"20700"},{"box":"77","destination":"22900"}
+      ],
+      "paperReturn":{"attachmentStatus":"attach-slip-copy","retention":"six-year general rule"},
+      "uncertainties":["Boxes not listed require dedicated official conditional routing."]
+    },
+    {
+      "id":"t4a",
+      "category":"income-slip",
+      "name":"T4A Statement of Pension, Retirement, Annuity, and Other Income",
+      "formNumber":"T4A",
+      "revision":"T4A(25)",
+      "sourceIds":["t4a"],
+      "mappings":[{"box":"016","destination":"11500"},{"box":"020","destination":"13899/13900"},{"box":"022","destination":"43700"},{"box":"032","destination":"20700"},{"box":"034","destination":"20600"},{"box":"040/042","destination":"13000"},{"box":"046","destination":"Schedule 9"},{"box":"048","destination":"13499-14300","conditions":["self-employment type"]},{"box":"105","destination":"13010"},{"box":"131","destination":"12500"},{"box":"196","destination":"25600"}],
+      "conditionalBoxes":["018","024","028","104","106","107","109","117","118","119","123","125","127","129","130","132","133","136","150","152","154","156","194"],
+      "paperReturn":{"attachmentStatus":"attach-slip-copy","retention":"six-year general rule"},
+      "uncertainties":["Conditional boxes require income type, age, beneficiary, or business facts; no default line is authorized."]
+    },
+    {
+      "id":"t4ap-t4aoas-t4e",
+      "category":"income-slip",
+      "name":"Government pension and EI slips",
+      "formNumber":"T4A(P), T4A(OAS), T4E",
+      "revision":null,
+      "sourceIds":["t4ap","t4aoas","t4e"],
+      "mappings":[{"form":"T4A(P)","box":"20","destination":"11400","calculation":"Includes boxes 14-19"},{"form":"T4A(P)","box":"16","destination":"11410","calculation":"Do not add again to box 20"},{"form":"T4A(P)","box":"22","destination":"43700"},{"form":"T4A(OAS)","box":"18","destination":"11300"},{"form":"T4A(OAS)","box":"20","destination":"23200"},{"form":"T4A(OAS)","box":"21","destination":"14600; possible 25000"},{"form":"T4A(OAS)","box":"22/23","destination":"43700","conditions":["Ontario"]},{"form":"T4E","box":"14 minus 18","destination":"11900"},{"form":"T4E","box":"36/37","destination":"11905","calculation":"Already included in box 14"},{"form":"T4E","box":"21","destination":"25600"},{"form":"T4E","box":"22","destination":"43700"},{"form":"T4E","box":"30","destination":"23200 reference"}],
+      "paperReturn":{"attachmentStatus":"attach-slip-copy","instructions":["Attach Service Canada prior-year breakdown for a qualifying CPP retroactive lump sum when it is not printed on the slip."],"retention":"six-year general rule"},
+      "uncertainties":["Blank-form revisions were not verified.","T4A(P) box 18 and T4E repayment treatment remain conditional."]
+    },
+    {
+      "id":"t5-t3",
+      "category":"income-slip",
+      "name":"Investment and trust income slips",
+      "formNumber":"T5, T3",
+      "revision":"2025 editions",
+      "sourceIds":["t5","t3"],
+      "mappings":[{"form":"T5","box":"11","destination":"12000 and 12010"},{"form":"T5","box":"12","destination":"40425"},{"form":"T5","box":"13/14/15","destination":"12100"},{"form":"T5","box":"18","destination":"Schedule 3 line 17400"},{"form":"T5","box":"25","destination":"12000"},{"form":"T5","box":"26","destination":"40425"},{"form":"T5","box":"30","destination":"12100"},{"form":"T3","box":"32+50","destination":"12000"},{"form":"T3","box":"32","destination":"12010"},{"form":"T3","box":"39+51","destination":"40425"},{"form":"T3","box":"21-30","destination":"Schedule 3 line 17600"},{"form":"T3","box":"31","destination":"11500"},{"form":"T3","box":"34","destination":"T2209 line 43100"},{"form":"T3","box":"37","destination":"Schedule 3 line 17600"},{"form":"T3","box":"38","destination":"45600"},{"form":"T3","box":"25","destination":"12100 and T2209 line 43300"},{"form":"T3","box":"26-31","destination":"13000"}],
+      "paperReturn":{"attachmentStatus":"attach-slip-copy","retention":"six-year general rule"},
+      "uncertainties":["T5 boxes 17 and 19 are conditional.","T3 box 42 adjusts cost base and is not ordinary income."]
+    },
+    {
+      "id":"t5008",
+      "category":"income-slip",
+      "name":"T5008 Statement of Securities Transactions",
+      "formNumber":"T5008",
+      "revision":null,
+      "sourceIds":["t5008"],
+      "mappings":[{"classification":"capital account","destination":"Schedule 3"},{"classification":"income account","destination":"13500"},{"classification":"bearer debt interest","destination":"12100"},{"box":"20","meaning":"reported cost or book value"},{"box":"21","meaning":"proceeds"}],
+      "paperReturn":{"attachmentStatus":"attach-slip-copy","retention":"Retain adjusted-cost-base records under the applicable record rule."},
+      "uncertainties":["Box 20 may not be adjusted cost base.","Capital-versus-income classification requires user facts.","No automatic gain is authorized from boxes 20 and 21 alone."]
+    },
+    {
+      "id":"t2202-tuition",
+      "category":"credit",
+      "name":"Tuition and enrolment",
+      "formNumber":"T2202; federal Schedule 11; Ontario Schedule 11",
+      "revision":"Schedules E(25); T2202 revision unverified",
+      "sourceIds":["t2202","tuition-federal","tuition-ontario"],
+      "mappings":[{"form":"T2202","box":"21/22","meaning":"part-time/full-time months"},{"form":"T2202","box":"23","meaning":"session tuition"},{"form":"T2202","box":"24/25","meaning":"totals"},{"form":"T2202","box":"26","meaning":"total eligible tuition"},{"form":"Federal Schedule 11","line":"32000/32001","meaning":"Canadian/foreign tuition"},{"form":"Federal Schedule 11","line":"32300","meaning":"amount claimed"},{"form":"Federal Schedule 11","line":"32700","meaning":"current-year transfer"},{"form":"Federal Schedule 11","line":"45350","meaning":"Canada training credit"},{"form":"Ontario Schedule 11","line":"5","destination":"ON428 58560"},{"form":"Ontario Schedule 11","line":"8","meaning":"unused Ontario carryforward"}],
+      "eligibility":["Current-year transfer is limited by the official calculation.","Prior-year carryforward is not transferable."],
+      "paperReturn":{"attachmentStatus":"attach-schedules-not-t2202","instructions":["Attach applicable Schedules 11.","Retain T2202, TL11A/TL11C, and receipts."],"retention":"six-year general rule"},
+      "uncertainties":["Recipient and spouse transfer routes depend on relationship and designation facts."]
+    },
+    {
+      "id":"rrsp-hbp-llp",
+      "category":"registered-plan",
+      "name":"RRSP contributions, Home Buyers' Plan, and Lifelong Learning Plan",
+      "formNumber":"Schedule 7; RRSP receipt; T4RSP",
+      "revision":"5000-S7 E(25)",
+      "sourceIds":["rrsp-receipt","schedule7","hbp","llp"],
+      "mappings":[{"input":"total RRSP contributions","destination":"24500"},{"input":"HBP repayment designation","destination":"24600"},{"input":"LLP repayment designation","destination":"24620"},{"input":"eligible transfer","destination":"24640"},{"input":"RRSP deduction","destination":"20800"},{"form":"T4RSP","box":"27","destination":"24700"},{"form":"T4RSP","box":"25","destination":"26300"},{"input":"LLP spouse/student amount","destination":"26400"},{"input":"required HBP/LLP repayment shortfall","destination":"12900"}],
+      "officialLimits":{"hbpWithdrawal":60000,"hbpRepaymentYearsGenerally":15,"hbpExtraDeferralFirstWithdrawalRange":"2022-01-01 through 2025-12-31","llpAnnualWithdrawal":10000,"llpTotalWithdrawal":20000,"llpRepaymentYearsGenerally":10,"rrspContributionDeadline":"2026-03-02"},
+      "paperReturn":{"attachmentStatus":"attach-schedule-and-receipts","instructions":["Attach Schedule 7 when required.","Attach receipts covering 2025-03-04 through 2026-03-02, including designated repayments."],"retention":"six-year general rule"},
+      "uncertainties":["Use current CRA deduction-room and repayment values; do not infer them from receipts.","Spousal attribution and plan status remain conditional."]
+    },
+    {
+      "id":"fhsa-t4fhsa",
+      "category":"registered-plan",
+      "name":"First Home Savings Account",
+      "formNumber":"Schedule 15; T4FHSA",
+      "revision":"5000-S15 E(25); T4FHSA(25)",
+      "sourceIds":["fhsa","schedule15"],
+      "mappings":[{"form":"T4FHSA","box":"18","destination":"Schedule 15 line 68935"},{"form":"T4FHSA","box":"20","destination":"68960"},{"form":"T4FHSA","box":"22","destination":"12905"},{"form":"T4FHSA","box":"24","destination":"12906"},{"form":"T4FHSA","box":"26","destination":"12905 or 12906","conditions":["official beneficiary/holder facts"]},{"form":"T4FHSA","box":"28","destination":"12906; possible later 23200"},{"form":"T4FHSA","box":"30","destination":"43700"},{"form":"T4FHSA","box":"32+34","destination":"68950"},{"form":"T4FHSA","box":"36","destination":"68955"},{"form":"T4FHSA","box":"38","destination":"68945"},{"input":"Schedule 15 deduction","destination":"20805"}],
+      "officialLimits":{"firstParticipationRoom":8000,"lifetimeDeduction":40000},
+      "eligibility":["Qualifying withdrawal status requires the official conditions.","RRSP-to-FHSA transfers are not deductible and reduce lifetime capacity."],
+      "paperReturn":{"attachmentStatus":"attach-schedule-when-applicable","retention":"six-year general rule"},
+      "uncertainties":["Schedule 15 filing triggers and boxes 26/28 are fact-dependent."]
+    },
+    {
+      "id":"employment-expenses",
+      "category":"deduction",
+      "name":"Employment expenses",
+      "formNumber":"T777; T2200/T2200S; TL2; GST370",
+      "revision":"2025; exact blank-form revisions not fully verified",
+      "sourceIds":["employment"],
+      "mappings":[{"input":"T777 result","destination":"22900"}],
+      "eligibility":["Employment category, contract duties, reimbursement, workspace, vehicle, travel, and commission facts determine allowed expenses.","Employer certification does not by itself establish deductibility."],
+      "paperReturn":{"attachmentStatus":"attach-t777-retain-t2200","instructions":["Attach T777.","Retain T2200/T2200S, receipts, logs, and other evidence."],"retention":"six-year general rule"},
+      "uncertainties":["Exact revision identifiers and special-category forms must be rechecked before rendering."]
+    },
+    {
+      "id":"pension-splitting",
+      "category":"deduction",
+      "name":"Joint election to split pension income",
+      "formNumber":"T1032",
+      "revision":"E(25)",
+      "sourceIds":["pension-split"],
+      "mappings":[{"input":"eligible pension income","source":"line 31400 worksheet"},{"formLine":"22","destinationTransferor":"21000","destinationRecipient":"11600"},{"input":"allocated tax withheld","destination":"43700 adjustment"}],
+      "eligibility":["Annual joint election.","Relationship, residence, eligible-pension-income, and separation restrictions apply."],
+      "paperReturn":{"attachmentStatus":"attach-signed-copy-to-each-return","retention":"six-year general rule"},
+      "uncertainties":["Election amount is limited by the official form calculation; do not infer from gross pension slips."]
+    },
+    {
+      "id":"medical-expenses",
+      "category":"credit",
+      "name":"Medical expenses",
+      "formNumber":"T1 and ON428",
+      "revision":"2025",
+      "sourceIds":["medical","ontario-return-2025"],
+      "mappings":[{"scope":"self, spouse/common-law partner, children under 18","destination":"33099; ON428 58689"},{"scope":"other eligible dependants","destination":"33199; ON428 58729"},{"input":"Ontario total","destination":"ON428 58769"}],
+      "officialCalculation":"Federal 2025 threshold uses the lesser of 3% of line 23600 or $2,834.",
+      "eligibility":["Use an eligible 12-month period ending in 2025.","Do not claim the same expense twice.","Eligibility is expense-, patient-, payment-, and date-specific."],
+      "paperReturn":{"attachmentStatus":"retain-support-unless-current-instructions-require","retention":"Retain receipts, prescriptions, certificates, and travel support under the applicable rule."},
+      "uncertainties":["Full item eligibility and Ontario calculation require current official worksheets."]
+    },
+    {
+      "id":"donations",
+      "category":"credit",
+      "name":"Donations and gifts",
+      "formNumber":"Schedule 9; ON428",
+      "revision":"Schedule 9 E(25)",
+      "sourceIds":["donations","ontario-return-2025"],
+      "mappings":[{"form":"Schedule 9","line":"23","destination":"34900"},{"input":"eligible amount","destination":"ON428 58969 calculation"}],
+      "eligibility":["Official donation receipts are required.","Most unclaimed amounts carry forward five years; ecological gifts use the official ten-year period."],
+      "paperReturn":{"attachmentStatus":"attach-schedule-retain-receipts","instructions":["Attach Schedule 9.","Retain official receipts."],"retention":"Applicable carryforward and six-year record rules"},
+      "uncertainties":["Claim limits and special gift categories remain Schedule 9 calculations."]
+    },
+    {
+      "id":"disability-caregiver-dependants",
+      "category":"credit",
+      "name":"Disability, caregiver, and dependant amounts",
+      "formNumber":"T2201; Schedule 5; ON428",
+      "revision":"Schedule 5 E(25); T2201 revision unverified",
+      "sourceIds":["dtc","caregiver","ontario-return-2025"],
+      "mappings":[{"scope":"DTC self","destination":"31600; ON428 58440"},{"scope":"DTC dependant transfer","destination":"31800"},{"scope":"DTC spouse/common-law partner transfer","destination":"32600"},{"scope":"Ontario transfer","destination":"ON428 58480"},{"form":"Schedule 5","destination":"30300/30400/30425/30450/30500 as applicable"},{"scope":"Ontario caregiver route","destination":"ON428 58185 and related 58480"}],
+      "eligibility":["CRA approval of T2201 is required for the DTC.","Infirmity, support, residence, relationship, age, shared custody, household, duplicate claims, and net income control caregiver/dependant claims.","Temporary illness is not automatically infirmity.","The 2025 line-30425 page describes a net-income calculation range of $8,624 to $28,798."],
+      "paperReturn":{"attachmentStatus":"attach-schedule5-when-applicable","instructions":["Attach Schedule 5.","Retain or provide medical-practitioner evidence as instructed; an approved T2201 may satisfy the impairment evidence rule.","Where the line-31800 instructions require it, attach a note with dependant name, SIN, relationship, and requested facts."],"retention":"six-year general rule"},
+      "uncertainties":["Never infer T2201 approval from diagnosis or expense records.","Only one eligible claimant may claim an unsplittable amount where the official rule says so."]
+    },
+    {
+      "id":"moving-expenses",
+      "category":"deduction",
+      "name":"Moving expenses",
+      "formNumber":"T1-M",
+      "revision":null,
+      "sourceIds":["moving"],
+      "mappings":[{"form":"T1-M","line":"29","destination":"21900"},{"condition":"line 27 exceeds line 28","result":"eligible unused amount may carry forward"}],
+      "eligibility":["Generally requires an eligible student or move to work/carry on business.","New home must be at least 40 km closer under the official shortest-normal-route test."],
+      "paperReturn":{"attachmentStatus":"do-not-attach-receipts","instructions":["Complete a separate T1-M for each move.","Retain receipts and supporting records."],"retention":"six-year general rule"},
+      "uncertainties":["Exact 2025 blank-form revision and attachment wording were not verified."]
+    },
+    {
+      "id":"child-care",
+      "category":"deduction",
+      "name":"Child care expenses",
+      "formNumber":"T778",
+      "revision":"E(25)",
+      "sourceIds":["child-care"],
+      "mappings":[{"formLine":"14 or Part D line 25","destination":"21400"}],
+      "eligibility":["Lower-net-income spouse/common-law partner generally claims, subject to official exceptions.","Eligible child, provider, expense, purpose, and earned-income limits apply.","No 2025 amount carries forward."],
+      "paperReturn":{"attachmentStatus":"attach-t778-do-not-attach-receipts","instructions":["Attach T778.","Do not attach receipts or other supporting documents.","Retain receipts and the provider's SIN when the provider is an individual."],"retention":"six-year general rule"},
+      "uncertainties":["Higher-income-spouse exceptions require the exact official facts."]
+    },
+    {
+      "id":"other-conditional-slips",
+      "category":"income-slip",
+      "name":"Other common and conditional slips",
+      "formNumber":"T4RSP, T4RIF, T5007, T5013, PRPP receipt, RC62, T4PS, T4A-RCA, T5018, T1204, NR4",
+      "revision":null,
+      "sourceIds":["federal-guide-2025","schedule7","t4rsp","t4rif","t5007","t5013","prpp","t4ps-employment","t4ps-dividends"],
+      "mappings":[{"form":"T4RSP","box":"16/18/28/34","destination":"12900"},{"form":"T4RSP","box":"20/22/26","destination":"12900 unless attribution applies"},{"form":"T5007","box":"10","destination":"14400 and 25000"},{"form":"T5007","box":"11","destination":"14500 and 25000"},{"form":"T5013","box":"209","destination":"45600"},{"form":"T5013","box":"236","destination":"47555"},{"form":"RC62","input":"income","destination":"11700"},{"form":"RC62","input":"repayment","destination":"21300"},{"form":"T4PS","box":"25+31","destination":"12000"},{"form":"T4PS","box":"25","destination":"12010"},{"form":"T4PS","box":"35","destination":"10400"}],
+      "paperReturn":{"attachmentStatus":"follow-current-slip-and-general-guide","retention":"six-year general rule"},
+      "uncertainties":["T4RIF routes conditionally to 11500, 13000, or 23200.","T5013 remaining boxes require T5013-INST.","Dedicated mappings for T5018, T1204, and NR4 were not completed; no T1 line may be inferred from amount alone."]
+    }
+  ],
+  "unresolvedGaps": [
+    {"topic":"blank-form revisions","description":"Revisions were not verified for T4A(P), T4A(OAS), T4E, T2202, T4RSP, T4RIF, T5007, and some conditional slips.","resolutionBoundary":"Do not manufacture a revision; recheck the official form page before rendering."},
+    {"topic":"conditional slip routing","description":"T4A, T5013, T4RIF, T4PS, T5018, T1204, and NR4 contain fact-dependent routes.","resolutionBoundary":"Require the relevant official instructions and user facts; do not select a generic income line."},
+    {"topic":"securities cost base","description":"T5008 box 20 may not equal adjusted cost base and the slip does not establish capital-versus-income treatment.","resolutionBoundary":"Require manual classification and cost-base review."},
+    {"topic":"mailing destination","description":"CRA tax-centre routing can change and depends on location and return type.","resolutionBoundary":"Open the current official address page during mandatory review and require explicit acknowledgement."},
+    {"topic":"CRA account values","description":"RRSP deduction room and required HBP/LLP repayments are taxpayer-specific current CRA values.","resolutionBoundary":"Do not invent or estimate them."},
+    {"topic":"other tax years","description":"This inventory is specific to 2025.","resolutionBoundary":"Perform a new official-source pass before supporting another tax year."}
+  ]
+}
