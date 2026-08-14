@@ -95,6 +95,7 @@ let currentIndex = 0;
 let selectedRevisionIds = new Set();
 let loadedHistoryRows = [];
 let regexTarget = null;
+let projectStatus = { open: false };
 const regexState = new Map();
 
 function notify(title, message, kind = 'info', persistent = false) {
@@ -112,6 +113,115 @@ function showPanel(panelId, focusSelector) {
   $$('.rail-tab').forEach((tab) => { const active = tab.dataset.panel === panelId; tab.classList.toggle('active', active); tab.setAttribute('aria-selected', String(active)); });
   requestAnimationFrame(() => (focusSelector ? $(focusSelector) : document.getElementById(panelId))?.focus());
   if (panelId === 'history-panel') loadHistory();
+}
+
+function projectFailure(title, result) {
+  const error = result?.error || {};
+  const details = [error.code, error.message, error.recovery].filter(Boolean).join(' — ');
+  notify(title, details || 'The project operation did not complete.', 'error', true);
+}
+
+function renderProjectStatus() {
+  const open = Boolean(projectStatus.open);
+  $('#project-status-card').classList.toggle('open', open);
+  $('#project-status-title').textContent = open ? 'Project open' : 'No project is open';
+  $('#project-status-detail').textContent = open
+    ? `${projectStatus.displayName || 'Encrypted project'} · Tax year ${projectStatus.taxYear} · All accepted changes save atomically to the project file.`
+    : 'Create a project file or open an existing one before entering tax values.';
+  ['save-project', 'save-project-copy', 'close-project'].forEach((id) => { document.getElementById(id).disabled = !open; });
+  $$('.rail-tab[data-panel="wizard-panel"], .rail-tab[data-panel="history-panel"]').forEach((tab) => { tab.disabled = !open; });
+}
+
+function acceptProjectResult(result) {
+  if (!result.ok) return false;
+  if (result.data.state) appState = result.data.state;
+  if (result.data.status) projectStatus = result.data.status;
+  applySettings(); setWizardStep(appState.wizard.currentStepId); renderProjectStatus();
+  return true;
+}
+
+async function createProject() {
+  const passwordInput = $('#create-project-password');
+  const password = passwordInput.value;
+  const taxYear = Number($('#project-tax-year').value);
+  const ruleSources = $('#project-rule-sources').value.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+  passwordInput.value = '';
+  if (password === '') {
+    notify('Project password required', 'Enter the project-file password to create the encrypted project.', 'error', true);
+    return;
+  }
+  if (!Number.isInteger(taxYear) || taxYear < 2000 || taxYear > 2099 || ruleSources.length === 0) {
+    notify('Project details are incomplete', 'Enter a four-digit tax year and at least one official rule-source reference.', 'error', true);
+    return;
+  }
+  const result = await window.taxDesktop.project.create({ password, taxYear, ruleSources });
+  if (!acceptProjectResult(result)) { projectFailure('Project was not created', result); return; }
+  notify('Project created', 'The encrypted project file and initial append-only history revision were saved.', 'success');
+  showPanel('wizard-panel', '#question-title');
+}
+
+async function previewProject() {
+  const passwordInput = $('#open-project-password');
+  const password = passwordInput.value;
+  passwordInput.value = '';
+  if (password === '') {
+    notify('Project password required', 'Enter the project-file password before choosing a file to import.', 'error', true);
+    return;
+  }
+  const result = await window.taxDesktop.project.previewOpen({ password });
+  if (!result.ok) { projectFailure('Project import was rejected', result); return; }
+  const preview = result.data.preview;
+  $('#project-preview-details').innerHTML = `<dl><dt>File</dt><dd>${escapeHtml(preview.displayName)}</dd><dt>Tax year</dt><dd>${escapeHtml(preview.taxYear)}</dd><dt>History revisions</dt><dd>${escapeHtml(preview.revisionCount)}</dd><dt>Attachments</dt><dd>${escapeHtml(preview.attachmentCount)}</dd><dt>Members</dt><dd>${escapeHtml(preview.memberCount)}</dd></dl>`;
+  $('#project-reconcile').disabled = !preview.reconcileEligible;
+  $('#project-reconcile-policy').textContent = preview.reconcileEligible
+    ? 'Reconcile is eligible: both files have matching schema, paths, tax year, and portable-key lineage. Both histories stay reachable; the imported file state becomes current.'
+    : `Reconcile is unavailable: ${preview.reconcileIneligibility || 'the projects do not satisfy the same-lineage requirements'}. Create and open a copy, or explicitly replace after reviewing this preview.`;
+  $('#project-preview-dialog').showModal();
+}
+
+async function activateProjectPreview(strategy) {
+  let password = null;
+  if (strategy === 'create-copy') {
+    password = $('#preview-copy-password').value;
+    $('#preview-copy-password').value = '';
+    if (password === '') {
+      notify('Project password required', 'Enter a project-file password for the new copy.', 'error', true);
+      return;
+    }
+  }
+  const result = await window.taxDesktop.project.activatePreview({ strategy, password });
+  if (!result.ok) { projectFailure(strategy === 'reconcile' ? 'Histories were not reconciled' : 'Project was not opened', result); return; }
+  $('#project-preview-dialog').close();
+  if (!acceptProjectResult(result)) return;
+  notify('Project opened', strategy === 'create-copy' ? 'A new encrypted copy is open; the source file was not changed.' : 'The validated project is now open.', 'success');
+  showPanel('wizard-panel', '#question-title');
+}
+
+async function saveProject() {
+  const result = await window.taxDesktop.project.save();
+  if (!result.ok) { projectFailure('Project was not saved', result); return; }
+  if (result.data.status) projectStatus = result.data.status;
+  renderProjectStatus(); notify('Project saved', 'The authoritative project file was replaced atomically.', 'success');
+}
+
+async function saveProjectCopy() {
+  const passwordInput = $('#copy-project-password');
+  const password = passwordInput.value;
+  passwordInput.value = '';
+  if (password === '') {
+    notify('Project password required', 'Enter a project-file password for the saved copy.', 'error', true);
+    return;
+  }
+  const result = await window.taxDesktop.project.saveCopy({ password });
+  if (!result.ok) { projectFailure('Project copy was not saved', result); return; }
+  notify('Project copy saved', 'The copy uses its own password wrapper and did not overwrite another file.', 'success');
+}
+
+async function closeProject() {
+  const result = await window.taxDesktop.project.close();
+  if (!result.ok) { projectFailure('Project was not closed', result); return; }
+  appState = result.data.state; projectStatus = result.data.status; renderProjectStatus(); setWizardStep('start'); showPanel('project-panel');
+  notify('Project closed', 'Ephemeral extracted files were removed. The project file was preserved.', 'success');
 }
 
 function activeSteps() { return steps.filter((step) => !step.when || step.when(appState.wizard.answers)); }
@@ -214,11 +324,7 @@ async function parseSlip() {
   $('#slip-status').textContent = 'Reading the selected file locally…';
   const result = await window.taxDesktop.slips.parse({ fileName: file.name, mediaType: file.type, bytes: [...new Uint8Array(await file.arrayBuffer())] });
   if (!result.ok) { $('#slip-status').textContent = result.message; notify('Slip was not imported', result.message, 'error'); return; }
-  const nextState = structuredClone(appState);
-  nextState.imports.push({ id: crypto.randomUUID(), kind: 'slip-parser-draft', importedAt: new Date().toISOString(), status: 'correction-required', valueCount: result.values.length });
-  const saved = await window.taxDesktop.appState.mutate({ action: 'import', stableId: 'slip-import', summary: 'Imported a local slip draft for manual correction', nextState, metadata: { source: 'slip-parser', requiresCorrection: true } });
-  if (!saved.ok) { notify('Import not accepted', saved.message, 'error', true); return; }
-  appState = saved.state;
+  appState = result.state;
   $('#slip-status').textContent = `${result.values.length} draft values were found. Each one requires manual review and correction before use.`;
 }
 
@@ -307,6 +413,8 @@ function historyFailure(title, result) {
 }
 
 const commands = [
+  { title: 'Open project file', detail: 'Project file · Import', run: () => showPanel('project-panel', '#open-project-password') },
+  { title: 'Create project file', detail: 'Project file · New report', run: () => showPanel('project-panel', '#project-tax-year') },
   { title: 'Open guided return', detail: 'Guided return', run: () => showPanel('wizard-panel', '#question-title') },
   { title: 'Open local history', detail: 'Local history', run: () => showPanel('history-panel', '#history-search') },
   { title: 'Change language', detail: 'Settings · Language', run: () => showPanel('settings-panel', '#language-setting') },
@@ -337,6 +445,16 @@ function updateRegexFeedback() {
 function wireEvents() {
   $('#minimize-window').addEventListener('click', window.taxDesktop.window.minimize); $('#maximize-window').addEventListener('click', window.taxDesktop.window.maximize); $('#close-window').addEventListener('click', window.taxDesktop.window.close);
   $$('.rail-tab').forEach((tab) => tab.addEventListener('click', () => showPanel(tab.dataset.panel)));
+  $('#create-project').addEventListener('click', createProject);
+  $('#preview-project').addEventListener('click', previewProject);
+  $('#project-create-copy').addEventListener('click', () => activateProjectPreview('create-copy'));
+  $('#project-reconcile').addEventListener('click', () => activateProjectPreview('reconcile'));
+  $('#project-replace').addEventListener('click', () => activateProjectPreview('replace'));
+  $('#cancel-project-preview').addEventListener('click', () => window.taxDesktop.project.discardPreview());
+  $('#project-preview-dialog').addEventListener('close', () => window.taxDesktop.project.discardPreview());
+  $('#save-project').addEventListener('click', saveProject);
+  $('#save-project-copy').addEventListener('click', saveProjectCopy);
+  $('#close-project').addEventListener('click', closeProject);
   $('#back-step').addEventListener('click', () => { if (currentIndex > 0) { currentIndex -= 1; renderWizard(); } });
   $('#next-step').addEventListener('click', commitWizardAnswer);
   $('#save-progress').addEventListener('click', () => notify('Progress is saved after each answer', appState.wizard.lastSavedAt ? `Last saved ${new Date(appState.wizard.lastSavedAt).toLocaleString()}.` : 'Save the current answer to create the first revision.', 'info'));
@@ -359,8 +477,10 @@ function wireEvents() {
 
 async function start() {
   appState = await window.taxDesktop.appState.load();
-  applySettings(); wireEvents(); setWizardStep(appState.wizard.currentStepId);
-  if (!appState.historyAvailable) notify('Local history unavailable', appState.historyFailure, 'error', true);
+  const projectResult = await window.taxDesktop.project.status();
+  if (projectResult.ok) projectStatus = projectResult.data;
+  applySettings(); wireEvents(); setWizardStep(appState.wizard.currentStepId); renderProjectStatus();
+  if (appState.historyFailure) notify('Local history unavailable', appState.historyFailure, 'error', true);
 }
 
 start();

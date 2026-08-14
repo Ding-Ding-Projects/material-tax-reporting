@@ -25,7 +25,10 @@
 
     <div class="app-shell">
       <nav class="tab-rail" aria-label="Application pages" role="tablist" aria-orientation="vertical">
-        <button class="rail-tab active" role="tab" aria-selected="true" aria-controls="wizard-panel" data-panel="wizard-panel">
+        <button class="rail-tab active" role="tab" aria-selected="true" aria-controls="project-panel" data-panel="project-panel">
+          <span aria-hidden="true">📄</span><span>Project file</span>
+        </button>
+        <button class="rail-tab" role="tab" aria-selected="false" aria-controls="wizard-panel" data-panel="wizard-panel">
           <span aria-hidden="true">🧭</span><span>Guided return</span>
         </button>
         <button class="rail-tab" role="tab" aria-selected="false" aria-controls="history-panel" data-panel="history-panel">
@@ -44,7 +47,56 @@
       </nav>
 
       <main id="main-content">
-        <section id="wizard-panel" class="page-panel active" role="tabpanel" tabindex="0">
+        <section id="project-panel" class="page-panel active" role="tabpanel" tabindex="0">
+          <div class="page-heading">
+            <div>
+              <p class="eyebrow">One portable encrypted file</p>
+              <h1>Your tax project</h1>
+              <p>Every report is stored in one <code>.mtrproject</code> file. That file contains the encrypted current state, attachments, review records, and complete append-only local history.</p>
+            </div>
+          </div>
+
+          <div id="project-status-card" class="project-status-card" role="status">
+            <div><span class="status-dot" aria-hidden="true"></span><strong id="project-status-title">No project is open</strong></div>
+            <p id="project-status-detail">Create a project file or open an existing one before entering tax values.</p>
+          </div>
+
+          <div class="project-grid">
+            <section class="project-card">
+              <p class="eyebrow">New report</p>
+              <h2>Create a project</h2>
+              <p>Choose a tax year and a password. The password is used only in memory to wrap the portable project key.</p>
+              <label><span>Tax year</span><input id="project-tax-year" type="number" min="2000" max="2099" step="1" /></label>
+              <label><span>Rule-source references</span><textarea id="project-rule-sources" rows="4" placeholder="List the official CRA or provincial source references used by the tax-rule package."></textarea></label>
+              <label><span>Project-file password</span><input id="create-project-password" type="password" autocomplete="new-password" /></label>
+              <button id="create-project" class="filled-button" type="button">Choose location and create project</button>
+            </section>
+
+            <section class="project-card">
+              <p class="eyebrow">Existing report</p>
+              <h2>Open or import</h2>
+              <p>The complete file is authenticated, hashed, extracted to bounded scratch space, and checked as a Git object graph before it can replace live state.</p>
+              <label><span>Project-file password</span><input id="open-project-password" type="password" autocomplete="current-password" /></label>
+              <button id="preview-project" class="tonal-button" type="button">Choose file and preview import</button>
+            </section>
+          </div>
+
+          <section class="project-card active-project-actions">
+            <div><p class="eyebrow">Open project actions</p><h2>Save or move safely</h2><p>Saving is atomic. A copy always uses an explicit new destination and password and never silently overwrites another file.</p></div>
+            <div class="heading-actions">
+              <button id="save-project" class="filled-button" type="button" disabled>Save project</button>
+              <button id="save-project-copy" class="tonal-button" type="button" disabled>Save a copy…</button>
+              <button id="close-project" class="text-button" type="button" disabled>Close project</button>
+            </div>
+            <label><span>Password for a new saved copy</span><input id="copy-project-password" type="password" autocomplete="new-password" /></label>
+          </section>
+
+          <div class="boundary-banner" role="note">
+            <strong>The project file is authoritative.</strong> Temporary extracted files exist only while the project is open. Stale scratch is removed without deleting any <code>.mtrproject</code> file.
+          </div>
+        </section>
+
+        <section id="wizard-panel" class="page-panel" role="tabpanel" tabindex="0" hidden>
           <div class="page-heading">
             <div>
               <p class="eyebrow">Beginner-guided preparation</p>
@@ -221,6 +273,22 @@
         <label><span>Final confirmation</span><input id="prune-slider" type="range" min="0" max="100" value="0" disabled /></label>
         <p id="prune-status">Operate both acknowledgements to enable the final slider.</p>
         <menu><button value="cancel" class="text-button">Emergency exit</button><button id="confirm-prune" value="default" class="danger-button" disabled>Prune selected revisions</button></menu>
+      </form>
+    </dialog>
+
+    <dialog id="project-preview-dialog" class="confirmation-dialog">
+      <form method="dialog" class="confirmation-surface">
+        <h2>Validated project preview</h2>
+        <div id="project-preview-details"></div>
+        <div id="project-reconcile-policy" class="boundary-banner" role="status"></div>
+        <p><strong>No project state has been replaced.</strong> Choose an explicit route.</p>
+        <label><span>Password for a new project copy</span><input id="preview-copy-password" type="password" autocomplete="new-password" /></label>
+        <div class="preview-actions">
+          <button id="project-create-copy" type="button" class="tonal-button">Create and open a copy…</button>
+          <button id="project-reconcile" type="button" class="tonal-button">Reconcile histories; imported state wins</button>
+          <button id="project-replace" type="button" class="danger-button">Replace open project after preview</button>
+        </div>
+        <button id="cancel-project-preview" value="cancel" class="text-button">Cancel import</button>
       </form>
     </dialog>
 

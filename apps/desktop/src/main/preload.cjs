@@ -13,6 +13,16 @@ contextBridge.exposeInMainWorld('taxDesktop', {
     mutate: invoke('state:mutate'),
     discard: invoke('state:discard'),
   },
+  project: {
+    status: invoke('project:status'),
+    create: invoke('project:create'),
+    previewOpen: invoke('project:preview-open'),
+    activatePreview: invoke('project:activate-preview'),
+    discardPreview: invoke('project:discard-preview'),
+    save: invoke('project:save'),
+    saveCopy: invoke('project:save-copy'),
+    close: invoke('project:close'),
+  },
   slips: {
     status: invoke('slips:status'),
     parse: invoke('slips:parse'),

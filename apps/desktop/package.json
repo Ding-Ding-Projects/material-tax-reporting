@@ -9,7 +9,7 @@
     "start": "electron ."
   },
   "dependencies": {
-    "electron": "38.0.0"
+    "electron": "39.8.10"
   },
   "license": "MIT"
 }

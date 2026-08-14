@@ -452,6 +452,12 @@ class LocalHistoryService {
     };
   }
 
+  dispose() {
+    if (Buffer.isBuffer(this.key)) this.key.fill(0);
+    this.key = null;
+    this.initialized = false;
+  }
+
   exportRedacted(destination) {
     this.#requireInitialized();
     const destinationPath = path.resolve(destination);
