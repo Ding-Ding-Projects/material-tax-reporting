@@ -56,38 +56,23 @@ if ($LASTEXITCODE -eq 0 -and -not [string]::IsNullOrWhiteSpace(($existingTag -jo
 $dimSum = Get-Content -LiteralPath $DimSumPath -Raw | ConvertFrom-Json
 $title = "Material Tax Reporting $Tag"
 if ($dimSum.available) { $title = "$title - $($dimSum.codeName)" }
-$initialNotes = @(
-    'Unsigned Squirrel.Windows release. Code signing is permanently disabled.'
-    ''
-    "Source commit: ``$CommitSha``"
-    'Release evidence is being finalized by the same workflow run.'
-) -join "`n"
-
-$createArguments = @('release', 'create', $Tag, '--repo', $Repository, '--target', $CommitSha, '--title', $title, '--notes', $initialNotes, '--draft')
-$createArguments += $primaryAssets
-& gh @createArguments
-if ($LASTEXITCODE -ne 0) { throw "Creating the draft release failed with exit code $LASTEXITCODE." }
-
-& gh release edit $Tag --repo $Repository --draft=false
-if ($LASTEXITCODE -ne 0) { throw "Publishing release $Tag failed with exit code $LASTEXITCODE." }
-
-$release = (& gh release view $Tag --repo $Repository --json tagName,isDraft,isPrerelease,publishedAt,targetCommitish,url,assets) | ConvertFrom-Json
-if ($LASTEXITCODE -ne 0 -or $release.isDraft -or $release.isPrerelease -or $release.tagName -ne $Tag) {
-    throw 'The published release is missing, draft, prerelease, or has the wrong tag.'
-}
 $started = [DateTimeOffset]::Parse($WorkflowStartedAt).ToUniversalTime()
-$published = [DateTimeOffset]::Parse($release.publishedAt).ToUniversalTime()
-$duration = $published - $started
-if ($duration.TotalSeconds -lt 0) { throw 'The release publication timestamp precedes the workflow start.' }
-$durationText = '{0:00}:{1:00}:{2:00}' -f [Math]::Floor($duration.TotalHours), $duration.Minutes, $duration.Seconds
+$timingCaptured = [DateTimeOffset]::UtcNow
+$prepublicationElapsed = $timingCaptured - $started
+if ($prepublicationElapsed.TotalSeconds -lt 0) { throw 'The timing evidence timestamp precedes the workflow start.' }
+$prepublicationDuration = '{0:00}:{1:00}:{2:00}' -f [Math]::Floor($prepublicationElapsed.TotalHours), $prepublicationElapsed.Minutes, $prepublicationElapsed.Seconds
+$timingLimitation = 'The exact publication-completion timestamp is returned only after the final draft-to-public transition. This atomic publication path performs no post-publication mutation, so completion and end-to-end duration remain absent from embedded assets and are reported only in the workflow log after publication.'
 
 $timingPath = Join-Path $releaseRoot 'workflow-timing.json'
 $timing = [ordered]@{
     schemaVersion = 1
     workflowStarted = $started.ToString('yyyy-MM-ddTHH:mm:ssZ')
-    workflowCompleted = $published.ToString('yyyy-MM-ddTHH:mm:ssZ')
-    workflowDuration = $durationText
+    prepublicationEvidenceTimestamp = $timingCaptured.ToString('yyyy-MM-ddTHH:mm:ssZ')
+    prepublicationElapsed = $prepublicationDuration
+    publicationCompleted = $null
+    workflowDuration = $null
     workflowRun = "$env:GITHUB_SERVER_URL/$Repository/actions/runs/$env:GITHUB_RUN_ID"
+    limitation = $timingLimitation
 }
 $timing | ConvertTo-Json | Set-Content -LiteralPath $timingPath -Encoding utf8
 
@@ -114,8 +99,11 @@ $notes = @(
     "- Source commit: ``$CommitSha``"
     "- Workflow run: $env:GITHUB_SERVER_URL/$Repository/actions/runs/$env:GITHUB_RUN_ID"
     "- Workflow started: $($started.ToString('yyyy-MM-ddTHH:mm:ssZ'))"
-    "- Workflow completed: $($published.ToString('yyyy-MM-ddTHH:mm:ssZ'))"
-    "- Workflow duration: $durationText"
+    "- Prepublication evidence timestamp: $($timingCaptured.ToString('yyyy-MM-ddTHH:mm:ssZ'))"
+    "- Prepublication elapsed time: $prepublicationDuration"
+    '- Workflow completed: not embedded; publication occurs only after this complete draft is read back.'
+    '- Workflow duration: not embedded; exact completion is reported in the workflow log after the single public-state transition.'
+    "- Timing limitation: $timingLimitation"
     '- Installer: unsigned Squirrel.Windows Setup.exe with RELEASES, a full package, and any generated delta packages.'
     '- Signing: NotSigned. Windows may show an unknown-publisher or SmartScreen warning.'
     '- Automated checks: no tests, lint, type checks, security scans, accessibility checks, or screenshots ran in this release workflow.'
@@ -135,10 +123,65 @@ $hashLines = foreach ($assetPath in $hashInputs) {
 $hashLines | Set-Content -LiteralPath $hashPath -Encoding ascii
 
 $evidenceAssets = @($hashPath, $timingPath, $lineCountPath, $releaseNotesPath)
-& gh release upload $Tag @evidenceAssets --repo $Repository
-if ($LASTEXITCODE -ne 0) { throw "Uploading release evidence failed with exit code $LASTEXITCODE." }
-& gh release edit $Tag --repo $Repository --notes-file $releaseNotesPath
-if ($LASTEXITCODE -ne 0) { throw "Finalizing release notes failed with exit code $LASTEXITCODE." }
+$allAssets = @($primaryAssets + $evidenceAssets)
+$expectedNames = @($manifest.artifacts.name + @('SHA256SUMS.txt', 'workflow-timing.json', 'line-count.md', 'release-notes.md'))
+$createArguments = @('release', 'create', $Tag, '--repo', $Repository, '--target', $CommitSha, '--title', $title, '--notes-file', $releaseNotesPath, '--draft')
+$createArguments += $allAssets
+& gh @createArguments
+if ($LASTEXITCODE -ne 0) { throw "Creating the complete draft release failed with exit code $LASTEXITCODE." }
+
+$releasePages = (& gh api --paginate --slurp "repos/$Repository/releases?per_page=100") | ConvertFrom-Json
+if ($LASTEXITCODE -ne 0) { throw 'The draft release inventory could not be read back.' }
+$releaseInventory = @()
+foreach ($page in @($releasePages)) { $releaseInventory += @($page) }
+$draftMatches = @($releaseInventory | Where-Object tag_name -eq $Tag)
+if ($draftMatches.Count -ne 1) { throw "Expected exactly one draft record for $Tag; received $($draftMatches.Count)." }
+$draft = $draftMatches[0]
+if (-not $draft.draft -or $draft.prerelease -or $draft.target_commitish -ne $CommitSha) {
+    throw 'The private release record is not a draft, is a prerelease, or targets the wrong commit.'
+}
+$normalizedDraftBody = ([string]$draft.body).Replace("`r`n", "`n").Trim()
+$normalizedExpectedBody = ([string]$notes).Replace("`r`n", "`n").Trim()
+if ($normalizedDraftBody -ne $normalizedExpectedBody) { throw 'The complete draft notes did not read back byte-for-text equivalent.' }
+
+$readbackRoot = Join-Path $releaseRoot '.draft-readback'
+$expectedReadbackRoot = [IO.Path]::GetFullPath((Join-Path $releaseRoot '.draft-readback'))
+if ([IO.Path]::GetFullPath($readbackRoot) -ne $expectedReadbackRoot) { throw 'The draft readback path is outside the release directory.' }
+if (Test-Path -LiteralPath $readbackRoot) { Remove-Item -LiteralPath $readbackRoot -Recurse -Force }
+New-Item -ItemType Directory -Path $readbackRoot -Force | Out-Null
+try {
+    foreach ($expectedName in $expectedNames) {
+        $matches = @($draft.assets | Where-Object name -eq $expectedName)
+        if ($matches.Count -ne 1 -or $matches[0].size -le 0 -or [string]::IsNullOrWhiteSpace($matches[0].url)) {
+            throw "Draft release asset $expectedName is missing, duplicated, empty, or lacks an API URL."
+        }
+        $sourcePath = Join-Path $releaseRoot $expectedName
+        $readbackPath = Join-Path $readbackRoot $expectedName
+        $headers = @{
+            Accept = 'application/octet-stream'
+            Authorization = "Bearer $env:GH_TOKEN"
+            'X-GitHub-Api-Version' = '2022-11-28'
+            'User-Agent' = 'material-tax-reporting-release'
+        }
+        Invoke-WebRequest -UseBasicParsing -Uri $matches[0].url -Headers $headers -OutFile $readbackPath
+        $sourceHash = (Get-FileHash -LiteralPath $sourcePath -Algorithm SHA256).Hash.ToLowerInvariant()
+        $readbackHash = (Get-FileHash -LiteralPath $readbackPath -Algorithm SHA256).Hash.ToLowerInvariant()
+        if ($sourceHash -ne $readbackHash) { throw "Draft release asset $expectedName failed authenticated hash readback." }
+    }
+}
+finally {
+    if (Test-Path -LiteralPath $readbackRoot) { Remove-Item -LiteralPath $readbackRoot -Recurse -Force }
+}
+
+$publishedRecord = (& gh api --method PATCH "repos/$Repository/releases/$($draft.id)" -F draft=false) | ConvertFrom-Json
+if ($LASTEXITCODE -ne 0) { throw "Publishing the verified complete draft $Tag failed with exit code $LASTEXITCODE." }
+if ($publishedRecord.draft -or $publishedRecord.prerelease -or $publishedRecord.tag_name -ne $Tag -or -not $publishedRecord.published_at) {
+    throw 'The single final public-state transition did not return the expected published release.'
+}
+$published = [DateTimeOffset]::Parse($publishedRecord.published_at).ToUniversalTime()
+$duration = $published - $started
+if ($duration.TotalSeconds -lt 0) { throw 'The release publication timestamp precedes the workflow start.' }
+$durationText = '{0:00}:{1:00}:{2:00}' -f [Math]::Floor($duration.TotalHours), $duration.Minutes, $duration.Seconds
 
 $tagReference = (& gh api "repos/$Repository/git/ref/tags/$Tag") | ConvertFrom-Json
 if ($LASTEXITCODE -ne 0) { throw "The published tag $Tag could not be resolved." }
@@ -152,7 +195,6 @@ if ($resolvedSha -ne $CommitSha) { throw "Release tag $Tag resolves to $resolved
 
 $finalRelease = (& gh release view $Tag --repo $Repository --json tagName,isDraft,isPrerelease,targetCommitish,url,assets) | ConvertFrom-Json
 if ($finalRelease.isDraft -or $finalRelease.isPrerelease -or $finalRelease.tagName -ne $Tag) { throw 'Final release state is not a unique non-draft release.' }
-$expectedNames = @($manifest.artifacts.name + @('SHA256SUMS.txt', 'workflow-timing.json', 'line-count.md', 'release-notes.md'))
 foreach ($expectedName in $expectedNames) {
     $matches = @($finalRelease.assets | Where-Object name -eq $expectedName)
     if ($matches.Count -ne 1 -or $matches[0].size -le 0 -or [string]::IsNullOrWhiteSpace($matches[0].url)) {
@@ -161,5 +203,7 @@ foreach ($expectedName in $expectedNames) {
 }
 Write-Host "Published release: $($finalRelease.url)"
 Write-Host "Published source commit: $resolvedSha"
+Write-Host "Publication completed: $($published.ToString('yyyy-MM-ddTHH:mm:ssZ'))"
+Write-Host "Exact end-to-end duration: $durationText"
+Write-Host 'The exact completion timestamp and duration are intentionally log-only because the release is not mutated after publication.'
 Write-Host "Published assets: $($expectedNames -join ', ')"
-

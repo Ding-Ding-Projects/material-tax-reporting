@@ -14,9 +14,12 @@ Each successful run creates one unique semantic version and one non-draft releas
 - `line-count.md`
 - `release-notes.md`
 
-The release notes identify the exact source commit, workflow run, start and publication timestamps, stable `HH:mm:ss` duration, unsigned status, and SmartScreen/unknown-publisher warning. The workflow selects the next unused dish only when its image exists in a published `catalog-v1*` release of `Ding-Ding-Projects/dim-sum-photos`; it links that public asset without copying or attaching the photo.
+The workflow prepares every primary artifact, evidence asset, and complete release-note body while the release remains a private draft. It then reads back every uploaded asset through the authenticated API, compares SHA-256 values, compares the complete note body, and makes `draft=false` the single final public-state mutation. A failure before that transition leaves no incomplete public release.
+
+Release evidence identifies the exact source commit, workflow run, start timestamp, prepublication evidence timestamp, prepublication elapsed duration, unsigned status, and SmartScreen/unknown-publisher warning. GitHub reports the exact publication-completion timestamp only after the final draft-to-public transition. Embedding that timestamp would require a second public mutation, so this atomic workflow does not claim it inside the release assets or notes; it records the exact completion and end-to-end duration in the workflow log after publication. A full release-verification process must resolve that evidence limitation without weakening atomic publication.
+
+The workflow selects the next unused dish only when its image exists in a published `catalog-v1*` release of `Ding-Ding-Projects/dim-sum-photos`; it links that public asset without copying or attaching the photo.
 
 The release workflow intentionally contains no test, lint, type-check, static-analysis, security, accessibility, or screenshot steps. A successful workflow proves build, packaging, publication, and attached evidence only. It does not prove runtime behavior, installation, visual appearance, accessibility, security, or tax correctness.
 
 Release API operations use `RELEASE_TOKEN`, then `ORG_TOKEN`, then the workflow token through `GH_TOKEN`. Tokens are never printed or written to release evidence. Safe logs and metadata upload under `if: always()` with bounded retention and do not include source trees, dependency directories, caches, or credentials.
-
