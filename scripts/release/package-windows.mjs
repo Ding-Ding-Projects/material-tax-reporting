@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
-import { readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
+import { mkdtemp, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -13,6 +14,18 @@ const packagePath = path.join(appRoot, "package.json");
 const generatedIcon = path.join(appRoot, "build", "icon.ico");
 const releasedIcon = path.join(outputRoot, "material-tax-reporting.ico");
 const electronBuilder = path.join(repositoryRoot, "node_modules", ".bin", "electron-builder.cmd");
+const offlineOcrStager = path.join(
+  repositoryRoot,
+  "packages",
+  "slip-parser",
+  "scripts",
+  "stage-offline-ocr-assets.mjs",
+);
+const expectedDesktopOutputs = [
+  "apps/desktop/dist/main/main.js",
+  "apps/desktop/dist/preload/index.cjs",
+  "apps/desktop/dist/renderer/index.html",
+];
 
 function fail(message) {
   throw new Error(`Windows packaging failed: ${message}`);
@@ -40,6 +53,75 @@ async function requiredFile(filePath, label) {
   return details;
 }
 
+function normalizedPortablePath(value, label) {
+  if (typeof value !== "string" || value.length === 0 || value.includes("\\")) {
+    fail(`${label} must be a non-empty portable path`);
+  }
+  const segments = value.split("/");
+  if (path.isAbsolute(value) || segments.some((segment) => !segment || segment === "." || segment === "..")) {
+    fail(`${label} must stay within the staged OCR runtime`);
+  }
+  return segments;
+}
+
+async function verifyOfflineOcrRuntime(root, expectedManifestHash = null) {
+  const manifestPath = path.join(root, "offline-ocr-assets.lock.json");
+  await requiredFile(manifestPath, "the staged offline OCR asset manifest");
+  const manifestBytes = await readFile(manifestPath);
+  let evidence;
+  try {
+    evidence = JSON.parse(manifestBytes.toString("utf8"));
+  } catch (error) {
+    fail(`the staged offline OCR asset manifest is invalid JSON: ${error.message}`);
+  }
+  if (
+    evidence.schemaVersion !== 2 ||
+    evidence.target !== "win32-x64" ||
+    evidence.platform !== "win32" ||
+    evidence.architecture !== "x64" ||
+    evidence.policy?.offline !== true ||
+    evidence.policy?.pathLookup !== false ||
+    evidence.policy?.runtimeDownload !== false ||
+    evidence.policy?.cloudFallback !== false ||
+    evidence.policy?.networkAccess !== "forbidden"
+  ) {
+    fail("the staged offline OCR manifest does not contain the required Windows x64 offline policy");
+  }
+  if (!Array.isArray(evidence.packages) || evidence.packages.length === 0 || !Array.isArray(evidence.files) || evidence.files.length === 0) {
+    fail("the staged offline OCR manifest has no package closure or runtime files");
+  }
+
+  let totalBytes = 0;
+  const seenPaths = new Set();
+  const resolvedRoot = path.resolve(root) + path.sep;
+  for (const file of evidence.files) {
+    const segments = normalizedPortablePath(file.path, `offline OCR file ${file.path ?? "unknown"}`);
+    if (seenPaths.has(file.path)) fail(`the offline OCR manifest repeats ${file.path}`);
+    seenPaths.add(file.path);
+    const filePath = path.resolve(root, ...segments);
+    if (!filePath.startsWith(resolvedRoot)) fail(`offline OCR file escapes the staged runtime: ${file.path}`);
+    const details = await requiredFile(filePath, `offline OCR file ${file.path}`);
+    const actualHash = await sha256(filePath);
+    if (details.size !== file.bytes || actualHash !== file.sha256) {
+      fail(`offline OCR file evidence does not match ${file.path}`);
+    }
+    totalBytes += details.size;
+  }
+  if (
+    evidence.totals?.packages !== evidence.packages.length ||
+    evidence.totals?.files !== evidence.files.length ||
+    evidence.totals?.bytes !== totalBytes
+  ) {
+    fail("the staged offline OCR totals do not match the packaged closure");
+  }
+
+  const manifestHash = createHash("sha256").update(manifestBytes).digest("hex");
+  if (expectedManifestHash && manifestHash !== expectedManifestHash) {
+    fail("the packaged offline OCR manifest differs from the atomically staged manifest");
+  }
+  return { evidence, manifestHash };
+}
+
 const outputResolved = path.resolve(outputRoot);
 const expectedOutputResolved = path.resolve(repositoryRoot, "dist", "squirrel-windows");
 if (outputResolved !== expectedOutputResolved) fail(`refusing to clear unexpected output directory ${outputResolved}`);
@@ -58,6 +140,10 @@ const provenance = JSON.parse(await readFile(provenancePath, "utf8").catch(() =>
 if (!provenance || provenance.schemaVersion !== 1 || !/^[0-9a-f]{40}$/.test(provenance.sourceCommit ?? "")) {
   fail("current desktop build provenance is missing or invalid");
 }
+const provenancePaths = (provenance.outputs ?? []).map((output) => String(output.path).replaceAll("\\", "/")).sort();
+if (provenancePaths.join("\n") !== [...expectedDesktopOutputs].sort().join("\n")) {
+  fail(`desktop build provenance must contain exactly: ${expectedDesktopOutputs.join(", ")}`);
+}
 for (const output of provenance.outputs ?? []) {
   const outputPath = path.resolve(repositoryRoot, output.path);
   if (!outputPath.startsWith(path.resolve(appRoot) + path.sep)) fail(`provenance path escapes the desktop workspace: ${output.path}`);
@@ -74,6 +160,7 @@ await requiredFile(electronBuilder, "the pinned electron-builder executable");
 await rm(outputRoot, { recursive: true, force: true });
 run(process.execPath, [path.join(scriptDirectory, "generate-windows-icon.mjs")]);
 await requiredFile(generatedIcon, "the generated multi-resolution Windows icon");
+await requiredFile(offlineOcrStager, "the committed offline OCR staging script");
 
 const packageEnvironment = {
   ...process.env,
@@ -82,11 +169,33 @@ const packageEnvironment = {
   WIN_CSC_LINK: "",
   CSC_KEY_PASSWORD: "",
 };
-run(
-  electronBuilder,
-  ["--projectDir", "apps/desktop", "--config", "../../electron-builder.yml", "--win", "squirrel", "--publish", "never"],
-  { env: packageEnvironment },
+const offlineOcrTemporaryRoot = await mkdtemp(
+  path.join(tmpdir(), "material-tax-reporting-offline-ocr-"),
 );
+const stagedOfflineOcrRoot = path.join(offlineOcrTemporaryRoot, "runtime");
+let packagedOfflineOcr;
+try {
+  run(process.execPath, [offlineOcrStager, "--output", stagedOfflineOcrRoot]);
+  const stagedOfflineOcr = await verifyOfflineOcrRuntime(stagedOfflineOcrRoot);
+  packageEnvironment.MTR_OFFLINE_OCR_STAGE = stagedOfflineOcrRoot;
+  run(
+    electronBuilder,
+    ["--projectDir", "apps/desktop", "--config", "../../electron-builder.yml", "--win", "squirrel", "--publish", "never"],
+    { env: packageEnvironment },
+  );
+  const packagedOfflineOcrRoot = path.join(
+    outputRoot,
+    "win-unpacked",
+    "resources",
+    "offline-ocr-runtime",
+  );
+  packagedOfflineOcr = await verifyOfflineOcrRuntime(
+    packagedOfflineOcrRoot,
+    stagedOfflineOcr.manifestHash,
+  );
+} finally {
+  await rm(offlineOcrTemporaryRoot, { recursive: true, force: true });
+}
 
 const expectedSetupName = `MaterialTaxReporting-${packageJson.version}-Setup.exe`;
 const expectedFullName = `MaterialTaxReporting-${packageJson.version}-full.nupkg`;
@@ -143,6 +252,14 @@ const manifest = {
     electron: rootPackage.devDependencies.electron,
     electronBuilder: rootPackage.devDependencies["electron-builder"],
     squirrelPlugin: rootPackage.devDependencies["electron-builder-squirrel-windows"],
+  },
+  offlineOcr: {
+    target: packagedOfflineOcr.evidence.target,
+    packages: packagedOfflineOcr.evidence.totals.packages,
+    files: packagedOfflineOcr.evidence.totals.files,
+    bytes: packagedOfflineOcr.evidence.totals.bytes,
+    manifestSha256: packagedOfflineOcr.manifestHash,
+    resourcePath: "resources/offline-ocr-runtime",
   },
   artifacts,
 };

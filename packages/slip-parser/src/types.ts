@@ -25,6 +25,13 @@ export interface ParserLimits {
   readonly maxExtractedTokens: number;
   readonly maxExtractedCharacters: number;
   readonly maxCandidateCount: number;
+  readonly maxOcrPages: number;
+  readonly maxOcrPagePixels: number;
+  readonly maxOcrTotalPixels: number;
+  readonly maxOcrRasterScale: number;
+  readonly maxOcrDurationMs: number;
+  readonly maxOcrMemoryBytes: number;
+  readonly maxOcrConcurrency: number;
 }
 
 export const DEFAULT_PARSER_LIMITS: Readonly<ParserLimits> = Object.freeze({
@@ -37,6 +44,13 @@ export const DEFAULT_PARSER_LIMITS: Readonly<ParserLimits> = Object.freeze({
   maxExtractedTokens: 100_000,
   maxExtractedCharacters: 2_000_000,
   maxCandidateCount: 1_000,
+  maxOcrPages: 25,
+  maxOcrPagePixels: 12_000_000,
+  maxOcrTotalPixels: 40_000_000,
+  maxOcrRasterScale: 2.5,
+  maxOcrDurationMs: 120_000,
+  maxOcrMemoryBytes: 512 * 1024 * 1024,
+  maxOcrConcurrency: 1,
 });
 
 export type ParserIssueSeverity = "info" | "warning" | "error";
@@ -53,6 +67,8 @@ export interface ParserIssue {
     | "unsupported-adapter"
     | "adapter-runtime-unproven"
     | "adapter-failed"
+    | "cancelled"
+    | "processing-timeout"
     | "resource-limit"
     | "unclassified-slip"
     | "ambiguous-slip-type"
@@ -83,12 +99,16 @@ export interface TextEvidence {
   readonly coordinateSpace: "pdf-points-bottom-left" | "image-pixels-top-left";
   readonly confidence: number;
   readonly adapterId: string;
+  readonly sourceDigest: string;
+  readonly pageDigest: string;
+  readonly evidenceDigest: string;
 }
 
 export interface ExtractedTextDocument {
   readonly pageCount: number;
   readonly tokens: readonly TextEvidence[];
   readonly warnings: readonly ParserIssue[];
+  readonly evidenceDigest: string;
 }
 
 export interface BundledAdapterProof {
@@ -111,7 +131,12 @@ export interface TextExtractionAdapter {
   extract(
     document: AdmittedDocument,
     limits: Readonly<ParserLimits>,
+    context?: Readonly<ExtractionContext>,
   ): Promise<AdapterExtractionResult>;
+}
+
+export interface ExtractionContext {
+  readonly signal?: AbortSignal;
 }
 
 export type AdapterExtractionResult =
@@ -127,7 +152,7 @@ export type AdapterExtractionResult =
 export interface PdfAdmissionMetadata {
   readonly version: string;
   readonly objectCount: number;
-  readonly pageCount: number;
+  readonly pageCount: number | null;
   readonly encrypted: false;
 }
 
@@ -261,6 +286,7 @@ export interface SlipParserDraft {
     readonly artifactVersion: string;
     readonly runtimeId: string;
   };
+  readonly extractionEvidenceDigest: string;
   readonly classification: SlipClassification;
   readonly taxYear: TaxYearDetection;
   readonly candidates: readonly ExtractedBoxCandidate[];
@@ -290,6 +316,7 @@ export interface ManualReviewChecklist {
   readonly slipTypeConfirmed: true;
   readonly taxYearConfirmed: true;
   readonly everyCandidateReviewed: true;
+  readonly extractionEvidenceReviewed: true;
   readonly everyAmbiguityResolved: true;
   readonly missingFieldsReviewed: true;
   readonly officialMappingsReviewed: true;

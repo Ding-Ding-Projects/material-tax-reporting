@@ -1,0 +1,293 @@
+{
+  "schemaVersion": 2,
+  "adapterId": "bundled-tesseract-pdfjs-ocr-v1",
+  "environment": {
+    "runtime": "Node.js or Electron main process",
+    "nodeConstraint": ">=22.13.0 || >=24",
+    "offline": true,
+    "pathLookup": false,
+    "runtimeDownload": false,
+    "cloudFallback": false,
+    "networkAccess": "forbidden",
+    "telemetry": "none"
+  },
+  "supportedTargets": [
+    {
+      "id": "win32-x64",
+      "platform": "win32",
+      "architecture": "x64",
+      "nativePackage": "@napi-rs/canvas-win32-x64-msvc",
+      "requiredFiles": [
+        "node_modules/@napi-rs/canvas-win32-x64-msvc/skia.win32-x64-msvc.node"
+      ]
+    },
+    {
+      "id": "win32-arm64",
+      "platform": "win32",
+      "architecture": "arm64",
+      "nativePackage": "@napi-rs/canvas-win32-arm64-msvc",
+      "requiredFiles": [
+        "node_modules/@napi-rs/canvas-win32-arm64-msvc/skia.win32-arm64-msvc.node"
+      ]
+    }
+  ],
+  "productionRoots": [
+    "@napi-rs/canvas",
+    "@tesseract.js-data/eng",
+    "@tesseract.js-data/fra",
+    "pdfjs-dist",
+    "tesseract.js",
+    "tesseract.js-core"
+  ],
+  "packages": [
+    {
+      "name": "@napi-rs/canvas",
+      "version": "1.0.6",
+      "installPath": "node_modules/@napi-rs/canvas",
+      "resolved": "https://registry.npmjs.org/@napi-rs/canvas/-/canvas-1.0.6.tgz",
+      "integrity": "sha512-Ud4d0jLr9vSaakvfOTIjgP3hoY8kMIYgHC4mtE4L0bP3St9lf6TyCVsInvFIOEofzcUeMfDydHDy8Fs2WuWz+A==",
+      "license": "MIT",
+      "upstream": "https://github.com/Brooooooklyn/canvas",
+      "purpose": "Bundled image decoder, canvas, and Windows native rasterizer"
+    },
+    {
+      "name": "@napi-rs/canvas-win32-arm64-msvc",
+      "version": "1.0.6",
+      "installPath": "node_modules/@napi-rs/canvas-win32-arm64-msvc",
+      "resolved": "https://registry.npmjs.org/@napi-rs/canvas-win32-arm64-msvc/-/canvas-win32-arm64-msvc-1.0.6.tgz",
+      "integrity": "sha512-byzha357piy0wgK6IZOQtU4plpt94f6CxHFS7LhJpWYrDWWT/AitQNxRMfCNNaQHZXUB3BwNhQSfH2RpiZ0WaQ==",
+      "license": "MIT",
+      "targets": [
+        "win32-arm64"
+      ],
+      "purpose": "Windows arm64 native canvas binding"
+    },
+    {
+      "name": "@napi-rs/canvas-win32-x64-msvc",
+      "version": "1.0.6",
+      "installPath": "node_modules/@napi-rs/canvas-win32-x64-msvc",
+      "resolved": "https://registry.npmjs.org/@napi-rs/canvas-win32-x64-msvc/-/canvas-win32-x64-msvc-1.0.6.tgz",
+      "integrity": "sha512-gWLOgKGZz3hZhzg49q2PJIURwy2pCWh1zvNFXmLO1yineOPhEpoL3EV6/VIjOiKa1l2P6ieP12Eo385u1MLLVQ==",
+      "license": "MIT",
+      "targets": [
+        "win32-x64"
+      ],
+      "purpose": "Windows x64 native canvas binding"
+    },
+    {
+      "name": "@tesseract.js-data/eng",
+      "version": "1.0.0",
+      "installPath": "node_modules/@tesseract.js-data/eng",
+      "resolved": "https://registry.npmjs.org/@tesseract.js-data/eng/-/eng-1.0.0.tgz",
+      "integrity": "sha512-mbTumm6KQPUHyzTPQaF3ObXYnx0SqqfV2nabqFVQBwD6Kl7PhGSLSzOlfFTWy0P3BjghaSKA2W9GB19Jk+ZcTg==",
+      "license": "MIT",
+      "upstream": "https://github.com/naptha/tessdata",
+      "purpose": "Bundled English OCR language data"
+    },
+    {
+      "name": "@tesseract.js-data/fra",
+      "version": "1.0.0",
+      "installPath": "node_modules/@tesseract.js-data/fra",
+      "resolved": "https://registry.npmjs.org/@tesseract.js-data/fra/-/fra-1.0.0.tgz",
+      "integrity": "sha512-pp58gMaoyidoBBLd5y5rnf0WW0Y1994QrGqZrYatITqIU/AReUJMykD+YY3JDgvnmgz7uAx1UmhjjuyEmV8JEA==",
+      "license": "MIT",
+      "upstream": "https://github.com/naptha/tessdata",
+      "purpose": "Bundled French OCR language data"
+    },
+    {
+      "name": "bmp-js",
+      "version": "0.1.0",
+      "installPath": "node_modules/bmp-js",
+      "resolved": "https://registry.npmjs.org/bmp-js/-/bmp-js-0.1.0.tgz",
+      "integrity": "sha512-vHdS19CnY3hwiNdkaqk93DvjVLfbEcI8mys4UjuWrlX1haDmroo8o4xCzh4wD6DGV6HxRCyauwhHRqMTfERtjw==",
+      "license": "MIT",
+      "purpose": "Tesseract image decoder dependency"
+    },
+    {
+      "name": "idb-keyval",
+      "version": "6.3.0",
+      "installPath": "node_modules/idb-keyval",
+      "resolved": "https://registry.npmjs.org/idb-keyval/-/idb-keyval-6.3.0.tgz",
+      "integrity": "sha512-um+2dgAWmYsu615EXpWVwSmapJhON0G43t3Ka/EVaohzPQXSMqKEqeDK/oIW3Ow+BXaF2PvSc+oBTFp793A5Ow==",
+      "license": "Apache-2.0",
+      "purpose": "Tesseract production dependency"
+    },
+    {
+      "name": "is-url",
+      "version": "1.2.4",
+      "installPath": "node_modules/is-url",
+      "resolved": "https://registry.npmjs.org/is-url/-/is-url-1.2.4.tgz",
+      "integrity": "sha512-ITvGim8FhRiYe4IQ5uHSkj7pVaPDrCTkNd3yq3cV7iZAcJdHTUMPMEHcqSOy9xZ9qFenQCvi+2wjH9a1nXqHww==",
+      "license": "MIT",
+      "purpose": "Tesseract production dependency"
+    },
+    {
+      "name": "node-fetch",
+      "version": "2.7.0",
+      "installPath": "node_modules/node-fetch",
+      "resolved": "https://registry.npmjs.org/node-fetch/-/node-fetch-2.7.0.tgz",
+      "integrity": "sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==",
+      "license": "MIT",
+      "purpose": "Installed Tesseract production dependency; runtime network access remains forbidden"
+    },
+    {
+      "name": "opencollective-postinstall",
+      "version": "2.0.3",
+      "installPath": "node_modules/opencollective-postinstall",
+      "resolved": "https://registry.npmjs.org/opencollective-postinstall/-/opencollective-postinstall-2.0.3.tgz",
+      "integrity": "sha512-8AV/sCtuzUeTo8gQK5qDZzARrulB3egtLzFgteqB2tcT4Mw7B8Kt7JcDHmltjz6FOAHsvTevk70gZEbhM4ZS9Q==",
+      "license": "MIT",
+      "purpose": "Installed Tesseract production dependency; no lifecycle script is executed while staging"
+    },
+    {
+      "name": "pdfjs-dist",
+      "version": "6.1.200",
+      "installPath": "node_modules/pdfjs-dist",
+      "resolved": "https://registry.npmjs.org/pdfjs-dist/-/pdfjs-dist-6.1.200.tgz",
+      "integrity": "sha512-o8MolyzirkkLrcdsae/HEOiIcXWI7DS5zGpvqW8xTC2YUsW30rltFw2bDGvw/fskUdEMrQm2br68jzDS5BH2vw==",
+      "license": "Apache-2.0",
+      "upstream": "https://github.com/mozilla/pdf.js",
+      "purpose": "Bounded local PDF decoding and page rasterization"
+    },
+    {
+      "name": "regenerator-runtime",
+      "version": "0.13.11",
+      "installPath": "node_modules/regenerator-runtime",
+      "resolved": "https://registry.npmjs.org/regenerator-runtime/-/regenerator-runtime-0.13.11.tgz",
+      "integrity": "sha512-kY1AZVr2Ra+t+piVaJ4gxaFaReZVH40AKNo7UCX6W+dEwBo/2oZJzqfuN1qLq1oL45o56cPaTXELwrTh8Fpggg==",
+      "license": "MIT",
+      "purpose": "Tesseract production dependency"
+    },
+    {
+      "name": "tesseract.js",
+      "version": "7.0.0",
+      "installPath": "node_modules/tesseract.js",
+      "resolved": "https://registry.npmjs.org/tesseract.js/-/tesseract.js-7.0.0.tgz",
+      "integrity": "sha512-exPBkd+z+wM1BuMkx/Bjv43OeLBxhL5kKWsz/9JY+DXcXdiBjiAch0V49QR3oAJqCaL5qURE0vx9Eo+G5YE7mA==",
+      "license": "Apache-2.0",
+      "upstream": "https://github.com/naptha/tesseract.js",
+      "purpose": "Node worker orchestration"
+    },
+    {
+      "name": "tesseract.js-core",
+      "version": "7.0.0",
+      "installPath": "node_modules/tesseract.js-core",
+      "resolved": "https://registry.npmjs.org/tesseract.js-core/-/tesseract.js-core-7.0.0.tgz",
+      "integrity": "sha512-WnNH518NzmbSq9zgTPeoF8c+xmilS8rFIl1YKbk/ptuuc7p6cLNELNuPAzcmsYw450ca6bLa8j3t0VAtq435Vw==",
+      "license": "Apache-2.0",
+      "upstream": "https://github.com/naptha/tesseract.js-core",
+      "purpose": "Tesseract core JavaScript and WebAssembly variants"
+    },
+    {
+      "name": "tr46",
+      "version": "0.0.3",
+      "installPath": "node_modules/tr46",
+      "resolved": "https://registry.npmjs.org/tr46/-/tr46-0.0.3.tgz",
+      "integrity": "sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==",
+      "license": "MIT",
+      "purpose": "URL parsing production dependency"
+    },
+    {
+      "name": "wasm-feature-detect",
+      "version": "1.9.0",
+      "installPath": "node_modules/wasm-feature-detect",
+      "resolved": "https://registry.npmjs.org/wasm-feature-detect/-/wasm-feature-detect-1.9.0.tgz",
+      "integrity": "sha512-zonE+xlIIYtxPy++L24ow0hAD8CICb4+FgPyROd3buyXIqsJvUEDkBgfCCoXOd1Hu3DUr0GOfnPIdcGV+YpNaA==",
+      "license": "Apache-2.0",
+      "purpose": "Tesseract WebAssembly capability detection"
+    },
+    {
+      "name": "webidl-conversions",
+      "version": "3.0.1",
+      "installPath": "node_modules/webidl-conversions",
+      "resolved": "https://registry.npmjs.org/webidl-conversions/-/webidl-conversions-3.0.1.tgz",
+      "integrity": "sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==",
+      "license": "BSD-2-Clause",
+      "purpose": "URL parsing production dependency"
+    },
+    {
+      "name": "whatwg-url",
+      "version": "5.0.0",
+      "installPath": "node_modules/whatwg-url",
+      "resolved": "https://registry.npmjs.org/whatwg-url/-/whatwg-url-5.0.0.tgz",
+      "integrity": "sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw==",
+      "license": "MIT",
+      "purpose": "Fetch URL parsing production dependency"
+    },
+    {
+      "name": "zlibjs",
+      "version": "0.3.1",
+      "installPath": "node_modules/zlibjs",
+      "resolved": "https://registry.npmjs.org/zlibjs/-/zlibjs-0.3.1.tgz",
+      "integrity": "sha512-+J9RrgTKOmlxFSDHo0pI1xM6BLVUv+o0ZT9ANtCxGkjIVCCUdx9alUF8Gm+dGLKbkkkidWIHFDZHDMpfITt4+w==",
+      "license": "MIT",
+      "purpose": "Tesseract gzip language-data decoder"
+    }
+  ],
+  "requiredFiles": [
+    "node_modules/@napi-rs/canvas/index.js",
+    "node_modules/@napi-rs/canvas/js-binding.js",
+    "node_modules/@napi-rs/canvas/load-image.js",
+    "node_modules/@tesseract.js-data/eng/4.0.0_best_int/eng.traineddata.gz",
+    "node_modules/@tesseract.js-data/fra/4.0.0_best_int/fra.traineddata.gz",
+    "node_modules/pdfjs-dist/legacy/build/pdf.mjs",
+    "node_modules/pdfjs-dist/legacy/build/pdf.worker.mjs",
+    "node_modules/pdfjs-dist/standard_fonts/LiberationSans-Regular.ttf",
+    "node_modules/pdfjs-dist/wasm/jbig2.wasm",
+    "node_modules/pdfjs-dist/wasm/openjpeg.wasm",
+    "node_modules/pdfjs-dist/wasm/qcms_bg.wasm",
+    "node_modules/pdfjs-dist/wasm/quickjs-eval.wasm",
+    "node_modules/tesseract.js/src/worker-script/node/cache.js",
+    "node_modules/tesseract.js/src/worker-script/node/getCore.js",
+    "node_modules/tesseract.js/src/worker-script/node/gunzip.js",
+    "node_modules/tesseract.js/src/worker-script/node/index.js",
+    "node_modules/tesseract.js-core/index.js",
+    "node_modules/tesseract.js-core/tesseract-core.js",
+    "node_modules/tesseract.js-core/tesseract-core.wasm",
+    "node_modules/tesseract.js-core/tesseract-core.wasm.js",
+    "node_modules/tesseract.js-core/tesseract-core-lstm.js",
+    "node_modules/tesseract.js-core/tesseract-core-lstm.wasm",
+    "node_modules/tesseract.js-core/tesseract-core-lstm.wasm.js",
+    "node_modules/tesseract.js-core/tesseract-core-simd.js",
+    "node_modules/tesseract.js-core/tesseract-core-simd.wasm",
+    "node_modules/tesseract.js-core/tesseract-core-simd.wasm.js",
+    "node_modules/tesseract.js-core/tesseract-core-simd-lstm.js",
+    "node_modules/tesseract.js-core/tesseract-core-simd-lstm.wasm",
+    "node_modules/tesseract.js-core/tesseract-core-simd-lstm.wasm.js",
+    "node_modules/tesseract.js-core/tesseract-core-relaxedsimd.js",
+    "node_modules/tesseract.js-core/tesseract-core-relaxedsimd.wasm",
+    "node_modules/tesseract.js-core/tesseract-core-relaxedsimd.wasm.js",
+    "node_modules/tesseract.js-core/tesseract-core-relaxedsimd-lstm.js",
+    "node_modules/tesseract.js-core/tesseract-core-relaxedsimd-lstm.wasm",
+    "node_modules/tesseract.js-core/tesseract-core-relaxedsimd-lstm.wasm.js"
+  ],
+  "installerStaging": {
+    "command": "npm run stage:offline-ocr-assets --workspace @material-tax-reporting/slip-parser -- --output <directory>",
+    "layout": "<directory>/node_modules/<package>",
+    "evidence": "<directory>/offline-ocr-assets.lock.json",
+    "source": "the exact package-lock.json production closure already installed by npm ci",
+    "freshOutput": "stage in a private sibling directory and atomically rename only after validation",
+    "requirements": [
+      "Run after npm ci with install scripts disabled.",
+      "Run on the Windows architecture targeted by the installer so the matching native canvas package is installed.",
+      "Include the staged directory unpacked in installer application resources.",
+      "Do not use PATH discovery, lifecycle scripts, runtime downloads, network access, or cloud fallback.",
+      "Treat missing, unexpected, mismatched, linked, or empty runtime content as a packaging failure.",
+      "Retain the per-file byte-size and SHA-256 evidence with the installer input."
+    ]
+  },
+  "mandatoryReview": {
+    "parserState": "requires-manual-confirmation",
+    "bulkConfirmation": false,
+    "evidenceRequired": [
+      "source digest",
+      "page digest",
+      "token evidence digest",
+      "source-relative geometry",
+      "confidence"
+    ],
+    "delivery": "CRA mail-in PDF only",
+    "electronicSubmission": false,
+    "automaticFiling": false
+  }
+}

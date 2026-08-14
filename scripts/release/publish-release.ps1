@@ -30,6 +30,16 @@ if ($manifest.schemaVersion -ne 1 -or $manifest.sourceCommit -ne $CommitSha -or 
 if ($manifest.signatureStatus -ne 'NotSigned' -or $manifest.installer -ne 'Squirrel.Windows') {
     throw 'The release manifest does not describe the required unsigned Squirrel.Windows package.'
 }
+if (
+    $manifest.offlineOcr.target -ne 'win32-x64' -or
+    $manifest.offlineOcr.packages -le 0 -or
+    $manifest.offlineOcr.files -le 0 -or
+    $manifest.offlineOcr.bytes -le 0 -or
+    $manifest.offlineOcr.manifestSha256 -notmatch '^[0-9a-f]{64}$' -or
+    $manifest.offlineOcr.resourcePath -ne 'resources/offline-ocr-runtime'
+) {
+    throw 'The release manifest does not contain verified packaged offline OCR evidence.'
+}
 
 $primaryAssets = @()
 $requiredKinds = @('setup', 'release-index', 'full-package', 'application-icon')

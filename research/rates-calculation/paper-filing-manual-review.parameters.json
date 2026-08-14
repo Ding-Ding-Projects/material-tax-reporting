@@ -1,0 +1,281 @@
+{
+  "accessDate": "2026-08-14",
+  "taxYear": 2025,
+  "jurisdictionFocus": {
+    "country": "Canada",
+    "province": "Ontario",
+    "note": "Ontario is included because the CRA 2025 Ontario income tax package was directly researched. The application must not assume Ontario for every user; it must use the official package-selection rules and user-confirmed facts."
+  },
+  "productBoundary": {
+    "allowedEndState": "Generate a CRA mail-in PDF package for user review, printing, hand-signing where required, and user-controlled mailing.",
+    "prohibitedCapabilities": [
+      "NETFILE",
+      "EFILE",
+      "ReFILE",
+      "SimpleFile",
+      "Auto-fill my return",
+      "electronic submission",
+      "direct CRA transmission",
+      "automatic filing",
+      "CRA certification or approval claims",
+      "tax, accounting, or legal advice"
+    ],
+    "preExportAcknowledgementRequired": true,
+    "preExportAcknowledgementText": "I have inspected every populated form, calculation, attachment, mailing destination, and signature/date field in this paper filing package. I understand this application does not file my return, transmit anything to the CRA, certify correctness, provide tax/legal advice, or replace current CRA instructions."
+  },
+  "packageSelection": {
+    "officialRule": "Use the income tax package for the province or territory where the individual resided on December 31, 2025, unless a listed special situation applies.",
+    "specialSituationsFromFederalGuide": [
+      "Quebec resident on December 31, 2025",
+      "filing for someone who died in 2025",
+      "newcomer to Canada in 2025",
+      "left Canada permanently in 2025",
+      "residential ties in more than one province or territory on December 31, 2025",
+      "resided outside Canada on December 31, 2025 but kept significant residential ties with Canada",
+      "deemed resident or non-resident",
+      "certain business income with a permanent establishment in a province or territory"
+    ],
+    "ontarioCoreForms": [
+      {
+        "formNumber": "5006-R",
+        "title": "Income Tax and Benefit Return (for ON only)",
+        "taxYear": 2025,
+        "pageUrl": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-r.html",
+        "pdf": "5006-r-25e.pdf",
+        "fillablePdf": "5006-r-fill-25e.pdf",
+        "eText": "5006-r-25e.txt",
+        "lastUpdate": "2026-01-20",
+        "role": "Main T1 return for Ontario package"
+      },
+      {
+        "formNumber": "5006-C",
+        "title": "ON428 - Ontario Tax",
+        "taxYear": 2025,
+        "pageUrl": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-c.html",
+        "pdf": "5006-c-25e.pdf",
+        "fillablePdf": "5006-c-fill-25e.pdf",
+        "eText": "5006-c-25e.txt",
+        "lastUpdate": "2026-01-20",
+        "role": "Ontario tax and credits calculation to report on the T1 return"
+      }
+    ],
+    "additionalOntarioPackageItems": [
+      "Federal Income Tax and Benefit Information for 2025",
+      "Federal Worksheet",
+      "Ontario tax information for 2025",
+      "Worksheet ON428",
+      "Schedule 2",
+      "Schedule 3",
+      "Schedule 5",
+      "Schedule 6",
+      "Schedule 7",
+      "Schedule 8",
+      "Schedule 9",
+      "Schedule 11",
+      "Schedule 12",
+      "Schedule 13",
+      "Schedule 15",
+      "Form ON479",
+      "Worksheet ON479",
+      "Form ON-BEN",
+      "Schedule ON428-A",
+      "Schedule ON479-A",
+      "Schedule ON(S2)",
+      "Schedule ON(S11)"
+    ],
+    "ontarioT2203Boundary": "If the taxpayer resided in Ontario on December 31, 2025 or on the date they left Canada in 2025 and all or part of 2025 business income was earned and can be allocated to a permanent establishment outside Ontario, the CRA Ontario package says to use Form T2203 instead of Form ON428."
+  },
+  "signatureAndDate": {
+    "t1Certification": "The 5006-R return states that the signer certifies the information in the return and attached documents is correct, complete, and fully discloses all income.",
+    "requiredFields": [
+      "signature",
+      "telephone number",
+      "date in Year/Month/Day format"
+    ],
+    "handSignatureRule": "CRA PDF guidance says that if a form requires a signature, the completed form must be printed and signed by hand.",
+    "productRule": "Generated PDFs must not be marked as signed. Signature/date fields must remain explicit user actions."
+  },
+  "attachmentsAndRetention": {
+    "paperAttachmentRule": "When filing a paper return, attach supporting documents to the return.",
+    "disallowanceRisk": "If a claim is made without providing documents, CRA may disallow the credit or deduction and processing may be delayed.",
+    "retentionRule": "Keep supporting documents for six years in case CRA asks to see them later. Also keep a copy of the return and notice of assessment or reassessment.",
+    "generalPaperAttachmentExamples": [
+      "copies of information slips such as T4, T4A, and T5",
+      "provincial slips if applicable",
+      "completed forms and schedules when instructed",
+      "Form T776 or a statement showing rental income and expenses for line 12600",
+      "if an information slip is missing, a final pay stub or statement plus a note with payer details and efforts to get the slip"
+    ],
+    "examplesFromLinePages": [
+      {
+        "line": "31900",
+        "instruction": "Attach supporting documents for student loan interest amounts claimed when filing on paper."
+      },
+      {
+        "line": "32600",
+        "instruction": "Attach completed Schedule 2; if the spouse or common-law partner is not filing, attach information slips showing their income; keep other documents unless CRA asks later."
+      },
+      {
+        "line": "40500",
+        "instruction": "Attach Form T2209, official receipts showing foreign taxes paid, and a note explaining calculations; additional U.S. documents are listed if taxes were paid to the United States."
+      },
+      {
+        "line": "25500",
+        "instruction": "Attach completed Form T2222; keep supporting documents unless CRA asks later."
+      }
+    ]
+  },
+  "mailingDestination": {
+    "sourceUrl": "https://www.canada.ca/en/revenue-agency/corporate/contact-information/where-mail-your-paper-t1-return.html",
+    "pageDate": "2025-09-26",
+    "freshLookupRequired": true,
+    "doNotInferAddress": true,
+    "routingFactors": [
+      "resident or non-resident individual",
+      "province or territory",
+      "specified Ontario area",
+      "specified Quebec area",
+      "for non-residents, country grouping and specified Canadian area"
+    ],
+    "productStorage": "Store the source URL, access date, page date, selected routing factors, and user acknowledgement, not a permanent default address."
+  },
+  "paymentSeparation": {
+    "returnMailingAddressesLimitedToReturns": true,
+    "chequePaymentSourceUrl": "https://www.canada.ca/en/revenue-agency/services/about-canada-revenue-agency-cra/pay-cheque.html",
+    "chequePaymentPageDate": "2026-06-01",
+    "paymentByMailAddressFromSource": "Canada Revenue Agency, PO Box 3800 STN A, Sudbury ON P3A 0C3",
+    "chequePayeeFromSource": "Receiver General for Canada",
+    "productRule": "Do not generate or route payments. Present separate current CRA payment instructions and require user review."
+  },
+  "deadlines": {
+    "mostPeople": {
+      "returnDue": "2026-04-30",
+      "paymentDue": "2026-04-30"
+    },
+    "selfEmployedGeneral": {
+      "returnDue": "2026-06-15",
+      "paymentDue": "2026-04-30"
+    },
+    "selfEmployedTaxShelterBusinessExpenditures": {
+      "returnDue": "2026-04-30",
+      "paymentDue": "2026-04-30"
+    },
+    "deceasedPersons": "Due date may differ; use CRA deceased-person guidance.",
+    "weekendHolidayRule": "If a due date falls on a Saturday, Sunday, or CRA-recognized public holiday, the return is on time if CRA receives it or it is postmarked on or before the next business day; payment is on time if received on the first business day after the due date."
+  },
+  "consequences": {
+    "interest": "CRA charges compound daily interest starting the day after the due date on unpaid 2025 amounts, including reassessed amounts.",
+    "lateFilingPenalty": "5% of 2025 balance owing plus 1% of 2025 balance owing for each full month late, up to 12 months.",
+    "repeatedLateFilingPenalty": "10% of 2025 balance owing plus 2% of 2025 balance owing for each full month late, up to 20 months, if CRA's stated prior-year penalty and demand-to-file conditions apply.",
+    "otherPenaltyTriggersFromGuide": [
+      "failed to report an amount on the 2025 return and also failed to report an amount on a return for 2022, 2023, or 2024",
+      "knowingly, or under circumstances amounting to gross negligence, made a false statement or omission on the 2025 return"
+    ],
+    "benefitImpact": "Filing late can delay benefit and credit payments.",
+    "missingPersonalInformation": "The 5006-R privacy statement says failure to provide personal information may result in interest or penalties or other actions."
+  },
+  "craReviewAfterFiling": {
+    "processingGoalForPaperReturn": "12 weeks for notice of assessment and refund, for returns received on or before the due date.",
+    "reviewExpectation": "CRA may conduct reviews before or after assessment. CRA sources describe most reviews as routine checks and not tax audits.",
+    "responseRequirement": "If CRA asks for documents or receipts, reply within the timeframe, include all requested information, and ensure copies are clear and easy to read.",
+    "noResponseRisk": "CRA may adjust the return and disallow the claim or deduction."
+  },
+  "printingAndPdf": {
+    "useAdobeReaderForBestResults": true,
+    "checkPageSize": true,
+    "choosePaperSourceByPdfPageSize": true,
+    "signatureRequiresPrintAndHandSign": true,
+    "printAsImageTroubleshooting": true,
+    "clearReadableCopiesForCraRequests": true,
+    "unresolvedOfficialPrintDetails": [
+      "No reviewed 2025 T1-specific source stated one-sided versus double-sided printing.",
+      "No reviewed 2025 T1-specific source stated ink color.",
+      "No reviewed 2025 T1-specific source stated staple or fastener handling."
+    ]
+  },
+  "amendedReturns": {
+    "doNotFileSecondOriginalReturn": true,
+    "waitForNoticeOfAssessment": true,
+    "generalTenYearBoundary": "A request made in 2026 generally must relate to a tax year after 2015 to be considered.",
+    "paperRouteFromGuide": "Send Form T1-ADJ, T1 Adjustment Request, by mail, with supporting documents if not already sent to support the original claim.",
+    "productBoundary": "Any future amended-return support must be a separate paper-adjustment package workflow, not electronic ReFILE or filing a second original return."
+  },
+  "officialSources": [
+    {
+      "title": "Ontario - 2025 Income tax package",
+      "publisher": "Canada Revenue Agency",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario.html",
+      "pageDate": "2026-01-20"
+    },
+    {
+      "title": "5006-R Income Tax and Benefit Return (for ON only)",
+      "publisher": "Canada Revenue Agency",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-r.html",
+      "pageDate": "2026-01-20"
+    },
+    {
+      "title": "5006-C ON428 - Ontario Tax",
+      "publisher": "Canada Revenue Agency",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-c.html",
+      "pageDate": "2026-01-20"
+    },
+    {
+      "title": "Federal Income Tax and Benefit Information for 2025",
+      "publisher": "Canada Revenue Agency",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/5000-g.html",
+      "pageDate": "2026-01-20"
+    },
+    {
+      "title": "Where to mail your paper T1 return",
+      "publisher": "Canada Revenue Agency",
+      "url": "https://www.canada.ca/en/revenue-agency/corporate/contact-information/where-mail-your-paper-t1-return.html",
+      "pageDate": "2025-09-26"
+    },
+    {
+      "title": "Tax centres",
+      "publisher": "Canada Revenue Agency",
+      "url": "https://www.canada.ca/en/revenue-agency/corporate/contact-information/tax-centres.html",
+      "pageDate": "2025-09-26"
+    },
+    {
+      "title": "Due dates and payment dates",
+      "publisher": "Canada Revenue Agency",
+      "url": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/important-dates-individuals.html",
+      "pageDate": "2026-01-20 observed on linked detail pages"
+    },
+    {
+      "title": "Filing due dates for the 2025 tax return",
+      "publisher": "Canada Revenue Agency",
+      "url": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/important-dates-individuals/filing-dates-tax-return.html",
+      "pageDate": "2026-01-20"
+    },
+    {
+      "title": "Interest and penalties on late taxes - Personal income tax",
+      "publisher": "Canada Revenue Agency",
+      "url": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/interest-penalties/late-filing-penalty.html",
+      "pageDate": "2026-01-20"
+    },
+    {
+      "title": "Pay through the mail - Payments to the CRA",
+      "publisher": "Canada Revenue Agency",
+      "url": "https://www.canada.ca/en/revenue-agency/services/about-canada-revenue-agency-cra/pay-cheque.html",
+      "pageDate": "2026-06-01"
+    },
+    {
+      "title": "Using PDF forms",
+      "publisher": "Canada Revenue Agency",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/about-forms-publications.html"
+    },
+    {
+      "title": "About PDF",
+      "publisher": "Canada Revenue Agency",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/help-forms-publications/about-1.html",
+      "pageDate": "2017-06-22"
+    },
+    {
+      "title": "Changing a tax return - Personal income tax",
+      "publisher": "Government of Canada / Canada Revenue Agency",
+      "url": "https://www.canada.ca/en/services/taxes/income-tax/personal-income-tax/after-you-file/change-return.html"
+    }
+  ]
+}

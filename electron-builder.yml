@@ -7,6 +7,11 @@ directories:
 files:
   - dist/**/*
   - package.json
+extraResources:
+  - from: ${env.MTR_OFFLINE_OCR_STAGE}
+    to: offline-ocr-runtime
+    filter:
+      - "**/*"
 icon: build/icon.ico
 win:
   executableName: MaterialTaxReporting

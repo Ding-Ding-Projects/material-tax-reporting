@@ -5,12 +5,45 @@
   "toolchains": [
     {
       "id": "node",
+      "name": "Node.js",
       "version": "22.14.0",
+      "constraint": ">=22.13.0 || >=24",
       "bundledNpmVersion": "10.9.2",
       "archive": "node-v22.14.0-win-x64.zip",
       "url": "https://nodejs.org/dist/v22.14.0/node-v22.14.0-win-x64.zip",
       "sha256": "55b639295920b219bb2acbcfa00f90393a2789095b7323f79475c9f34795f217",
-      "installScope": "per-user"
+      "installScope": "per-user",
+      "purpose": "Windows application build, packaging, local slip-parser OCR worker, and PDF rasterization runtime"
+    }
+  ],
+  "workspaces": [
+    {
+      "path": "apps/desktop",
+      "manifest": "apps/desktop/package.json"
+    },
+    {
+      "path": "apps/site",
+      "manifest": "apps/site/package.json"
+    },
+    {
+      "path": "packages/cra-pdf",
+      "manifest": "packages/cra-pdf/package.json"
+    },
+    {
+      "path": "packages/local-coding-assistants",
+      "manifest": "packages/local-coding-assistants/package.json"
+    },
+    {
+      "path": "packages/local-ollama",
+      "manifest": "packages/local-ollama/package.json"
+    },
+    {
+      "path": "packages/slip-parser",
+      "manifest": "packages/slip-parser/package.json"
+    },
+    {
+      "path": "packages/tax-domain",
+      "manifest": "packages/tax-domain/package.json"
     }
   ],
   "binaries": [
@@ -29,6 +62,20 @@
       "url": "https://github.com/cli/cli/releases/download/v2.97.0/gh_2.97.0_windows_amd64.zip",
       "sha256": "35d7fe05c4dd1411ffda1e73dfc7c6f44b75c936ca51fa6595c657fdc0350cec",
       "usage": "release-workflow-only"
+    },
+    {
+      "name": "@napi-rs/canvas Windows native addon",
+      "version": "1.0.6",
+      "source": "https://github.com/Brooooooklyn/canvas",
+      "delivery": "npm optional platform package staged into installer resources",
+      "networkAtRuntime": false
+    },
+    {
+      "name": "Tesseract.js WebAssembly core",
+      "version": "7.0.0",
+      "source": "https://github.com/naptha/tesseract.js-core",
+      "delivery": "tesseract.js-core package staged into installer resources",
+      "networkAtRuntime": false
     }
   ],
   "dependencies": [
@@ -56,10 +103,46 @@
       "name": "sharp",
       "version": "0.35.3",
       "purpose": "Bounded local logo resizing"
+    },
+    {
+      "name": "tesseract.js",
+      "version": "7.0.0",
+      "license": "Apache-2.0",
+      "source": "https://github.com/naptha/tesseract.js"
+    },
+    {
+      "name": "tesseract.js-core",
+      "version": "7.0.0",
+      "license": "Apache-2.0",
+      "source": "https://github.com/naptha/tesseract.js-core"
+    },
+    {
+      "name": "pdfjs-dist",
+      "version": "6.1.200",
+      "license": "Apache-2.0",
+      "source": "https://github.com/mozilla/pdf.js"
+    },
+    {
+      "name": "@napi-rs/canvas",
+      "version": "1.0.6",
+      "license": "MIT",
+      "source": "https://github.com/Brooooooklyn/canvas"
+    },
+    {
+      "name": "@tesseract.js-data/eng",
+      "version": "1.0.0",
+      "license": "MIT",
+      "source": "https://github.com/naptha/tessdata"
+    },
+    {
+      "name": "@tesseract.js-data/fra",
+      "version": "1.0.0",
+      "license": "MIT",
+      "source": "https://github.com/naptha/tessdata"
     }
   ],
   "systemTools": [
     "Windows PowerShell 5.1 or later"
   ],
-  "note": "Build scripts install the pinned portable Node.js archive per user and install package dependencies strictly from package-lock.json. The release workflow separately bootstraps the pinned GitHub CLI archive."
+  "note": "Build scripts install pinned portable toolchains per user and install every current npm workspace strictly from package-lock.json. The OCR production closure is additionally pinned with exact package metadata and integrity evidence in packages/slip-parser/assets/offline-ocr-runtime.json, staged by packages/slip-parser/scripts/stage-offline-ocr-assets.mjs, and packaged as local Electron resources without PATH discovery or runtime download."
 }

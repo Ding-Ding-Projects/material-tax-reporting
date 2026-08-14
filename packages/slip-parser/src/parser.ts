@@ -5,6 +5,7 @@ import { classifySlip, detectTaxYear } from "./classification.js";
 import { sha256Hex, stableJson } from "./digest.js";
 import { extractBoxCandidates } from "./extraction.js";
 import { getSlipDefinition } from "./official-mappings.js";
+import { BUNDLED_OFFLINE_OCR_ADAPTER } from "./offline-ocr.js";
 import {
   DEFAULT_PARSER_LIMITS,
   type ExtractedBoxCandidate,
@@ -20,10 +21,14 @@ export const CURRENT_OFFICIAL_MAPPING_TAX_YEAR = 2025;
 export interface ParseSlipOptions {
   readonly limits?: Readonly<ParserLimits>;
   readonly adapterRegistry?: AdapterRegistry;
+  readonly signal?: AbortSignal;
 }
 
 export function createDefaultAdapterRegistry(): AdapterRegistry {
-  return new AdapterRegistry([BUILTIN_PDF_TEXT_LAYER_ADAPTER]);
+  return new AdapterRegistry([
+    BUILTIN_PDF_TEXT_LAYER_ADAPTER,
+    BUNDLED_OFFLINE_OCR_ADAPTER,
+  ]);
 }
 
 function reject(
@@ -60,6 +65,7 @@ function draftDigestPayload(draft: Omit<SlipParserDraft, "resultDigest">): unkno
     pageCount: draft.pageCount,
     adapterId: draft.adapterId,
     adapterArtifact: draft.adapterArtifact,
+    extractionEvidenceDigest: draft.extractionEvidenceDigest,
     classification: draft.classification,
     taxYear: draft.taxYear,
     candidates: draft.candidates,
@@ -78,8 +84,8 @@ export async function parseSlipDocument(
   if (admission.state === "rejected") return reject(admission.issue);
 
   const registry = options.adapterRegistry ?? createDefaultAdapterRegistry();
-  const adapter = registry.select(admission);
-  if (!adapter) {
+  const adapters = registry.selectAll(admission);
+  if (adapters.length === 0) {
     const runtimeIssue = registry.registrationIssues[0];
     return reject(
       runtimeIssue ?? {
@@ -96,8 +102,25 @@ export async function parseSlipDocument(
   }
 
   try {
-    const extraction = await adapter.extract(admission, limits);
-    if (extraction.state === "rejected") return reject(extraction.issue, admission.sourceDigest);
+    let selectedAdapter = adapters[0]!;
+    let extraction = await selectedAdapter.extract(admission, limits, {
+      ...(options.signal ? { signal: options.signal } : {}),
+    });
+    for (
+      let index = 1;
+      extraction.state === "rejected" &&
+      extraction.issue.code === "unsupported-adapter" &&
+      index < adapters.length;
+      index += 1
+    ) {
+      selectedAdapter = adapters[index]!;
+      extraction = await selectedAdapter.extract(admission, limits, {
+        ...(options.signal ? { signal: options.signal } : {}),
+      });
+    }
+    if (extraction.state === "rejected") {
+      return reject(extraction.issue, admission.sourceDigest);
+    }
 
     const classified = classifySlip(extraction.document);
     if (!classified.classification) {
@@ -155,12 +178,13 @@ export async function parseSlipDocument(
       sourceDigest: admission.sourceDigest,
       documentKind: admission.kind,
       pageCount: extraction.document.pageCount,
-      adapterId: adapter.id,
+      adapterId: selectedAdapter.id,
       adapterArtifact: {
-        artifactId: adapter.proof.artifactId,
-        artifactVersion: adapter.proof.artifactVersion,
-        runtimeId: adapter.proof.runtimeId,
+        artifactId: selectedAdapter.proof.artifactId,
+        artifactVersion: selectedAdapter.proof.artifactVersion,
+        runtimeId: selectedAdapter.proof.runtimeId,
       },
+      extractionEvidenceDigest: extraction.document.evidenceDigest,
       classification: classified.classification,
       taxYear,
       candidates: Object.freeze(candidates),

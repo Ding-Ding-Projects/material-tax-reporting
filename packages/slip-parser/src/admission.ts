@@ -200,8 +200,8 @@ function inspectPdf(bytes: Uint8Array, limits: Readonly<ParserLimits>): Document
   if (objectCount === 0 || objectCount > limits.maxPdfObjects) {
     return { state: "rejected", issue: issue("resource-limit", "The PDF object count is missing or exceeds the configured limit.") };
   }
-  if (pageCount === 0 || pageCount > limits.maxPdfPages) {
-    return { state: "rejected", issue: issue("resource-limit", "The PDF page count is missing or exceeds the configured limit.") };
+  if (pageCount > limits.maxPdfPages) {
+    return { state: "rejected", issue: issue("resource-limit", "The PDF page count exceeds the configured limit.") };
   }
   const admitted: AdmittedDocument = {
     state: "admitted",
@@ -211,7 +211,7 @@ function inspectPdf(bytes: Uint8Array, limits: Readonly<ParserLimits>): Document
     pdf: {
       version: versionMatch[1] ?? "unknown",
       objectCount,
-      pageCount,
+      pageCount: pageCount === 0 ? null : pageCount,
       encrypted: false,
     },
   };
