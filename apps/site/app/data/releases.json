@@ -1,0 +1,5 @@
+{
+  "schemaVersion": 1,
+  "note": "The single source of truth for the download surfaces. No release asset has been published, so this list is empty and the site renders its unavailable state. Every figure shown on the download surface is derived from this file; nothing is hard-coded in the component.",
+  "assets": []
+}

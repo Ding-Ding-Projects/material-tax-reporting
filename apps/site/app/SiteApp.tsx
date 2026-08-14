@@ -1,9 +1,50 @@
 "use client";
 
+/**
+ * The documentation site shell.
+ *
+ * Every engine here comes from the shared surface kernel; this file is the
+ * wiring. It owns the persisted records, the guarded setter every mutation
+ * routes through, the copy accessor that applies humour and personal
+ * vocabulary once at render time, and the layout of the tabbed surfaces.
+ *
+ * Nothing on this site files, submits or transmits a return, and no control
+ * here changes a tax figure, a rule citation, the paper-only boundary or the
+ * manual-review requirement.
+ */
+
 import {
-  type ChangeEvent,
+  type AppearanceStore,
+  type CommandDescriptor,
+  type LockRecord,
+  type Notification,
+  type Preferences,
+  type SearchState,
+  type SupportTicket,
+  type TabsState,
+  DEFAULT_PREFERENCES,
+  LEGACY_PREFERENCES_KEY,
+  MAX_FONT_SCALE,
+  MAX_FUNNY_LEVEL,
+  MIN_FONT_SCALE,
+  STORAGE_KEYS,
+  applyPreferencePatch,
+  applyVocabulary,
+  compileReplacements,
+  createSearchState,
+  importAppearancePreset,
+  matchesSearch,
+  migratePreferencesV1toV2,
+  resolveCopy,
+  resolveDisplayName,
+  teleportTarget,
+  validatePreferences,
+  validateVocabularyDocument,
+} from "@material-tax-reporting/surface-kernel";
+import {
   type CSSProperties,
-  type KeyboardEvent as ReactKeyboardEvent,
+  type ChangeEvent,
+  type ReactNode,
   useCallback,
   useEffect,
   useMemo,
@@ -11,221 +52,71 @@ import {
   useState,
 } from "react";
 
-type TabId = "home" | "workflow" | "scope" | "docs" | "settings";
-type Dock = "left" | "top" | "right" | "bottom";
-type Theme = "system" | "light" | "dark";
-type Density = "comfortable" | "compact";
-type MotionChoice = "system" | "reduce" | "full";
-type LanguageMode = "en" | "zh" | "both";
+import { AppearanceEditor, APPEARANCE_ELEMENTS, appearanceLabel, appearanceStyle } from "./appearance.tsx";
+import { ChangelogViewer, EMPTY_RANGE, type ChangelogRange } from "./changelog-viewer.tsx";
+import { CommandPalette } from "./command-palette.tsx";
+import { ConverterPanel } from "./converter-panel.tsx";
+import { CHANGELOG_AREAS } from "./data/changelog.ts";
+import { SETTING_DESCRIPTORS, buildCommandRegistry, uncoveredPreferenceKeys } from "./data/commands.ts";
+import {
+  CANTONESE_TONE_NOTES,
+  COPY,
+  DISCLAIMER_SENTENCE,
+  ENGLISH_TONE_NOTES,
+  FOOTER_DISCLAIMER,
+  OFFICIAL_REFERENCES,
+  REVIEW_AREAS,
+  SHIPPED_PRODUCT_NAME,
+  SITE_IMMUTABLE_SPANS,
+  WORKFLOW_STEPS,
+} from "./data/copy.ts";
+import { DOC_ENTRIES } from "./data/docs.ts";
+import { DocumentationBrowser } from "./docs-browser.tsx";
+import { DownloadSurfaces, RELEASE_ASSET_COUNT } from "./download-surfaces.tsx";
+import { EXPORT_SANDBOX_NOTE, copyExport, deliverExport, folderSaveSupported, type ExportRequest } from "./exports.ts";
+import { HistoryPanel } from "./history-panel.tsx";
+import { diffRecords, useHistory, vocabularyShape } from "./history.ts";
+import { BrandMark, IdentitySettings } from "./identity.tsx";
+import { LOCK_DISCLOSURE, LockPanel, useLocks, validateLocks } from "./locks.tsx";
+import { useNarration } from "./narration.ts";
+import { NotificationsCentre } from "./notifications-centre.tsx";
+import { useNotifications, validateNotifications } from "./notifications.ts";
+import { LocalModelRuntimePanel } from "./ollama-tab.tsx";
+import { ExternalSettingsPanel, SchedulePanel } from "./scheduling-panel.tsx";
+import {
+  DEFAULT_SCHEDULE_STATE,
+  applyOverlay,
+  useScheduling,
+  validateScheduleState,
+  type ScheduleState,
+} from "./scheduling.ts";
+import { MenuFilterWithBuilder, SearchWithBuilder, type SearchBinding } from "./search-builder.tsx";
+import { SupportNotesPanel, validateTickets } from "./support-tickets.tsx";
+import { TabStrip } from "./tab-strip.tsx";
+import { SITE_TABS, defaultTabsState, tabDescriptor, validateTabsState, type SiteTabId } from "./tabs.ts";
+import { AuthenticatorPanel } from "./totp-panel.tsx";
 
-type Preferences = {
-  dock: Dock;
-  theme: Theme;
-  density: Density;
-  accent: string;
-  fontScale: number;
-  motion: MotionChoice;
-  language: LanguageMode;
-  englishFunny: number;
-  cantoneseFunny: number;
-};
+const AUTHENTICATOR_STORAGE = STORAGE_KEYS.authenticator;
 
-type SearchState = {
-  query: string;
-  regex: boolean;
-  pattern: string;
-  flags: string;
-  sample: string;
-  builderOpen: boolean;
-};
-
-type NotificationItem = {
-  id: number;
-  title: string;
-  body: string;
-  createdAt: string;
-};
-
-const STORAGE_KEY = "material-tax-reporting.site.preferences.v1";
-const VOCABULARY_KEY = "material-tax-reporting.site.vocabulary.v1";
-const MAX_PATTERN_LENGTH = 256;
-const MAX_SAMPLE_LENGTH = 2000;
-
-const defaultPreferences: Preferences = {
-  dock: "left",
-  theme: "system",
-  density: "comfortable",
-  accent: "#4355b9",
-  fontScale: 1,
-  motion: "system",
-  language: "en",
-  englishFunny: 1,
-  cantoneseFunny: 3,
-};
-
-const emptySearch = (): SearchState => ({
-  query: "",
-  regex: false,
-  pattern: "",
-  flags: "i",
-  sample: "",
-  builderOpen: false,
-});
-
-const tabs: Array<{ id: TabId; en: string; zh: string; short: string }> = [
-  { id: "home", en: "Home", zh: "首頁", short: "H" },
-  {
-    id: "workflow",
-    en: "Paper-only workflow",
-    zh: "紙本流程",
-    short: "P",
-  },
-  {
-    id: "scope",
-    en: "Canada/Ontario scope",
-    zh: "加拿大／安省範圍",
-    short: "C",
-  },
-  { id: "docs", en: "Documentation", zh: "文件", short: "D" },
-  { id: "settings", en: "Settings", zh: "設定", short: "S" },
-];
-
-const documentationArticles = [
-  {
-    id: "paper-boundary",
-    title: "Paper-only product boundary",
-    summary:
-      "The planned product ends with generation of a CRA mail-in PDF package. It will not submit a return electronically or file automatically.",
-    topics: ["paper", "PDF", "scope", "filing"],
-  },
-  {
-    id: "manual-review",
-    title: "Mandatory manual review",
-    summary:
-      "Before any future export or print action, the user must inspect every populated form, calculation, attachment, mailing destination, and signature field, then acknowledge that review.",
-    topics: ["review", "forms", "calculations", "signatures"],
-  },
-  {
-    id: "jurisdiction",
-    title: "Canada and Ontario coverage",
-    summary:
-      "The documented planning scope is an individual federal T1 return with Ontario forms. Official CRA sources remain authoritative for current packages and paper-filing instructions.",
-    topics: ["Canada", "Ontario", "T1", "CRA"],
-  },
-  {
-    id: "privacy",
-    title: "Local-first privacy direction",
-    summary:
-      "This documentation describes local-only browser preferences. No taxpayer workflow exists on this site, and this site does not collect tax records.",
-    topics: ["privacy", "local", "browser", "taxpayer data"],
-  },
-  {
-    id: "availability",
-    title: "Current availability",
-    summary:
-      "There is currently no shipped application, installer, tax engine, PDF generator, documentation release, or software release.",
-    topics: ["installer", "release", "availability", "status"],
-  },
-  {
-    id: "unavailable-features",
-    title: "Broader feature inventory",
-    summary:
-      "Automatic filing, submission services, accounts, payments, cloud tax storage, a tax engine, PDF generation, and downloadable software are unavailable. The controls on this site personalize documentation only.",
-    topics: ["unavailable", "features", "controls", "documentation"],
-  },
-];
-
-const commandItems: Array<{
-  label: string;
-  detail: string;
-  tab: TabId;
-  target?: string;
-}> = [
-  { label: "Open Home", detail: "Project status and boundaries", tab: "home" },
-  {
-    label: "Open paper-only workflow",
-    detail: "Required review sequence",
-    tab: "workflow",
-  },
-  {
-    label: "Open Canada/Ontario scope",
-    detail: "Official source links",
-    tab: "scope",
-  },
-  {
-    label: "Search documentation",
-    detail: "Find an article",
-    tab: "docs",
-    target: "documentation-search",
-  },
-  {
-    label: "Change theme",
-    detail: "Open the theme setting",
-    tab: "settings",
-    target: "theme-setting",
-  },
-  {
-    label: "Change tab docking",
-    detail: "Open the docking setting",
-    tab: "settings",
-    target: "dock-setting",
-  },
-  {
-    label: "Load personal vocabulary",
-    detail: "Open the local JSON control",
-    tab: "settings",
-    target: "vocabulary-setting",
-  },
-  {
-    label: "Change language mode",
-    detail: "Open language settings",
-    tab: "settings",
-    target: "language-setting",
-  },
-];
-
-function safeStoredPreferences(): Preferences {
-  if (typeof window === "undefined") return defaultPreferences;
+function readJson<T>(key: string, fallback: T): T {
+  if (typeof window === "undefined") return fallback;
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return defaultPreferences;
-    const parsed = JSON.parse(raw) as Partial<Preferences>;
-    return { ...defaultPreferences, ...parsed };
+    const raw = window.localStorage.getItem(key);
+    return raw === null ? fallback : (JSON.parse(raw) as T);
   } catch {
-    return defaultPreferences;
+    return fallback;
   }
 }
 
-function safeStoredVocabulary(): Record<string, string> {
-  if (typeof window === "undefined") return {};
+function writeJson(key: string, value: unknown): void {
   try {
-    const parsed = JSON.parse(
-      window.localStorage.getItem(VOCABULARY_KEY) ?? "{}",
-    ) as unknown;
-    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return {};
-    return Object.fromEntries(
-      Object.entries(parsed).filter(
-        ([key, value]) =>
-          typeof key === "string" && typeof value === "string" && key.length > 0,
-      ),
-    );
+    window.localStorage.setItem(key, JSON.stringify(value));
   } catch {
-    return {};
+    /* A browser that refuses the write keeps the previous record. */
   }
 }
 
-function contrastText(hex: string) {
-  const value = hex.replace("#", "");
-  const channels = [0, 2, 4].map((index) =>
-    Number.parseInt(value.slice(index, index + 2), 16),
-  );
-  const luminance =
-    (0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2]) /
-    255;
-  return luminance > 0.57 ? "#111318" : "#ffffff";
-}
-
-function useNarrowLayout() {
+function useNarrowLayout(): boolean {
   const [narrow, setNarrow] = useState(false);
   useEffect(() => {
     const query = window.matchMedia("(max-width: 760px)");
@@ -237,797 +128,1388 @@ function useNarrowLayout() {
   return narrow;
 }
 
-function matchesSearch(value: string, state: SearchState) {
-  if (!state.query && !state.pattern) return true;
-  if (!state.regex) {
-    return value.toLocaleLowerCase().includes(state.query.toLocaleLowerCase());
-  }
-  if (!state.pattern || state.pattern.length > MAX_PATTERN_LENGTH) return false;
-  try {
-    return new RegExp(state.pattern, state.flags.replaceAll("g", "")).test(value);
-  } catch {
-    return false;
-  }
-}
-
-function regexAnalysis(state: SearchState) {
-  if (!state.pattern) return { feedback: "Enter a pattern to inspect it.", matches: [] };
-  if (state.pattern.length > MAX_PATTERN_LENGTH) {
-    return {
-      feedback: `Pattern exceeds ${MAX_PATTERN_LENGTH} characters.`,
-      matches: [],
-    };
-  }
-  if (state.sample.length > MAX_SAMPLE_LENGTH) {
-    return {
-      feedback: `Sample exceeds ${MAX_SAMPLE_LENGTH} characters.`,
-      matches: [],
-    };
-  }
-  try {
-    const flags = state.flags.includes("g") ? state.flags : `${state.flags}g`;
-    const expression = new RegExp(state.pattern, flags);
-    const matches: Array<{ value: string; index: number; groups: string[] }> = [];
-    let found: RegExpExecArray | null;
-    while ((found = expression.exec(state.sample)) && matches.length < 50) {
-      matches.push({
-        value: found[0],
-        index: found.index,
-        groups: found.slice(1),
-      });
-      if (found[0] === "") expression.lastIndex += 1;
-    }
-    return {
-      feedback: `${matches.length} local match${matches.length === 1 ? "" : "es"}.`,
-      matches,
-    };
-  } catch (error) {
-    return {
-      feedback: error instanceof Error ? error.message : "Invalid regular expression.",
-      matches: [],
-    };
-  }
-}
-
-function SearchWithBuilder({
-  id,
-  label,
-  placeholder,
-  state,
-  onChange,
-}: {
-  id: string;
-  label: string;
-  placeholder: string;
-  state: SearchState;
-  onChange: (state: SearchState) => void;
-}) {
-  const analysis = useMemo(() => regexAnalysis(state), [state]);
-  const insert = (token: string) => {
-    const pattern = `${state.pattern}${token}`.slice(0, MAX_PATTERN_LENGTH);
-    onChange({ ...state, pattern, regex: true });
-  };
-
-  return (
-    <div className="search-builder" id={id}>
-      <label className="field-label" htmlFor={`${id}-input`}>
-        {label}
-      </label>
-      <div className="search-row">
-        <input
-          id={`${id}-input`}
-          type="search"
-          value={state.regex ? state.pattern : state.query}
-          placeholder={placeholder}
-          maxLength={MAX_PATTERN_LENGTH}
-          onChange={(event) =>
-            onChange(
-              state.regex
-                ? { ...state, pattern: event.target.value }
-                : { ...state, query: event.target.value },
-            )
-          }
-        />
-        <button
-          className="icon-button"
-          type="button"
-          aria-expanded={state.builderOpen}
-          aria-controls={`${id}-builder`}
-          aria-label={`${label} regular expression builder`}
-          onClick={() => onChange({ ...state, builderOpen: !state.builderOpen })}
-        >
-          <span aria-hidden="true">.*</span>
-        </button>
-      </div>
-      <label className="inline-check">
-        <input
-          type="checkbox"
-          checked={state.regex}
-          onChange={(event) =>
-            onChange({
-              ...state,
-              regex: event.target.checked,
-              pattern: event.target.checked
-                ? state.pattern || state.query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
-                : state.pattern,
-            })
-          }
-        />
-        Use regular expression
-      </label>
-      {state.builderOpen && (
-        <section
-          className="regex-panel"
-          id={`${id}-builder`}
-          aria-label={`${label} regular expression builder`}
-        >
-          <div className="regex-heading">
-            <div>
-              <p className="eyebrow">ECMAScript regular expressions</p>
-              <h3>Build and test locally</h3>
-            </div>
-            <button
-              type="button"
-              className="text-button"
-              onClick={() => onChange({ ...state, builderOpen: false })}
-            >
-              Close
-            </button>
-          </div>
-          <div className="regex-fields">
-            <label>
-              Raw pattern
-              <input
-                type="text"
-                value={state.pattern}
-                maxLength={MAX_PATTERN_LENGTH}
-                onChange={(event) =>
-                  onChange({ ...state, pattern: event.target.value, regex: true })
-                }
-              />
-            </label>
-            <label>
-              Flags
-              <input
-                type="text"
-                value={state.flags}
-                maxLength={4}
-                aria-describedby={`${id}-flags-help`}
-                onChange={(event) =>
-                  onChange({
-                    ...state,
-                    flags: event.target.value.replace(/[^dgimsuvy]/g, ""),
-                  })
-                }
-              />
-              <small id={`${id}-flags-help`}>Supported by this browser; “i” ignores case.</small>
-            </label>
-          </div>
-          <div className="token-tray" aria-label="Guided pattern inserts">
-            <button type="button" onClick={() => insert("literal")}>Literal</button>
-            <button type="button" onClick={() => insert("[A-Za-z]")}>Character class</button>
-            <button type="button" onClick={() => insert("^")}>Start anchor</button>
-            <button type="button" onClick={() => insert("$")}>End anchor</button>
-            <button type="button" onClick={() => insert("(group)")}>Group</button>
-            <button type="button" onClick={() => insert("|")}>Alternation</button>
-            <button type="button" onClick={() => insert("+")}>One or more</button>
-            <button type="button" onClick={() => insert("{1,3}")}>Range</button>
-          </div>
-          <label>
-            Bounded sample text
-            <textarea
-              value={state.sample}
-              maxLength={MAX_SAMPLE_LENGTH}
-              onChange={(event) => onChange({ ...state, sample: event.target.value })}
-              placeholder="Try the pattern against local text. Nothing is transmitted or saved."
-            />
-          </label>
-          <p
-            className={`syntax-feedback ${analysis.feedback.includes("Invalid") || analysis.feedback.includes("exceeds") ? "error" : ""}`}
-            role="status"
-          >
-            {analysis.feedback}
-          </p>
-          {analysis.matches.length > 0 && (
-            <ol className="match-list">
-              {analysis.matches.slice(0, 8).map((match, index) => (
-                <li key={`${match.index}-${index}`}>
-                  <code>{match.value || "(zero-width match)"}</code> at {match.index}
-                  {match.groups.length > 0 && (
-                    <span> · captures: {match.groups.map((item) => item ?? "∅").join(", ")}</span>
-                  )}
-                </li>
-              ))}
-            </ol>
-          )}
-          <p className="privacy-note">
-            Evaluation stays in this browser. Patterns and sample text are bounded and are not persisted.
-          </p>
-        </section>
-      )}
-    </div>
-  );
-}
-
-function LocalizedLabel({
-  en,
-  zh,
-  mode,
-}: {
-  en: string;
-  zh: string;
-  mode: LanguageMode;
-}) {
-  if (mode === "zh") return <>{zh}</>;
-  if (mode === "both") {
-    return (
-      <>
-        <span>{en}</span>
-        <span className="secondary-language">{zh}</span>
-      </>
-    );
-  }
-  return <>{en}</>;
-}
-
-export function SiteApp() {
-  const [activeTab, setActiveTab] = useState<TabId>("home");
-  const [preferences, setPreferences] = useState<Preferences>(defaultPreferences);
-  const [preferencesLoaded, setPreferencesLoaded] = useState(false);
+export function SiteApp(): ReactNode {
+  const [preferences, setPreferences] = useState<Preferences>(DEFAULT_PREFERENCES);
+  const [loaded, setLoaded] = useState(false);
   const [vocabulary, setVocabulary] = useState<Record<string, string>>({});
-  const [vocabularyStatus, setVocabularyStatus] = useState(
-    "No personal vocabulary file is loaded.",
-  );
-  const [settingsSearch, setSettingsSearch] = useState<SearchState>(emptySearch);
-  const [docsSearch, setDocsSearch] = useState<SearchState>(emptySearch);
-  const [paletteSearch, setPaletteSearch] = useState<SearchState>(emptySearch);
+  const [vocabularyStatus, setVocabularyStatus] = useState("No personal vocabulary file is loaded.");
+  const [tabsState, setTabsState] = useState<TabsState>(defaultTabsState);
+  const [appearance, setAppearance] = useState<AppearanceStore>({});
+  const [locks, setLocks] = useState<LockRecord[]>([]);
+  const [schedule, setSchedule] = useState<ScheduleState>(DEFAULT_SCHEDULE_STATE);
+  const [tickets, setTickets] = useState<SupportTicket[]>([]);
+  const [authenticatorSecret, setAuthenticatorSecret] = useState<string | null>(null);
+  const [searches, setSearches] = useState<Record<string, SearchState>>({});
   const [paletteOpen, setPaletteOpen] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
-  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
-  const [visibleNotifications, setVisibleNotifications] = useState<NotificationItem[]>([]);
-  const tabRefs = useRef<Record<TabId, HTMLButtonElement | null>>({
-    home: null,
-    workflow: null,
-    scope: null,
-    docs: null,
-    settings: null,
-  });
+  const [appearanceTarget, setAppearanceTarget] = useState<string | null>(null);
+  const [activeDoc, setActiveDoc] = useState<string | null>(null);
+  const [changelogRange, setChangelogRange] = useState<ChangelogRange>(EMPTY_RANGE);
+  const [narrationEnabled, setNarrationEnabled] = useState(false);
+
+  const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+  const paletteInvoker = useRef<HTMLElement | null>(null);
   const narrow = useNarrowLayout();
 
+  // ------------------------------------------------------------- loading --
   useEffect(() => {
-    setPreferences(safeStoredPreferences());
-    const storedVocabulary = safeStoredVocabulary();
+    const storedPreferences = window.localStorage.getItem(STORAGE_KEYS.preferences);
+    const legacy = window.localStorage.getItem(LEGACY_PREFERENCES_KEY);
+    setPreferences(
+      storedPreferences !== null
+        ? validatePreferences(readJson(STORAGE_KEYS.preferences, DEFAULT_PREFERENCES))
+        : legacy !== null
+          ? migratePreferencesV1toV2(legacy)
+          : DEFAULT_PREFERENCES,
+    );
+    const storedVocabulary = readJson<Record<string, string>>(STORAGE_KEYS.vocabulary, {});
     setVocabulary(storedVocabulary);
-    if (Object.keys(storedVocabulary).length > 0) {
-      setVocabularyStatus(
-        `${Object.keys(storedVocabulary).length} validated local replacement${Object.keys(storedVocabulary).length === 1 ? "" : "s"} loaded.`,
-      );
+    const count = Object.keys(storedVocabulary).length;
+    if (count > 0) {
+      setVocabularyStatus(`${count} validated local replacement${count === 1 ? "" : "s"} loaded.`);
     }
-    setPreferencesLoaded(true);
+    setTabsState(validateTabsState(readJson(STORAGE_KEYS.tabs, null)));
+    const storedAppearance = window.localStorage.getItem(STORAGE_KEYS.appearance);
+    if (storedAppearance !== null) {
+      const verdict = importAppearancePreset(storedAppearance);
+      if (verdict.ok) setAppearance(verdict.store);
+    }
+    setLocks(validateLocks(readJson(STORAGE_KEYS.locks, [])));
+    setSchedule(validateScheduleState(readJson(STORAGE_KEYS.schedules, null)));
+    setTickets(validateTickets(readJson(STORAGE_KEYS.tickets, [])));
+    const secret = window.localStorage.getItem(AUTHENTICATOR_STORAGE);
+    setAuthenticatorSecret(secret !== null && secret.length > 0 ? secret : null);
+    setLoaded(true);
   }, []);
 
+  // ---------------------------------------------------------- persistence --
   useEffect(() => {
-    if (preferencesLoaded) {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(preferences));
+    if (loaded) writeJson(STORAGE_KEYS.preferences, preferences);
+  }, [loaded, preferences]);
+  useEffect(() => {
+    if (loaded) writeJson(STORAGE_KEYS.tabs, tabsState);
+  }, [loaded, tabsState]);
+  useEffect(() => {
+    if (loaded) {
+      writeJson(STORAGE_KEYS.appearance, { version: 1, name: "current", elements: appearance });
     }
-  }, [preferences, preferencesLoaded]);
+  }, [appearance, loaded]);
+  useEffect(() => {
+    if (loaded) writeJson(STORAGE_KEYS.locks, locks);
+  }, [loaded, locks]);
+  useEffect(() => {
+    if (loaded) writeJson(STORAGE_KEYS.schedules, schedule);
+  }, [loaded, schedule]);
+  useEffect(() => {
+    if (loaded) writeJson(STORAGE_KEYS.tickets, tickets);
+  }, [loaded, tickets]);
+  useEffect(() => {
+    if (!loaded) return;
+    if (authenticatorSecret === null) window.localStorage.removeItem(AUTHENTICATOR_STORAGE);
+    else window.localStorage.setItem(AUTHENTICATOR_STORAGE, authenticatorSecret);
+  }, [authenticatorSecret, loaded]);
+
+  // ------------------------------------------------------------- services --
+  const persistNotifications = useCallback((list: Notification[]) => {
+    writeJson(STORAGE_KEYS.notifications, list.slice(0, 200));
+  }, []);
+  const notifications = useNotifications(persistNotifications);
+  const notify = useCallback(
+    (kind: "success" | "error" | "progress" | "info", title: string, body: string) =>
+      notifications.notify({ kind, title, body }),
+    [notifications],
+  );
+  const notifyPair = useCallback(
+    (kind: "success" | "error", title: string, body: string) => {
+      notify(kind, title, body);
+    },
+    [notify],
+  );
+
+  // Restores the persisted centre without replaying old notices as toasts.
+  const hydrateNotifications = notifications.hydrate;
+  useEffect(() => {
+    hydrateNotifications(validateNotifications(readJson(STORAGE_KEYS.notifications, [])));
+  }, [hydrateNotifications]);
+
+  const history = useHistory({
+    redaction: { vocabularyValues: Object.values(vocabulary) },
+    onError: (message) => notify("error", "Local history unavailable", message),
+  });
+
+  const locksApi = useLocks({
+    locks,
+    onChange: (next) => {
+      setLocks(next);
+      history.record("lock-create", "Changed the element locks", [
+        { path: "locks.count", before: String(locks.length), after: String(next.length) },
+      ]);
+    },
+  });
+
+  const scheduling = useScheduling({ state: schedule, onChange: setSchedule });
+
+  const effective = useMemo(
+    () => applyOverlay(preferences, scheduling.overlay, scheduling.externalState.values).preferences,
+    [preferences, scheduling.overlay, scheduling.externalState.values],
+  );
+
+  const narration = useNarration(effective.narration, effective.language);
+
+  // ------------------------------------------------------------ vocabulary --
+  const compiled = useMemo(() => compileReplacements(vocabulary), [vocabulary]);
+  const personalize = useCallback(
+    (text: string) => applyVocabulary(text, compiled, { immutableSpans: [...SITE_IMMUTABLE_SPANS] }),
+    [compiled],
+  );
+  const copy = useCallback(
+    (key: string) =>
+      personalize(
+        resolveCopy(COPY, key, effective.language, effective.englishFunny, effective.cantoneseFunny),
+      ),
+    [effective.cantoneseFunny, effective.englishFunny, effective.language, personalize],
+  );
+  const copyIn = useCallback(
+    (key: string, language: "en" | "zh") => {
+      const entry = COPY[key];
+      if (!entry) return key;
+      const level = language === "en" ? effective.englishFunny : effective.cantoneseFunny;
+      const index = Math.min(4, Math.max(0, Math.round(level) - 1));
+      return personalize(entry[language][index] ?? "");
+    },
+    [effective.cantoneseFunny, effective.englishFunny, personalize],
+  );
+
+  // --------------------------------------------------------------- search --
+  const bind = useCallback(
+    (id: string, label: string, placeholder?: string): SearchBinding => ({
+      id,
+      label: personalize(label),
+      ...(placeholder === undefined ? {} : { placeholder: personalize(placeholder) }),
+      state: searches[id] ?? createSearchState(),
+      onChange: (state: SearchState) => setSearches((current) => ({ ...current, [id]: state })),
+    }),
+    [personalize, searches],
+  );
+
+  // ------------------------------------------------------- guarded setter --
+  const settingIdFor = useCallback((key: string) => {
+    return SETTING_DESCRIPTORS.find((descriptor) => descriptor.preferenceKey === key)?.id ?? null;
+  }, []);
+
+  const updatePreferences = useCallback(
+    (patch: Partial<Preferences>, summary: string) => {
+      const blocked = Object.keys(patch).filter((key) => {
+        const id = settingIdFor(key);
+        return id !== null && locksApi.blocked(id);
+      });
+      if (blocked.length > 0) {
+        notify(
+          "error",
+          "Change blocked by a lock",
+          `${blocked.join(", ")} is locked in this browser. Unlock it in the settings tab before changing it. ${LOCK_DISCLOSURE}`,
+        );
+        return;
+      }
+      const next = applyPreferencePatch(preferences, patch);
+      const diff = diffRecords(
+        preferences as unknown as Record<string, unknown>,
+        next as unknown as Record<string, unknown>,
+      );
+      if (diff.length === 0) return;
+      setPreferences(next);
+      history.record("preference-change", summary, diff);
+    },
+    [history, locksApi, notify, preferences, settingIdFor],
+  );
+
+  const updateAppearance = useCallback(
+    (next: AppearanceStore, summary: string) => {
+      setAppearance(next);
+      history.record("appearance-change", summary, [
+        {
+          path: "appearance.elementCount",
+          before: String(Object.keys(appearance).length),
+          after: String(Object.keys(next).length),
+        },
+      ]);
+    },
+    [appearance, history],
+  );
+
+  const updateTabs = useCallback(
+    (next: TabsState, summary: string) => {
+      setTabsState(next);
+      history.record("preference-change", summary, [
+        { path: "tabs.open", before: String(tabsState.tabs.length), after: String(next.tabs.length) },
+        { path: "tabs.active", before: tabsState.activeId, after: next.activeId },
+      ]);
+    },
+    [history, tabsState],
+  );
+
+  const updateTickets = useCallback(
+    (next: SupportTicket[], summary: string) => {
+      setTickets(next);
+      history.record("ticket-create", summary, [
+        { path: "tickets.count", before: String(tickets.length), after: String(next.length) },
+      ]);
+    },
+    [history, tickets.length],
+  );
+
+  // -------------------------------------------------------------- exports --
+  const runExport = useCallback(
+    (request: ExportRequest) => {
+      void deliverExport(request)
+        .then((outcome) => {
+          notify(
+            "success",
+            "Export delivered",
+            `${outcome.fileName} (${outcome.byteLength} bytes) via the ${outcome.method} path. ${EXPORT_SANDBOX_NOTE}`,
+          );
+          history.record("export", `Exported ${request.collection}`, [
+            { path: "export.collection", before: null, after: request.collection },
+            { path: "export.rows", before: null, after: String(request.rows.length) },
+            { path: "export.filter", before: null, after: request.filterDescription },
+          ]);
+        })
+        .catch((error: unknown) =>
+          notify(
+            "error",
+            "Export not delivered",
+            error instanceof Error ? error.message : "The export could not be delivered.",
+          ),
+        );
+    },
+    [history, notify],
+  );
+
+  const copyToClipboard = useCallback(
+    (request: ExportRequest) => {
+      void copyExport(request)
+        .then((outcome) => notify("success", "Copied", `${outcome.byteLength} characters copied to the clipboard.`))
+        .catch((error: unknown) =>
+          notify("error", "Not copied", error instanceof Error ? error.message : "Clipboard access was refused."),
+        );
+    },
+    [notify],
+  );
+
+  // ------------------------------------------------------------- commands --
+  const registry = useMemo(
+    () =>
+      buildCommandRegistry({
+        preferences: effective,
+        documentation: DOC_ENTRIES.map((entry) => ({ slug: entry.slug, title: entry.title })),
+        changelogAreas: CHANGELOG_AREAS,
+        appearanceElements: APPEARANCE_ELEMENTS.map((element) => ({ id: element.id, label: element.label })),
+      }),
+    [effective],
+  );
+
+  useEffect(() => {
+    const missing = uncoveredPreferenceKeys(registry);
+    if (missing.length > 0) {
+      notify(
+        "error",
+        "A setting has no command",
+        `These preference keys are not reachable from the command palette: ${missing.join(", ")}.`,
+      );
+    }
+    // Reported once per registry rebuild; the registry only changes with the
+    // declarative sources.
+  }, [registry]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const openTab = useCallback(
+    (id: string) => {
+      const descriptor = tabDescriptor(id);
+      if (!descriptor) return;
+      setTabsState((current) =>
+        current.tabs.some((tab) => tab.id === id)
+          ? { ...current, activeId: id }
+          : {
+              ...current,
+              activeId: id,
+              tabs: [
+                ...current.tabs,
+                {
+                  id,
+                  order: current.tabs.length,
+                  pinned: false,
+                  groupId: descriptor.groupId,
+                  closable: descriptor.closable,
+                },
+              ],
+            },
+      );
+    },
+    [],
+  );
+
+  const teleport = useCallback(
+    (command: CommandDescriptor) => {
+      openTab(command.tab);
+      setPaletteOpen(false);
+      const target = teleportTarget(command);
+      window.setTimeout(() => {
+        const preferred =
+          target.preferInputId === undefined ? null : document.getElementById(target.preferInputId);
+        const element =
+          preferred ??
+          document.getElementById(`${target.elementId}-input`) ??
+          document.getElementById(target.elementId);
+        if (!element) return;
+        (element as HTMLElement).focus();
+        element.scrollIntoView({ block: "center", behavior: effective.motion === "reduce" ? "auto" : "smooth" });
+        element.classList.add("teleport-highlight");
+        window.setTimeout(() => element.classList.remove("teleport-highlight"), 1400);
+      }, 60);
+    },
+    [effective.motion, openTab],
+  );
+
+  const closePalette = useCallback(() => {
+    setPaletteOpen(false);
+    paletteInvoker.current?.focus();
+  }, []);
 
   useEffect(() => {
     const listener = (event: KeyboardEvent) => {
       if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === "f") {
         event.preventDefault();
+        paletteInvoker.current = document.activeElement as HTMLElement | null;
         setPaletteOpen(true);
       }
-      if (event.key === "Escape" && paletteOpen) setPaletteOpen(false);
+      if (event.key === "Escape") {
+        if (paletteOpen) closePalette();
+        if (appearanceTarget !== null) setAppearanceTarget(null);
+      }
     };
     window.addEventListener("keydown", listener);
     return () => window.removeEventListener("keydown", listener);
-  }, [paletteOpen]);
+  }, [appearanceTarget, closePalette, paletteOpen]);
 
-  const notify = useCallback((title: string, body: string) => {
-    const item = {
-      id: Date.now() + Math.floor(Math.random() * 1000),
-      title,
-      body,
-      createdAt: new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-    };
-    setNotifications((current) => [item, ...current].slice(0, 40));
-    setVisibleNotifications((current) => [...current, item]);
-    window.setTimeout(() => {
-      setVisibleNotifications((current) => current.filter(({ id }) => id !== item.id));
-    }, 4800);
-  }, []);
+  // -------------------------------------------------------------- styling --
+  useEffect(() => {
+    const root = document.documentElement;
+    root.dataset.theme = effective.theme;
+    root.dataset.density = effective.density;
+    root.dataset.motion = effective.motion;
+  }, [effective.density, effective.motion, effective.theme]);
 
-  const updatePreferences = <Key extends keyof Preferences>(
-    key: Key,
-    value: Preferences[Key],
-  ) => {
-    setPreferences((current) => ({ ...current, [key]: value }));
-  };
-
-  const effectiveDock: Dock = narrow ? "top" : preferences.dock;
-  const horizontal = effectiveDock === "top" || effectiveDock === "bottom";
-  const selectedTheme = preferences.theme;
-  const style = {
-    "--accent": preferences.accent,
-    "--on-accent": contrastText(preferences.accent),
-    "--font-scale": preferences.fontScale,
+  const effectiveDock = narrow ? "top" : effective.dock;
+  const shellStyle = {
+    "--accent": effective.accent,
+    "--font-scale": effective.fontScale,
   } as CSSProperties;
 
-  const personalized = (value: string) => vocabulary[value] ?? value;
-
-  const modeCopy = (english: string, cantonese: string) => {
-    if (preferences.language === "zh") return cantonese;
-    if (preferences.language === "both") return `${english} / ${cantonese}`;
-    return english;
-  };
-
-  const tabName = (tab: (typeof tabs)[number]) => {
-    if (preferences.language === "zh") return tab.zh;
-    if (preferences.language === "both") return `${tab.en} / ${tab.zh}`;
-    return tab.en;
-  };
-
-  const onTabKeyDown = (
-    event: ReactKeyboardEvent<HTMLButtonElement>,
-    current: number,
-  ) => {
-    const previousKey = horizontal ? "ArrowLeft" : "ArrowUp";
-    const nextKey = horizontal ? "ArrowRight" : "ArrowDown";
-    let nextIndex = current;
-    if (event.key === previousKey) nextIndex = (current - 1 + tabs.length) % tabs.length;
-    if (event.key === nextKey) nextIndex = (current + 1) % tabs.length;
-    if (event.key === "Home") nextIndex = 0;
-    if (event.key === "End") nextIndex = tabs.length - 1;
-    if (nextIndex !== current || event.key === "Home" || event.key === "End") {
-      event.preventDefault();
-      const nextTab = tabs[nextIndex].id;
-      setActiveTab(nextTab);
-      tabRefs.current[nextTab]?.focus();
-    }
-  };
-
-  const activate = (tab: TabId, target?: string) => {
-    setActiveTab(tab);
-    setPaletteOpen(false);
-    window.setTimeout(() => {
-      const element = target
-        ? document.getElementById(target)
-        : tabRefs.current[tab];
-      element?.focus();
-      element?.scrollIntoView({ block: "center", behavior: "smooth" });
-      element?.classList.add("teleport-highlight");
-      window.setTimeout(() => element?.classList.remove("teleport-highlight"), 1400);
-    }, 50);
-  };
-
-  const filteredDocs = documentationArticles.filter((article) =>
-    matchesSearch(
-      `${article.title} ${article.summary} ${article.topics.join(" ")}`,
-      docsSearch,
-    ),
-  );
-  const filteredCommands = commandItems.filter((command) =>
-    matchesSearch(`${command.label} ${command.detail}`, paletteSearch),
+  const appearanceProps = useCallback(
+    (id: string) => ({
+      style: appearanceStyle(appearance, id) as Record<string, string>,
+      onContextMenu: (event: React.MouseEvent) => {
+        event.preventDefault();
+        setAppearanceTarget(id);
+      },
+    }),
+    [appearance],
   );
 
-  const settingVisible = (text: string) => matchesSearch(text, settingsSearch);
-
+  // ---------------------------------------------------------- vocabulary IO --
   const onVocabularyFile = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
+    event.target.value = "";
     if (!file) return;
-    if (file.size > 65_536) {
-      setVocabularyStatus("File rejected: the 64 KB local limit was exceeded.");
-      notify("Vocabulary not loaded", "Choose a JSON file no larger than 64 KB.");
-      event.target.value = "";
+    const verdict = validateVocabularyDocument(await file.text());
+    if (!verdict.ok) {
+      setVocabularyStatus(`File rejected: ${verdict.reason}`);
+      notify("error", "Vocabulary not loaded", "The previous valid local vocabulary remains unchanged.");
       return;
     }
-    try {
-      const parsed = JSON.parse(await file.text()) as unknown;
-      if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
-        throw new Error("The root must be an object.");
-      }
-      const record = parsed as Record<string, unknown>;
-      if (
-        Object.keys(record).some((key) => !["version", "replacements"].includes(key)) ||
-        record.version !== 1 ||
-        !record.replacements ||
-        typeof record.replacements !== "object" ||
-        Array.isArray(record.replacements)
-      ) {
-        throw new Error("Use version 1 with one replacements object and no other fields.");
-      }
-      const entries = Object.entries(record.replacements as Record<string, unknown>);
-      if (entries.length > 200) throw new Error("At most 200 replacements are allowed.");
-      const unsafeKeys = new Set(["__proto__", "prototype", "constructor"]);
-      for (const [key, value] of entries) {
-        if (
-          unsafeKeys.has(key) ||
-          key.length < 1 ||
-          key.length > 80 ||
-          typeof value !== "string" ||
-          value.length > 200
-        ) {
-          throw new Error("Every replacement must use a safe 1–80 character key and a string value of at most 200 characters.");
-        }
-      }
-      const replacements = Object.fromEntries(entries) as Record<string, string>;
-      window.localStorage.setItem(VOCABULARY_KEY, JSON.stringify(replacements));
-      setVocabulary(replacements);
-      setVocabularyStatus(
-        `${entries.length} validated local replacement${entries.length === 1 ? "" : "s"} loaded. The source filename was not retained.`,
-      );
-      notify("Personal vocabulary loaded", `${entries.length} local replacement${entries.length === 1 ? "" : "s"} are active.`);
-    } catch (error) {
-      setVocabularyStatus(
-        `File rejected: ${error instanceof Error ? error.message : "invalid JSON"}`,
-      );
-      notify("Vocabulary not loaded", "The previous valid local vocabulary remains unchanged.");
-    } finally {
-      event.target.value = "";
-    }
+    const count = Object.keys(verdict.replacements).length;
+    writeJson(STORAGE_KEYS.vocabulary, verdict.replacements);
+    setVocabulary(verdict.replacements);
+    setVocabularyStatus(
+      `${count} validated local replacement${count === 1 ? "" : "s"} loaded. The source filename was not retained.`,
+    );
+    history.record("vocabulary-import", "Loaded a personal vocabulary file", vocabularyShape(verdict.replacements));
+    notify("success", "Personal vocabulary loaded", `${count} local replacement${count === 1 ? "" : "s"} are active.`);
   };
 
   const clearVocabulary = () => {
-    window.localStorage.removeItem(VOCABULARY_KEY);
+    window.localStorage.removeItem(STORAGE_KEYS.vocabulary);
     setVocabulary({});
     setVocabularyStatus("No personal vocabulary file is loaded.");
-    notify("Personal vocabulary cleared", "Original site wording is active again.");
+    history.record("vocabulary-clear", "Cleared the personal vocabulary", vocabularyShape({}));
+    notify("success", "Personal vocabulary cleared", "Original site wording is active again.");
   };
 
-  const resetPreferences = () => {
-    setPreferences(defaultPreferences);
-    notify("Personalization reset", "The site is using its shipped local defaults.");
+  // ---------------------------------------------------------------- panels --
+  const openTabIds = useMemo(() => new Set(tabsState.tabs.map((tab) => tab.id)), [tabsState.tabs]);
+  const activeId = tabsState.activeId ?? "home";
+  const emoji = effective.dialogEmoji;
+  const displayName = personalize(resolveDisplayName(effective, SHIPPED_PRODUCT_NAME));
+
+  const settingsSearch = bind("settings-search", copy("settings.searchLabel"), "Search setting names and values");
+  const settingVisible = (keywords: string) => matchesSearch(keywords, settingsSearch.state);
+
+  const readSection = (key: string) => {
+    narration.read(copyIn(key, "en"), copyIn(key, "zh"));
   };
 
-  const englishTone = [
-    "Direct, factual wording.",
-    "A little lighter, with every fact intact.",
-    "Friendly wording, still precise.",
-    "Playful around the edges; the rules stay exact.",
-    "Paperwork can wear a party hat, but it still needs every signature.",
-  ][preferences.englishFunny - 1];
-  const cantoneseTone = [
-    "直接、清楚、照足事實。",
-    "輕鬆少少，資料照樣準確。",
-    "親切啲，但每個步驟都講清楚。",
-    "有少少玩味，重要資料一粒都唔會走。",
-    "文件可以有啲氣氛，但簽名同覆核一樣唔少得。",
-  ][preferences.cantoneseFunny - 1];
+  const ReadAloud = ({ copyKey, label }: { copyKey: string; label: string }): ReactNode => (
+    <button
+      type="button"
+      className="text-button read-aloud"
+      disabled={!narration.available}
+      aria-label={`${copy("action.readSection")}: ${label}`}
+      title={narration.available ? undefined : narration.statusMessage}
+      onClick={() => readSection(copyKey)}
+    >
+      <span aria-hidden="true">◈</span> {copy("action.readSection")}
+    </button>
+  );
+
+  const panelProps = (id: SiteTabId) => ({
+    id: `panel-${id}`,
+    role: "tabpanel" as const,
+    "aria-labelledby": `tab-${id}`,
+    hidden: activeId !== id,
+    tabIndex: -1,
+    ...appearanceProps(`panel-${id}`),
+  });
 
   return (
     <div
-      className={`app-shell dock-${effectiveDock} density-${preferences.density} motion-${preferences.motion}`}
-      data-theme={selectedTheme}
-      style={style}
+      className={`app-shell dock-${effectiveDock} density-${effective.density} motion-${effective.motion}`}
+      data-theme={effective.theme}
+      style={shellStyle}
     >
-      <a className="skip-link" href="#main-content">Skip to content</a>
-      <header className="top-bar">
-        <div className="brand-mark" aria-hidden="true"><span /></div>
+      <a className="skip-link" href="#main-content">
+        {copy("shell.skipToContent")}
+      </a>
+
+      <header className="top-bar" id="top-bar" {...appearanceProps("top-bar")}>
+        <BrandMark logo={effective.logo} />
         <div className="brand-copy">
-          <strong>{personalized("Material Tax Reporting")}</strong>
-          <span>{modeCopy("Paper-return planning documentation", "紙本報稅規劃文件")}</span>
+          <strong>{displayName}</strong>
+          <span>{copy("brand.tagline")}</span>
         </div>
         <div className="header-actions">
-          <span className="status-chip"><span aria-hidden="true">●</span> Foundation only</span>
-          <button type="button" className="tonal-button" onClick={() => setPaletteOpen(true)}>
-            {modeCopy("Commands", "指令")} <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>F</kbd>
+          <span className="status-chip">
+            <span aria-hidden="true">●</span> {copy("shell.statusChip")}
+          </span>
+          <button
+            type="button"
+            className="tonal-button"
+            onClick={(event) => {
+              paletteInvoker.current = event.currentTarget;
+              setPaletteOpen(true);
+            }}
+          >
+            {copy("shell.commands")} <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>F</kbd>
           </button>
-          <button type="button" className="icon-button history-button" aria-label="Open notification history" onClick={() => setHistoryOpen(true)}>
+          <button
+            type="button"
+            className="icon-button history-button"
+            aria-label={`${copy("notifications.open")}: ${notifications.unreadCount} unread`}
+            onClick={() => setNotificationsOpen(true)}
+          >
             <span aria-hidden="true">◴</span>
-            {notifications.length > 0 && <span className="badge">{notifications.length}</span>}
+            {notifications.unreadCount > 0 && <span className="badge">{notifications.unreadCount}</span>}
+          </button>
+          <button
+            type="button"
+            className="icon-button"
+            aria-label={copy("history.title")}
+            onClick={() => setHistoryOpen(true)}
+          >
+            <span aria-hidden="true">⟲</span>
           </button>
         </div>
       </header>
 
-      <nav
-        className="tab-rail"
-        aria-label="Primary documentation"
-        role="tablist"
-        aria-orientation={horizontal ? "horizontal" : "vertical"}
-      >
-        {tabs.map((tab, index) => (
-          <button
-            key={tab.id}
-            ref={(element) => { tabRefs.current[tab.id] = element; }}
-            id={`tab-${tab.id}`}
-            role="tab"
-            aria-selected={activeTab === tab.id}
-            aria-controls={`panel-${tab.id}`}
-            tabIndex={activeTab === tab.id ? 0 : -1}
-            onClick={() => setActiveTab(tab.id)}
-            onKeyDown={(event) => onTabKeyDown(event, index)}
-          >
-            <span className="tab-icon" aria-hidden="true">{tab.short}</span>
-            <span className="tab-label">{personalized(tabName(tab))}</span>
-          </button>
-        ))}
-      </nav>
+      <TabStrip
+        state={tabsState}
+        onChange={updateTabs}
+        dock={effectiveDock}
+        language={effective.language}
+        onNotify={notifyPair}
+        registerRef={(id, element) => {
+          tabRefs.current[id] = element;
+        }}
+        appearanceProps={appearanceProps}
+        searches={{
+          tabs: bind("tab-search", "Search open tabs", "Search tab names"),
+          groups: bind("tab-group-search", "Search tab groups", "Search group names"),
+          movePicker: bind("tab-move-search", "Filter the move picker", "Search positions"),
+          bulkClose: bind("tab-bulk-close-search", "Close tabs matching a query", "Search tab names"),
+        }}
+      />
 
-      <main id="main-content" className="content-area" tabIndex={-1}>
-        <section
-          id="panel-home"
-          role="tabpanel"
-          aria-labelledby="tab-home"
-          hidden={activeTab !== "home"}
-        >
-          <div className="hero-grid">
-            <div className="hero-copy">
-              <p className="eyebrow">Canada and Ontario · planned paper workflow</p>
-              <h1>{modeCopy("Prepare carefully. Review every detail. Mail only when you are satisfied.", "小心準備，逐項覆核；確認滿意先郵寄。")}</h1>
-              <p className="hero-lede">
-                {modeCopy("Material Tax Reporting is a foundation for a future local-first desktop application that may generate a CRA mail-in PDF package. No working application or tax output exists today.", "Material Tax Reporting 目前只係未來本機優先桌面應用程式嘅基礎，計劃只可產生寄畀 CRA 嘅 PDF 套件。現時未有可用應用程式或稅務輸出。")}
-              </p>
-              <div className="hero-actions">
-                <button type="button" className="filled-button" onClick={() => setActiveTab("workflow")}>{modeCopy("Read the planned workflow", "閱讀規劃流程")}</button>
-                <button type="button" className="outlined-button" onClick={() => setActiveTab("scope")}>{modeCopy("Open official sources", "開啟官方資料")}</button>
+      <main id="main-content" className="content-area" tabIndex={-1} {...appearanceProps("main-content")}>
+        {openTabIds.has("home") && (
+          <section {...panelProps("home")}>
+            <div className="hero-grid">
+              <div className="hero-copy">
+                <p className="eyebrow">{copy("home.eyebrow")}</p>
+                <h1>{copy("home.title")}</h1>
+                <p className="hero-lede">{copy("home.lede")}</p>
+                <div className="hero-actions">
+                  <button type="button" className="filled-button" onClick={() => openTab("workflow")}>
+                    {copy("home.readWorkflow")}
+                  </button>
+                  <button type="button" className="outlined-button" onClick={() => openTab("scope")}>
+                    {copy("home.openSources")}
+                  </button>
+                  <ReadAloud copyKey="home.lede" label={copy("home.title")} />
+                </div>
               </div>
+              <aside className="boundary-card" aria-labelledby="boundary-title">
+                <div className="boundary-graphic" aria-hidden="true">
+                  <span className="sheet sheet-back" />
+                  <span className="sheet sheet-front">
+                    <i />
+                    <i />
+                    <i />
+                  </span>
+                  <span className="review-stamp">REVIEW</span>
+                </div>
+                <p className="eyebrow">{copy("home.boundaryEyebrow")}</p>
+                <h2 id="boundary-title">{copy("home.boundaryTitle")}</h2>
+                <p>{copy("home.boundaryBody")}</p>
+              </aside>
             </div>
-            <aside className="boundary-card" aria-labelledby="boundary-title">
-              <div className="boundary-graphic" aria-hidden="true">
-                <span className="sheet sheet-back" />
-                <span className="sheet sheet-front"><i /><i /><i /></span>
-                <span className="review-stamp">REVIEW</span>
-              </div>
-              <p className="eyebrow">Non-negotiable boundary</p>
-              <h2 id="boundary-title">{modeCopy("Paper package only", "只限紙本套件")}</h2>
-              <p>
-                The product will not implement NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing.
-              </p>
-            </aside>
-          </div>
 
-          <div className="status-grid" aria-label="Current project status">
-            <article><span className="metric">0</span><h2>Shipped applications</h2><p>The repository is a software foundation.</p></article>
-            <article><span className="metric">0</span><h2>Available installers</h2><p>No verified immutable release asset exists.</p></article>
-            <article><span className="metric">5</span><h2>Manual review areas</h2><p>Forms, calculations, attachments, destination, and signatures.</p></article>
-          </div>
-
-          <section className="installer-card" aria-labelledby="installer-title">
-            <div>
-              <p className="eyebrow">Installer availability</p>
-              <h2 id="installer-title">{modeCopy("Download unavailable", "暫未提供下載")}</h2>
-              <p>
-                There is no shipped application, installer, tax engine, PDF generator, documentation release, or software release. A download action will appear only after a verified immutable release asset exists.
-              </p>
-            </div>
-            <span className="unavailable-chip">Unavailable</span>
-          </section>
-        </section>
-
-        <section id="panel-workflow" role="tabpanel" aria-labelledby="tab-workflow" hidden={activeTab !== "workflow"}>
-          <div className="section-heading">
-            <p className="eyebrow">Planned behavior, not shipped functionality</p>
-            <h1>{modeCopy("Paper-only workflow", "紙本限定流程")}</h1>
-            <p>A deliberate sequence with a mandatory human review pause before any future export or print action.</p>
-          </div>
-          <ol className="workflow-list">
-            {[
-              ["1", "Collect records locally", "Future inputs must stay local by default and clearly identify their source and tax year."],
-              ["2", "Prepare Canada and Ontario forms", "The planned scope is a federal T1 return with relevant Ontario forms, driven by cited official rules."],
-              ["3", "Build the paper package", "Any future output is limited to a CRA mail-in PDF package. It is not a submission."],
-              ["4", "Inspect every populated form", "Review each field against the source records and current official form instructions."],
-              ["5", "Verify calculations and attachments", "Check every calculation and confirm that every required attachment is present."],
-              ["6", "Confirm destination and signatures", "Use current official CRA guidance for the mailing destination and inspect every signature field."],
-              ["7", "Acknowledge review", "The future export or print action remains unavailable until the user explicitly acknowledges completing every review area."],
-            ].map(([number, title, body]) => (
-              <li key={number}>
-                <span className="step-number">{number}</span>
-                <div><h2>{title}</h2><p>{body}</p></div>
-              </li>
-            ))}
-          </ol>
-          <section className="review-panel" aria-labelledby="review-panel-title">
-            <div>
-              <p className="eyebrow">Required before future export or print</p>
-              <h2 id="review-panel-title">{modeCopy("Manual-review acknowledgement", "人手覆核確認")}</h2>
-              <p>This documentation does not perform the review. It records the exact areas a future application must require.</p>
-            </div>
-            <ul className="review-checks">
-              {[
-                "Every populated form",
-                "Every calculation",
-                "Every attachment",
-                "The current mailing destination",
-                "Every signature field",
-              ].map((item) => <li key={item}><span aria-hidden="true">✓</span>{item}</li>)}
-            </ul>
-          </section>
-        </section>
-
-        <section id="panel-scope" role="tabpanel" aria-labelledby="tab-scope" hidden={activeTab !== "scope"}>
-          <div className="section-heading">
-            <p className="eyebrow">Official sources remain authoritative</p>
-            <h1>{modeCopy("Canada and Ontario scope", "加拿大及安省範圍")}</h1>
-            <p>
-              This site provides product documentation, not tax, legal, accounting, or financial advice. It does not claim CRA certification or approval.
-            </p>
-          </div>
-          <div className="scope-grid">
-            <article className="scope-card">
-              <span className="scope-letter" aria-hidden="true">CA</span>
-              <h2>Federal T1 paper return</h2>
-              <p>The planned application scope begins with an individual Canadian income tax and benefit return prepared for paper mailing.</p>
-            </article>
-            <article className="scope-card">
-              <span className="scope-letter" aria-hidden="true">ON</span>
-              <h2>Ontario forms</h2>
-              <p>Ontario provincial forms may be included when relevant. The official Ontario package remains the source for current forms.</p>
-            </article>
-          </div>
-          <section className="official-links" aria-labelledby="official-links-title">
-            <div>
-              <p className="eyebrow">Current guidance without copied addresses or figures</p>
-              <h2 id="official-links-title">{modeCopy("Official CRA references", "CRA 官方參考資料")}</h2>
-            </div>
-            <ul>
-              <li><a href="https://www.canada.ca/en/services/taxes/income-tax/personal-income-tax/how-file/paper.html" target="_blank" rel="noreferrer">File an income tax return on paper <span aria-hidden="true">↗</span></a><p>Current paper-filing guidance.</p></li>
-              <li><a href="https://www.canada.ca/en/revenue-agency/corporate/contact-information/where-mail-your-paper-t1-return.html" target="_blank" rel="noreferrer">Where to mail a paper T1 return <span aria-hidden="true">↗</span></a><p>Current mailing-destination guidance.</p></li>
-              <li><a href="https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package.html" target="_blank" rel="noreferrer">General income tax and benefit packages <span aria-hidden="true">↗</span></a><p>Current and prior-year federal packages.</p></li>
-              <li><a href="https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-pc.html" target="_blank" rel="noreferrer">Ontario information guide and forms <span aria-hidden="true">↗</span></a><p>Official Ontario package entry.</p></li>
-            </ul>
-          </section>
-        </section>
-
-        <section id="panel-docs" role="tabpanel" aria-labelledby="tab-docs" hidden={activeTab !== "docs"}>
-          <div className="section-heading docs-heading">
-            <div>
-              <p className="eyebrow">Public product documentation</p>
-              <h1>{modeCopy("Documentation", "文件")}</h1>
-              <p>Search the current foundation, constraints, planned workflow, and unavailable capabilities.</p>
-            </div>
-            <span className="result-count" aria-live="polite">{filteredDocs.length} of {documentationArticles.length} articles</span>
-          </div>
-          <SearchWithBuilder id="documentation-search" label="Search documentation" placeholder="Search titles, summaries, and topics" state={docsSearch} onChange={setDocsSearch} />
-          <div className="article-grid">
-            {filteredDocs.map((article) => (
-              <article key={article.id} id={article.id} className="article-card">
-                <div className="article-top"><span className="article-index" aria-hidden="true">{String(documentationArticles.indexOf(article) + 1).padStart(2, "0")}</span><span className="status-chip">Documentation</span></div>
-                <h2>{article.title}</h2>
-                <p>{article.summary}</p>
-                <div className="topic-row" aria-label="Topics">{article.topics.map((topic) => <span key={topic}>{topic}</span>)}</div>
+            <div className="status-grid" aria-label={copy("home.statusLabel")}>
+              <article>
+                <span className="metric">0</span>
+                <h2>{copy("home.shippedApplications")}</h2>
+                <p>{copy("home.shippedApplicationsNote")}</p>
               </article>
-            ))}
-          </div>
-          {filteredDocs.length === 0 && <div className="empty-state"><h2>No matching article</h2><p>Change the plain-text query or correct the regular expression.</p></div>}
-          <section className="feature-boundary" aria-labelledby="unavailable-title">
-            <p className="eyebrow">Honest capability inventory</p>
-            <h2 id="unavailable-title">Unavailable broader features</h2>
-            <p>
-              This site does not present placeholders as working product features. Accounts, electronic filing, submission services, payments, cloud tax storage, tax calculations, PDF generation, installers, automatic updates, file conversion, narration, authenticator management, scheduling, local Git history, and application appearance editing are not available. Site-only personalization, search, tab navigation, the command palette, and notification history work locally in this browser.
-            </p>
-          </section>
-        </section>
-
-        <section id="panel-settings" role="tabpanel" aria-labelledby="tab-settings" hidden={activeTab !== "settings"}>
-          <div className="section-heading settings-heading">
-            <div>
-              <p className="eyebrow">Stored only in local browser storage</p>
-              <h1>{modeCopy("Settings and personalization", "設定及個人化")}</h1>
-              <p>These controls change this documentation surface. They do not alter tax data or product output.</p>
+              <article>
+                <span className="metric">{RELEASE_ASSET_COUNT}</span>
+                <h2>{copy("home.availableInstallers")}</h2>
+                <p>{copy("home.availableInstallersNote")}</p>
+              </article>
+              <article>
+                <span className="metric">{REVIEW_AREAS.length}</span>
+                <h2>{copy("home.reviewAreas")}</h2>
+                <p>{copy("home.reviewAreasNote")}</p>
+              </article>
             </div>
-            <button type="button" className="outlined-button" onClick={resetPreferences}>Reset personalization</button>
-          </div>
-          <SearchWithBuilder id="settings-search" label="Search settings" placeholder="Search setting names and values" state={settingsSearch} onChange={setSettingsSearch} />
-          <div className="settings-grid">
-            {settingVisible("theme light dark system appearance") && (
-              <section className="setting-card" id="theme-setting" tabIndex={-1}>
-                <div><h2>Theme</h2><p>Choose light, dark, or the browser and operating system preference.</p></div>
-                <select aria-label="Theme" value={preferences.theme} onChange={(event) => updatePreferences("theme", event.target.value as Theme)}>
-                  <option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option>
-                </select>
-                <small>Current source: local preference; shipped value is System.</small>
-              </section>
-            )}
-            {settingVisible("tab docking left top right bottom navigation") && (
-              <section className="setting-card" id="dock-setting" tabIndex={-1}>
-                <div><h2>Tab docking</h2><p>Dock the persistent tab strip to any edge. Narrow layouts temporarily use the top edge.</p></div>
-                <div className="segmented" role="group" aria-label="Tab docking edge">
-                  {(["left", "top", "right", "bottom"] as Dock[]).map((dock) => <button type="button" key={dock} aria-pressed={preferences.dock === dock} onClick={() => updatePreferences("dock", dock)}>{dock[0].toUpperCase() + dock.slice(1)}</button>)}
-                </div>
-                <small>Current source: local preference; shipped value is Left.</small>
-              </section>
-            )}
-            {settingVisible("density compact comfortable spacing") && (
-              <section className="setting-card">
-                <div><h2>Density</h2><p>Adjust spacing while preserving readable targets and focus.</p></div>
-                <div className="segmented" role="group" aria-label="Interface density">
-                  {(["comfortable", "compact"] as Density[]).map((density) => <button type="button" key={density} aria-pressed={preferences.density === density} onClick={() => updatePreferences("density", density)}>{density[0].toUpperCase() + density.slice(1)}</button>)}
-                </div>
-                <small>Current source: local preference; shipped value is Comfortable.</small>
-              </section>
-            )}
-            {settingVisible("accent color colour seed") && (
-              <section className="setting-card">
-                <div><h2>Accent color</h2><p>Choose the primary color used for active navigation and controls.</p></div>
-                <label className="color-control"><input type="color" value={preferences.accent} onChange={(event) => updatePreferences("accent", event.target.value)} /><span>{preferences.accent.toUpperCase()}</span></label>
-                <small>Current source: local preference; shipped value is #4355B9.</small>
-              </section>
-            )}
-            {settingVisible("font scale size typography") && (
-              <section className="setting-card">
-                <div><h2>Font scale</h2><p>Scale site typography from 90% to 120%.</p></div>
-                <label className="range-control"><span>{Math.round(preferences.fontScale * 100)}%</span><input type="range" min="0.9" max="1.2" step="0.05" value={preferences.fontScale} onChange={(event) => updatePreferences("fontScale", Number(event.target.value))} /></label>
-                <small>Current source: local preference; shipped value is 100%.</small>
-              </section>
-            )}
-            {settingVisible("motion reduced system full animation") && (
-              <section className="setting-card">
-                <div><h2>Motion</h2><p>Follow the system preference, reduce motion, or allow full site motion.</p></div>
-                <select aria-label="Motion preference" value={preferences.motion} onChange={(event) => updatePreferences("motion", event.target.value as MotionChoice)}><option value="system">System</option><option value="reduce">Reduce</option><option value="full">Full</option></select>
-                <small>Current source: local preference; shipped value is System.</small>
-              </section>
-            )}
-            {settingVisible("language English Cantonese bilingual") && (
-              <section className="setting-card wide-setting" id="language-setting" tabIndex={-1}>
-                <div><h2>Language mode</h2><p>Choose English, playful Hong Kong-style Cantonese, or a compact bilingual tab-label mode.</p></div>
-                <div className="segmented" role="group" aria-label="Language mode">
-                  {(["en", "zh", "both"] as LanguageMode[]).map((language) => <button type="button" key={language} aria-pressed={preferences.language === language} onClick={() => updatePreferences("language", language)}>{language === "en" ? "English" : language === "zh" ? "廣東話" : "Bilingual / 雙語"}</button>)}
-                </div>
-                <small>Current source: local preference; shipped value is English.</small>
-              </section>
-            )}
-            {settingVisible("funny level English Cantonese playful serious") && (
-              <section className="setting-card wide-setting funny-setting">
-                <div><h2>Funny levels</h2><p>Voice changes around the facts. Product limits, official names, dates, amounts, and actions never change.</p></div>
-                <div className="funny-grid">
-                  <label>English: {preferences.englishFunny}<input type="range" min="1" max="5" step="1" value={preferences.englishFunny} onChange={(event) => updatePreferences("englishFunny", Number(event.target.value))} /><span>{englishTone}</span></label>
-                  <label>廣東話: {preferences.cantoneseFunny}<input type="range" min="1" max="5" step="1" value={preferences.cantoneseFunny} onChange={(event) => updatePreferences("cantoneseFunny", Number(event.target.value))} /><span lang="zh-Hant">{cantoneseTone}</span></label>
-                </div>
-                <small>Current source: local preference; shipped values are English 1 and Cantonese 3.</small>
-              </section>
-            )}
-            {settingVisible("personal vocabulary JSON upload local replace clear") && (
-              <section className="setting-card wide-setting" id="vocabulary-setting" tabIndex={-1}>
-                <div>
-                  <h2>Local personal vocabulary</h2>
-                  <p>Load a private JSON file without sending it anywhere. No mappings, examples, or private defaults are built into this site.</p>
-                </div>
-                <div className="upload-actions">
-                  <label className="filled-button file-button">Choose JSON file<input type="file" accept="application/json,.json" onChange={onVocabularyFile} /></label>
-                  <button type="button" className="outlined-button" onClick={clearVocabulary} disabled={Object.keys(vocabulary).length === 0}>Clear local vocabulary</button>
-                </div>
-                <p className="file-status" role="status">{vocabularyStatus}</p>
-                <details><summary>Version 1 format and limits</summary><p>The root contains only <code>version: 1</code> and a <code>replacements</code> object. The file is limited to 64 KB, 200 string replacements, keys of 1–80 characters, and values of at most 200 characters. Unsafe object keys and unknown fields are rejected. The last valid local cache stays active after a rejected replacement file.</p></details>
-                <small>The validated cache stays in this browser only. The source filename is not retained.</small>
-              </section>
-            )}
-          </div>
-          {!settingVisible("theme light dark system appearance tab docking left top right bottom navigation density compact comfortable spacing accent color colour seed font scale size typography motion reduced system full animation language English Cantonese bilingual funny level playful serious personal vocabulary JSON upload local replace clear") && <div className="empty-state"><h2>No matching setting</h2><p>Change the plain-text query or correct the regular expression.</p></div>}
-        </section>
+
+            <DownloadSurfaces onNotify={notify} />
+          </section>
+        )}
+
+        {openTabIds.has("workflow") && (
+          <section {...panelProps("workflow")}>
+            <div className="section-heading">
+              <div>
+                <p className="eyebrow">{copy("workflow.eyebrow")}</p>
+                <h1>{copy("workflow.title")}</h1>
+                <p>{copy("workflow.lede")}</p>
+              </div>
+              <ReadAloud copyKey="workflow.lede" label={copy("workflow.title")} />
+            </div>
+            <ol className="workflow-list">
+              {WORKFLOW_STEPS.map((step) => (
+                <li key={step.number}>
+                  <span className="step-number">{step.number}</span>
+                  <div>
+                    <h2>{personalize(step.title)}</h2>
+                    <p>{personalize(step.body)}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+            <section className="review-panel" aria-labelledby="review-panel-title">
+              <div>
+                <p className="eyebrow">{copy("workflow.reviewEyebrow")}</p>
+                <h2 id="review-panel-title">{copy("workflow.reviewTitle")}</h2>
+                <p>{copy("workflow.reviewBody")}</p>
+              </div>
+              <ul className="review-checks">
+                {REVIEW_AREAS.map((item) => (
+                  <li key={item}>
+                    <span aria-hidden="true">✓</span>
+                    {personalize(item)}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          </section>
+        )}
+
+        {openTabIds.has("scope") && (
+          <section {...panelProps("scope")}>
+            <div className="section-heading">
+              <div>
+                <p className="eyebrow">{copy("scope.eyebrow")}</p>
+                <h1>{copy("scope.title")}</h1>
+                <p>{DISCLAIMER_SENTENCE}</p>
+              </div>
+              <ReadAloud copyKey="scope.lede" label={copy("scope.title")} />
+            </div>
+            <div className="scope-grid">
+              <article className="scope-card">
+                <span className="scope-letter" aria-hidden="true">
+                  CA
+                </span>
+                <h2>{copy("scope.federalTitle")}</h2>
+                <p>{copy("scope.federalBody")}</p>
+              </article>
+              <article className="scope-card">
+                <span className="scope-letter" aria-hidden="true">
+                  ON
+                </span>
+                <h2>{copy("scope.ontarioTitle")}</h2>
+                <p>{copy("scope.ontarioBody")}</p>
+              </article>
+            </div>
+            <section className="official-links" aria-labelledby="official-links-title">
+              <div>
+                <p className="eyebrow">{copy("scope.linksEyebrow")}</p>
+                <h2 id="official-links-title">{copy("scope.linksTitle")}</h2>
+              </div>
+              <ul>
+                {OFFICIAL_REFERENCES.map((reference) => (
+                  <li key={reference.href}>
+                    <a href={reference.href} target="_blank" rel="noreferrer">
+                      {reference.text} <span aria-hidden="true">↗</span>
+                    </a>
+                    <p>{personalize(reference.note)}</p>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          </section>
+        )}
+
+        {openTabIds.has("docs") && (
+          <section {...panelProps("docs")}>
+            <div className="section-heading docs-heading">
+              <div>
+                <p className="eyebrow">{copy("docs.eyebrow")}</p>
+                <h1>{copy("docs.title")}</h1>
+                <p>{copy("docs.lede")}</p>
+              </div>
+              <ReadAloud copyKey="docs.lede" label={copy("docs.title")} />
+            </div>
+            <DocumentationBrowser
+              search={bind("documentation-search", copy("docs.searchLabel"), copy("docs.searchPlaceholder"))}
+              areaFilter={bind("documentation-area-search", copy("docs.areaFilterLabel"), "Search areas")}
+              topicFilter={bind("documentation-topic-search", copy("docs.topicFilterLabel"), "Search topics")}
+              activeSlug={activeDoc}
+              onSelect={setActiveDoc}
+              onExport={runExport}
+              copy={copy}
+            />
+            <section className="feature-boundary" aria-labelledby="unavailable-title">
+              <p className="eyebrow">Honest capability inventory</p>
+              <h2 id="unavailable-title">Unavailable broader features</h2>
+              <p>
+                This site does not present placeholders as working product features. Accounts, electronic
+                filing, submission services, payments, cloud tax storage, tax calculations, PDF generation,
+                installers and automatic updates are not available. The feature library above lists what this
+                site does do, links each capability to its article, and repeats what the tracked
+                verification-status article records as not run.
+              </p>
+            </section>
+          </section>
+        )}
+
+        {openTabIds.has("changelog") && (
+          <section {...panelProps("changelog")}>
+            <div className="section-heading">
+              <div>
+                <p className="eyebrow">Tracked source</p>
+                <h1>{copy("changelog.title")}</h1>
+                <p>{copy("changelog.lede")}</p>
+              </div>
+              <ReadAloud copyKey="changelog.lede" label={copy("changelog.title")} />
+            </div>
+            <ChangelogViewer
+              search={bind("changelog-search", copy("changelog.searchLabel"), "Search entries")}
+              areaFilter={bind("changelog-area-search", "Filter changelog areas", "Search areas")}
+              range={changelogRange}
+              onRangeChange={setChangelogRange}
+              onExport={runExport}
+              copy={copy}
+            />
+          </section>
+        )}
+
+        {openTabIds.has("downloads") && (
+          <section {...panelProps("downloads")}>
+            <div className="section-heading">
+              <div>
+                <p className="eyebrow">Release manifest</p>
+                <h1>{copy("downloads.title")}</h1>
+                <p>{copy("downloads.unsignedNotice")}</p>
+              </div>
+            </div>
+            <DownloadSurfaces onNotify={notify} />
+          </section>
+        )}
+
+        {openTabIds.has("converter") && (
+          <section {...panelProps("converter")}>
+            <ConverterPanel
+              binding={bind("converter-catalog-search", "Search registered conversions", "Search formats")}
+              onNotify={notify}
+              copy={copy}
+            />
+          </section>
+        )}
+
+        {openTabIds.has("assistant") && (
+          <section {...panelProps("assistant")}>
+            <LocalModelRuntimePanel
+              installedSearch={bind("ollama-installed-search", "Search installed models", "Search references")}
+              catalogSearch={bind("ollama-catalog-search", "Search the catalogue", "Search references")}
+              queueSearch={bind("ollama-queue-search", "Search the batch", "Search references")}
+              onNotify={notify}
+            />
+          </section>
+        )}
+
+        {openTabIds.has("utilities") && (
+          <section {...panelProps("utilities")}>
+            <AuthenticatorPanel
+              secret={authenticatorSecret}
+              onSecretChange={setAuthenticatorSecret}
+              onNotify={notifyPair}
+            />
+            <SupportNotesPanel
+              tickets={tickets}
+              onChange={updateTickets}
+              binding={bind("ticket-search", "Search support notes", "Search titles and bodies")}
+              onNotify={notifyPair}
+              onExport={runExport}
+            />
+          </section>
+        )}
+
+        {openTabIds.has("settings") && (
+          <section {...panelProps("settings")}>
+            <div className="section-heading settings-heading">
+              <div>
+                <p className="eyebrow">{copy("settings.eyebrow")}</p>
+                <h1>{copy("settings.title")}</h1>
+                <p>{copy("settings.lede")}</p>
+              </div>
+              <button
+                type="button"
+                className="outlined-button"
+                onClick={() => updatePreferences(DEFAULT_PREFERENCES, "Reset every personalization value")}
+              >
+                {copy("settings.reset")}
+              </button>
+            </div>
+
+            <SearchWithBuilder {...settingsSearch} />
+
+            <div className="settings-grid">
+              {SETTING_DESCRIPTORS.filter(
+                (descriptor) => !["displayName", "logo", "narration"].includes(descriptor.preferenceKey),
+              )
+                .filter((descriptor) => settingVisible(`${descriptor.keywords} ${copy(descriptor.titleKey)}`))
+                .map((descriptor) => {
+                  const locked = locksApi.blocked(descriptor.id);
+                  const control = descriptor.control;
+                  const value = effective[descriptor.preferenceKey];
+                  return (
+                    <section
+                      className={`setting-card${control.control === "range" ? " wide-setting" : ""}`}
+                      key={descriptor.id}
+                      id={descriptor.id}
+                      tabIndex={-1}
+                      {...appearanceProps(descriptor.id)}
+                    >
+                      <div>
+                        <h2>{copy(descriptor.titleKey)}</h2>
+                        <p>{copy(descriptor.bodyKey)}</p>
+                      </div>
+                      {control.control === "select" && (
+                        <select
+                          id={`${descriptor.id}-input`}
+                          aria-label={copy(descriptor.titleKey)}
+                          disabled={locked}
+                          value={String(value)}
+                          onChange={(event) =>
+                            updatePreferences(
+                              { [descriptor.preferenceKey]: event.target.value } as Partial<Preferences>,
+                              `Set ${descriptor.preferenceKey}`,
+                            )
+                          }
+                        >
+                          {control.options.map((option) => (
+                            <option key={option.value} value={option.value}>
+                              {option.label}
+                            </option>
+                          ))}
+                        </select>
+                      )}
+                      {control.control === "segmented" && (
+                        <div className="segmented" role="group" aria-label={copy(descriptor.titleKey)}>
+                          {control.options.map((option) => (
+                            <button
+                              key={option.value}
+                              type="button"
+                              id={option.value === String(value) ? `${descriptor.id}-input` : undefined}
+                              disabled={locked}
+                              aria-pressed={String(value) === option.value}
+                              onClick={() =>
+                                updatePreferences(
+                                  { [descriptor.preferenceKey]: option.value } as Partial<Preferences>,
+                                  `Set ${descriptor.preferenceKey}`,
+                                )
+                              }
+                            >
+                              {option.label}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                      {control.control === "colour" && (
+                        <label className="color-control">
+                          <input
+                            id={`${descriptor.id}-input`}
+                            type="color"
+                            disabled={locked}
+                            aria-label={copy(descriptor.titleKey)}
+                            value={String(value)}
+                            onChange={(event) =>
+                              updatePreferences({ accent: event.target.value }, "Set the accent colour")
+                            }
+                          />
+                          <span>{String(value).toUpperCase()}</span>
+                        </label>
+                      )}
+                      {control.control === "range" && (
+                        <label className="range-control">
+                          <span>
+                            {descriptor.preferenceKey === "fontScale"
+                              ? `${Math.round(Number(value) * 100)}%`
+                              : `${Number(value)} of ${MAX_FUNNY_LEVEL}`}
+                          </span>
+                          <input
+                            id={`${descriptor.id}-input`}
+                            type="range"
+                            disabled={locked}
+                            aria-label={copy(descriptor.titleKey)}
+                            min={control.min}
+                            max={control.max}
+                            step={control.step}
+                            value={Number(value)}
+                            onChange={(event) =>
+                              updatePreferences(
+                                { [descriptor.preferenceKey]: Number(event.target.value) } as Partial<Preferences>,
+                                `Set ${descriptor.preferenceKey}`,
+                              )
+                            }
+                          />
+                          <span>
+                            {descriptor.preferenceKey === "englishFunny"
+                              ? ENGLISH_TONE_NOTES[Math.min(4, Math.max(0, Number(value) - 1))]
+                              : descriptor.preferenceKey === "cantoneseFunny"
+                                ? CANTONESE_TONE_NOTES[Math.min(4, Math.max(0, Number(value) - 1))]
+                                : `Between ${MIN_FONT_SCALE * 100}% and ${MAX_FONT_SCALE * 100}%.`}
+                          </span>
+                        </label>
+                      )}
+                      {control.control === "switch" && (
+                        <label className="inline-check">
+                          <input
+                            id={`${descriptor.id}-input`}
+                            type="checkbox"
+                            disabled={locked}
+                            checked={value === true}
+                            onChange={(event) =>
+                              updatePreferences(
+                                { [descriptor.preferenceKey]: event.target.checked } as Partial<Preferences>,
+                                `Set ${descriptor.preferenceKey}`,
+                              )
+                            }
+                          />
+                          {copy(descriptor.titleKey)}
+                        </label>
+                      )}
+                      {(control.control === "select" || control.control === "segmented") && (
+                        <details className="picker-menu">
+                          <summary>Filter these choices</summary>
+                          <MenuFilterWithBuilder
+                            binding={bind(
+                              `${descriptor.id}-menu`,
+                              `Filter the ${copy(descriptor.titleKey)} choices`,
+                              "Search choices",
+                            )}
+                            options={control.options}
+                            selected={String(value)}
+                            onSelect={(choice) =>
+                              updatePreferences(
+                                { [descriptor.preferenceKey]: choice } as Partial<Preferences>,
+                                `Set ${descriptor.preferenceKey}`,
+                              )
+                            }
+                          />
+                        </details>
+                      )}
+                      <small>
+                        {locked
+                          ? `This setting is locked in this browser. ${LOCK_DISCLOSURE}`
+                          : `Current source: ${
+                              scheduling.overlay.values[descriptor.preferenceKey] === undefined
+                                ? "local preference"
+                                : "an active schedule rule"
+                            }.`}
+                      </small>
+                    </section>
+                  );
+                })}
+
+              {settingVisible("humour level English Cantonese playful serious tone") && (
+                <section className="setting-card wide-setting funny-setting" id="humour-summary" tabIndex={-1}>
+                  <div>
+                    <h2>{copy("setting.funny.title")}</h2>
+                    <p>{copy("setting.funny.body")}</p>
+                  </div>
+                  <div className="funny-grid">
+                    <p>
+                      English {effective.englishFunny}: {ENGLISH_TONE_NOTES[Math.min(4, effective.englishFunny - 1)]}
+                    </p>
+                    <p lang="zh-Hant">
+                      廣東話 {effective.cantoneseFunny}:{" "}
+                      {CANTONESE_TONE_NOTES[Math.min(4, effective.cantoneseFunny - 1)]}
+                    </p>
+                  </div>
+                  <small>
+                    Product limits, official names, links, counts, dates and action labels are identical at every
+                    level.
+                  </small>
+                </section>
+              )}
+
+              {settingVisible("display name mark logo rename brand") && (
+                <IdentitySettings
+                  preferences={effective}
+                  onChange={updatePreferences}
+                  onNotify={notifyPair}
+                  copy={copy}
+                />
+              )}
+
+              {settingVisible("narration read aloud speech voice rate pitch") && (
+                <section className="setting-card wide-setting" id="narration-setting" tabIndex={-1}>
+                  <div>
+                    <h2>{copy("setting.narration.title")}</h2>
+                    <p>{copy("setting.narration.body")}</p>
+                  </div>
+                  <p className="file-status" role="status">
+                    {narration.statusMessage}
+                  </p>
+                  <label className="inline-check">
+                    <input
+                      id="narration-setting-input"
+                      type="checkbox"
+                      disabled={!narration.available}
+                      checked={effective.narration.enabled}
+                      onChange={(event) =>
+                        updatePreferences(
+                          { narration: { ...effective.narration, enabled: event.target.checked } },
+                          "Changed read-aloud",
+                        )
+                      }
+                    />
+                    Offer a read control on each section
+                  </label>
+                  <label className="inline-check">
+                    <input
+                      type="checkbox"
+                      checked={narrationEnabled}
+                      disabled={!narration.available}
+                      onChange={(event) => setNarrationEnabled(event.target.checked)}
+                    />
+                    Also read a notification title when one arrives
+                  </label>
+                  <label className="field-label" htmlFor="narration-english-voice">
+                    English voice
+                  </label>
+                  <select
+                    id="narration-english-voice"
+                    disabled={narration.englishVoices.length === 0}
+                    value={effective.narration.englishVoiceId ?? ""}
+                    onChange={(event) =>
+                      updatePreferences(
+                        { narration: { ...effective.narration, englishVoiceId: event.target.value || null } },
+                        "Changed the English narration voice",
+                      )
+                    }
+                  >
+                    <option value="">Let the browser choose</option>
+                    {narration.englishVoices.map((voice) => (
+                      <option key={voice.id} value={voice.id}>
+                        {voice.label}
+                      </option>
+                    ))}
+                  </select>
+                  <label className="field-label" htmlFor="narration-cantonese-voice">
+                    Cantonese voice
+                  </label>
+                  <select
+                    id="narration-cantonese-voice"
+                    disabled={narration.cantoneseVoices.length === 0}
+                    value={effective.narration.cantoneseVoiceId ?? ""}
+                    onChange={(event) =>
+                      updatePreferences(
+                        { narration: { ...effective.narration, cantoneseVoiceId: event.target.value || null } },
+                        "Changed the Cantonese narration voice",
+                      )
+                    }
+                  >
+                    <option value="">Let the browser choose</option>
+                    {narration.cantoneseVoices.map((voice) => (
+                      <option key={voice.id} value={voice.id}>
+                        {voice.label}
+                      </option>
+                    ))}
+                  </select>
+                  <label className="range-control">
+                    <span>Rate {effective.narration.rate.toFixed(2)}</span>
+                    <input
+                      type="range"
+                      min="0.5"
+                      max="2"
+                      step="0.05"
+                      value={effective.narration.rate}
+                      onChange={(event) =>
+                        updatePreferences(
+                          { narration: { ...effective.narration, rate: Number(event.target.value) } },
+                          "Changed the narration rate",
+                        )
+                      }
+                    />
+                  </label>
+                  <label className="range-control">
+                    <span>Pitch {effective.narration.pitch.toFixed(2)}</span>
+                    <input
+                      type="range"
+                      min="0.5"
+                      max="2"
+                      step="0.05"
+                      value={effective.narration.pitch}
+                      onChange={(event) =>
+                        updatePreferences(
+                          { narration: { ...effective.narration, pitch: Number(event.target.value) } },
+                          "Changed the narration pitch",
+                        )
+                      }
+                    />
+                  </label>
+                  <button type="button" className="outlined-button" onClick={() => narration.cancel()}>
+                    {copy("action.stopReading")}
+                  </button>
+                  <small>
+                    Nothing is spoken on load. Identifiers, account numbers, mailing addresses, attachment names
+                    and unlock answers are never read aloud.
+                  </small>
+                </section>
+              )}
+
+              {settingVisible("personal vocabulary JSON upload local replace clear") && (
+                <section className="setting-card wide-setting" id="vocabulary-setting" tabIndex={-1}>
+                  <div>
+                    <h2>{copy("setting.vocabulary.title")}</h2>
+                    <p>{copy("setting.vocabulary.body")}</p>
+                  </div>
+                  <div className="upload-actions">
+                    <label className="filled-button file-button">
+                      Choose JSON file
+                      <input
+                        id="vocabulary-setting-input"
+                        type="file"
+                        accept="application/json,.json"
+                        onChange={(event) => void onVocabularyFile(event)}
+                      />
+                    </label>
+                    <button
+                      type="button"
+                      className="outlined-button"
+                      onClick={clearVocabulary}
+                      disabled={Object.keys(vocabulary).length === 0}
+                    >
+                      Clear local vocabulary
+                    </button>
+                  </div>
+                  <p className="file-status" role="status">
+                    {vocabularyStatus}
+                  </p>
+                  <details>
+                    <summary>Version 1 format and limits</summary>
+                    <p>
+                      The root contains only <code>version: 1</code> and a <code>replacements</code> object. The
+                      file is limited to 64 KB, 200 string replacements, keys of 1 to 80 characters, and values
+                      of at most 200 characters. Unsafe object keys and unknown fields are rejected, and the last
+                      valid local cache stays active after a rejected file.
+                    </p>
+                  </details>
+                  <small>
+                    Replacements apply to every string this site renders, except the official reference wording
+                    and addresses, the paper-only boundary sentence and the disclaimers, which are never
+                    rewritten.
+                  </small>
+                </section>
+              )}
+
+              {settingVisible("schedule rules time window presentation") && (
+                <SchedulePanel
+                  api={scheduling}
+                  binding={bind("schedule-rule-search", "Search schedule rules", "Search settings and times")}
+                  copy={copy}
+                />
+              )}
+
+              {settingVisible("external settings https allowlist presentation") && (
+                <ExternalSettingsPanel api={scheduling} copy={copy} />
+              )}
+
+              {settingVisible("appearance editor element override typography colour") && (
+                <section className="setting-card wide-setting" id="appearance-setting" tabIndex={-1}>
+                  <div>
+                    <h2>{copy("appearance.title")}</h2>
+                    <p>{copy("appearance.lede")}</p>
+                  </div>
+                  <label className="field-label" htmlFor="appearance-setting-input">
+                    Element
+                  </label>
+                  <select
+                    id="appearance-setting-input"
+                    value={appearanceTarget ?? ""}
+                    onChange={(event) => setAppearanceTarget(event.target.value || null)}
+                  >
+                    <option value="">Choose an element</option>
+                    {APPEARANCE_ELEMENTS.map((element) => (
+                      <option key={element.id} value={element.id}>
+                        {element.group}: {element.label}
+                      </option>
+                    ))}
+                  </select>
+                  <small>
+                    A right-click or context-menu key on any registered element opens the same editor. Overrides
+                    are scoped custom properties: they cannot remove the focus ring and cannot defeat reduced
+                    motion.
+                  </small>
+                  <button
+                    type="button"
+                    className="outlined-button"
+                    onClick={() =>
+                      runExport({
+                        collection: "Appearance overrides",
+                        filterDescription: "Every stored override",
+                        columns: [
+                          { key: "element", label: "Element" },
+                          { key: "property", label: "Property" },
+                          { key: "value", label: "Value" },
+                        ],
+                        rows: Object.entries(appearance).flatMap(([element, properties]) =>
+                          Object.entries(properties).map(([property, value]) => ({ element, property, value })),
+                        ),
+                        format: "json",
+                      })
+                    }
+                  >
+                    {copy("action.export")}
+                  </button>
+                </section>
+              )}
+
+              {settingVisible("element locks accidental edit guard") && (
+                <LockPanel
+                  api={locksApi}
+                  binding={bind("lock-search", "Search locked items", "Search elements and hints")}
+                  onNotify={notifyPair}
+                  onExport={runExport}
+                  elements={APPEARANCE_ELEMENTS.map((element) => ({ id: element.id, label: element.label }))}
+                />
+              )}
+            </div>
+
+            <section className="feature-boundary">
+              <p className="eyebrow">Export delivery</p>
+              <h2>How an export leaves this page</h2>
+              <p>
+                {EXPORT_SANDBOX_NOTE}{" "}
+                {folderSaveSupported()
+                  ? "This browser supports choosing a folder."
+                  : "This browser did not expose the folder-choosing interface, so an export is delivered as a download."}
+              </p>
+              <button
+                type="button"
+                className="outlined-button"
+                onClick={() =>
+                  copyToClipboard({
+                    collection: "Preferences",
+                    filterDescription: "Every stored preference",
+                    columns: [
+                      { key: "key", label: "Setting" },
+                      { key: "value", label: "Value" },
+                    ],
+                    rows: Object.entries(effective).map(([key, value]) => ({
+                      key,
+                      value: typeof value === "object" ? JSON.stringify(value) : String(value),
+                    })),
+                    format: "markdown",
+                  })
+                }
+              >
+                Copy the current preferences to the clipboard
+              </button>
+            </section>
+          </section>
+        )}
       </main>
 
-      <footer className="site-footer">
-        <p><strong>Material Tax Reporting</strong> is an unshipped software foundation. This documentation is not tax, legal, accounting, or financial advice.</p>
-        <p>Site preferences remain local to this browser.</p>
+      <footer className="site-footer" id="site-footer" {...appearanceProps("site-footer")}>
+        <p>
+          <strong>{displayName}</strong> is an unshipped software foundation. {FOOTER_DISCLAIMER}
+        </p>
+        <p>{copy("footer.localOnly")}</p>
       </footer>
 
       {paletteOpen && (
-        <div className="dialog-scrim" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setPaletteOpen(false); }}>
-          <section className="command-palette" role="dialog" aria-modal="true" aria-labelledby="palette-title">
-            <div className="palette-heading"><div><p className="eyebrow">Keyboard command palette</p><h2 id="palette-title">Go directly to a destination</h2></div><button type="button" className="icon-button" aria-label="Close command palette" onClick={() => setPaletteOpen(false)}>×</button></div>
-            <SearchWithBuilder id="command-search" label="Search commands" placeholder="Search destinations and settings" state={paletteSearch} onChange={setPaletteSearch} />
-            <div className="command-list" role="list">
-              {filteredCommands.map((command) => <button type="button" role="listitem" key={command.label} onClick={() => activate(command.tab, command.target)}><span><strong>{command.label}</strong><small>{command.detail}</small></span><span aria-hidden="true">↵</span></button>)}
-              {filteredCommands.length === 0 && <p className="empty-command">No matching command.</p>}
-            </div>
-          </section>
-        </div>
+        <CommandPalette
+          registry={registry}
+          binding={bind("command-search", copy("palette.searchLabel"), "Search destinations and settings")}
+          preferences={effective}
+          onPreferenceChange={updatePreferences}
+          onNavigate={teleport}
+          onClose={closePalette}
+          emoji={emoji ? "🗂️" : null}
+          copy={copy}
+        />
+      )}
+
+      {notificationsOpen && (
+        <NotificationsCentre
+          api={notifications}
+          binding={bind("notification-search", copy("notifications.searchLabel"), "Search titles and bodies")}
+          onClose={() => setNotificationsOpen(false)}
+          onExport={runExport}
+          emoji={emoji ? "🔔" : null}
+          copy={copy}
+        />
       )}
 
       {historyOpen && (
-        <aside className="history-panel" role="dialog" aria-modal="true" aria-labelledby="history-title">
-          <div className="palette-heading"><div><p className="eyebrow">Local activity</p><h2 id="history-title">Notification history</h2></div><button type="button" className="icon-button" aria-label="Close notification history" onClick={() => setHistoryOpen(false)}>×</button></div>
-          {notifications.length === 0 ? <div className="empty-state"><h3>No notifications yet</h3><p>Local setting confirmations will appear here.</p></div> : <ol>{notifications.map((item) => <li key={item.id}><div><strong>{item.title}</strong><time>{item.createdAt}</time></div><p>{item.body}</p></li>)}</ol>}
-        </aside>
+        <HistoryPanel
+          api={history}
+          binding={bind("history-search", copy("history.searchLabel"), "Search summaries and actions")}
+          onClose={() => setHistoryOpen(false)}
+          onExport={runExport}
+          onNotify={notifyPair}
+          emoji={emoji ? "🧾" : null}
+          copy={copy}
+        />
+      )}
+
+      {appearanceTarget !== null && (
+        <div
+          className="dialog-scrim"
+          role="presentation"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setAppearanceTarget(null);
+          }}
+        >
+          <div className="command-palette" role="dialog" aria-modal="true" aria-label={`Appearance: ${appearanceLabel(appearanceTarget)}`}>
+            <AppearanceEditor
+              elementId={appearanceTarget}
+              store={appearance}
+              onChange={updateAppearance}
+              onClose={() => setAppearanceTarget(null)}
+              onNotify={notifyPair}
+              isLocked={(elementId, property) => locksApi.blocked(elementId, property)}
+              propertySearch={bind("appearance-property-search", "Search appearance properties", "Search properties")}
+              colourSearch={bind("appearance-colour-search", "Filter colour spaces", "Search colour spaces")}
+            />
+          </div>
+        </div>
       )}
 
       <div className="toast-region" aria-live="polite" aria-label="Notifications">
-        {visibleNotifications.map((item) => <article className="toast" key={item.id}><div><strong>{item.title}</strong><button type="button" aria-label={`Dismiss ${item.title}`} onClick={() => setVisibleNotifications((current) => current.filter(({ id }) => id !== item.id))}>×</button></div><p>{item.body}</p></article>)}
+        {notifications.toasts
+          .filter((item) => item.kind !== "error")
+          .map((item) => (
+            <Toast
+              key={item.id}
+              item={item}
+              emoji={emoji ? "🔔" : null}
+              onDismiss={() => notifications.dismissToast(item.id)}
+              onArrive={() => {
+                if (narrationEnabled) narration.read(item.title, item.title, "notification");
+              }}
+            />
+          ))}
+      </div>
+      <div className="toast-region errors" role="alert" aria-live="assertive" aria-label="Errors">
+        {notifications.toasts
+          .filter((item) => item.kind === "error")
+          .map((item) => (
+            <Toast
+              key={item.id}
+              item={item}
+              emoji={emoji ? "⚠️" : null}
+              onDismiss={() => notifications.dismissToast(item.id)}
+              onArrive={() => {
+                if (narrationEnabled) narration.read(item.title, item.title, "notification");
+              }}
+            />
+          ))}
       </div>
     </div>
   );
 }
+
+function Toast({
+  item,
+  emoji,
+  onDismiss,
+  onArrive,
+}: {
+  item: Notification;
+  emoji: string | null;
+  onDismiss: () => void;
+  onArrive: () => void;
+}): ReactNode {
+  useEffect(() => {
+    onArrive();
+    // Announced once, when this notice first appears.
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  return (
+    <article className="toast" data-kind={item.kind}>
+      <div>
+        <strong>
+          {emoji && (
+            <span aria-hidden="true" className="decorative-emoji">
+              {emoji}
+            </span>
+          )}
+          {item.title}
+        </strong>
+        <button type="button" aria-label={`Dismiss ${item.title}`} onClick={onDismiss}>
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <p>{item.body}</p>
+      {item.persistent && <small>This notice stays until you dismiss it.</small>}
+    </article>
+  );
+}
+
+export default SiteApp;
+
+/** Re-exported so the tab list can be read without importing the module twice. */
+export { SITE_TABS };
