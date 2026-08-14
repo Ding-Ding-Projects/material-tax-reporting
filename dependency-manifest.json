@@ -8,6 +8,36 @@
       "purpose": "Local slip-parser OCR worker and PDF rasterization runtime"
     }
   ],
+  "workspaces": [
+    {
+      "path": "apps/desktop",
+      "manifest": "apps/desktop/package.json"
+    },
+    {
+      "path": "apps/site",
+      "manifest": "apps/site/package.json"
+    },
+    {
+      "path": "packages/cra-pdf",
+      "manifest": "packages/cra-pdf/package.json"
+    },
+    {
+      "path": "packages/local-coding-assistants",
+      "manifest": "packages/local-coding-assistants/package.json"
+    },
+    {
+      "path": "packages/local-ollama",
+      "manifest": "packages/local-ollama/package.json"
+    },
+    {
+      "path": "packages/slip-parser",
+      "manifest": "packages/slip-parser/package.json"
+    },
+    {
+      "path": "packages/tax-domain",
+      "manifest": "packages/tax-domain/package.json"
+    }
+  ],
   "binaries": [
     {
       "name": "@napi-rs/canvas Windows native addon",
@@ -62,5 +92,5 @@
       "source": "https://github.com/naptha/tessdata"
     }
   ],
-  "note": "The OCR dependency closure is pinned by package-lock.json and staged by packages/slip-parser/scripts/stage-offline-ocr-assets.mjs. It performs no PATH discovery or runtime download. Other repository packages remain foundation-only until they declare their own build requirements."
+  "note": "Every current npm workspace is preserved in package-lock.json. Each workspace package.json remains authoritative for its own package requirements. The OCR production closure is additionally pinned with exact package metadata and integrity evidence in packages/slip-parser/assets/offline-ocr-runtime.json, then staged by packages/slip-parser/scripts/stage-offline-ocr-assets.mjs without PATH discovery or runtime download."
 }
