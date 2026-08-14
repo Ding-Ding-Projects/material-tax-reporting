@@ -1,0 +1,690 @@
+{
+  "schema_version": "1.0.0",
+  "document_type": "official_requirements_inventory",
+  "access_date": "2026-08-14",
+  "primary_tax_year": 2025,
+  "filing_year": 2026,
+  "jurisdiction": "Canada - Ontario individual income tax",
+  "advisory_status": "Implementation research only; not tax or legal advice",
+  "source_policy": {
+    "allowed_publishers": [
+      "Canada Revenue Agency",
+      "Government of Canada",
+      "Government of Ontario"
+    ],
+    "unofficial_sources_used": false,
+    "cra_certification_claimed": false,
+    "annual_data_requires_versioning": true,
+    "refresh_at_generation": [
+      "T1 return mailing destination",
+      "payment mailing destination",
+      "annual form revision",
+      "annual line mapping",
+      "annual inclusion rate",
+      "annual threshold",
+      "annual due date"
+    ]
+  },
+  "product_contract": {
+    "terminal_output": "CRA mail-in PDF package",
+    "prohibited_capabilities": [
+      "NETFILE",
+      "EFILE",
+      "electronic submission",
+      "direct CRA transmission",
+      "automatic filing",
+      "simulated filing",
+      "CRA certification claims",
+      "filing acceptance claims"
+    ],
+    "mandatory_manual_review": {
+      "required": true,
+      "explicit_acknowledgement_required": true,
+      "items": [
+        "every populated return, schedule, form, worksheet, and continuation page",
+        "every calculation, classification, source amount, carryforward, election, and line transfer",
+        "every required slip, receipt, statement, election, designation, explanatory note, and attachment",
+        "the mailing destination selected from current CRA instructions",
+        "every signature, date, telephone, representative-capacity, and certification field",
+        "payment instructions and their separation from the return envelope"
+      ]
+    },
+    "classification_policy": "Do not make a definitive classification when CRA states that the result depends on facts and circumstances.",
+    "missing_value_policy": "Do not invent, estimate, or silently default a tax value that official instructions require from the taxpayer's records."
+  },
+  "paper_package": {
+    "ordinary_ontario_components": [
+      "5006-R",
+      "ON428",
+      "5000-D1 when instructed",
+      "Ontario worksheet when instructed",
+      "all applicable federal and Ontario forms and schedules"
+    ],
+    "possible_ontario_forms": [
+      "ON479",
+      "ON-BEN",
+      "ON428-A",
+      "ON479-A",
+      "ON(S2)",
+      "ON(S11)"
+    ],
+    "multi_jurisdiction_override": {
+      "trigger": "Ontario resident or emigrant with business income allocated to a permanent establishment outside Ontario",
+      "form": "T2203",
+      "ordinary_form_replaced": "ON428",
+      "manual_review": true
+    },
+    "attachment_rules": [
+      "Attach copies of information slips to a paper return.",
+      "Attach completed forms and schedules when their instructions require it.",
+      "Attach T776 or a rental income and expense statement for rental income.",
+      "Attach only supporting documents requested for a deduction, claim, or expense and retain other records unless CRA requests them.",
+      "For a missing slip, use available evidence only as CRA permits and attach a note naming the payer, income type, and efforts made to obtain the slip."
+    ],
+    "signature_fields": [
+      "certification",
+      "signature",
+      "date",
+      "telephone number",
+      "legal representative capacity when applicable"
+    ],
+    "mailing_rules": {
+      "separate_envelope_per_person": true,
+      "same_person_current_and_late_returns_may_share_envelope": true,
+      "ontario_has_multiple_tax_centres": true,
+      "non_resident_routing_is_distinct": true,
+      "return_address_is_not_payment_address": true,
+      "must_confirm_current_address": true
+    },
+    "deadlines": [
+      {
+        "applies_to": "most 2025 individual returns",
+        "filing_due_date": "2026-04-30",
+        "source_ids": ["SRC-006"]
+      },
+      {
+        "applies_to": "qualifying self-employed individual or spouse/common-law partner",
+        "filing_due_date": "2026-06-15",
+        "payment_due_date": "2026-04-30",
+        "exceptions": ["business expenditures primarily connected with a tax shelter"],
+        "source_ids": ["SRC-006"]
+      }
+    ]
+  },
+  "forms": [
+    {
+      "form_number": "5006-R",
+      "title": "Income Tax and Benefit Return for Ontario",
+      "tax_year": 2025,
+      "revision": "5006-R E (25)",
+      "role": "Main Ontario T1 paper return",
+      "source_ids": ["SRC-005"]
+    },
+    {
+      "form_number": "T2125",
+      "title": "Statement of Business or Professional Activities",
+      "tax_year": 2025,
+      "revision": "T2125-25e",
+      "role": "Business, professional, and commission activity statement",
+      "source_ids": ["SRC-009", "SRC-010", "SRC-011"]
+    },
+    {
+      "form_number": "T2042",
+      "title": "Statement of Farming Activities",
+      "tax_year": 2025,
+      "revision": "T2042-25e",
+      "role": "Farming activity statement when an AgriStability/AgriInvest alternative does not apply",
+      "source_ids": ["SRC-013", "SRC-012"]
+    },
+    {
+      "form_number": "T2121",
+      "title": "Statement of Fishing Activities",
+      "tax_year": 2025,
+      "revision": "T2121-25e",
+      "role": "Fishing activity statement",
+      "source_ids": ["SRC-014", "SRC-012"]
+    },
+    {
+      "form_number": "T776",
+      "title": "Statement of Real Estate Rentals",
+      "tax_year": 2025,
+      "revision": "T776-25e",
+      "role": "Rental income and expenses",
+      "source_ids": ["SRC-017", "SRC-018", "SRC-019"]
+    },
+    {
+      "form_number": "5000-S3",
+      "title": "Schedule 3 - Capital Gains or Losses",
+      "tax_year": 2025,
+      "revision": "5000-S3 E (25)",
+      "role": "Capital dispositions, gains, and losses",
+      "source_ids": ["SRC-022", "SRC-023", "SRC-024"]
+    },
+    {
+      "form_number": "T2209",
+      "title": "Federal Foreign Tax Credits",
+      "tax_year": 2025,
+      "revision": "T2209 E (25)",
+      "role": "Federal foreign tax credit calculation",
+      "source_ids": ["SRC-029", "SRC-030"]
+    },
+    {
+      "form_number": "T2036",
+      "title": "Provincial or Territorial Foreign Tax Credit",
+      "tax_year": 2025,
+      "revision": "T2036 E (25)",
+      "role": "Ontario/provincial foreign tax credit calculation",
+      "source_ids": ["SRC-031", "SRC-007"]
+    },
+    {
+      "form_number": "T1135",
+      "title": "Foreign Income Verification Statement",
+      "tax_year": "2015 and later",
+      "revision": "T1135 E (23)",
+      "role": "Specified foreign property information return",
+      "source_ids": ["SRC-032", "SRC-033"]
+    },
+    {
+      "form_number": "5013-R",
+      "title": "Income Tax and Benefit Return for Non-Residents and Deemed Residents of Canada",
+      "tax_year": 2025,
+      "revision": "5013-R E (25)",
+      "role": "Special package main return",
+      "source_ids": ["SRC-038", "SRC-039"]
+    },
+    {
+      "form_number": "T3RET",
+      "title": "T3 Trust Income Tax and Information Return",
+      "tax_year": 2025,
+      "revision": "annual T3 return",
+      "role": "Separate trust or estate return; not part of the ordinary T1 flow",
+      "source_ids": ["SRC-034", "SRC-036"]
+    }
+  ],
+  "income_mappings": [
+    {
+      "activity": "business",
+      "statement": "T2125",
+      "gross_t1_line": "13499",
+      "net_t1_line": "13500",
+      "separate_statement_per_distinct_activity": true
+    },
+    {
+      "activity": "professional",
+      "statement": "T2125",
+      "gross_t1_line": "13699",
+      "net_t1_line": "13700",
+      "separate_statement_per_distinct_activity": true
+    },
+    {
+      "activity": "commission",
+      "statement": "T2125",
+      "gross_t1_line": "13899",
+      "net_t1_line": "13900",
+      "separate_statement_per_distinct_activity": true
+    },
+    {
+      "activity": "farming",
+      "statement": "T2042 or applicable T1163/T1164/T1273/T1274 program statement",
+      "gross_t1_line": "14099",
+      "net_t1_line": "14100",
+      "separate_statement_per_operation": true
+    },
+    {
+      "activity": "fishing",
+      "statement": "T2121",
+      "gross_t1_line": "14299",
+      "net_t1_line": "14300",
+      "separate_statement_per_operation": true
+    },
+    {
+      "activity": "rental",
+      "statement": "T776",
+      "gross_t1_line": "12599",
+      "net_t1_line": "12600"
+    }
+  ],
+  "t2125": {
+    "calculation_sequence": [
+      "activity and identification facts",
+      "gross sales, commissions, or fees",
+      "GST/HST and sales-tax adjustments, returns, allowances, and discounts",
+      "cost of goods sold and gross profit when applicable",
+      "current expenses and limitation calculations",
+      "capital cost allowance and personal-use allocations",
+      "reserves, inventory adjustments, rebates, and partnership adjustments",
+      "net income and T1 transfer"
+    ],
+    "part_5_lines": {
+      "9369": "net income before adjustments",
+      "9974": "GST/HST rebate for partners",
+      "9943": "other partner amounts",
+      "9945": "business-use-of-home expenses",
+      "9946": "net income"
+    },
+    "manual_review_topics": [
+      "employee versus self-employed status",
+      "business versus professional versus commission activity",
+      "inventory and cost of goods sold",
+      "capital versus current expense",
+      "meals and entertainment limitation",
+      "motor-vehicle log and allocation",
+      "business-use-of-home limitation and carryforward",
+      "CCA class, UCC, additions, dispositions, and personal use",
+      "reserves and work in progress",
+      "partnership and tax-shelter amounts"
+    ]
+  },
+  "farming_and_fishing": {
+    "standard_forms": ["T2042", "T2121"],
+    "program_forms": ["T1163", "T1164", "T1273", "T1274"],
+    "escalation_topics": [
+      "cash versus accrual reporting",
+      "optional or mandatory inventory adjustments",
+      "restricted farm losses and chief source of income",
+      "AgriStability or AgriInvest participation",
+      "quota, livestock, crop, insurance, subsidy, and stabilization amounts",
+      "drought, flood, forced destruction, and replacement property",
+      "qualified farm or fishing property",
+      "intergenerational transfer",
+      "sharesperson or crew arrangement",
+      "vessel or licence ownership",
+      "multiple operations or partnership allocations"
+    ]
+  },
+  "gst_hst": {
+    "separate_from_t1": true,
+    "ordinary_ontario_hst_rate_percent": 13,
+    "small_supplier_threshold_cad": 30000,
+    "threshold_tests": [
+      "worldwide taxable supplies including zero-rated supplies of the person and associates in a single calendar quarter",
+      "worldwide taxable supplies including zero-rated supplies of the person and associates over four consecutive calendar quarters"
+    ],
+    "threshold_is_not": [
+      "annual net income",
+      "a universal exemption from registration",
+      "a rule that applies to exempt supplies as though they were taxable supplies"
+    ],
+    "exceptions_and_boundaries": [
+      "taxi and commercial ride-sharing registration regardless of small-supplier status",
+      "voluntary registration",
+      "exempt supplies",
+      "digital-economy rules",
+      "non-resident rules",
+      "associates",
+      "short-term accommodation",
+      "mixed taxable and exempt activity",
+      "Quick Method election",
+      "new residential rental property rebate"
+    ],
+    "income_tax_interactions": [
+      "collected or collectible GST/HST in gross receipts and related form adjustments",
+      "input tax credits excluded from deductible expenses or capital cost as applicable",
+      "GST/HST rebates included as income or adjustments as instructed",
+      "non-registrant tax included in expense or capital cost as applicable",
+      "Quick Method remittance and ITC restrictions"
+    ],
+    "source_ids": ["SRC-015", "SRC-016", "SRC-043", "SRC-044"]
+  },
+  "partnerships": {
+    "required_questions": [
+      "active, limited, or non-active partner",
+      "T5013 slip availability",
+      "partnership information-return status",
+      "partnership percentage and changes during year",
+      "tax-shelter, at-risk, foreign, rental, farming, fishing, and multi-jurisdiction amounts",
+      "fiscal period"
+    ],
+    "mappings": [
+      {
+        "input": "T5013 box 104 for limited or non-active partner",
+        "t1_line": "12200",
+        "boundary": "Do not route automatically to active self-employment lines."
+      },
+      {
+        "input": "active partner business/professional/commission/farming/fishing amount",
+        "t1_line": "corresponding gross and net self-employment lines",
+        "boundary": "Reconcile through the applicable activity statement."
+      },
+      {
+        "input": "rental partnership amount",
+        "t1_line": "12600",
+        "boundary": "Use T5013 instructions and T776 partner calculations."
+      },
+      {
+        "input": "farming partnership amount",
+        "t1_line": "14100",
+        "boundary": "Use T5013 instructions and farming statement."
+      },
+      {
+        "input": "fishing partnership amount",
+        "t1_line": "14300",
+        "boundary": "Use T5013 instructions and fishing statement."
+      }
+    ],
+    "paper_attachments": [
+      "copy of T5013 slip",
+      "partnership financial statement when CRA instructions require it and no slip was received",
+      "applicable activity statement"
+    ],
+    "hard_escalations": [
+      "limited partnership loss",
+      "at-risk amount",
+      "negative adjusted cost base",
+      "tax shelter or T5004",
+      "permanent establishment outside Ontario or T2203",
+      "foreign partnership reporting",
+      "co-ownership versus partnership uncertainty"
+    ]
+  },
+  "rental": {
+    "form": "T776",
+    "guide": "T4036(E) Rev. 25",
+    "classification": {
+      "property_income_indicator": "basic services such as heat, light, parking, and laundry facilities",
+      "business_income_indicator": "more extensive services",
+      "definitive_automation_allowed": false
+    },
+    "line_mappings": {
+      "8141": "gross rents",
+      "8230": "other rental income",
+      "8299": "total gross rental income transferred to T1 line 12599",
+      "9946": "net rental income or loss transferred to T1 line 12600"
+    },
+    "rules": [
+      "Rental reporting is generally accrual; cash reporting is limited to the circumstance CRA describes where the result is almost the same.",
+      "Allocate personal and rental use and co-owner shares using supported facts.",
+      "Distinguish repairs from capital improvements.",
+      "Separate land from depreciable buildings.",
+      "CCA cannot create or increase a rental loss.",
+      "A disposition can create CCA recapture or terminal loss.",
+      "Attach T776 or the rental statement to a paper T1."
+    ],
+    "short_term_rental_lines": {
+      "9365": "short-term-rental portion of total expenses",
+      "9366": "non-compliant amount of expenses for short-term rentals",
+      "9367": "non-compliant amount of CCA for short-term rentals"
+    },
+    "escalation_topics": [
+      "principal residence or change in use",
+      "short-term-rental legal compliance and non-compliant days",
+      "mixed taxable and exempt GST/HST activity",
+      "below-market rent to a relative",
+      "co-ownership versus partnership",
+      "CCA, recapture, terminal loss, building/land split",
+      "vacant land",
+      "disposition of depreciable property"
+    ]
+  },
+  "schedule_3": {
+    "tax_year": 2025,
+    "formula": "proceeds of disposition - adjusted cost base - outlays and expenses",
+    "currency": "CAD",
+    "inclusion_rate_percent": 50,
+    "inclusion_rate_is_annual": true,
+    "category_lines": [
+      {"category": "qualified small business corporation shares", "proceeds": "10699", "gain_or_loss": "10700"},
+      {"category": "qualified farm or fishing property", "proceeds": "10999", "gain_or_loss": "11000"},
+      {"category": "qualified farm or fishing foreclosure or repossession", "proceeds": "12399", "gain_or_loss": "12400"},
+      {"category": "public shares, mutual funds, and other shares", "proceeds": "13199", "gain_or_loss": "13200"},
+      {"category": "real estate, depreciable property, and other property", "proceeds": "13599", "gain_or_loss": "13800"},
+      {"category": "bonds, debentures, notes, similar property, and foreign-currency capital dispositions", "proceeds": "15199", "gain_or_loss": "15300"},
+      {"category": "crypto-assets", "proceeds": "15200", "gain_or_loss": "15301"},
+      {"category": "other mortgage foreclosures or repossessions", "proceeds": "15499", "gain_or_loss": "15500"}
+    ],
+    "other_lines": {
+      "17900": "principal residence designation",
+      "17905": "flipped property proceeds",
+      "17906": "flipped property gain",
+      "15800": "personal-use-property gain",
+      "15900": "listed-personal-property net gain",
+      "16100": "capital gains deferral",
+      "17400": "T5/T5013/T4PS capital gains or losses",
+      "17600": "T3 capital gains or losses",
+      "17800": "business investment loss reduction",
+      "19200": "reserves",
+      "19700": "total capital gains or losses",
+      "19890": "partnership interest amount subject to 100 percent inclusion",
+      "19900": "Schedule 3 result"
+    },
+    "transfer": {
+      "positive_line_19900": "T1 line 12700",
+      "negative_line_19900": "Do not enter on T1 line 12700; evaluate capital-loss and T1A rules."
+    }
+  },
+  "securities": {
+    "t5008": {
+      "box_20": "cost or book value; may not equal adjusted cost base",
+      "box_21": "proceeds or settlement amount before selling expenses"
+    },
+    "required_history": [
+      "acquisitions and dispositions",
+      "identical-property average cost",
+      "stock splits and consolidations",
+      "reinvested distributions",
+      "return of capital",
+      "fees and outlays",
+      "foreign-currency conversions",
+      "affiliated-person transactions"
+    ],
+    "superficial_loss_review": {
+      "acquisition_window": "30 days before through 30 days after disposition",
+      "ownership_test_date": "30 days after disposition",
+      "affiliated_person_test_required": true,
+      "automatic_claim_allowed": false
+    }
+  },
+  "crypto_assets": {
+    "classification_options": ["business income or loss", "capital gain or loss"],
+    "classification_is_fact_sensitive": true,
+    "dispositions": [
+      "exchange for fiat currency",
+      "exchange for another crypto-asset",
+      "use to buy goods or services",
+      "gift or donation"
+    ],
+    "not_disposition_example": "transfer between wallets owned by the same person",
+    "business_route": "T2125 and T4002; report full business profit or loss",
+    "capital_route": "Schedule 3 lines 15200 and 15301",
+    "record_fields": [
+      "transaction date and time",
+      "asset and quantity",
+      "Canadian-dollar value",
+      "purpose",
+      "wallet, exchange, and counterparty",
+      "fees",
+      "acquisition history",
+      "owned-wallet transfer evidence",
+      "exchange-rate source"
+    ],
+    "escalation_topics": [
+      "mining",
+      "staking and rewards",
+      "lending",
+      "liquidity provision",
+      "airdrops and forks",
+      "gifts and donations",
+      "derivatives",
+      "inventory valuation",
+      "barter",
+      "GST/HST commercial activity"
+    ]
+  },
+  "foreign_income": {
+    "line_mappings": [
+      {"income": "foreign employment not on T4", "t1_line": "10400"},
+      {"income": "foreign interest and dividends", "t1_line": "12100", "boundary": "Foreign dividends do not receive the Canadian dividend tax credit."},
+      {"income": "foreign pension", "t1_line": "11500", "possible_deduction_line": "25600"},
+      {"income": "foreign rental gross", "t1_line": "12599", "statement": "T776"},
+      {"income": "foreign rental net", "t1_line": "12600", "statement": "T776"},
+      {"income": "foreign business", "t1_line": "corresponding self-employment gross and net lines"},
+      {"income": "foreign capital disposition", "t1_line": "12700 when Schedule 3 result is positive"}
+    ],
+    "currency_conversion": {
+      "default_evidence": "Bank of Canada transaction-date rate or another rate CRA accepts for the circumstances",
+      "annual_average_boundary": "May be acceptable for amounts received evenly throughout a year; do not use automatically for capital transactions.",
+      "required_record": ["rate", "date", "source", "conversion method"]
+    },
+    "foreign_tax_credit": {
+      "federal_form": "T2209 E (25)",
+      "federal_t1_line": "40500",
+      "provincial_form": "T2036 E (25)",
+      "ontario_form_line": "ON428 line 82",
+      "country_calculations_required": true,
+      "paper_support": [
+        "completed T2209",
+        "official proof of foreign tax",
+        "calculation note",
+        "additional U.S. documents when CRA instructions require them"
+      ]
+    }
+  },
+  "t1135": {
+    "revision": "T1135 E (23)",
+    "applies_to_years": "2015 and later",
+    "resident_taxpayer_only": true,
+    "threshold_basis": "total cost amount of specified foreign property at any time in year",
+    "filing_threshold_cad": 100000,
+    "part_a": "Total cost exceeded 100000 but remained below 250000 throughout the year.",
+    "part_b": "Total cost was 250000 or more at any time in the year.",
+    "first_year_resident_individual_exception": true,
+    "due_date_follows_t1_due_date_even_if_t1_not_required": true,
+    "paper_routes": [
+      "attach to paper T1",
+      "mail separately to CRA foreign-reporting address in current instructions"
+    ],
+    "possible_specified_property": [
+      "foreign funds",
+      "non-resident corporation shares",
+      "non-resident debt",
+      "non-resident trust interest",
+      "certain partnership interests",
+      "foreign real property",
+      "precious metals or futures outside Canada",
+      "rights or options over specified foreign property"
+    ],
+    "possible_exclusions": [
+      "personal-use property",
+      "property used exclusively in active business",
+      "foreign affiliate",
+      "property in listed registered plans",
+      "property through certain Canadian entities"
+    ],
+    "automatic_exclusion_allowed": false
+  },
+  "special_statuses": [
+    {
+      "status": "deceased",
+      "workflow": "distinct final T1 and eligible optional-return draft workflow",
+      "forms_or_guides": ["death-year T1 package", "T3RET when estate income requires it", "CRA deceased-person guidance"],
+      "required_facts": ["date of death", "province at death", "legal representative", "representative capacity", "estate address", "income-period allocation", "optional-return eligibility"],
+      "hard_escalation": true
+    },
+    {
+      "status": "trust or estate",
+      "workflow": "separate T3 workflow",
+      "forms_or_guides": ["T3RET", "T4013"],
+      "hard_escalation": true
+    },
+    {
+      "status": "bankruptcy",
+      "workflow": "distinct pre-bankruptcy, possible in-bankruptcy, and post-bankruptcy draft returns",
+      "periods": [
+        "pre-bankruptcy: January 1 through day before bankruptcy",
+        "in-bankruptcy: specified trustee-reported liquidated assets or wound-up business income",
+        "post-bankruptcy: bankruptcy date through December 31"
+      ],
+      "responsibility_boundary": "Trustee and taxpayer filing responsibilities differ.",
+      "hard_escalation": true
+    },
+    {
+      "status": "emigrant",
+      "workflow": "departure-year provincial package with departure and deemed-disposition review",
+      "forms_or_guides": ["T1161", "T1243", "T1244", "NR73 where an opinion is sought"],
+      "t1161_fmv_threshold_cad": 25000,
+      "hard_escalation": true
+    },
+    {
+      "status": "non-resident or deemed resident",
+      "workflow": "2025 non-resident/deemed-resident package",
+      "forms_or_guides": ["5013-R", "5013-SA", "5013-SB", "5013-SC", "T4058", "T4144 for section 216", "T4145 for section 217"],
+      "hard_escalation": true
+    }
+  ],
+  "known_official_conflicts": [
+    {
+      "id": "CONFLICT-001",
+      "subject": "2025 T2209 transfer line",
+      "annual_form_statement": "T2209 E (25) line 13 transfers to T1 line 40500.",
+      "web_page_statement": "CRA line-40500 page says line 12.",
+      "provisional_handling": "Use the current annual form calculation but display both official references and require manual confirmation.",
+      "source_ids": ["SRC-029", "SRC-030"]
+    }
+  ],
+  "escalation_matrix": [
+    {"trigger": "uncertain business/property/capital classification", "response": "Preserve possible routes and block the affected final calculation pending qualified review."},
+    {"trigger": "missing slip, incomplete ACB, incomplete crypto history, or unknown exchange rate", "response": "List missing evidence and do not invent a value."},
+    {"trigger": "tax shelter, limited partnership, at-risk amount, partnership loss, or permanent establishment outside Ontario", "response": "Add official form prompts and require specialist review."},
+    {"trigger": "rental CCA, recapture, terminal loss, change in use, principal residence, or short-term-rental compliance", "response": "Require property history and specialist review."},
+    {"trigger": "principal residence, flipped property, QSBCS/QFFP, ABIL, reserve, gift, derivative, foreclosure, or superficial loss", "response": "Require the relevant annual form and calculation review."},
+    {"trigger": "T1135 threshold/exclusion uncertainty, foreign affiliate, foreign partnership/trust, treaty, or first-year residency", "response": "Block an automatic T1135 conclusion and escalate."},
+    {"trigger": "deceased, estate, bankruptcy, emigrant, non-resident, deemed resident, or trust return", "response": "Switch to a distinct draft-paper workflow; never force the ordinary Ontario flow."},
+    {"trigger": "annual form/source conflict", "response": "Display both official sources and require acknowledgement."}
+  ],
+  "sources": [
+    {"id": "SRC-001", "title": "File an income tax and benefit return on paper", "tax_year_or_revision": "2025", "url": "https://www.canada.ca/en/services/taxes/income-tax/personal-income-tax/how-file/paper.html"},
+    {"id": "SRC-002", "title": "Where to mail your paper T1 return", "tax_year_or_revision": "current routing", "url": "https://www.canada.ca/en/revenue-agency/corporate/contact-information/where-mail-your-paper-t1-return.html"},
+    {"id": "SRC-003", "title": "Get a T1 income tax package", "tax_year_or_revision": "2025", "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package.html"},
+    {"id": "SRC-004", "title": "Ontario income tax package", "tax_year_or_revision": "2025", "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario.html"},
+    {"id": "SRC-005", "title": "5006-R Ontario Income Tax and Benefit Return", "tax_year_or_revision": "2025", "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-r.html"},
+    {"id": "SRC-006", "title": "Federal income tax and benefit information", "tax_year_or_revision": "5000-G, 2025", "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/5000-g.html"},
+    {"id": "SRC-007", "title": "Ontario tax information", "tax_year_or_revision": "2025", "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-pc.html"},
+    {"id": "SRC-008", "title": "Pay through the mail", "tax_year_or_revision": "current routing", "url": "https://www.canada.ca/en/revenue-agency/services/about-canada-revenue-agency-cra/pay-cheque.html"},
+    {"id": "SRC-009", "title": "T2125 Statement of Business or Professional Activities", "tax_year_or_revision": "T2125-25e", "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/forms/t2125.html"},
+    {"id": "SRC-010", "title": "T4002 Self-employed income guide", "tax_year_or_revision": "T4002(E) Rev. 25", "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/publications/t4002.html"},
+    {"id": "SRC-011", "title": "T4002 Chapter 2 - Income", "tax_year_or_revision": "T4002(E) Rev. 25", "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/publications/t4002/t4002-4.html"},
+    {"id": "SRC-012", "title": "How to account for your business income", "tax_year_or_revision": "current", "url": "https://www.canada.ca/en/revenue-agency/services/tax/businesses/small-businesses-self-employed-income/business-income-tax-reporting/business-income/account-your-business-income.html"},
+    {"id": "SRC-013", "title": "T2042 Statement of Farming Activities", "tax_year_or_revision": "T2042-25e", "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/forms/t2042.html"},
+    {"id": "SRC-014", "title": "T2121 Statement of Fishing Activities", "tax_year_or_revision": "T2121-25e", "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/forms/t2121.html"},
+    {"id": "SRC-015", "title": "When to register for and start charging GST/HST", "tax_year_or_revision": "current", "url": "https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/gst-hst-businesses/when-register-charge.html"},
+    {"id": "SRC-016", "title": "General information for GST/HST registrants", "tax_year_or_revision": "RC4022 current", "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/publications/rc4022/general-information-gst-hst-registrants.html"},
+    {"id": "SRC-017", "title": "T776 Statement of Real Estate Rentals", "tax_year_or_revision": "T776-25e", "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/forms/t776.html"},
+    {"id": "SRC-018", "title": "T4036 Rental Income guide", "tax_year_or_revision": "T4036(E) Rev. 25", "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/publications/t4036.html"},
+    {"id": "SRC-019", "title": "Rental income calculations", "tax_year_or_revision": "T4036(E) Rev. 25", "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/publications/t4036/rental-income.html"},
+    {"id": "SRC-020", "title": "Capital cost allowance for rental property", "tax_year_or_revision": "current", "url": "https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/rental-income/capital-cost-allowance-rental-property.html"},
+    {"id": "SRC-021", "title": "Rental expenses you cannot deduct", "tax_year_or_revision": "2024 and later", "url": "https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/rental-income/rental-expenses-you-cannot-deduct.html"},
+    {"id": "SRC-022", "title": "Schedule 3 - Capital Gains or Losses", "tax_year_or_revision": "5000-S3 E (25)", "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/5000-s3.html"},
+    {"id": "SRC-023", "title": "T4037 Capital Gains guide", "tax_year_or_revision": "2025", "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/publications/t4037.html"},
+    {"id": "SRC-024", "title": "Completing Schedule 3", "tax_year_or_revision": "2025", "url": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/personal-income/line-12700-capital-gains/completing-schedule-3.html"},
+    {"id": "SRC-025", "title": "Capital gains and losses from information slips", "tax_year_or_revision": "2025", "url": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/personal-income/line-12700-capital-gains/completing-schedule-3/capital-gains-losses-information-slips.html"},
+    {"id": "SRC-026", "title": "T5008 Guide - Return of Securities Transactions", "tax_year_or_revision": "T4091 current", "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/publications/t4091/t5008-guide-return-securities-transactions.html"},
+    {"id": "SRC-027", "title": "Reporting income from crypto-asset transactions", "tax_year_or_revision": "current", "url": "https://www.canada.ca/en/revenue-agency/programs/about-canada-revenue-agency-cra/compliance/cryptocurrency-guide/income-crypto-transactions.html"},
+    {"id": "SRC-028", "title": "Crypto-assets and taxes", "tax_year_or_revision": "current", "url": "https://www.canada.ca/en/revenue-agency/programs/about-canada-revenue-agency-cra/compliance/cryptocurrency-guide/crypto-assets-tax-obligations.html"},
+    {"id": "SRC-029", "title": "T2209 Federal Foreign Tax Credits", "tax_year_or_revision": "T2209 E (25)", "url": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/t2209/t2209-25e.pdf"},
+    {"id": "SRC-030", "title": "Line 40500 - Federal foreign tax credit", "tax_year_or_revision": "2025 web instruction", "url": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/deductions-credits-expenses/line-40500-federal-foreign-tax-credit.html"},
+    {"id": "SRC-031", "title": "T2036 Provincial or Territorial Foreign Tax Credit", "tax_year_or_revision": "T2036 E (25)", "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/forms/t2036.html"},
+    {"id": "SRC-032", "title": "T1135 Foreign Income Verification Statement", "tax_year_or_revision": "T1135 E (23), 2015 and later", "url": "https://www.canada.ca/en/revenue-agency/services/tax/international-non-residents/information-been-moved/foreign-reporting/foreign-income-verification-statement.html"},
+    {"id": "SRC-033", "title": "Questions and answers about Form T1135", "tax_year_or_revision": "current", "url": "https://www.canada.ca/en/revenue-agency/services/tax/international-non-residents/information-been-moved/foreign-reporting/questions-answers-about-form-t1135.html"},
+    {"id": "SRC-034", "title": "Prepare returns for someone who died", "tax_year_or_revision": "2025", "url": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/life-events/doing-taxes-someone-died/prepare-returns.html"},
+    {"id": "SRC-035", "title": "What returns to file for someone who died", "tax_year_or_revision": "2025", "url": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/life-events/doing-taxes-someone-died/prepare-returns/what-to-file.html"},
+    {"id": "SRC-036", "title": "T3 Trust Guide", "tax_year_or_revision": "T4013, 2025", "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/publications/t4013.html"},
+    {"id": "SRC-037", "title": "Doing taxes when filing for bankruptcy", "tax_year_or_revision": "current", "url": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/information-on-bankruptcy.html"},
+    {"id": "SRC-038", "title": "Non-Residents and Income Tax", "tax_year_or_revision": "T4058(E) Rev. 25", "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/publications/t4058.html"},
+    {"id": "SRC-039", "title": "Non-resident and deemed-resident tax package", "tax_year_or_revision": "2025", "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/non-residents.html"},
+    {"id": "SRC-040", "title": "Dispositions of property for emigrants", "tax_year_or_revision": "current", "url": "https://www.canada.ca/en/revenue-agency/services/tax/international-non-residents/individuals-leaving-entering-canada-non-residents/dispositions-property.html"},
+    {"id": "SRC-041", "title": "Statement of Partnership Income - instructions for recipient", "tax_year_or_revision": "T5013-INST(E) Rev. 25", "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/publications/t5013-inst/statement-partnership-income-instructions-recipient.html"},
+    {"id": "SRC-042", "title": "Guide for the Partnership Information Return", "tax_year_or_revision": "T4068, 2025", "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/publications/t4068.html"},
+    {"id": "SRC-043", "title": "Which GST/HST rate to charge", "tax_year_or_revision": "current", "url": "https://www.canada.ca/en/revenue-agency/services/tax/businesses/topics/gst-hst-businesses/charge-collect-which-rate.html"},
+    {"id": "SRC-044", "title": "Quick Method of Accounting for GST/HST", "tax_year_or_revision": "RC4058 current", "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/publications/rc4058/quick-method-accounting-gst-hst.html"}
+  ],
+  "unresolved_gaps": [
+    "Annual CRA forms and web pages can change after the access date; production needs controlled source refresh and approval.",
+    "The T2209 line-transfer conflict remains unresolved in official sources.",
+    "Mailing and payment destinations need live official confirmation at generation time.",
+    "This inventory does not define PDF field coordinates, a tax engine, or a validation schema.",
+    "Elections, designations, carrybacks, reserves, loss limitations, and factual classifications need separate supported workflows and qualified review.",
+    "Trust, estate, bankruptcy, emigrant, non-resident, deemed-resident, tax-shelter, and multi-jurisdiction cases cannot be forced through the ordinary Ontario resident flow.",
+    "GST/HST return preparation and filing are outside the T1 mail-in package.",
+    "Production must match the filer's selected official language and must not mix annual English and French form revisions."
+  ]
+}
