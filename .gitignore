@@ -1,0 +1,33 @@
+# Dependencies and local toolchains
+node_modules/
+.toolchain/
+.dependencies/
+
+# Generated output
+dist/
+build/
+out/
+coverage/
+.cache/
+.tmp/
+temp/
+*.log
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+*.local
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Package-manager diagnostics
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*

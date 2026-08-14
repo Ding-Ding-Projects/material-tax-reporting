@@ -1,0 +1,7 @@
+{
+  "name": "@material-tax-reporting/site",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Reserved workspace for the future documentation site; no site or build is present.",
+  "license": "MIT"
+}
