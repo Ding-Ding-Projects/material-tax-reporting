@@ -1,8 +1,65 @@
 {
   "schemaVersion": 1,
-  "status": "foundation-only",
-  "toolchains": [],
-  "binaries": [],
-  "dependencies": [],
-  "note": "No toolchain, binary, or package dependency has been selected or pinned. Versions and digests will be added when real build requirements exist."
+  "status": "active",
+  "platform": "win32-x64",
+  "toolchains": [
+    {
+      "id": "node",
+      "version": "22.14.0",
+      "bundledNpmVersion": "10.9.2",
+      "archive": "node-v22.14.0-win-x64.zip",
+      "url": "https://nodejs.org/dist/v22.14.0/node-v22.14.0-win-x64.zip",
+      "sha256": "55b639295920b219bb2acbcfa00f90393a2789095b7323f79475c9f34795f217",
+      "installScope": "per-user"
+    }
+  ],
+  "binaries": [
+    {
+      "id": "git",
+      "version": "2.55.0.4",
+      "archive": "MinGit-2.55.0.4-64-bit.zip",
+      "url": "https://github.com/git-for-windows/git/releases/download/v2.55.0.windows.4/MinGit-2.55.0.4-64-bit.zip",
+      "sha256": "4e03f94c2ffbf70be337e005cee02661c732dbfc81031a078bda9299b9a7d644",
+      "usage": "build-provenance-and-line-count"
+    },
+    {
+      "id": "github-cli",
+      "version": "2.97.0",
+      "archive": "gh_2.97.0_windows_amd64.zip",
+      "url": "https://github.com/cli/cli/releases/download/v2.97.0/gh_2.97.0_windows_amd64.zip",
+      "sha256": "35d7fe05c4dd1411ffda1e73dfc7c6f44b75c936ca51fa6595c657fdc0350cec",
+      "usage": "release-workflow-only"
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "electron",
+      "version": "43.3.0",
+      "purpose": "Windows desktop runtime and packaging input"
+    },
+    {
+      "name": "electron-builder",
+      "version": "26.15.3",
+      "purpose": "Windows application packaging"
+    },
+    {
+      "name": "electron-builder-squirrel-windows",
+      "version": "26.15.3",
+      "purpose": "Squirrel.Windows target"
+    },
+    {
+      "name": "png-to-ico",
+      "version": "3.0.2",
+      "purpose": "Multi-resolution ICO assembly"
+    },
+    {
+      "name": "sharp",
+      "version": "0.35.3",
+      "purpose": "Bounded local logo resizing"
+    }
+  ],
+  "systemTools": [
+    "Windows PowerShell 5.1 or later"
+  ],
+  "note": "Build scripts install the pinned portable Node.js archive per user and install package dependencies strictly from package-lock.json. The release workflow separately bootstraps the pinned GitHub CLI archive."
 }

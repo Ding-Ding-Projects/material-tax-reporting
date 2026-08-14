@@ -1,0 +1,25 @@
+appId: ca.dingdingprojects.materialtaxreporting
+productName: Material Tax Reporting
+asar: true
+directories:
+  output: ../../dist/squirrel-windows
+  buildResources: build
+files:
+  - dist/**/*
+  - package.json
+icon: build/icon.ico
+win:
+  executableName: MaterialTaxReporting
+  icon: build/icon.ico
+  target:
+    - target: squirrel
+      arch:
+        - x64
+  forceCodeSigning: false
+  signExecutable: false
+  signAndEditExecutable: false
+squirrelWindows:
+  name: MaterialTaxReporting
+  artifactName: MaterialTaxReporting-${version}-Setup.${ext}
+  iconUrl: https://github.com/Ding-Ding-Projects/material-tax-reporting/releases/latest/download/material-tax-reporting.ico
+  msi: false

@@ -18,10 +18,14 @@ shift
 goto parse_args
 
 :bootstrap
-if "%MTR_SILENT%"=="0" echo Checking declared dependencies before installer discovery...
-call "%~dp0download-dependencies.bat" /s
-if errorlevel 1 exit /b %errorlevel%
+set "MTR_SILENT_ARG="
+if "%MTR_SILENT%"=="1" set "MTR_SILENT_ARG=-Silent"
+if "%MTR_SILENT%"=="1" (
+    call "%~dp0download-dependencies.bat" /s
+) else (
+    call "%~dp0download-dependencies.bat"
+)
+if errorlevel 1 exit /b %ERRORLEVEL%
 
-echo ERROR: No installer configuration or installer package script exists in this repository foundation.
-echo ERROR: Add and document a real unsigned installer path before this command may report success.
-exit /b 2
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\release\invoke-build.ps1" -Mode Installer %MTR_SILENT_ARG%
+exit /b %ERRORLEVEL%

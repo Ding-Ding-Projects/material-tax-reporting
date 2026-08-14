@@ -18,10 +18,22 @@ shift
 goto parse_args
 
 :bootstrap
-if "%MTR_SILENT%"=="0" echo Checking declared dependencies before build discovery...
-call "%~dp0download-dependencies.bat" /s
-if errorlevel 1 exit /b %errorlevel%
+set "MTR_SILENT_ARG="
+if "%MTR_SILENT%"=="1" set "MTR_SILENT_ARG=-Silent"
+if "%MTR_SILENT%"=="1" (
+    call "%~dp0download-dependencies.bat" /s
+) else (
+    call "%~dp0download-dependencies.bat"
+)
+if errorlevel 1 exit /b %ERRORLEVEL%
 
-echo ERROR: No runnable application or build script exists in this repository foundation.
-echo ERROR: Add and document a real workspace build before this command may report success.
-exit /b 2
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\release\invoke-build.ps1" -Mode Application %MTR_SILENT_ARG%
+set "MTR_EXIT=%ERRORLEVEL%"
+if not "%MTR_EXIT%"=="0" exit /b %MTR_EXIT%
+
+if "%MTR_SILENT%"=="1" exit /b 0
+set "MTR_RUN="
+set /p "MTR_RUN=Run the built desktop application now? [y/N] "
+if /I not "%MTR_RUN%"=="Y" exit /b 0
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\release\invoke-build.ps1" -Mode Run
+exit /b %ERRORLEVEL%
