@@ -5,9 +5,22 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
 const { atomicWrite } = require('./key-vault');
+const {
+  HISTORY_ACTIONS,
+  MAX_PATTERN_LENGTH,
+  compileSearchPattern,
+  createSearchState,
+  matchesSearch,
+} = require('@material-tax-reporting/surface-kernel');
 
 const MAX_STATE_BYTES = 32 * 1024 * 1024;
-const ACTIONS = new Set(['create', 'answer', 'attachment-add', 'attachment-remove', 'review', 'restore', 'undo', 'import-copy', 'reconcile', 'replace']);
+/**
+ * The recorded action allowlist. It is the shared kernel list, so the
+ * application-level actions this release adds — preference, appearance,
+ * vocabulary, lock, schedule, identity, export, conversion and ticket changes —
+ * are recorded under the same names both surfaces use.
+ */
+const ACTIONS = new Set(HISTORY_ACTIONS);
 
 function runGit(repositoryPath, args, { allowFailure = false } = {}) {
   const result = spawnSync('git', ['-C', repositoryPath, ...args], {
@@ -155,15 +168,31 @@ class HistoryStore {
     return this.readRevision(this.currentRevisionId()).state;
   }
 
-  query({ text = '', action = '', from = '', to = '' } = {}) {
+  /**
+   * Lists revisions. Matching stays plain lowercased substring comparison
+   * unless an explicit validated pattern search is requested, so a malformed
+   * pattern can never affect record enumeration or the current-revision
+   * lookup: both happen before any matching runs.
+   */
+  query({ text = '', action = '', from = '', to = '', regex = false, pattern = '', flags = 'i' } = {}) {
     const needle = String(text).trim().toLocaleLowerCase();
+    const patternSearch = regex === true
+      ? createSearchState({ regex: true, pattern: String(pattern).slice(0, MAX_PATTERN_LENGTH), flags: String(flags).slice(0, 8) })
+      : null;
+    const patternError = patternSearch && 'error' in compileSearchPattern(patternSearch, 'filter')
+      ? compileSearchPattern(patternSearch, 'filter').error
+      : null;
+    const matches = (haystack) => {
+      if (patternSearch) return patternError ? false : matchesSearch(haystack, patternSearch);
+      return !needle || haystack.toLocaleLowerCase().includes(needle);
+    };
     const files = fs.readdirSync(path.join(this.repositoryPath, 'records')).filter((name) => name.endsWith('.json'));
     const labels = this.readLabels();
     const rows = files.map((name) => JSON.parse(fs.readFileSync(path.join(this.repositoryPath, 'records', name), 'utf8')))
       .filter((record) => !action || record.action === action)
       .filter((record) => !from || record.timestamp >= from)
       .filter((record) => !to || record.timestamp <= to)
-      .filter((record) => !needle || `${record.summary} ${record.action} ${labels[record.revisionId] || ''}`.toLocaleLowerCase().includes(needle))
+      .filter((record) => matches(`${record.summary} ${record.action} ${labels[record.revisionId] || ''}`))
       .map((record) => ({
         revisionId: record.revisionId,
         action: record.action,
@@ -173,7 +202,7 @@ class HistoryStore {
         current: record.revisionId === this.currentRevisionId(),
       }))
       .sort((left, right) => right.timestamp.localeCompare(left.timestamp));
-    return { rows, actions: [...new Set(rows.map((row) => row.action))].sort() };
+    return { rows, actions: [...ACTIONS].sort(), patternError };
   }
 
   readLabels() {
