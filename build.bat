@@ -1,5 +1,6 @@
 @echo off
 setlocal EnableExtensions
+set "MTR_REPO_ROOT=%~dp0"
 
 set "MTR_SILENT=0"
 if /I "%SILENT%"=="1" set "MTR_SILENT=1"
@@ -21,13 +22,13 @@ goto parse_args
 set "MTR_SILENT_ARG="
 if "%MTR_SILENT%"=="1" set "MTR_SILENT_ARG=-Silent"
 if "%MTR_SILENT%"=="1" (
-    call "%~dp0download-dependencies.bat" /s
+    call "%MTR_REPO_ROOT%download-dependencies.bat" /s
 ) else (
-    call "%~dp0download-dependencies.bat"
+    call "%MTR_REPO_ROOT%download-dependencies.bat"
 )
 if errorlevel 1 exit /b %ERRORLEVEL%
 
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\release\invoke-build.ps1" -Mode Application %MTR_SILENT_ARG%
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%MTR_REPO_ROOT%scripts\release\invoke-build.ps1" -Mode Application %MTR_SILENT_ARG%
 set "MTR_EXIT=%ERRORLEVEL%"
 if not "%MTR_EXIT%"=="0" exit /b %MTR_EXIT%
 
@@ -35,5 +36,5 @@ if "%MTR_SILENT%"=="1" exit /b 0
 set "MTR_RUN="
 set /p "MTR_RUN=Run the built desktop application now? [y/N] "
 if /I not "%MTR_RUN%"=="Y" exit /b 0
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\release\invoke-build.ps1" -Mode Run
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%MTR_REPO_ROOT%scripts\release\invoke-build.ps1" -Mode Run
 exit /b %ERRORLEVEL%

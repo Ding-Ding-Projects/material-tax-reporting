@@ -1,5 +1,6 @@
 @echo off
 setlocal EnableExtensions
+set "MTR_REPO_ROOT=%~dp0"
 
 set "MTR_SILENT=0"
 if /I "%SILENT%"=="1" set "MTR_SILENT=1"
@@ -21,11 +22,11 @@ goto parse_args
 set "MTR_SILENT_ARG="
 if "%MTR_SILENT%"=="1" set "MTR_SILENT_ARG=-Silent"
 if "%MTR_SILENT%"=="1" (
-    call "%~dp0download-dependencies.bat" /s
+    call "%MTR_REPO_ROOT%download-dependencies.bat" /s
 ) else (
-    call "%~dp0download-dependencies.bat"
+    call "%MTR_REPO_ROOT%download-dependencies.bat"
 )
 if errorlevel 1 exit /b %ERRORLEVEL%
 
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\release\invoke-build.ps1" -Mode Installer %MTR_SILENT_ARG%
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%MTR_REPO_ROOT%scripts\release\invoke-build.ps1" -Mode Installer %MTR_SILENT_ARG%
 exit /b %ERRORLEVEL%

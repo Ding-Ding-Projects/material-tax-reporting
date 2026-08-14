@@ -1,5 +1,6 @@
 @echo off
 setlocal EnableExtensions
+set "MTR_REPO_ROOT=%~dp0"
 
 set "MTR_SILENT=0"
 if /I "%SILENT%"=="1" set "MTR_SILENT=1"
@@ -20,7 +21,7 @@ goto parse_args
 :run
 set "MTR_SILENT_ARG="
 if "%MTR_SILENT%"=="1" set "MTR_SILENT_ARG=-Silent"
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\release\download-dependencies.ps1" %MTR_SILENT_ARG%
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%MTR_REPO_ROOT%scripts\release\download-dependencies.ps1" %MTR_SILENT_ARG%
 set "MTR_EXIT=%ERRORLEVEL%"
 if not "%MTR_EXIT%"=="0" echo ERROR: Dependency bootstrap failed with exit code %MTR_EXIT%.
 exit /b %MTR_EXIT%
