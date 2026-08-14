@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' data:; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'none'; font-src 'self';">
+  <title>Material Tax Reporting</title>
+  <style>/* BUILD:STYLES */</style>
+</head>
+<body>
+  <header class="titlebar">
+    <div class="brand" aria-label="Material Tax Reporting">
+      <span class="brand-mark" aria-hidden="true">M</span>
+      <span>Material Tax Reporting</span>
+    </div>
+    <div class="window-actions" aria-label="Window controls">
+      <button id="minimize" class="icon-button" aria-label="Minimize">—</button>
+      <button id="maximize" class="icon-button" aria-label="Maximize or restore">□</button>
+      <button id="close" class="icon-button close" aria-label="Close">×</button>
+    </div>
+  </header>
+
+  <div class="app-shell">
+    <nav class="rail" aria-label="Application destinations">
+      <button class="rail-item selected" data-page="wizard"><span aria-hidden="true">→</span><span>Guided report</span></button>
+      <button class="rail-item" data-page="history"><span aria-hidden="true">↶</span><span>History</span></button>
+      <button class="rail-item" data-page="project"><span aria-hidden="true">▣</span><span>Project file</span></button>
+    </nav>
+
+    <main>
+      <section id="welcome" class="page">
+        <div class="hero card">
+          <p class="eyebrow">Private, local, and guided</p>
+          <h1>Prepare one tax report without guessing what comes next</h1>
+          <p>This desktop application asks one plain-language question at a time. It prepares information for a CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing.</p>
+        </div>
+        <div class="start-grid">
+          <form id="create-form" class="card" autocomplete="off">
+            <h2>Create a new encrypted project</h2>
+            <p>The project file contains the encrypted current report, encrypted attachments, and the complete local Git history. The app-private working history stays outside your document folders.</p>
+            <label>Tax year
+              <input id="create-tax-year" type="number" min="2025" max="2100" required placeholder="For example: 2025">
+            </label>
+            <label>Project password
+              <input id="create-password" type="password" minlength="12" maxlength="1024" required autocomplete="new-password" aria-describedby="create-password-help">
+            </label>
+            <p id="create-password-help" class="supporting">At least 12 characters. This password wraps the portable project key with a memory-hard KDF. It is never logged or stored as text.</p>
+            <button class="filled" type="submit">Choose file and create project</button>
+          </form>
+
+          <form id="open-form" class="card" autocomplete="off">
+            <h2>Open and preview an existing project</h2>
+            <p>The file is authenticated, decrypted, bounded, hash-checked, and its embedded Git object graph is validated before any local project can change.</p>
+            <label>Project password
+              <input id="open-password" type="password" minlength="12" maxlength="1024" required autocomplete="current-password">
+            </label>
+            <button class="tonal" type="submit">Choose project and preview</button>
+          </form>
+        </div>
+      </section>
+
+      <section id="wizard-page" class="page hidden" aria-labelledby="wizard-heading">
+        <div class="page-heading">
+          <div><p class="eyebrow">One question at a time</p><h1 id="wizard-heading">Guided tax report</h1></div>
+          <div id="project-chip" class="status-chip">No project open</div>
+        </div>
+        <div class="progress-row" aria-label="Wizard progress">
+          <div class="progress-track"><div id="progress-bar" class="progress-bar"></div></div>
+          <span id="progress-label">Step 1</span>
+        </div>
+        <article id="question-card" class="question-card card" aria-live="polite"></article>
+        <div class="wizard-actions">
+          <button id="previous-step" class="text-button" type="button">Previous</button>
+          <button id="next-step" class="filled" type="button">Save answer and continue</button>
+        </div>
+      </section>
+
+      <section id="history-page" class="page hidden" aria-labelledby="history-heading">
+        <div class="page-heading">
+          <div><p class="eyebrow">Append-only local Git history</p><h1 id="history-heading">History browser</h1></div>
+          <button id="verify-history" class="tonal" type="button">Verify Git object graph</button>
+        </div>
+        <div class="history-tools card">
+          <label>Search summaries and labels<input id="history-search" type="search" placeholder="Type part of an action or label"></label>
+          <label>Action<select id="history-action"><option value="">All actions</option></select></label>
+          <label>From<input id="history-from" type="date"></label>
+          <label>To<input id="history-to" type="date"></label>
+          <button id="refresh-history" class="text-button" type="button">Refresh</button>
+          <button id="undo-history" class="tonal" type="button">Undo to previous revision</button>
+        </div>
+        <div id="history-empty" class="empty card">Create or open a project to browse its history.</div>
+        <div id="history-list" class="history-list" role="list"></div>
+      </section>
+
+      <section id="project-page" class="page hidden" aria-labelledby="project-heading">
+        <div class="page-heading"><div><p class="eyebrow">One portable file</p><h1 id="project-heading">Project file</h1></div></div>
+        <div class="project-grid">
+          <div class="card">
+            <h2>Current project</h2>
+            <dl id="project-details"><div><dt>Status</dt><dd>No project open</dd></div></dl>
+            <div class="button-row">
+              <button id="save-project" class="filled" type="button">Save now</button>
+              <button id="close-project" class="text-button" type="button">Save and close</button>
+            </div>
+          </div>
+          <form id="save-copy-form" class="card" autocomplete="off">
+            <h2>Save a separately password-wrapped copy</h2>
+            <p>The copy keeps the full encrypted state, attachments, refs, objects, and history. Existing files are never silently overwritten.</p>
+            <label>New copy password<input id="copy-password" type="password" minlength="12" maxlength="1024" required autocomplete="new-password"></label>
+            <button class="tonal" type="submit">Choose destination and save copy</button>
+          </form>
+          <div class="card">
+            <h2>Bundled offline OCR resources</h2>
+            <p id="ocr-status">Checking packaged resource locations…</p>
+            <details><summary>Searched locations</summary><ul id="ocr-locations"></ul></details>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="import-dialog" aria-labelledby="import-title">
+    <form method="dialog" class="dialog-card">
+      <h2 id="import-title">Validated project preview</h2>
+      <div id="import-summary"></div>
+      <fieldset>
+        <legend>Choose what happens next</legend>
+        <label class="choice"><input type="radio" name="import-strategy" value="create-copy" checked><span><strong>Create copy</strong><small id="choice-copy"></small></span></label>
+        <label class="choice"><input type="radio" name="import-strategy" value="reconcile"><span><strong>Reconcile</strong><small id="choice-reconcile"></small></span></label>
+        <label class="choice"><input type="radio" name="import-strategy" value="replace"><span><strong>Replace open local project</strong><small id="choice-replace"></small></span></label>
+      </fieldset>
+      <label id="replace-confirmation-wrap" class="hidden">Type REPLACE LOCAL PROJECT to confirm<input id="replace-confirmation" autocomplete="off"></label>
+      <div class="dialog-actions"><button id="discard-import" class="text-button" value="cancel">Cancel</button><button id="activate-import" class="filled" value="default">Continue</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="diff-dialog" aria-labelledby="diff-title"><div class="dialog-card"><h2 id="diff-title">Revision difference</h2><div id="diff-content"></div><div class="dialog-actions"><button class="filled" data-close-dialog="diff-dialog">Close</button></div></div></dialog>
+  <div id="notifications" class="notifications" aria-live="polite" aria-atomic="false"></div>
+  <script>/* BUILD:SCRIPT */</script>
+</body>
+</html>
