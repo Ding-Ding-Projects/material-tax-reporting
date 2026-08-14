@@ -1,0 +1,1081 @@
+{
+  "schemaVersion": 1,
+  "repository": "material-tax-reporting",
+  "surfaces": ["site", "desktop", "packages"],
+  "evidencePolicy": "A row may claim runtime or capture evidence only after a real built surface was exercised and the result recorded; reading source, reviewing a diff, or completing a build never upgrades a pending row, so an empty test array, a runtimeInteraction nobody has performed, and captureEvidence of \"none\" are the honest default rather than an omission.",
+  "productBoundary": {
+    "terminalOutput": "CRA mail-in PDF package",
+    "prohibitedCapabilities": [
+      "NETFILE",
+      "EFILE",
+      "electronic submission",
+      "direct CRA transmission",
+      "simulated filing",
+      "automatic filing"
+    ]
+  },
+  "features": [
+    {
+      "id": "material-3-shell",
+      "title": "Material 3 shell",
+      "surface": "site",
+      "state": "implemented",
+      "implementation": [
+        "apps/site/app/globals.css",
+        "apps/site/app/SiteApp.tsx",
+        "apps/site/app/layout.tsx"
+      ],
+      "documentation": ["docs/features/site/material-3-shell-and-appearance.md"],
+      "changelog": ["CHANGELOG.site.md"],
+      "test": [],
+      "runtimeInteraction": "Build the site, serve the output, and open it in a browser at several viewport widths, in light and dark system settings, and with the operating system's reduced-motion setting on and off.",
+      "captureEvidence": "none",
+      "boundaryNote": "Presentation only. The shell states no tax figure and carries no filing control, so it cannot move the paper-only boundary.",
+      "evidenceGaps": [
+        "No browser has rendered this stylesheet; the production build only proves it compiles and is emitted.",
+        "No contrast measurement, accessibility audit, or responsive-layout check was performed.",
+        "The reduced-motion path exists in source and has never been observed taking effect."
+      ]
+    },
+    {
+      "id": "language-funny-emoji",
+      "title": "Language modes, humour levels, and decorative emoji",
+      "surface": "site",
+      "state": "implemented",
+      "implementation": [
+        "apps/site/app/data/copy.ts",
+        "apps/site/app/SiteApp.tsx",
+        "apps/site/src/checks/copy-facts.check.ts"
+      ],
+      "documentation": ["docs/features/site/language-and-funny-levels.md"],
+      "changelog": ["CHANGELOG.site.md"],
+      "test": [],
+      "runtimeInteraction": "Open the site, change the language mode and each humour slider, and read the same fact-bearing string at all five levels in both languages to confirm the facts do not drift.",
+      "captureEvidence": "none",
+      "boundaryNote": "Humour level and language never change a factual, legal, or boundary statement; fact-bearing strings are declared identical across variants.",
+      "evidenceGaps": [
+        "The facts invariant is asserted by a source check, not by a test suite, and that check reads the copy table rather than rendered output.",
+        "The Cantonese wording has had no native-speaker review.",
+        "No capture of any humour level exists."
+      ]
+    },
+    {
+      "id": "school-mode-vocabulary",
+      "title": "Personal vocabulary",
+      "surface": "site",
+      "state": "implemented",
+      "implementation": [
+        "apps/site/app/SiteApp.tsx",
+        "apps/site/app/data/copy.ts",
+        "apps/site/src/checks/copy-facts.check.ts"
+      ],
+      "documentation": ["docs/features/site/personal-vocabulary.md"],
+      "changelog": ["CHANGELOG.site.md"],
+      "test": [],
+      "runtimeInteraction": "Open the site, supply a vocabulary document, and confirm that ordinary wording is replaced while the immutable spans covering legal, boundary, and disclosure sentences are left alone.",
+      "captureEvidence": "none",
+      "boundaryNote": "Immutable spans protect the filing-boundary, disclosure, and legal sentences, so a personal wording map cannot rewrite the paper-only statement or the prohibition on electronic filing.",
+      "evidenceGaps": [
+        "No test or capture confirms that an immutable span survived a substitution in the rendered page.",
+        "The site ships no built-in vocabulary map, so the feature has never been exercised with real input."
+      ]
+    },
+    {
+      "id": "narration-voices",
+      "title": "Read aloud",
+      "surface": "site",
+      "state": "implemented",
+      "implementation": ["apps/site/app/narration.ts", "apps/site/app/SiteApp.tsx"],
+      "documentation": ["docs/features/site/narration.md"],
+      "changelog": ["CHANGELOG.site.md"],
+      "test": [],
+      "runtimeInteraction": "Open the site in a browser that provides speech synthesis, choose voices per language, and use a section's read control to hear the queue play one utterance at a time.",
+      "captureEvidence": "none",
+      "boundaryNote": "Reads visible documentation copy only. Field kinds on the exclusion list are never spoken, and nothing is transmitted for synthesis by this surface.",
+      "evidenceGaps": [
+        "No speech synthesis engine has been driven by this code; voice enumeration, queueing, and cancellation are unobserved.",
+        "No recording of narration output exists."
+      ]
+    },
+    {
+      "id": "scheduled-external-settings",
+      "title": "Scheduled and external presentation settings",
+      "surface": "site",
+      "state": "partial",
+      "implementation": ["apps/site/app/scheduling.ts", "apps/site/app/scheduling-panel.tsx"],
+      "documentation": ["docs/features/site/scheduled-and-external-settings.md"],
+      "changelog": ["CHANGELOG.site.md"],
+      "test": [],
+      "runtimeInteraction": "Open the site, add a time-window rule, wait for or simulate the window boundary, and confirm precedence of a manual override over an active rule; separately, point the external source at an allowlisted https origin serving a settings document and confirm the validated values are applied.",
+      "captureEvidence": "none",
+      "boundaryNote": "Presentation values only. No schedule and no external document can change a tax figure, a rule citation, or the paper-only boundary, and no external source is enabled by default.",
+      "evidenceGaps": [
+        "The rules editor offers a fixed value list per target rather than a free-form value, so values such as an arbitrary accent colour cannot be scheduled; this is why the row is partial.",
+        "No external settings request has been made from a running page, so the allowlist, the abort path, and the validator have not been exercised end to end.",
+        "No capture of an applied overlay exists."
+      ]
+    },
+    {
+      "id": "rename-logo",
+      "title": "Display name and mark",
+      "surface": "site",
+      "state": "implemented",
+      "implementation": ["apps/site/app/identity.tsx"],
+      "documentation": ["docs/features/site/display-name-and-logo.md"],
+      "changelog": ["CHANGELOG.site.md"],
+      "test": [],
+      "runtimeInteraction": "Open the site, set a display name, choose among the shipped marks, and attempt an upload of an oversized file and of a vector image to see both refused with a stated reason.",
+      "captureEvidence": "none",
+      "boundaryNote": "A local display name and mark are personalization stored in the visitor's browser. The public product name is unchanged, and no mark may be positioned to imply Canada Revenue Agency endorsement or certification.",
+      "evidenceGaps": [
+        "No upload has been attempted against this code, so the type check on the leading bytes and the vector refusal are unobserved.",
+        "No capture of the shipped marks exists."
+      ]
+    },
+    {
+      "id": "file-converter",
+      "title": "File converter",
+      "surface": "site",
+      "state": "implemented",
+      "implementation": ["apps/site/app/converter.ts", "apps/site/app/converter-panel.tsx"],
+      "documentation": ["docs/features/site/file-converter.md"],
+      "changelog": ["CHANGELOG.site.md"],
+      "test": [],
+      "runtimeInteraction": "Open the site, add files of a supported source format, run a conversion, cancel one mid-run, and confirm the per-file reason shown for an unsupported pair.",
+      "captureEvidence": "none",
+      "boundaryNote": "Converts this site's own record formats. It produces no tax form, no return, and no package for a tax authority, and nothing leaves the browser.",
+      "evidenceGaps": [
+        "No conversion has been run; the adapter registry's refusal path and the object-URL revocation are unobserved.",
+        "Converter output does not carry the export manifest the other collections carry, because it is written through its own blob path rather than the shared export path."
+      ]
+    },
+    {
+      "id": "ollama-suite",
+      "title": "Local model runtime view",
+      "surface": "site",
+      "state": "partial",
+      "implementation": ["apps/site/app/ollama-tab.tsx"],
+      "documentation": ["docs/features/local-ollama-suite/README.md"],
+      "changelog": ["CHANGELOG.site.md", "CHANGELOG.ollama.md"],
+      "test": [],
+      "runtimeInteraction": "Open the site on a computer with and without a local runtime listening on loopback, and confirm that each of the five health branches is reported from the observed check results rather than assumed.",
+      "captureEvidence": "none",
+      "boundaryNote": "A local model runtime neither files nor transmits a return. Nothing in this view offers electronic submission, direct transmission to a tax authority, or automatic filing, and no cost, account, or commercial concept is introduced.",
+      "evidenceGaps": [
+        "Chat, the pull queue, the harness, and model deletion are not rendered at all, because they require privileged adapters a browser-only host cannot supply; this is why the row is partial.",
+        "The suite controller is never constructed here, so only the loopback health probe, the catalogue view, the batch review, and the troubleshooter exist.",
+        "No probe has been made against a real runtime, so every health branch is unobserved.",
+        "The hardware-fit column is called with no hardware evidence and therefore reports Unknown; no fit assessment has been made against a real machine."
+      ]
+    },
+    {
+      "id": "tabs-navigation",
+      "title": "Tabs and navigation",
+      "surface": "site",
+      "state": "implemented",
+      "implementation": ["apps/site/app/tabs.ts", "apps/site/app/tab-strip.tsx"],
+      "documentation": ["docs/features/site/tabs-and-navigation.md"],
+      "changelog": ["CHANGELOG.site.md"],
+      "test": [],
+      "runtimeInteraction": "Open the site, move focus through the tab strip with the arrow keys and Home and End, reorder with the keyboard and by dragging, pin and group tabs, shrink the window until the overflow menu appears, and run a bulk close.",
+      "captureEvidence": "none",
+      "boundaryNote": "Navigation only. Tabs carry no tax data and no filing control.",
+      "evidenceGaps": [
+        "The roving tab order, the drag path, and the size-observer overflow menu have never run in a browser.",
+        "No keyboard walkthrough and no accessibility audit were performed on the tab roles and states."
+      ]
+    },
+    {
+      "id": "appearance-editor",
+      "title": "Appearance editor and colour translator",
+      "surface": "site",
+      "state": "implemented",
+      "implementation": ["apps/site/app/appearance.tsx", "apps/site/app/globals.css"],
+      "documentation": ["docs/features/site/appearance-editor.md"],
+      "changelog": ["CHANGELOG.site.md"],
+      "test": [],
+      "runtimeInteraction": "Open the site, override a property on a chosen element, read the contrast verdict, convert a colour between the supported spaces, export a preset, import it again, and reset one element and then all of them.",
+      "captureEvidence": "none",
+      "boundaryNote": "Presentation only, bounded by the shared allowlist of custom properties. No override changes a tax figure or a boundary statement.",
+      "evidenceGaps": [
+        "No override has been applied in a browser, so the scoped custom properties and the reset paths are unobserved.",
+        "Contrast verdicts are computed by the shared engine and have not been checked against a rendered page."
+      ]
+    },
+    {
+      "id": "element-locks",
+      "title": "Element locks",
+      "surface": "site",
+      "state": "partial",
+      "implementation": ["apps/site/app/locks.tsx"],
+      "documentation": ["docs/features/site/element-locks.md"],
+      "changelog": ["CHANGELOG.site.md"],
+      "test": [],
+      "runtimeInteraction": "Open the site, create a lock, attempt a blocked change, answer correctly and incorrectly, leave and return to the tab to confirm the relock, and follow the documented reset.",
+      "captureEvidence": "none",
+      "boundaryNote": "A presentation guard against accidental change, not a security control. The shared disclosure sentence saying so accompanies the feature on every surface that shows it.",
+      "evidenceGaps": [
+        "Locks can be created against a whole element only; the per-property scope the shared engine supports is honoured everywhere but has no creation control here, which is why the row is partial.",
+        "No lock has been created or verified in a browser, so the attempt counting and the relock on returning to the tab are unobserved."
+      ]
+    },
+    {
+      "id": "authenticator-qr-support",
+      "title": "Authenticator utility and support notes",
+      "surface": "site",
+      "state": "implemented",
+      "implementation": ["apps/site/app/totp-panel.tsx", "apps/site/app/support-tickets.tsx"],
+      "documentation": ["docs/features/site/authenticator-and-support.md"],
+      "changelog": ["CHANGELOG.site.md"],
+      "test": [],
+      "runtimeInteraction": "Open the site, generate a secret, watch the countdown roll to the next code, verify a code typed back in, scan the rendered matrix with a real authenticator application, and create, edit, resolve, and reopen a support note.",
+      "captureEvidence": "none",
+      "boundaryNote": "The one-time-password utility implements a public standard, is bound to no account in this product, and grants access to nothing. Support notes stay in the browser and are never transmitted.",
+      "evidenceGaps": [
+        "No rendered matrix has been scanned by an authenticator application.",
+        "Support-note redaction has not been observed on real input; it is exercised only by the shared package's own tests.",
+        "No capture of either surface exists."
+      ]
+    },
+    {
+      "id": "local-history",
+      "title": "Local history",
+      "surface": "site",
+      "state": "implemented",
+      "implementation": [
+        "apps/site/app/history.ts",
+        "apps/site/app/history-panel.tsx",
+        "apps/site/app/storage.ts"
+      ],
+      "documentation": ["docs/features/site/local-history.md"],
+      "changelog": ["CHANGELOG.site.md"],
+      "test": [],
+      "runtimeInteraction": "Open the site, make several personalization changes, filter the resulting records by date and action, inspect a difference, restore an earlier revision and confirm it is appended as a new record, and run the prune control at the documented cap.",
+      "captureEvidence": "none",
+      "boundaryNote": "Records personalization changes in the visitor's own browser. It holds no tax data and is never transmitted.",
+      "evidenceGaps": [
+        "No browser database has been opened by this code, so persistence, the cap, and the prune control are unobserved.",
+        "Redaction of vocabulary values has not been observed on real input."
+      ]
+    },
+    {
+      "id": "notifications-centre",
+      "title": "Notifications",
+      "surface": "site",
+      "state": "implemented",
+      "implementation": ["apps/site/app/notifications.ts", "apps/site/app/notifications-centre.tsx"],
+      "documentation": ["docs/features/site/notifications.md"],
+      "changelog": ["CHANGELOG.site.md"],
+      "test": [],
+      "runtimeInteraction": "Open the site, trigger notices of each severity, confirm that progress and error notices do not dismiss themselves, filter by kind and date, select a scope, and use the counted dismiss-all control.",
+      "captureEvidence": "none",
+      "boundaryNote": "Notices report what this surface did locally. None of them reports a submission, a transmission, or a filing, because none occurs.",
+      "evidenceGaps": [
+        "No notice has been raised in a browser; timer cleanup and the unread badge are unobserved.",
+        "No capture of the centre exists."
+      ]
+    },
+    {
+      "id": "changelog-viewer",
+      "title": "Changelog viewer",
+      "surface": "site",
+      "state": "implemented",
+      "implementation": [
+        "apps/site/app/changelog-viewer.tsx",
+        "apps/site/app/data/changelog.ts",
+        "apps/site/build/sites-vite-plugin.ts"
+      ],
+      "documentation": ["docs/features/site/changelog-viewer.md"],
+      "changelog": ["CHANGELOG.site.md"],
+      "test": [],
+      "runtimeInteraction": "Open the site, group entries by area and release, filter by date range, read a Verification block, and export the filtered set.",
+      "captureEvidence": "none",
+      "boundaryNote": "Reads the repository's own tracked changelog files. It publishes no release, offers no download, and reports no filing capability.",
+      "evidenceGaps": [
+        "The generated changelog module is produced by the build and has not been rendered in a browser.",
+        "No commit link is produced, because no public repository address is recorded; the link path is therefore unexercised."
+      ]
+    },
+    {
+      "id": "docs-browser",
+      "title": "Documentation browser",
+      "surface": "site",
+      "state": "implemented",
+      "implementation": [
+        "apps/site/app/docs-browser.tsx",
+        "apps/site/app/data/docs.ts",
+        "apps/site/app/data/features.ts",
+        "apps/site/build/sites-vite-plugin.ts"
+      ],
+      "documentation": ["docs/features/site/documentation-browser.md"],
+      "changelog": ["CHANGELOG.site.md"],
+      "test": [],
+      "runtimeInteraction": "Open the site, search the bundled articles, follow an internal link and an in-page anchor, and read the feature library, whose state statements are taken from the tracked website verification status rather than written into a component.",
+      "captureEvidence": "none",
+      "boundaryNote": "Documentation navigation only. It searches tracked repository articles, never a visitor's tax records or files, and it restates rather than relaxes the paper-only boundary.",
+      "evidenceGaps": [
+        "The bundled article set is produced by the build; no article has been read through the browser interface.",
+        "Link resolution and anchor navigation are unobserved at runtime."
+      ]
+    },
+    {
+      "id": "command-palette",
+      "title": "Command palette",
+      "surface": "site",
+      "state": "implemented",
+      "implementation": [
+        "apps/site/app/command-palette.tsx",
+        "apps/site/app/data/commands.ts",
+        "apps/site/src/checks/command-coverage.check.ts"
+      ],
+      "documentation": ["docs/features/site/command-palette.md"],
+      "changelog": ["CHANGELOG.site.md"],
+      "test": [],
+      "runtimeInteraction": "Open the site, open the palette from its keyboard shortcut, move through results with the arrow keys, change a setting from an inline control in a result, teleport to a destination, and close the palette to confirm focus returns to where it started.",
+      "captureEvidence": "none",
+      "boundaryNote": "Reaches this surface's own destinations and settings. It exposes no filing action, because none exists.",
+      "evidenceGaps": [
+        "Coverage of every preference key is asserted by a source check, not by a test suite, and the check reads the command table rather than the rendered list.",
+        "The focus trap and focus restoration have never been observed in a browser."
+      ]
+    },
+    {
+      "id": "regex-every-surface",
+      "title": "Regular-expression builders",
+      "surface": "site",
+      "state": "implemented",
+      "implementation": [
+        "apps/site/app/search-builder.tsx",
+        "apps/site/src/checks/search-builders.check.ts"
+      ],
+      "documentation": ["docs/features/site/regex-builders.md"],
+      "changelog": ["CHANGELOG.site.md"],
+      "test": [],
+      "runtimeInteraction": "Open the site, enable pattern mode beside any search field, insert the start-anchor and end-anchor tokens from the palette, supply an invalid pattern to see the reason reported rather than applied, and confirm the sample feedback and the visible-of-total count.",
+      "captureEvidence": "none",
+      "boundaryNote": "Searches this surface's own lists and articles. It never searches a visitor's tax records, files, or desktop, and it is never used as a network submission form.",
+      "evidenceGaps": [
+        "That every search field is produced by the shared builder is asserted by a source check plus a server-side render count, not by a walk of a live page.",
+        "No pattern has been compiled from a browser, so the flag allowlist and the length bounds are unobserved at runtime."
+      ]
+    },
+    {
+      "id": "exports-bulk-editor",
+      "title": "Exports and bulk actions",
+      "surface": "site",
+      "state": "partial",
+      "implementation": ["apps/site/app/exports.ts"],
+      "documentation": ["docs/features/site/exports-and-bulk-actions.md"],
+      "changelog": ["CHANGELOG.site.md"],
+      "test": [],
+      "runtimeInteraction": "Open the site, select rows in a collection, export in each supported format, save to a folder and to the clipboard, and confirm the stamped manifest and the omissions note on the written file.",
+      "captureEvidence": "none",
+      "boundaryNote": "Exports this surface's own personalization records. It produces no tax form and no package for a tax authority, and an export is written where the visitor chooses rather than sent anywhere.",
+      "evidenceGaps": [
+        "Converter output is written through its own path and does not carry the export manifest the other collections carry, which is why the row is partial.",
+        "No export has been written from a browser, so the folder-save, download, and clipboard paths are unobserved.",
+        "Spreadsheet-cell neutralization is exercised only by the shared package's tests, never by a written file from this surface."
+      ]
+    },
+    {
+      "id": "browser-download-surfaces",
+      "title": "Transfer surfaces",
+      "surface": "site",
+      "state": "partial",
+      "implementation": ["apps/site/app/download-surfaces.tsx", "apps/site/app/data/releases.json"],
+      "documentation": ["docs/features/site/download-surfaces.md"],
+      "changelog": ["CHANGELOG.site.md"],
+      "test": [],
+      "runtimeInteraction": "This surface cannot be exercised today: the release manifest carries no assets, so the site renders its unavailable state. Exercising it would require a published, verified, immutable release asset that does not exist.",
+      "captureEvidence": "none",
+      "boundaryNote": "No download control, link, asset name, size, or digest is shown, because no verified release asset exists. Any future asset must be described as possibly unsigned rather than as signature-verified, and a transfer moves an artifact only; it never submits anything to a tax authority.",
+      "evidenceGaps": [
+        "The canonical row for this capability is written against an installed browser extension capturing a real browser download. No extension exists in this repository and none is proposed, which is why the row is partial; only the Start, Downloading, and Complete states for transfers this surface itself performs are present.",
+        "The release manifest ships with an empty asset list, so the Downloading and Complete states have never been entered.",
+        "No integrity digest has been computed over a real asset."
+      ]
+    },
+    {
+      "id": "material-3-shell",
+      "title": "Material 3 shell",
+      "surface": "desktop",
+      "state": "implemented",
+      "implementation": [
+        "apps/desktop/src/renderer/styles.css",
+        "apps/desktop/src/renderer/index.html",
+        "apps/desktop/scripts/build.mjs"
+      ],
+      "documentation": ["docs/features/desktop/settings-and-preferences.md"],
+      "changelog": ["CHANGELOG.desktop.md"],
+      "test": [],
+      "runtimeInteraction": "Install the application's dependencies, run the build, launch the application, and view the shell in light and dark settings, at several window sizes, and with reduced motion on and off.",
+      "captureEvidence": "none",
+      "boundaryNote": "Presentation only. The shell states no tax figure and carries no filing control.",
+      "evidenceGaps": [
+        "The application has never been launched, so nothing about how the shell looks or behaves is established.",
+        "The shared tokens are prepended by the build script; the resulting stylesheet has never been rendered.",
+        "No contrast measurement, accessibility audit, or capture exists."
+      ]
+    },
+    {
+      "id": "language-funny-emoji",
+      "title": "Language modes, humour levels, and decorative emoji",
+      "surface": "desktop",
+      "state": "implemented",
+      "implementation": [
+        "apps/desktop/src/renderer/copy.js",
+        "apps/desktop/src/renderer/app.js",
+        "apps/desktop/src/renderer/settings.js"
+      ],
+      "documentation": ["docs/features/desktop/language-and-funny-levels.md"],
+      "changelog": ["CHANGELOG.desktop.md"],
+      "test": [],
+      "runtimeInteraction": "Launch the application, change the language mode and each humour slider, and read the wizard questions, validation lines, and review labels at all five levels in both languages.",
+      "captureEvidence": "none",
+      "boundaryNote": "Fact-bearing strings, including validation lines, limits, boundary statements, and review labels, are declared identically across all five humour levels, so humour cannot alter a factual, legal, or boundary statement.",
+      "evidenceGaps": [
+        "The shared facts invariant is available and the copy bundle is authored to satisfy it, but no executable check runs it against this bundle.",
+        "Five genuinely distinct variants exist for the shell labels, notices, and wizard question titles only; the longer explanation, validation, and next-step strings are single-variant by design so their facts cannot drift.",
+        "The Cantonese wording has had no native-speaker review.",
+        "No capture of any humour level exists."
+      ]
+    },
+    {
+      "id": "school-mode-vocabulary",
+      "title": "Personal vocabulary",
+      "surface": "desktop",
+      "state": "implemented",
+      "implementation": [
+        "apps/desktop/src/main/vocabulary-store.js",
+        "apps/desktop/src/main/main.js",
+        "apps/desktop/src/renderer/settings.js"
+      ],
+      "documentation": ["docs/features/desktop/personal-vocabulary.md"],
+      "changelog": ["CHANGELOG.desktop.md"],
+      "test": [],
+      "runtimeInteraction": "Launch the application, supply a vocabulary document, and confirm that ordinary wording is replaced while legal, boundary, and disclosure sentences are left alone.",
+      "captureEvidence": "none",
+      "boundaryNote": "Immutable spans protect the filing-boundary, disclosure, and legal sentences, so a personal wording map cannot rewrite the paper-only statement or the prohibition on electronic filing.",
+      "evidenceGaps": [
+        "No vocabulary document has been loaded by a running application, so validation, compilation, and substitution are unobserved.",
+        "No capture exists."
+      ]
+    },
+    {
+      "id": "narration-voices",
+      "title": "Read aloud",
+      "surface": "desktop",
+      "state": "implemented",
+      "implementation": [
+        "apps/desktop/src/renderer/narration.js",
+        "apps/desktop/src/renderer/index.html",
+        "apps/desktop/src/renderer/app.js"
+      ],
+      "documentation": ["docs/features/desktop/narration.md"],
+      "changelog": ["CHANGELOG.desktop.md"],
+      "test": [],
+      "runtimeInteraction": "Launch the application, choose a voice per language, and use a read control to hear the queue play one utterance at a time.",
+      "captureEvidence": "none",
+      "boundaryNote": "Reads visible interface copy only. Field kinds on the exclusion list, including tax figures and identifiers, are never spoken, and nothing is transmitted for synthesis.",
+      "evidenceGaps": [
+        "No speech synthesis engine has been driven by this code.",
+        "No recording of narration output exists."
+      ]
+    },
+    {
+      "id": "scheduled-external-settings",
+      "title": "Scheduled and external settings",
+      "surface": "desktop",
+      "state": "implemented",
+      "implementation": [
+        "apps/desktop/src/main/settings-schedule.js",
+        "apps/desktop/src/main/main.js",
+        "apps/desktop/src/renderer/settings.js"
+      ],
+      "documentation": ["docs/features/desktop/scheduled-and-external-settings.md"],
+      "changelog": ["CHANGELOG.desktop.md"],
+      "test": [],
+      "runtimeInteraction": "Launch the application, add a time-window rule, cross the window boundary, confirm that a manual override takes precedence over an active rule, and separately point the external source at an allowlisted https origin serving a settings document.",
+      "captureEvidence": "none",
+      "boundaryNote": "Presentation values only. No schedule and no external document can change a tax figure, a rule citation, or the paper-only boundary. No external source is enabled by default, the renderer performs no network access, and any external read happens in the privileged process against a user-entered allowlisted origin.",
+      "evidenceGaps": [
+        "No schedule has fired and no external document has been read by a running application.",
+        "No capture exists."
+      ]
+    },
+    {
+      "id": "rename-logo",
+      "title": "Display name and logo",
+      "surface": "desktop",
+      "state": "implemented",
+      "implementation": ["apps/desktop/src/main/main.js", "apps/desktop/src/renderer/settings.js"],
+      "documentation": ["docs/features/desktop/display-name-and-logo.md"],
+      "changelog": ["CHANGELOG.desktop.md"],
+      "test": [],
+      "runtimeInteraction": "Launch the application, set a display name, choose a logo file, and confirm both the window title and the About card follow the choice, and that an oversized or vector image is refused with a stated reason.",
+      "captureEvidence": "none",
+      "boundaryNote": "A local display name and logo are personalization stored on the user's computer. The public product name is unchanged, and no mark may be positioned to imply Canada Revenue Agency endorsement or certification.",
+      "evidenceGaps": [
+        "No logo has been chosen through a running application, so the validation and the window update are unobserved.",
+        "No capture exists."
+      ]
+    },
+    {
+      "id": "file-converter",
+      "title": "File converter",
+      "surface": "desktop",
+      "state": "partial",
+      "implementation": ["apps/desktop/src/main/converter.js", "apps/desktop/src/renderer/converter.js"],
+      "documentation": ["docs/features/desktop/file-converter.md"],
+      "changelog": ["CHANGELOG.desktop.md"],
+      "test": [],
+      "runtimeInteraction": "Launch the application, add files of a supported source format, run a conversion, and read the stated reason on a disabled row.",
+      "captureEvidence": "none",
+      "boundaryNote": "Converts the application's own record formats. It produces no tax form, no return, and no package for a tax authority.",
+      "evidenceGaps": [
+        "The catalogue carries rows that are present but disabled, so the shipped conversion set is narrower than the catalogue it lists; this is why the row is partial.",
+        "The offline optical-character-recognition row is driven by the existing runtime discovery rather than by a conversion adapter, and no runtime has been discovered on any machine.",
+        "No conversion has been run."
+      ]
+    },
+    {
+      "id": "ollama-suite",
+      "title": "Local model runtime suite",
+      "surface": "desktop",
+      "state": "implemented",
+      "implementation": [
+        "apps/desktop/src/main/ollama-bridge.js",
+        "apps/desktop/src/main/main.js",
+        "apps/desktop/src/renderer/ollama.js"
+      ],
+      "documentation": ["docs/features/local-ollama-suite/README.md"],
+      "changelog": ["CHANGELOG.desktop.md", "CHANGELOG.ollama.md"],
+      "test": [],
+      "runtimeInteraction": "Launch the application on a computer with a local runtime listening on loopback, probe the runtime, refresh the official catalogue, review and commit a batch, hold a local chat, preview and launch an allowlisted harness, and confirm that model deletion requires both confirmations and the completion control.",
+      "captureEvidence": "none",
+      "boundaryNote": "A local model runtime neither files nor transmits a return. No wording, control, or affordance implies electronic submission, direct transmission to a tax authority, or automatic filing, and no cost, account, or commercial concept is introduced.",
+      "evidenceGaps": [
+        "No local runtime has been probed, no catalogue has been refreshed, no model has been pulled, and no chat or harness has been launched by this bridge.",
+        "The package's own tests cover its view model; they do not cover this application's adapters.",
+        "No capture exists."
+      ]
+    },
+    {
+      "id": "tabs-navigation",
+      "title": "Tabs and navigation",
+      "surface": "desktop",
+      "state": "implemented",
+      "implementation": [
+        "apps/desktop/src/renderer/tabs.js",
+        "apps/desktop/src/renderer/index.html",
+        "apps/desktop/src/main/preferences-store.js"
+      ],
+      "documentation": ["docs/features/desktop/tabs-and-navigation.md"],
+      "changelog": ["CHANGELOG.desktop.md"],
+      "test": [],
+      "runtimeInteraction": "Launch the application, move through the tab strip with the arrow keys and Home and End in each dock position, reorder and pin tabs, group them, run a bulk close and confirm the matched set before it applies, then restart and confirm the layout was restored.",
+      "captureEvidence": "none",
+      "boundaryNote": "Navigation only. Tabs carry no tax data and no filing control.",
+      "evidenceGaps": [
+        "The dock-aware keyboard movement and the persisted layout have never been exercised in a running application.",
+        "No keyboard walkthrough and no accessibility audit were performed."
+      ]
+    },
+    {
+      "id": "appearance-editor",
+      "title": "Appearance editor",
+      "surface": "desktop",
+      "state": "implemented",
+      "implementation": ["apps/desktop/src/renderer/appearance.js", "apps/desktop/src/main/main.js"],
+      "documentation": ["docs/features/desktop/appearance-editor.md"],
+      "changelog": ["CHANGELOG.desktop.md"],
+      "test": [],
+      "runtimeInteraction": "Launch the application, override a property on a chosen element, export a preset, import it again, and reset one element and then all of them.",
+      "captureEvidence": "none",
+      "boundaryNote": "Presentation only, bounded by the shared allowlist of custom properties. No override changes a tax figure or a boundary statement.",
+      "evidenceGaps": [
+        "Text alignment is not offered, because it is not in the shared allowlist and a control for it would always be refused; the editor states this rather than shipping a control that cannot work.",
+        "No override has been applied in a running application, so the guard and the reset paths are unobserved."
+      ]
+    },
+    {
+      "id": "element-locks",
+      "title": "Element locks",
+      "surface": "desktop",
+      "state": "implemented",
+      "implementation": ["apps/desktop/src/main/element-locks.js", "apps/desktop/src/renderer/locks.js"],
+      "documentation": ["docs/features/desktop/element-locks.md"],
+      "changelog": ["CHANGELOG.desktop.md"],
+      "test": [],
+      "runtimeInteraction": "Launch the application, create a lock, attempt a blocked change, answer correctly and incorrectly, and follow the documented reset.",
+      "captureEvidence": "none",
+      "boundaryNote": "A presentation guard against accidental change, not a security control. The shared disclosure sentence saying so accompanies the feature wherever it is shown.",
+      "evidenceGaps": [
+        "No lock has been created or verified in a running application.",
+        "No capture exists."
+      ]
+    },
+    {
+      "id": "authenticator-qr-support",
+      "title": "Authenticator utility and support tickets",
+      "surface": "desktop",
+      "state": "implemented",
+      "implementation": [
+        "apps/desktop/src/main/totp.js",
+        "apps/desktop/src/main/support-tickets.js",
+        "apps/desktop/src/renderer/authenticator.js"
+      ],
+      "documentation": ["docs/features/desktop/authenticator-and-support.md"],
+      "changelog": ["CHANGELOG.desktop.md"],
+      "test": [],
+      "runtimeInteraction": "Launch the application, generate a secret, verify a code typed back in, scan the rendered matrix with a real authenticator application, and create, edit, resolve, and reopen a support ticket.",
+      "captureEvidence": "none",
+      "boundaryNote": "The one-time-password utility implements a public standard, is bound to no account in this product, and grants access to nothing. Support tickets stay on the user's computer and are never transmitted.",
+      "evidenceGaps": [
+        "No rendered matrix has been scanned by an authenticator application.",
+        "Ticket redaction has not been observed on real input.",
+        "No capture exists."
+      ]
+    },
+    {
+      "id": "local-history",
+      "title": "Append-only local history",
+      "surface": "desktop",
+      "state": "implemented",
+      "implementation": [
+        "apps/desktop/src/main/history-store.js",
+        "apps/desktop/src/renderer/app.js"
+      ],
+      "documentation": ["docs/features/desktop/local-history.md"],
+      "changelog": ["CHANGELOG.desktop.md"],
+      "test": [],
+      "runtimeInteraction": "Launch the application, make several changes, filter the resulting records, inspect a difference, and restore an earlier revision to confirm it is appended as a new record rather than replacing one.",
+      "captureEvidence": "none",
+      "boundaryNote": "The history is app-private and stays on the user's computer. It is never transmitted and never forms part of a package for a tax authority.",
+      "evidenceGaps": [
+        "No record has been written or restored by a running application.",
+        "The append-only property is exercised only by the shared package's tests, never against this store."
+      ]
+    },
+    {
+      "id": "notifications-centre",
+      "title": "Notifications",
+      "surface": "desktop",
+      "state": "implemented",
+      "implementation": [
+        "apps/desktop/src/main/notification-log.js",
+        "apps/desktop/src/renderer/notifications.js",
+        "apps/desktop/src/renderer/dom.js"
+      ],
+      "documentation": ["docs/features/desktop/notifications.md"],
+      "changelog": ["CHANGELOG.desktop.md"],
+      "test": [],
+      "runtimeInteraction": "Launch the application, trigger notices of each severity, confirm that progress and error notices do not dismiss themselves, filter and select a scope, and run a bulk action.",
+      "captureEvidence": "none",
+      "boundaryNote": "Notices report what the application did locally. None of them reports a submission, a transmission, or a filing, because none occurs.",
+      "evidenceGaps": [
+        "No notice has been raised by a running application.",
+        "No capture exists."
+      ]
+    },
+    {
+      "id": "changelog-viewer",
+      "title": "Changelog viewer",
+      "surface": "desktop",
+      "state": "implemented",
+      "implementation": [
+        "apps/desktop/src/main/changelog-library.js",
+        "apps/desktop/src/renderer/changelog.js",
+        "apps/desktop/scripts/build.mjs"
+      ],
+      "documentation": ["docs/features/desktop/changelog-viewer.md"],
+      "changelog": ["CHANGELOG.desktop.md"],
+      "test": [],
+      "runtimeInteraction": "Launch the application, group entries by area and release, filter by date range, and read a Verification block.",
+      "captureEvidence": "none",
+      "boundaryNote": "Reads the repository's own tracked changelog files, packaged at build time. It publishes no release, offers no download, and reports no filing capability.",
+      "evidenceGaps": [
+        "The build wrote a packaged changelog file containing real parsed entries; no entry has been read through the application's interface.",
+        "No capture exists."
+      ]
+    },
+    {
+      "id": "docs-browser",
+      "title": "Documentation browser",
+      "surface": "desktop",
+      "state": "implemented",
+      "implementation": [
+        "apps/desktop/src/main/docs-library.js",
+        "apps/desktop/src/renderer/docs.js",
+        "apps/desktop/scripts/build.mjs"
+      ],
+      "documentation": ["docs/features/desktop/documentation-browser.md"],
+      "changelog": ["CHANGELOG.desktop.md"],
+      "test": [],
+      "runtimeInteraction": "Launch the application, search the packaged articles, follow an internal link and an in-page anchor, and confirm the application reads its documentation with no network access.",
+      "captureEvidence": "none",
+      "boundaryNote": "Documentation navigation only. It searches packaged repository articles, never a user's tax records, and it restates rather than relaxes the paper-only boundary.",
+      "evidenceGaps": [
+        "The build copied a set of articles and wrote a manifest; no article has been read through the application's interface.",
+        "Link resolution and anchor navigation are unobserved at runtime."
+      ]
+    },
+    {
+      "id": "command-palette",
+      "title": "Command palette",
+      "surface": "desktop",
+      "state": "implemented",
+      "implementation": ["apps/desktop/src/renderer/palette.js"],
+      "documentation": ["docs/features/desktop/command-palette.md"],
+      "changelog": ["CHANGELOG.desktop.md"],
+      "test": [],
+      "runtimeInteraction": "Launch the application, open the palette from its keyboard shortcut and from the title-bar button, change a setting from an inline control in a result, teleport to a destination, and close the palette to confirm focus returns to where it started.",
+      "captureEvidence": "none",
+      "boundaryNote": "Reaches the application's own destinations and settings. It exposes no filing action, because none exists.",
+      "evidenceGaps": [
+        "Coverage is asserted inside the renderer at construction time rather than by a test suite.",
+        "The keyboard shortcut, the focus trap, and the teleport have never been exercised in a running application."
+      ]
+    },
+    {
+      "id": "regex-every-surface",
+      "title": "Regular-expression builders",
+      "surface": "desktop",
+      "state": "implemented",
+      "implementation": [
+        "apps/desktop/src/renderer/regex-builder.js",
+        "apps/desktop/src/main/history-store.js"
+      ],
+      "documentation": ["docs/features/desktop/regex-builders.md"],
+      "changelog": ["CHANGELOG.desktop.md"],
+      "test": [],
+      "runtimeInteraction": "Launch the application, enable pattern mode beside any search field, insert the anchor tokens from the palette, and supply an invalid pattern to see the reason reported rather than applied.",
+      "captureEvidence": "none",
+      "boundaryNote": "Searches the application's own lists and packaged articles. It never transmits a query.",
+      "evidenceGaps": [
+        "That a builder sits beside every search field is established by reading the source, not by walking a running interface.",
+        "No pattern has been compiled by a running application."
+      ]
+    },
+    {
+      "id": "exports-bulk-editor",
+      "title": "Exports and bulk actions",
+      "surface": "desktop",
+      "state": "implemented",
+      "implementation": [
+        "apps/desktop/src/main/exports.js",
+        "apps/desktop/src/main/editor-handoff.js",
+        "apps/desktop/src/renderer/app.js"
+      ],
+      "documentation": ["docs/features/desktop/exports-and-bulk-actions.md"],
+      "changelog": ["CHANGELOG.desktop.md", "CHANGELOG.local-coding-assistants.md"],
+      "test": [],
+      "runtimeInteraction": "Launch the application, select records in a collection, export in each supported format, confirm the stamped manifest and the omissions note on the written file, and hand an export to an editor to confirm the discovery path refuses when no allowed executable is present.",
+      "captureEvidence": "none",
+      "boundaryNote": "Exports the application's own records to a location the user chooses. An export is not a filing, is not transmitted, and is not a substitute for the manually reviewed mail-in package.",
+      "evidenceGaps": [
+        "No export has been written by a running application.",
+        "No editor has been launched, so the executable-discovery and launch path is unobserved outside the coding-assistant package's own preflight test."
+      ]
+    },
+    {
+      "id": "browser-download-surfaces",
+      "title": "Transfer surfaces",
+      "surface": "desktop",
+      "state": "partial",
+      "implementation": [
+        "apps/desktop/src/main/transfer-progress.js",
+        "apps/desktop/src/main/project-bundle.js",
+        "apps/desktop/src/renderer/download-surfaces.js"
+      ],
+      "documentation": ["docs/features/desktop/transfer-surfaces.md"],
+      "changelog": ["CHANGELOG.desktop.md"],
+      "test": [],
+      "runtimeInteraction": "Launch the application and perform a local transfer large enough to show the Downloading state, then confirm that the Complete state is reached only with a measured byte count and an agreeing digest.",
+      "captureEvidence": "none",
+      "boundaryNote": "These states describe transfers the application itself performs on the user's computer. Nothing is sent to a tax authority, no release asset is offered, and no artifact is described as signature-verified.",
+      "evidenceGaps": [
+        "The canonical row for this capability is written against an installed browser extension capturing a real browser download. No extension exists in this repository and none is proposed, which is why the row is partial.",
+        "No transfer has been run, so the chunked write, the progress channel, and the completion checks are unobserved.",
+        "There is no release asset to transfer and no download control anywhere in the application."
+      ]
+    },
+    {
+      "id": "guided-report-wizard",
+      "title": "Guided report wizard",
+      "surface": "desktop",
+      "state": "implemented",
+      "implementation": [
+        "apps/desktop/src/renderer/app.js",
+        "apps/desktop/src/renderer/index.html",
+        "apps/desktop/src/main/main.js"
+      ],
+      "documentation": ["docs/features/desktop/guided-report-wizard.md"],
+      "changelog": ["CHANGELOG.desktop.md"],
+      "test": [],
+      "runtimeInteraction": "Launch the application, answer the guided questions with synthetic values, and confirm each validation message and next-step statement against the article.",
+      "captureEvidence": "none",
+      "boundaryNote": "The wizard prepares information for a manually reviewed CRA mail-in PDF package only. It offers no submission, no transmission to a tax authority, and no automatic filing, and it ships no sample or demonstration return.",
+      "evidenceGaps": [
+        "No answer has been entered into a running application, so no validation rule has been exercised.",
+        "No calculation produced by the tax-domain package has been checked against an official source through this surface.",
+        "No capture exists."
+      ]
+    },
+    {
+      "id": "encrypted-project-files",
+      "title": "Encrypted project files",
+      "surface": "desktop",
+      "state": "implemented",
+      "implementation": [
+        "apps/desktop/src/main/project-bundle.js",
+        "apps/desktop/src/main/key-vault.js",
+        "apps/desktop/src/main/main.js"
+      ],
+      "documentation": ["docs/features/desktop/encrypted-project-files.md"],
+      "changelog": ["CHANGELOG.desktop.md"],
+      "test": [],
+      "runtimeInteraction": "Launch the application, create a project, close and reopen it, and confirm that the container on disk is unreadable without the key and that a wrong key fails rather than producing partial content.",
+      "captureEvidence": "none",
+      "boundaryNote": "A project container stays on the user's computer. It is never transmitted, and generating or opening one is not a filing.",
+      "evidenceGaps": [
+        "No container has been written or read by a running application, so the encryption, the key handling, and the failure path are unobserved.",
+        "No independent review of the cryptographic construction was performed."
+      ]
+    },
+    {
+      "id": "settings-and-preferences",
+      "title": "Settings destination",
+      "surface": "desktop",
+      "state": "implemented",
+      "implementation": [
+        "apps/desktop/src/main/preferences-store.js",
+        "apps/desktop/src/renderer/settings.js",
+        "apps/desktop/src/main/main.js"
+      ],
+      "documentation": ["docs/features/desktop/settings-and-preferences.md"],
+      "changelog": ["CHANGELOG.desktop.md"],
+      "test": [],
+      "runtimeInteraction": "Launch the application, change each preference, restart, and confirm every value was restored and that an invalid stored value falls back to the documented default rather than failing.",
+      "captureEvidence": "none",
+      "boundaryNote": "Presentation and language preferences only. No preference changes a tax figure, a rule citation, or the paper-only boundary.",
+      "evidenceGaps": [
+        "No preference has been saved or restored by a running application.",
+        "The validator and the version upgrade are exercised only by the shared package's tests."
+      ]
+    },
+    {
+      "id": "surface-kernel",
+      "title": "Shared surface engines",
+      "surface": "package:surface-kernel",
+      "state": "implemented",
+      "implementation": [
+        "packages/surface-kernel/src/index.ts",
+        "packages/surface-kernel/src/ports.ts",
+        "packages/surface-kernel/src/regex-builder.ts",
+        "packages/surface-kernel/src/preferences.ts",
+        "packages/surface-kernel/src/language.ts",
+        "packages/surface-kernel/src/vocabulary.ts",
+        "packages/surface-kernel/src/command-registry.ts",
+        "packages/surface-kernel/src/notifications.ts",
+        "packages/surface-kernel/src/history.ts",
+        "packages/surface-kernel/src/exports.ts",
+        "packages/surface-kernel/src/appearance.ts",
+        "packages/surface-kernel/src/color.ts",
+        "packages/surface-kernel/src/locks.ts",
+        "packages/surface-kernel/src/tabs.ts",
+        "packages/surface-kernel/src/scheduling.ts",
+        "packages/surface-kernel/src/narration.ts",
+        "packages/surface-kernel/src/identity.ts",
+        "packages/surface-kernel/src/converter-registry.ts",
+        "packages/surface-kernel/src/docs-index.ts",
+        "packages/surface-kernel/src/changelog.ts",
+        "packages/surface-kernel/src/totp.ts",
+        "packages/surface-kernel/src/qr.ts",
+        "packages/surface-kernel/src/support-tickets.ts",
+        "packages/surface-kernel/src/download-states.ts",
+        "packages/surface-kernel/src/tokens.ts",
+        "packages/surface-kernel/src/tokens.css"
+      ],
+      "documentation": ["docs/features/shared-surface-kernel/README.md"],
+      "changelog": ["CHANGELOG.surface-kernel.md"],
+      "test": [
+        "packages/surface-kernel/test/regex-builder.test.ts",
+        "packages/surface-kernel/test/vocabulary.test.ts",
+        "packages/surface-kernel/test/exports-csv.test.ts",
+        "packages/surface-kernel/test/history-append-only.test.ts",
+        "packages/surface-kernel/test/totp-rfc6238.test.ts",
+        "packages/surface-kernel/test/color-contrast.test.ts",
+        "packages/surface-kernel/test/scheduling-precedence.test.ts",
+        "packages/surface-kernel/test/download-states.test.ts",
+        "packages/surface-kernel/test/language-facts-invariant.test.ts"
+      ],
+      "runtimeInteraction": "Run `npm test --workspace @material-tax-reporting/surface-kernel`. The package renders nothing, opens no connection, and touches no file, so there is no interactive surface to exercise.",
+      "captureEvidence": "none",
+      "boundaryNote": "The package holds shared logic only. It contains no filing capability, no network access, and no taxpayer data, and its fixtures are invented values labelled as synthetic.",
+      "evidenceGaps": [
+        "The suite covers the engines listed in the article; it does not cover either surface's bindings to them.",
+        "No rendered QR code produced by this encoder has been scanned by a reader.",
+        "No lint check, accessibility check, capture, or performance measurement was run."
+      ]
+    },
+    {
+      "id": "local-ollama-suite",
+      "title": "Local model suite view model",
+      "surface": "package:local-ollama",
+      "state": "implemented",
+      "implementation": [
+        "packages/local-ollama/src/index.ts",
+        "packages/local-ollama/src/controller.ts",
+        "packages/local-ollama/src/view-model.ts",
+        "packages/local-ollama/src/client.ts",
+        "packages/local-ollama/src/bridge.ts",
+        "packages/local-ollama/src/catalog.ts",
+        "packages/local-ollama/src/chat.ts",
+        "packages/local-ollama/src/hardware-fit.ts",
+        "packages/local-ollama/src/harness.ts",
+        "packages/local-ollama/src/pull-queue.ts",
+        "packages/local-ollama/src/types.ts"
+      ],
+      "documentation": ["docs/features/local-ollama-suite/README.md"],
+      "changelog": ["CHANGELOG.ollama.md"],
+      "test": [
+        "packages/local-ollama/test/catalog-completeness.test.ts",
+        "packages/local-ollama/test/chat-attachment-capability.test.ts",
+        "packages/local-ollama/test/guided-choice.test.ts",
+        "packages/local-ollama/test/hardware-fit-evidence.test.ts",
+        "packages/local-ollama/test/harness-shell-and-rollback.test.ts",
+        "packages/local-ollama/test/payment-semantics.test.ts",
+        "packages/local-ollama/test/pull-queue-preflight.test.ts"
+      ],
+      "runtimeInteraction": "Run `npm test --workspace @material-tax-reporting/local-ollama`. Exercising the suite for real requires a host that supplies the privileged adapters and a local runtime listening on loopback.",
+      "captureEvidence": "none",
+      "boundaryNote": "The package calls no rendering interface and reaches only a loopback address. Nothing in it files, transmits, or submits a return, and an executable regression fails if a cost, account, or commercial concept is introduced.",
+      "evidenceGaps": [
+        "The suite runs against test doubles; no real local runtime has been contacted.",
+        "No official catalogue has been refreshed from its source, so the completeness and staleness paths are exercised only against fixtures.",
+        "No harness has been launched and no snapshot has been restored on a real machine."
+      ]
+    },
+    {
+      "id": "local-coding-assistants",
+      "title": "Guided local coding-assistant contracts",
+      "surface": "package:local-coding-assistants",
+      "state": "implemented",
+      "implementation": [
+        "packages/local-coding-assistants/src/index.ts",
+        "packages/local-coding-assistants/src/discovery.ts",
+        "packages/local-coding-assistants/src/launch.ts",
+        "packages/local-coding-assistants/src/profiles.ts",
+        "packages/local-coding-assistants/src/prompt.ts",
+        "packages/local-coding-assistants/src/types.ts"
+      ],
+      "documentation": ["docs/features/local-coding-assistants/README.md"],
+      "changelog": ["CHANGELOG.local-coding-assistants.md"],
+      "test": ["packages/local-coding-assistants/test/launch-preflight.test.ts"],
+      "runtimeInteraction": "Run `npm test --workspace @material-tax-reporting/local-coding-assistants`. Exercising discovery and launch for real requires an allowed executable present on the computer.",
+      "captureEvidence": "none",
+      "boundaryNote": "The package discovers and launches a local editor or assistant only. It never sends a return anywhere and holds no tax data.",
+      "evidenceGaps": [
+        "No allowed executable has been discovered or launched on any machine; the suite covers the preflight refusals only.",
+        "The desktop application imports this package for its single editor-launch path, and that integration is unexercised."
+      ]
+    },
+    {
+      "id": "tax-domain",
+      "title": "Tax-domain model, rules, and calculation",
+      "surface": "package:tax-domain",
+      "state": "implemented",
+      "implementation": [
+        "packages/tax-domain/src/index.ts",
+        "packages/tax-domain/src/model.ts",
+        "packages/tax-domain/src/rules.ts",
+        "packages/tax-domain/src/calculate.ts",
+        "packages/tax-domain/src/validation.ts",
+        "packages/tax-domain/src/serialization.ts"
+      ],
+      "documentation": [
+        "docs/features/tax/README.md",
+        "docs/features/tax/annual-personal-return-2025.md",
+        "docs/features/tax/data-import-export.md",
+        "docs/features/tax/privacy-and-filing-boundaries.md"
+      ],
+      "changelog": ["CHANGELOG.tax.md"],
+      "test": [],
+      "runtimeInteraction": "Import the package and evaluate its rules against figures taken from a current official Canada Revenue Agency or Ontario publication for the tax year the article names, then compare each result to that publication.",
+      "captureEvidence": "none",
+      "boundaryNote": "The package computes figures for a package the user prints, signs where required, and mails. It performs no submission and no transmission to a tax authority.",
+      "evidenceGaps": [
+        "No automated test exercises this package.",
+        "No calculation has been reconciled against an official worksheet or a professional review.",
+        "Coverage of forms, schedules, and situations is bounded by what the articles state and has not been independently confirmed."
+      ]
+    },
+    {
+      "id": "cra-pdf",
+      "title": "Paper-package preparation",
+      "surface": "package:cra-pdf",
+      "state": "implemented",
+      "implementation": [
+        "packages/cra-pdf/src/index.ts",
+        "packages/cra-pdf/src/types.ts",
+        "packages/cra-pdf/src/engine.ts",
+        "packages/cra-pdf/src/adapter.ts",
+        "packages/cra-pdf/src/review.ts",
+        "packages/cra-pdf/src/validation.ts",
+        "packages/cra-pdf/src/catalog/index.ts",
+        "packages/cra-pdf/src/catalog/2025.ts",
+        "packages/cra-pdf/src/mapping/2025.ts"
+      ],
+      "documentation": [
+        "docs/features/pdf/README.md",
+        "docs/features/pdf/cra-mail-package.md",
+        "docs/features/pdf/manual-review.md"
+      ],
+      "changelog": ["CHANGELOG.tax.md"],
+      "test": [],
+      "runtimeInteraction": "Import the package, generate a package from synthetic figures, and compare every populated field, calculation, attachment, mailing destination, and signature field against the current official form before any print or export is allowed.",
+      "captureEvidence": "none",
+      "boundaryNote": "This package is the product's terminal output: a CRA mail-in PDF package the user must manually review and acknowledge before export or print. It must never implement, offer, advertise, simulate, or imply NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing.",
+      "evidenceGaps": [
+        "No automated test exercises this package.",
+        "No package has been generated, printed, or checked against an official form, and no demonstration output exists in this repository.",
+        "The mandatory manual-review workflow, including invalidation of an acknowledgement after a later change, has not been exercised end to end."
+      ]
+    },
+    {
+      "id": "slip-parser",
+      "title": "Local slip admission and extraction",
+      "surface": "package:slip-parser",
+      "state": "implemented",
+      "implementation": [
+        "packages/slip-parser/src/index.ts",
+        "packages/slip-parser/src/types.ts",
+        "packages/slip-parser/src/admission.ts",
+        "packages/slip-parser/src/classification.ts",
+        "packages/slip-parser/src/extraction.ts",
+        "packages/slip-parser/src/parser.ts",
+        "packages/slip-parser/src/adapters.ts",
+        "packages/slip-parser/src/official-mappings.ts",
+        "packages/slip-parser/src/confirmation.ts",
+        "packages/slip-parser/src/digest.ts",
+        "packages/slip-parser/src/offline-ocr.ts",
+        "packages/slip-parser/src/builtin-pdf-text-layer.ts"
+      ],
+      "documentation": [
+        "docs/features/slip-parser/README.md",
+        "docs/features/slip-parser/official-mappings.md"
+      ],
+      "changelog": ["CHANGELOG.slip-parser.md"],
+      "test": [],
+      "runtimeInteraction": "Import the package, admit a synthetic slip file, and confirm the classification, the extracted values, and the required user confirmation before any value is accepted into a report.",
+      "captureEvidence": "none",
+      "boundaryNote": "Slips are read on the user's computer. Nothing is uploaded, and an extracted value must be confirmed by the user before it enters a report that ends in a manually reviewed mail-in package.",
+      "evidenceGaps": [
+        "No automated test exercises this package.",
+        "No slip has been admitted, classified, or extracted, and no optical-character-recognition runtime has been discovered or run on any machine.",
+        "The official mappings have not been reconciled field by field against the current published forms."
+      ]
+    }
+  ]
+}

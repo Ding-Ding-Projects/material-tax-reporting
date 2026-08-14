@@ -4,7 +4,9 @@ Thank you for helping establish Material Tax Reporting.
 
 ## Current stage
 
-The repository currently contains only governance, workspace manifests, and bootstrap entry points. It does not yet contain an application, installer, tax engine, PDF generator, documentation site, tests, or release automation. Do not describe unimplemented work as available or verified.
+The repository contains governance, workspace manifests, bootstrap entry points, and implementation source: a documentation site in `apps/site`, a desktop application in `apps/desktop`, and the `surface-kernel`, `tax-domain`, `cra-pdf`, `slip-parser`, `local-ollama`, and `local-coding-assistants` packages under `packages/`. A workflow that builds and publishes the documentation site is defined at `.github/workflows/pages.yml`.
+
+There is no installer, no release asset, and no download control, and neither application has been packaged, installed, launched, or exercised by a person. Source is not a product: describe what a file contains, not what a user experienced. Do not describe unimplemented work as available, and do not describe unexercised work as verified.
 
 ## Filing scope
 
@@ -24,9 +26,16 @@ All contributions must preserve the product boundary:
 
 ## Development commands
 
-There is currently no runnable build or test suite. `download-dependencies.bat` only validates that the foundation remains dependency-free. `build.bat` and `build-installer.bat` intentionally exit nonzero until real build and installer scripts are added.
+Workspace-level commands exist. Install dependencies with `npm install` at the repository root, then use:
 
-When tooling is introduced, document exact setup, build, verification, and packaging commands in the same change. Report checks that were actually run; do not infer results.
+- `npm run build --workspace @material-tax-reporting/desktop` — bundles the desktop main, preload, and renderer sources into `apps/desktop/dist`.
+- `npm run pages:build --workspace @material-tax-reporting/site` — produces the static documentation site, and is the same command the publish workflow runs.
+- `npm test --workspace @material-tax-reporting/surface-kernel` — runs the shared kernel's `node --test` suite.
+- `npm test --workspace @material-tax-reporting/local-ollama` and `npm test --workspace @material-tax-reporting/local-coding-assistants` — run the two package suites that have one.
+
+There is no repository-wide test, lint, type-check, accessibility, or packaging command, and no automated check runs against `apps/site` or `apps/desktop`. The root scripts stay fail-closed: `download-dependencies.bat` only validates the bootstrap contract, and `build.bat` and `build-installer.bat` intentionally exit nonzero until real repository-wide build and installer routes exist. A nonzero exit from those scripts is the correct result and must not be replaced with a simulated success.
+
+When tooling is introduced, document exact setup, build, verification, and packaging commands in the same change. Report checks that were actually run, quote what they printed, and name what was not run; do not infer results.
 
 ## Pull requests
 

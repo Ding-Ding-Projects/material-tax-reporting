@@ -31,6 +31,7 @@ The product must describe the actual storage and network behavior. It must not u
 ## Security and privacy
 
 - Do not enter tax records or credentials into the public website.
+- A personal vocabulary, display name, or mark is local wording that stays in the visitor's own browser. It is never transmitted, never shared with another visitor, and never applied to the sentences that carry a legal, boundary, or disclosure statement: those spans are protected, so no local wording change can rewrite the paper-only statement, the prohibition on electronic filing, or a warning. See [personal vocabulary](../features/site/personal-vocabulary.md).
 - Do not treat browser-local preferences as a secure storage mechanism.
 - Do not publish sensitive report content in issue trackers, discussions, or other public support channels.
 - Treat the CRA mail-in PDF package as sensitive local data; generating it does not send it anywhere.
