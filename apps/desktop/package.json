@@ -10,6 +10,10 @@
     "build": "node scripts/build.mjs",
     "start": "npm run build && electron ."
   },
+  "dependencies": {
+    "@material-tax-reporting/local-ollama": "0.1.0",
+    "@material-tax-reporting/surface-kernel": "0.1.0"
+  },
   "devDependencies": {
     "electron": "43.3.0",
     "esbuild": "0.28.0"

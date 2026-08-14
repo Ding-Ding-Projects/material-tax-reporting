@@ -7,6 +7,13 @@
   "exports": {
     ".": "./src/index.ts"
   },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "node --test --experimental-strip-types test/*.test.ts"
+  },
+  "dependencies": {
+    "@material-tax-reporting/surface-kernel": "0.1.0"
+  },
   "files": [
     "src",
     "README.md"
