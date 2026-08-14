@@ -16,8 +16,9 @@ Before any future export or print action is allowed, the product must require a 
 - `apps/site` — reserved workspace for the future documentation site.
 - `packages/tax-domain` — reserved workspace for future tax-domain code.
 - `packages/cra-pdf` — reserved workspace for future paper-package generation code.
+- `packages/local-coding-assistants` — guided, fail-closed contracts for local Codex CLI and OpenCode assistance.
 
-Each workspace currently contains only a private package manifest. There is no feature code, sample taxpayer data, demonstration content, or build output.
+The repository now includes tax-domain, slip-parser, CRA PDF, and guided local coding-assistant contracts. It contains no sample taxpayer data, demonstration return content, or build output.
 
 ## Development status
 
