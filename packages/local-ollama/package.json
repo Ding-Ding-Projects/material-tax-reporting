@@ -1,0 +1,16 @@
+{
+  "name": "@material-tax-reporting/local-ollama",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Local-only Ollama model store, pull queue, chat, and allowlisted harness orchestration.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": [
+    "src",
+    "README.md"
+  ],
+  "sideEffects": false,
+  "license": "MIT"
+}

@@ -2,7 +2,7 @@
 
 Material Tax Reporting is a public repository foundation for a future Windows desktop application and documentation site focused on preparing Canadian and Ontario annual income tax reports.
 
-> **Project status:** Foundation only. This repository does not currently ship an application, installer, tax engine, PDF generator, documentation site, or release. It contains governance files, an empty npm workspace layout, and honest bootstrap entry points for future development.
+> **Project status:** Implementation foundation. This repository does not currently ship an application, installer, documentation site, or release. It contains governance files, tax-domain and CRA PDF preparation packages, a local slip parser, a local Ollama suite package and renderer surface, and honest bootstrap entry points for future development.
 
 ## Filing boundary
 
@@ -17,8 +17,11 @@ Before any future export or print action is allowed, the product must require a 
 - `packages/tax-domain` — reserved workspace for future tax-domain code.
 - `packages/cra-pdf` — reserved workspace for future paper-package generation code.
 - `packages/local-coding-assistants` — guided, fail-closed contracts for local Codex CLI and OpenCode assistance.
+- `packages/local-ollama` — loopback-only Ollama model store, pull queue, local chat, conservative hardware-fit evidence, allowlisted harness orchestration, and accessible renderer surface.
 
-The repository now includes tax-domain, slip-parser, CRA PDF, and guided local coding-assistant contracts. It contains no sample taxpayer data, demonstration return content, or build output.
+The repository now includes tax-domain, slip-parser, CRA PDF, guided local coding-assistant, and local Ollama contracts. There is no shipped application, sample taxpayer data, demonstration return content, or build output. Package-level implementation must still be integrated into a future privileged desktop shell before it becomes runnable product functionality.
+
+The [local Ollama suite documentation](docs/features/local-ollama-suite/README.md) describes its loopback-only API boundary, official model-catalog refresh, offline states, reviewed tax-data handling, pull queue, local chat, and allowlisted harnesses. It never provides electronic filing or direct government transmission.
 
 ## Development status
 
