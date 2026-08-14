@@ -17,6 +17,8 @@ When an installer becomes available, the website should identify:
 - the published integrity digest when available; and
 - any unsigned-publisher warning or installation limitation that applies.
 
+Installer availability does not change the product boundary. A released application must still end at generation of a manually reviewed CRA mail-in PDF package and must not offer or imply electronic filing.
+
 ## Configuration
 
 There is no installer configuration for visitors while the installer is unavailable. The site must not ask users to choose a channel, architecture, or version that has not been verified and published.
@@ -44,5 +46,6 @@ No installer, release asset, download URL, digest, installation flow, update flo
 ## Related articles
 
 - [Canadian tax-report preparation](canadian-tax-report-preparation.md)
+- [Mail-in PDF and manual review](mail-in-pdf-and-manual-review.md)
 - [Local-first privacy](local-first-privacy.md)
 - [Verification status](verification-status.md)

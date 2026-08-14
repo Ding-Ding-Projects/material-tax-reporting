@@ -8,7 +8,7 @@
 
 The documentation website is designed as a responsive, tabbed interface using Material Design 3 principles. It provides documentation navigation, local presentation preferences, and site search. Search uses plain text by default and offers an anchored regular-expression builder beside the search field for users who deliberately enable pattern matching.
 
-The regular-expression builder should expose the active pattern and flags, give syntax feedback, and keep invalid patterns from being applied as though they were valid. Search remains a documentation-navigation feature; it does not search a user's tax records or desktop files.
+The regular-expression builder should expose the active pattern and flags, give syntax feedback, and keep invalid patterns from being applied as though they were valid. Search remains a documentation-navigation feature; it does not search a user's tax records or desktop files. The website must describe the product as a mail-in PDF preparation tool and must not advertise or simulate electronic filing.
 
 ## Configuration
 
@@ -34,7 +34,7 @@ The site should retain readable documentation and honest status messages in thes
 
 ## Security and privacy
 
-Search terms and preferences should remain local to the browser. Visitors should not paste tax records, credentials, account numbers, or other sensitive information into the website search field. The site must not use the search field as a network submission form.
+Search terms and preferences should remain local to the browser. Visitors should not paste tax records, credentials, account numbers, or other sensitive information into the website search field. The site must not use the search field as a network submission form, and no website control may suggest that it sends a return to the CRA.
 
 ## Verification status
 
@@ -43,5 +43,6 @@ No tests, lint checks, type checks, accessibility checks, reviews, screenshots, 
 ## Related articles
 
 - [Local-first privacy](local-first-privacy.md)
+- [Mail-in PDF and manual review](mail-in-pdf-and-manual-review.md)
 - [Installer and releases](installer-and-releases.md)
 - [Verification status](verification-status.md)
