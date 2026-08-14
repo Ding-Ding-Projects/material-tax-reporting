@@ -90,6 +90,41 @@ export const OFFICIAL_SOURCES_2025 = [
       "The current CRA page provides fillable and print versions with special PDF download instructions.",
     ],
   },
+  {
+    id: "cra-pdf-forms",
+    title: "About CRA forms and publications",
+    url: "https://www.canada.ca/en/revenue-agency/services/forms-publications/about-forms-publications.html",
+    publisher: "Canada Revenue Agency",
+    retrievedOn: "2026-08-14",
+    supports: [
+      "CRA fillable PDFs should be downloaded and opened with supported PDF software.",
+      "The taxpayer must check the applicable form instructions and complete required signatures after printing.",
+    ],
+  },
+  {
+    id: "cra-due-dates-2025",
+    title: "Due dates and payment dates",
+    url: "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/important-dates-individuals.html",
+    publisher: "Canada Revenue Agency",
+    retrievedOn: "2026-08-14",
+    supports: ["Official filing and balance-payment dates for 2025 individual returns."],
+  },
+  {
+    id: "cra-payment-options",
+    title: "Payment options for personal income tax",
+    url: "https://www.canada.ca/en/revenue-agency/services/payments/payments-cra/individual-payments/make-payment/payment-options-type-payment-you-are-making.html",
+    publisher: "Canada Revenue Agency",
+    retrievedOn: "2026-08-14",
+    supports: ["Payment is a separate taxpayer action through CRA-supported channels."],
+  },
+  {
+    id: "cra-refunds",
+    title: "Tax refunds",
+    url: "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/refunds.html",
+    publisher: "Canada Revenue Agency",
+    retrievedOn: "2026-08-14",
+    supports: ["Refund handling is performed by the CRA after it processes the return."],
+  },
 ] as const satisfies readonly OfficialSourceCitation[];
 
 interface FormSpec {
