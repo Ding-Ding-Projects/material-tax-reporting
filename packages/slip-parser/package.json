@@ -1,0 +1,16 @@
+{
+  "name": "@material-tax-reporting/slip-parser",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Local-only Canadian tax slip and receipt parsing contracts with mandatory manual confirmation.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": [
+    "src",
+    "README.md"
+  ],
+  "sideEffects": false,
+  "license": "MIT"
+}
