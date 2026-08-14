@@ -1,0 +1,272 @@
+{
+  "schemaVersion": "1.0.0",
+  "proposalId": "ca-federal-personal-income-tax-2025-v2",
+  "status": "research-proposal",
+  "taxYear": 2025,
+  "jurisdiction": "CA-federal",
+  "residentProvinceContext": "ON",
+  "accessedOn": "2026-08-14",
+  "currency": "CAD",
+  "disclaimer": {
+    "taxOrLegalAdvice": false,
+    "craCertified": false,
+    "text": "Research proposal only. Not tax or legal advice, a completed return, or Canada Revenue Agency certification."
+  },
+  "productBoundary": {
+    "filingMode": "paper-mail-only",
+    "terminalArtifact": "CRA mail-in PDF package",
+    "manualReviewRequiredBeforeExportOrPrint": true,
+    "manualReviewItems": [
+      "every populated form",
+      "every calculation",
+      "every attachment",
+      "mailing destination",
+      "every signature/date field"
+    ],
+    "explicitAcknowledgementRequired": true,
+    "prohibitedCapabilities": [
+      "NETFILE",
+      "EFILE",
+      "ReFILE",
+      "SimpleFile",
+      "Auto-fill my return",
+      "electronic submission",
+      "direct CRA transmission",
+      "automatic filing",
+      "tax or legal advice",
+      "CRA certification"
+    ]
+  },
+  "forms": {
+    "return": {
+      "formNumber": "5006-R",
+      "title": "Income Tax and Benefit Return (for ON only)",
+      "pageUrl": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-r.html",
+      "eTextUrl": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-r/5006-r-25e.txt",
+      "revision": "5006-r-25e",
+      "lastUpdated": "2026-01-20",
+      "sourceId": "src-5006-r"
+    },
+    "federalWorksheet": {
+      "formNumber": "5000-D1",
+      "title": "Federal Worksheet (for all except non-residents)",
+      "pageUrl": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/5000-d1.html",
+      "files": ["5000-d1-25e.pdf", "5000-d1-25e.txt"],
+      "lastUpdated": "2026-01-20",
+      "sourceId": "src-5000-d1"
+    },
+    "schedule3": {
+      "formNumber": "5000-S3",
+      "title": "Schedule 3, Capital Gains (or Losses)",
+      "pageUrl": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/5000-s3.html",
+      "lastUpdated": "2026-01-20",
+      "sourceId": "src-5000-s3"
+    },
+    "t691": {
+      "formNumber": "T691",
+      "title": "Alternative Minimum Tax",
+      "pageUrl": "https://www.canada.ca/en/revenue-agency/services/forms-publications/forms/t691.html",
+      "files": ["t691-fill-25e.pdf", "t691-25e.pdf"],
+      "sourceId": "src-t691"
+    },
+    "schedule6": {
+      "formNumber": "5000-S6",
+      "title": "Canada workers benefit",
+      "pageUrl": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/5000-s6.html/1000?wbdisable=true",
+      "lastUpdated": "2026-01-20",
+      "sourceId": "src-5000-s6"
+    }
+  },
+  "federalTax": {
+    "taxableIncomeLine": "26000",
+    "taxResultLine": "76",
+    "federalTaxTransferLine": "119",
+    "creditRate": "0.145",
+    "brackets": [
+      {"lowerInclusive": "0.00", "upperInclusive": "57375.00", "rate": "0.145", "baseTax": "0.00", "baseIncome": "0.00"},
+      {"lowerExclusive": "57375.00", "upperInclusive": "114750.00", "rate": "0.205", "baseTax": "8319.38", "baseIncome": "57375.00"},
+      {"lowerExclusive": "114750.00", "upperInclusive": "177882.00", "rate": "0.26", "baseTax": "20081.25", "baseIncome": "114750.00"},
+      {"lowerExclusive": "177882.00", "upperInclusive": "253414.00", "rate": "0.29", "baseTax": "36495.57", "baseIncome": "177882.00"},
+      {"lowerExclusive": "253414.00", "upperInclusive": null, "rate": "0.33", "baseTax": "58399.85", "baseIncome": "253414.00"}
+    ],
+    "calculation": "For the selected bracket, baseTax + (line26000 - baseIncome) * rate; first bracket is line26000 * 0.145. Apply final form-line rounding.",
+    "sourceIds": ["src-5006-r"]
+  },
+  "basicPersonalAmount": {
+    "returnLine": "30000",
+    "netIncomeLine": "23600",
+    "amountAtOrBelowNetIncome": {"threshold": "177882.00", "amount": "16129.00"},
+    "amountAtOrAboveNetIncome": {"threshold": "253414.00", "amount": "14538.00"},
+    "betweenThresholds": {
+      "formula": null,
+      "availability": "unavailable; use the final Federal Worksheet and do not infer an interpolation"
+    },
+    "sourceIds": ["src-5006-r", "src-5000-d1"]
+  },
+  "listedConstants": [
+    {"name": "age amount", "returnLine": "30100", "maximum": "9028.00", "sourceIds": ["src-5006-r", "src-5000-d1"]},
+    {"name": "Canada caregiver amount for eligible child", "returnLine": "30500", "amountPerChild": "2687.00", "sourceIds": ["src-5006-r", "src-5000-d1"]},
+    {"name": "employment insurance premiums through employment", "returnLine": "31200", "maximum": "1077.48", "sourceIds": ["src-5006-r", "src-ei-2025"]},
+    {"name": "Canada employment amount", "returnLine": "31260", "formula": "min(1471.00, employmentIncome)", "maximum": "1471.00", "sourceIds": ["src-5006-r", "src-5000-d1"]},
+    {"name": "home buyers amount", "maximum": "10000.00", "availability": "amount supplied; complete eligibility unavailable", "sourceIds": ["src-5006-r", "src-5000-d1"]},
+    {"name": "home accessibility amount", "maximum": "20000.00", "availability": "amount supplied; complete eligibility unavailable", "sourceIds": ["src-5006-r", "src-5000-d1"]},
+    {"name": "pension income amount", "maximum": "2000.00", "availability": "amount supplied; complete eligibility unavailable", "sourceIds": ["src-5006-r", "src-5000-d1"]},
+    {"name": "disability amount for self, adult", "amount": "10138.00", "availability": "DTC approval and final eligibility required", "sourceIds": ["src-5006-r", "src-5000-d1"]},
+    {"name": "medical expense threshold", "formula": "min(2834.00, 0.03 * netIncome)", "fixedMaximum": "2834.00", "incomeRate": "0.03", "sourceIds": ["src-5006-r", "src-5000-d1"]},
+    {"name": "political contribution credit", "returnLine": "41000", "maximumCredit": "650.00", "availability": "complete credit formula unavailable", "sourceIds": ["src-5006-r", "src-5000-d1"]}
+  ],
+  "dividends": {
+    "eligible": {"incomeLine": "12000", "grossUp": "1.38", "taxableAmountFormula": "actual * 1.38"},
+    "otherThanEligible": {"incomeLine": "12010", "grossUp": "1.15", "taxableAmountFormula": "actual * 1.15"},
+    "federalCreditLine": "40425",
+    "guidanceUrls": {
+      "income": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/personal-income/line-12000-taxable-amount-dividends-eligible-other-than-eligible-taxable-canadian-corporations.html",
+      "credit": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/deductions-credits-expenses/line-40425-federal-dividend-tax-credit.html"
+    },
+    "slipOrWorksheetPrecedence": "Use slips where present; otherwise use the final Federal Worksheet chart.",
+    "creditRate": null,
+    "creditRateAvailability": "unavailable; no credit percentage was transcribed",
+    "sourceIds": ["src-dividend-income", "src-dividend-credit"]
+  },
+  "capitalGains": {
+    "returnLine": "12700",
+    "ordinaryInclusionRate": "0.50",
+    "appliesToGainsBefore": "2026-01-01",
+    "unlessExemptionOrFinalFormRule": true,
+    "calculationAuthority": "Schedule 3",
+    "sourceIds": ["src-5000-s3", "src-capital-gains-update"]
+  },
+  "cpp": {
+    "effectiveOn": "2025-01-01",
+    "basicExemption": "3500.00",
+    "ympe": "71300.00",
+    "yampe": "81200.00",
+    "employeeEmployer": {"rate": "0.0595", "maximum": "4034.10"},
+    "selfEmployed": {"rate": "0.119", "maximum": "8068.20"},
+    "cpp2": {
+      "band": "YMPE to YAMPE",
+      "employeeRate": "0.04",
+      "employeeMaximum": "396.00",
+      "selfEmployedRate": "0.08",
+      "selfEmployedMaximum": "792.00"
+    },
+    "lineMappings": {
+      "selfEmployedDeduction": {"line": "22200", "authority": ["Schedule 8", "RC381 where officially applicable"]},
+      "enhancedEmploymentDeduction": {"line": "22215", "maximum": "1074.00"},
+      "employmentBaseCredit": "30800",
+      "selfEmploymentBaseCredit": "31000"
+    },
+    "qpp": {"availability": "unavailable unless final official RC381 eligibility applies; not an Ontario default"},
+    "completeScheduleMechanics": null,
+    "sourceIds": ["src-cpp-2025", "src-5006-r", "src-5000-d1"]
+  },
+  "ei": {
+    "effectiveOn": "2025-01-01",
+    "maximumInsurableEarnings": "65700.00",
+    "employeeRatePer100": "1.64",
+    "employeeRate": "0.0164",
+    "maximumEmployeePremium": "1077.48",
+    "selfEmployed": {
+      "optIn": true,
+      "authority": "Schedule 13",
+      "creditLine": "31217",
+      "universalPremium": null,
+      "availability": "unavailable; do not invent a universal self-employed premium"
+    },
+    "sourceIds": ["src-ei-2025", "src-5006-r"]
+  },
+  "alternativeMinimumTax": {
+    "screeningThreshold": "177882.00",
+    "screeningInterpretation": "Above this screening total may require T691; at or below it probably does not. Complete T691 when required.",
+    "returnLine": "41700",
+    "carryoverLine": "40427",
+    "calculationAuthority": "T691",
+    "fullMechanics": null,
+    "availability": "unavailable; complete T691 mechanics were not transcribed",
+    "sourceIds": ["src-t691", "src-line-41700"]
+  },
+  "refundableCredits": {
+    "refundableMedicalExpenseSupplement": {
+      "returnLine": "45200",
+      "residentThroughout2025": true,
+      "minimumAge": 18,
+      "adjustedFamilyNetIncomeLessThan": "63374.00",
+      "qualifyingEarningsAtLeast": "4390.00",
+      "maximum": "1504.00",
+      "calculationAuthority": "5000-D1",
+      "formula": null,
+      "availability": "unavailable; use Federal Worksheet",
+      "sourceId": "src-line-45200"
+    },
+    "canadaWorkersBenefit": {
+      "returnLine": "45300",
+      "calculationAuthority": "5000-S6 Schedule 6",
+      "ontarioRateTable": null,
+      "availability": "unavailable; full Ontario rate/table was not transcribed",
+      "sourceId": "src-5000-s6"
+    }
+  },
+  "instalments": {
+    "trigger": "For 2026, net tax owing is more than 3000.00 and net tax owing for either 2025 or 2024 is also more than 3000.00.",
+    "threshold": "3000.00",
+    "dueMonthDays": ["03-15", "06-15", "09-15", "12-15"],
+    "farmerOrFisherException": true,
+    "paidLine": "47600",
+    "sourceIds": ["src-instalments", "src-line-47600"]
+  },
+  "interestAndPenalties": {
+    "arrearsInterest": {
+      "compounding": "daily",
+      "starts": "day after balance-due date",
+      "prescribedRate": null,
+      "availability": "unavailable as a fixed value; rate changes quarterly"
+    },
+    "lateFiling": {
+      "ordinary": {"initialRate": "0.05", "monthlyRate": "0.01", "maximumFullMonths": 12},
+      "repeat": {"initialRate": "0.10", "monthlyRate": "0.02", "maximumFullMonths": 20, "conditions": "official repeat-filing conditions required"}
+    },
+    "instalmentPenalty": {
+      "appliesOnlyWhenInterestGreaterThan": "1000.00",
+      "formula": "documented by CRA; quarterly prescribed-rate inputs not transcribed",
+      "availability": "unavailable as a fixed parameter"
+    },
+    "sourceIds": ["src-late-filing", "src-instalment-penalty"]
+  },
+  "rounding": {
+    "universalRule": null,
+    "availability": "unavailable; preserve exact constants and apply form-line rounding and clamps",
+    "requirement": "Do not invent a global rounding rule."
+  },
+  "unavailable": [
+    "basic-personal-amount interpolation between thresholds",
+    "dividend-credit percentage when no slip is present",
+    "complete credit catalogue, eligibility, and reductions",
+    "complete Schedule 3 special-case mechanics",
+    "complete Schedule 8 and RC381 mechanics",
+    "universal self-employed EI premium",
+    "complete T691 mechanics",
+    "complete Ontario CWB rate/table",
+    "complete refundable medical expense supplement formula",
+    "quarterly prescribed interest rates",
+    "universal rounding rule",
+    "bankruptcy, non-residence, immigration, emigration, deceased-return, and multi-jurisdiction rules"
+  ],
+  "sources": [
+    {"id": "src-5006-r", "title": "Ontario Form 5006-R and 2025 e-text", "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-r.html", "eTextUrl": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-r/5006-r-25e.txt", "lastUpdated": "2026-01-20"},
+    {"id": "src-5000-d1", "title": "Federal Worksheet 5000-D1", "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/5000-d1.html", "files": ["5000-d1-25e.pdf", "5000-d1-25e.txt"], "lastUpdated": "2026-01-20"},
+    {"id": "src-5000-s3", "title": "Schedule 3 5000-S3", "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/5000-s3.html", "lastUpdated": "2026-01-20"},
+    {"id": "src-dividend-income", "title": "Lines 12000 and 12010 taxable dividends", "url": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/personal-income/line-12000-taxable-amount-dividends-eligible-other-than-eligible-taxable-canadian-corporations.html"},
+    {"id": "src-dividend-credit", "title": "Line 40425 federal dividend tax credit", "url": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/deductions-credits-expenses/line-40425-federal-dividend-tax-credit.html"},
+    {"id": "src-capital-gains-update", "title": "CRA update on proposed capital gains taxation changes", "url": "https://www.canada.ca/en/revenue-agency/news/newsroom/tax-tips/tax-tips-2025/update-cra-administration-proposed-capital-gains-taxation-changes.html", "published": "2025-01-31"},
+    {"id": "src-cpp-2025", "title": "CRA 2025 CPP and CPP2 maximums announcement", "url": "https://www.canada.ca/en/revenue-agency/news/newsroom/tax-tips/tax-tips-2024/canada-revenue-agency-announces-maximum-pensionable-earnings-contributions-2025.html"},
+    {"id": "src-ei-2025", "title": "2025 maximum insurable earnings", "url": "https://www.canada.ca/en/employment-social-development/programs/ei/ei-list/ei-employers/premium-reduction-program/2025-maximum-insurable-earnings.html", "effectiveOn": "2025-01-01"},
+    {"id": "src-t691", "title": "Form T691 Alternative Minimum Tax", "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/forms/t691.html", "files": ["t691-fill-25e.pdf", "t691-25e.pdf"]},
+    {"id": "src-line-41700", "title": "Line 41700 minimum tax", "url": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/deductions-credits-expenses/deductions-credits-expenses/line-41700-minimum-tax.html/1000"},
+    {"id": "src-line-45200", "title": "Line 45200 refundable medical expense supplement", "url": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/deductions-credits-expenses/line-45200-refundable-medical-expense-supplement.html"},
+    {"id": "src-5000-s6", "title": "Schedule 6 5000-S6 Canada workers benefit", "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/5000-s6.html/1000?wbdisable=true", "lastUpdated": "2026-01-20"},
+    {"id": "src-instalments", "title": "Income tax instalments", "url": "https://www.canada.ca/en/revenue-agency/services/payments/payments-cra/individual-payments/income-tax-instalments.html"},
+    {"id": "src-line-47600", "title": "Line 47600 tax paid by instalments", "url": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/deductions-credits-expenses/line-47600-tax-paid-instalments.html"},
+    {"id": "src-late-filing", "title": "Late-filing penalty and arrears interest", "url": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/interest-penalties/late-filing-penalty.html"},
+    {"id": "src-instalment-penalty", "title": "Instalment interest and penalty charges", "url": "https://www.canada.ca/en/revenue-agency/services/payments/payments-cra/individual-payments/income-tax-instalments/interest-penalty-charges.html"}
+  ]
+}
