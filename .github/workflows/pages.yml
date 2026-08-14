@@ -34,7 +34,7 @@ jobs:
 
       - name: Install site dependencies
         working-directory: apps/site
-        run: npm ci
+        run: npm ci --prefix . --workspaces=false --no-audit --fund=false
 
       - name: Build static site
         working-directory: apps/site
