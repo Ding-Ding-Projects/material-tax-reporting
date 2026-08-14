@@ -11,6 +11,7 @@
     "start": "npm run build && electron ."
   },
   "dependencies": {
+    "@material-tax-reporting/local-coding-assistants": "0.1.0",
     "@material-tax-reporting/local-ollama": "0.1.0",
     "@material-tax-reporting/surface-kernel": "0.1.0"
   },
