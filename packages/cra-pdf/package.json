@@ -2,6 +2,22 @@
   "name": "@material-tax-reporting/cra-pdf",
   "version": "0.0.0",
   "private": true,
-  "description": "Reserved workspace for future CRA mail-in PDF package generation; no PDF generator is present.",
-  "license": "MIT"
+  "description": "Tax-year-versioned local preparation of CRA mail-in PDF packages after mandatory manual review; no electronic filing.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  }
 }

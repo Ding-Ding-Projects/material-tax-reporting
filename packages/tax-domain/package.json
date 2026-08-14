@@ -2,6 +2,22 @@
   "name": "@material-tax-reporting/tax-domain",
   "version": "0.0.0",
   "private": true,
-  "description": "Reserved workspace for future Canadian and Ontario tax-domain code; no tax engine is present.",
-  "license": "MIT"
+  "description": "Tax-year-versioned Canada and Ontario annual personal tax calculations for local return preparation; not filing software.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  }
 }
