@@ -1,11 +1,14 @@
-import { OllamaLoopbackClient } from "./client.js";
-import type { LocalOllamaBridge, RuntimeProbe } from "./controller.js";
-import type { ChatStreamChunk } from "./chat.js";
-import type { HardwareEvidenceSource } from "./controller.js";
-import type { HardwareEvidence, ModelFitEvidence } from "./hardware-fit.js";
-import type { PullProgress } from "./pull-queue.js";
-import type { LocalRuntimeModel } from "./surface.js";
-import type { OllamaChatMessage, OllamaJsonObject, OllamaModelSummary, OllamaShowModelResponse } from "./types.js";
+import { OllamaLoopbackClient } from "./client.ts";
+import type { LocalOllamaBridge, RuntimeProbe } from "./controller.ts";
+import type { ChatStreamChunk } from "./chat.ts";
+import type { HardwareEvidenceSource } from "./controller.ts";
+import type { HardwareEvidence, ModelFitEvidence } from "./hardware-fit.ts";
+import type { PullProgress } from "./pull-queue.ts";
+import type { LocalRuntimeModel } from "./view-model.ts";
+import type { OllamaChatMessage, OllamaJsonObject, OllamaModelSummary, OllamaShowModelResponse } from "./types.ts";
+
+/** The fields the installed and running listings have in common. */
+type EnrichableModelSummary = Pick<OllamaModelSummary, "name" | "model" | "size" | "digest" | "details">;
 
 export interface OllamaInstallationProbe {
   isInstalled(): Promise<boolean>;
@@ -28,18 +31,19 @@ export class OllamaPrivilegedBridgeAdapter implements LocalOllamaBridge {
         version: health.version?.version ?? null,
         message: "The documented local API is healthy.",
         nextAction: "Browse installed models, refresh the official catalog, or start a local chat.",
+        failingChecks: [],
       };
     }
     if (health.status === "unhealthy") {
-      const failedChecks = Object.entries(health.checks)
+      const failingChecks = Object.entries(health.checks)
         .filter(([, check]) => !check.ok)
-        .map(([name, check]) => `${name}: ${check.error?.message ?? "unknown failure"}`)
-        .join(" ");
+        .map(([name, check]) => `${name}: ${check.error?.message ?? "unknown failure"}`);
       return {
         health: "unhealthy",
         version: health.version?.version ?? null,
-        message: failedChecks || "The local API returned an unhealthy response.",
+        message: failingChecks.join(" ") || "The local API returned an unhealthy response.",
         nextAction: "Use the bundled troubleshooter, correct the reported local API failure, then recheck.",
+        failingChecks,
       };
     }
     if (!this.#installation) {
@@ -48,6 +52,7 @@ export class OllamaPrivilegedBridgeAdapter implements LocalOllamaBridge {
         version: null,
         message: "The local API is unreachable; the documented HTTP interface cannot distinguish an absent installation from a stopped service.",
         nextAction: "Use the bundled official installation/start guidance, then recheck. No cloud fallback is used.",
+        failingChecks: [],
       };
     }
     const installed = await this.#installation.isInstalled();
@@ -57,12 +62,14 @@ export class OllamaPrivilegedBridgeAdapter implements LocalOllamaBridge {
           version: null,
           message: "Ollama is installed, but its local API is not running.",
           nextAction: "Start the installed local Ollama service, then recheck.",
+          failingChecks: [],
         }
       : {
           health: "missing",
           version: null,
           message: "Ollama is not installed and the local API is unavailable.",
           nextAction: "Use the bundled official installation guidance, then return and recheck.",
+          failingChecks: [],
         };
   }
 
@@ -126,7 +133,11 @@ export class OllamaPrivilegedBridgeAdapter implements LocalOllamaBridge {
     }
   }
 
-  async #enrich(models: OllamaModelSummary[]): Promise<LocalRuntimeModel[]> {
+  /**
+   * Adds capability details to a listed model. The parameter is the subset both
+   * the installed and the running listing share, so one method serves both.
+   */
+  async #enrich(models: EnrichableModelSummary[]): Promise<LocalRuntimeModel[]> {
     const results: LocalRuntimeModel[] = [];
     for (let index = 0; index < models.length; index += 4) {
       const chunk = models.slice(index, index + 4);

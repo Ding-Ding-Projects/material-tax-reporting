@@ -18,7 +18,7 @@ import type {
   OllamaShowModelRequest,
   OllamaShowModelResponse,
   OllamaVersionResponse,
-} from "./types.js";
+} from "./types.ts";
 
 const MEBIBYTE = 1024 * 1024;
 
@@ -61,23 +61,23 @@ interface OpenResponse {
 }
 
 export class OllamaClientError extends Error {
-  public constructor(
-    message: string,
-    public readonly code: OllamaClientErrorCode,
-    cause?: unknown,
-  ) {
+  public readonly code: OllamaClientErrorCode;
+
+  public constructor(message: string, code: OllamaClientErrorCode, cause?: unknown) {
     super(message, cause === undefined ? undefined : { cause });
+    this.code = code;
     this.name = "OllamaClientError";
   }
 }
 
 export class OllamaHttpError extends OllamaClientError {
-  public constructor(
-    message: string,
-    public readonly status: number,
-    public readonly endpoint: string,
-  ) {
+  public readonly status: number;
+  public readonly endpoint: string;
+
+  public constructor(message: string, status: number, endpoint: string) {
     super(message, "http");
+    this.status = status;
+    this.endpoint = endpoint;
     this.name = "OllamaHttpError";
   }
 }

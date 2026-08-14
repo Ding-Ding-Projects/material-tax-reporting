@@ -46,6 +46,12 @@ export interface HarnessSnapshot {
 export interface HarnessSnapshotStore {
   create(profileId: string): Promise<HarnessSnapshot>;
   restore(snapshot: HarnessSnapshot): Promise<void>;
+  /**
+   * Lists the stored snapshots, newest first. `profileId` of `null` lists every
+   * profile. Restoring is always driven by an identifier resolved against this
+   * list, never by a payload handed in by a caller.
+   */
+  list(profileId: string | null, limit: number): Promise<HarnessSnapshot[]>;
 }
 
 export interface HarnessRuntime {
@@ -98,6 +104,19 @@ export class AllowlistedHarnessManager {
     this.#runtime = runtime;
     this.#snapshots = snapshots;
     this.#profiles = new Map(profiles.map((profile) => [profile.id, profile]));
+  }
+
+  /**
+   * The executables discovery actually found on this computer. The suite offers
+   * a selection over this list; it never accepts a typed-in program path.
+   */
+  async listExecutables(): Promise<ResolvedExecutable[]> {
+    return this.#runtime.listExecutables();
+  }
+
+  /** The stored snapshots a person may restore, newest first. */
+  async listSnapshots(profileId: string | null, limit: number): Promise<HarnessSnapshot[]> {
+    return this.#snapshots.list(profileId, Math.max(1, Math.min(limit, 200)));
   }
 
   async preview(selection: HarnessLaunchSelection): Promise<HarnessLaunchPreview> {

@@ -1,3 +1,5 @@
+import { matchesSearch, type SearchState } from "@material-tax-reporting/surface-kernel";
+
 const OFFICIAL_LIBRARY_ORIGIN = "https://ollama.com";
 const OFFICIAL_LIBRARY_PATH = "/library";
 
@@ -156,7 +158,7 @@ async function fetchPage(
     headers: { Accept: "text/html; charset=utf-8" },
     credentials: "omit",
     redirect: "error",
-    signal,
+    ...(signal ? { signal } : {}),
   });
   if (new URL(response.url).origin !== OFFICIAL_LIBRARY_ORIGIN) {
     throw new Error("Official catalog response changed origin.");
@@ -373,8 +375,12 @@ export async function refreshOfficialCatalog(
 }
 
 export interface CatalogFilter {
-  query: string;
-  regex?: { pattern: string; flags: string };
+  /**
+   * Search state from the shared anchored search engine. The package compiles
+   * no regular expression of its own for searching, so a pattern behaves the
+   * same way here as it does in every other search field.
+   */
+  search?: SearchState;
   installed?: Set<string>;
   running?: Set<string>;
   families?: Set<string>;
@@ -382,22 +388,20 @@ export interface CatalogFilter {
   quantizations?: Set<string>;
 }
 
+/** The text one catalog variant is searched against. */
+export function catalogVariantHaystack(variant: OfficialCatalogVariant): string {
+  return [variant.reference, variant.model, variant.tag, variant.parameterSize, variant.quantization]
+    .filter((value): value is string => Boolean(value))
+    .join(" ");
+}
+
 export function filterCatalogVariants(
   variants: OfficialCatalogVariant[],
   filter: CatalogFilter,
 ): OfficialCatalogVariant[] {
-  const matcher = filter.regex
-    ? new RegExp(filter.regex.pattern, filter.regex.flags)
-    : null;
-  const plain = filter.query.trim().toLocaleLowerCase();
+  const search = filter.search;
   return variants.filter((variant) => {
-    const searchable = [variant.reference, variant.model, variant.tag, variant.parameterSize, variant.quantization]
-      .filter((value): value is string => Boolean(value))
-      .join(" ");
-    if (matcher) {
-      matcher.lastIndex = 0;
-      if (!matcher.test(searchable)) return false;
-    } else if (plain && !searchable.toLocaleLowerCase().includes(plain)) return false;
+    if (search && !matchesSearch(catalogVariantHaystack(variant), search)) return false;
     if (filter.installed && !filter.installed.has(variant.reference)) return false;
     if (filter.running && !filter.running.has(variant.reference)) return false;
     if (filter.families && !filter.families.has(variant.model)) return false;

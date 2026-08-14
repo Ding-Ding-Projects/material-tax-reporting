@@ -53,6 +53,19 @@ export interface PullQueueOptions {
   id?: () => string;
 }
 
+/**
+ * Temporary-file headroom applied to every download estimate. The cart
+ * preflight and the queue item use the same factor so the figure a person sees
+ * before committing a batch is the figure the queue enforces.
+ */
+export const PULL_STORAGE_HEADROOM = 1.15;
+
+/** Free bytes a download of `sizeBytes` requires, including headroom. */
+export function requiredFreeBytesFor(sizeBytes: number | null): number | null {
+  if (sizeBytes === null || !Number.isFinite(sizeBytes)) return null;
+  return Math.ceil(sizeBytes * PULL_STORAGE_HEADROOM);
+}
+
 export interface PullQueueSummary {
   processed: number;
   completed: number;
@@ -88,7 +101,7 @@ export class PersistentPullQueue {
       id: this.#id(),
       reference,
       expectedSizeBytes,
-      requiredFreeBytes: expectedSizeBytes === null ? null : Math.ceil(expectedSizeBytes * 1.15),
+      requiredFreeBytes: requiredFreeBytesFor(expectedSizeBytes),
       state: "queued",
       status: "Waiting for storage preflight",
       completedBytes: 0,
@@ -100,6 +113,19 @@ export class PersistentPullQueue {
     };
     await this.#store.add(item);
     return item;
+  }
+
+  /**
+   * Adds several downloads in one pass so a reviewed batch reaches the store as
+   * a single decision. Each entry is persisted with the same headroom rule as a
+   * single enqueue, and the caller starts the run loop once afterwards.
+   */
+  async enqueueBatch(entries: Array<{ reference: string; expectedSizeBytes: number | null }>): Promise<PullQueueItem[]> {
+    const created: PullQueueItem[] = [];
+    for (const entry of entries) {
+      created.push(await this.enqueue(entry.reference, entry.expectedSizeBytes));
+    }
+    return created;
   }
 
   pause(): void {
