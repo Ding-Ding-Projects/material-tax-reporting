@@ -29,6 +29,18 @@ function Write-Phase([string]$Message) {
     if (-not $Silent) { Write-Host $Message }
 }
 
+function Get-Sha256([string]$Path) {
+    $stream = [IO.File]::OpenRead($Path)
+    $sha256 = [Security.Cryptography.SHA256]::Create()
+    try {
+        return ([BitConverter]::ToString($sha256.ComputeHash($stream))).Replace('-', '').ToLowerInvariant()
+    }
+    finally {
+        $sha256.Dispose()
+        $stream.Dispose()
+    }
+}
+
 function Assert-OwnedTemporaryPath([string]$Path, [string]$Parent) {
     $resolvedPath = [IO.Path]::GetFullPath($Path)
     $resolvedParent = [IO.Path]::GetFullPath($Parent).TrimEnd('\') + '\'
@@ -59,7 +71,7 @@ function Install-VerifiedArchive {
     try {
         Write-Phase "Dependency $($Entry.id) $($Entry.version): downloading from $($Entry.url)"
         Invoke-WebRequest -UseBasicParsing -Uri $Entry.url -OutFile $partialPath
-        $actualHash = (Get-FileHash -LiteralPath $partialPath -Algorithm SHA256).Hash.ToLowerInvariant()
+        $actualHash = Get-Sha256 -Path $partialPath
         if ($actualHash -ne $Entry.sha256) {
             throw "Dependency $($Entry.id) $($Entry.version) SHA-256 mismatch. Expected $($Entry.sha256); received $actualHash from $($Entry.url)."
         }
@@ -116,7 +128,7 @@ if (-not $gitVersion.Contains($git[0].version)) { throw "Git version mismatch: e
 Write-Phase "Toolchain ready: Node.js $nodeVersion, npm $npmVersion, $gitVersion"
 
 $lockPath = Join-Path $repositoryRoot 'package-lock.json'
-$lockHash = (Get-FileHash -LiteralPath $lockPath -Algorithm SHA256).Hash.ToLowerInvariant()
+$lockHash = Get-Sha256 -Path $lockPath
 $markerPath = Join-Path $repositoryRoot 'node_modules\.mtr-dependencies.sha256'
 $requiredPackages = @(
     'node_modules\electron\dist\electron.exe',
