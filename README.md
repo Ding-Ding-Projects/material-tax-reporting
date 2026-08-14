@@ -16,9 +16,10 @@ Before any future export or print action is allowed, the product must require a 
 - `apps/site` — reserved workspace for the future documentation site.
 - `packages/tax-domain` — reserved workspace for future tax-domain code.
 - `packages/cra-pdf` — reserved workspace for future paper-package generation code.
+- `packages/local-coding-assistants` — guided, fail-closed contracts for local Codex CLI and OpenCode assistance.
 - `packages/local-ollama` — loopback-only Ollama model store, pull queue, local chat, conservative hardware-fit evidence, allowlisted harness orchestration, and accessible renderer surface.
 
-There is no shipped application, sample taxpayer data, demonstration content, or build output. Package-level implementation must still be integrated into a future privileged desktop shell before it becomes runnable product functionality.
+The repository now includes tax-domain, slip-parser, CRA PDF, guided local coding-assistant, and local Ollama contracts. There is no shipped application, sample taxpayer data, demonstration return content, or build output. Package-level implementation must still be integrated into a future privileged desktop shell before it becomes runnable product functionality.
 
 The [local Ollama suite documentation](docs/features/local-ollama-suite/README.md) describes its loopback-only API boundary, official model-catalog refresh, offline states, reviewed tax-data handling, pull queue, local chat, and allowlisted harnesses. It never provides electronic filing or direct government transmission.
 

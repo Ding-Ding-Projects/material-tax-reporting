@@ -2,6 +2,25 @@
   "name": "@material-tax-reporting/site",
   "version": "0.0.0",
   "private": true,
-  "description": "Reserved workspace for the future documentation site; no site or build is present.",
-  "license": "MIT"
+  "description": "Public documentation and landing site for Material Tax Reporting.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "pages:dev": "vite --config vite.pages.config.ts",
+    "pages:build": "vite build --config vite.pages.config.ts",
+    "pages:preview": "vite preview --config vite.pages.config.ts"
+  },
+  "dependencies": {
+    "react": "19.2.6",
+    "react-dom": "19.2.6"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "4.2.1",
+    "@vitejs/plugin-react": "6.0.2",
+    "tailwindcss": "4.2.1",
+    "vite": "8.0.13"
+  },
+  "type": "module"
 }

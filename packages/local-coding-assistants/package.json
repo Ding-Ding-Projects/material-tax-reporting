@@ -1,0 +1,16 @@
+{
+  "name": "@material-tax-reporting/local-coding-assistants",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Guided, fail-closed local Codex CLI and OpenCode launch contracts for tax-report preparation assistance.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "files": [
+    "src",
+    "README.md"
+  ],
+  "sideEffects": false,
+  "license": "MIT"
+}
