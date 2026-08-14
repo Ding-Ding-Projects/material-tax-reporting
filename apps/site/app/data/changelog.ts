@@ -75,6 +75,177 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     "area": "desktop",
     "version": "Unreleased",
     "date": null,
+    "section": "Added",
+    "entry": "Added an application-level preference record beside the app-private instances root and the protected key store. It is versioned, bounded and schema-validated, holds the preferences, per-element appearance overrides, tab layout, schedules, lock metadata and the notification and vocabulary pointers, and is never written into an encrypted project file or a history record.",
+    "commit": null,
+    "verification": null
+  },
+  {
+    "area": "desktop",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Added",
+    "entry": "Added exactly one allowlisted subscription channel set to the preload boundary — transfer progress, local model state, notification pushes and applied schedules — with no wildcard channel.",
+    "commit": null,
+    "verification": null
+  },
+  {
+    "area": "desktop",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Added",
+    "entry": "Added English, Hong Kong-style Cantonese and bilingual language modes with independent 1-to-5 humour levels per language and a separate non-semantic dialog-emoji switch. Fact-bearing strings are declared as fixed text, so a humour level cannot change a field name, a validation rule, a numeric limit or the mail-in-only boundary statement.",
+    "commit": null,
+    "verification": null
+  },
+  {
+    "area": "desktop",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Added",
+    "entry": "Added a personal vocabulary control that accepts a bounded local JSON wording map, preserves the official names and the product boundary spans, keeps the parsed cache in the application data directory only, and adds a renamable shared mode that suppresses the non-English wording features while it is on.",
+    "commit": null,
+    "verification": null
+  },
+  {
+    "area": "desktop",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Added",
+    "entry": "Added read-aloud narration that is off by default, enumerates installed voices, selects English and Cantonese voices independently, reports truthfully when no voice for a language is installed, and never reads the Social Insurance Number field, a mailing address, an unlock answer or an attachment display name.",
+    "commit": null,
+    "verification": null
+  },
+  {
+    "area": "desktop",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Added",
+    "entry": "Added presentation schedules evaluated against a named time zone with the documented precedence order, an editor that reports which layer is winning and why, and an opt-in external presentation-settings path that reads only an allowlisted https origin in the privileged boundary and shows a received document as not applied until it validates.",
+    "commit": null,
+    "verification": null
+  },
+  {
+    "area": "desktop",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Added",
+    "entry": "Added a bounded display name, a shipped-mark or local-image logo validated in the privileged boundary, and an About card stating that renaming is presentation only.",
+    "commit": null,
+    "verification": null
+  },
+  {
+    "area": "desktop",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Added",
+    "entry": "Added a converter destination with the bundled adapters this build carries and disabled rows naming exactly what is missing for the ones it does not, bounded by the existing attachment size limit, writing only to a chosen folder, and stating that converted output still has to pass the manual parser-confirmation step.",
+    "commit": null,
+    "verification": null
+  },
+  {
+    "area": "desktop",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Added",
+    "entry": "Added the privileged half of the local model suite behind named channels, rendering the shared package's state in the application's own chrome, with the honest unavailable states for an unreachable runtime, an empty or stale catalogue cache, an unknown hardware verdict, undetected executables, cart blockers and harness pre-flight blockers.",
+    "commit": null,
+    "verification": null
+  },
+  {
+    "area": "desktop",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Added",
+    "entry": "Added a real tab model with all four docking edges, correct keyboard semantics per orientation, tablist roles with roving focus, an overflow menu with its own filter, pinning, groups and a bulk close that names the matched set before it runs.",
+    "commit": null,
+    "verification": null
+  },
+  {
+    "area": "desktop",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Added",
+    "entry": "Added a shared-token palette with both dark paths and a complete reduced-motion path, plus a per-element appearance editor with typography controls, colour translation across every supported space with honest out-of-gamut reporting, bounded preset export and import, and a refusal for any override that would make a required disclosure unreadable.",
+    "commit": null,
+    "verification": null
+  },
+  {
+    "area": "desktop",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Added",
+    "entry": "Added per-element and per-property presentation locks whose verifiers are derived and sealed in the privileged boundary, rate limited there, recorded in the append-only history, and refused outright on the review checklist, the boundary disclosure and the save and close controls.",
+    "commit": null,
+    "verification": null
+  },
+  {
+    "area": "desktop",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Added",
+    "entry": "Added a standards-only authenticator utility that generates a pairing three ways on this computer, seals the shared secret with protected storage, and states plainly that there is no network, no email and no server-side recovery; and local support tickets whose bodies are redacted before storage.",
+    "commit": null,
+    "verification": null
+  },
+  {
+    "area": "desktop",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Added",
+    "entry": "Added a notifications destination backed by a bounded local log with severity, recovery text, timestamp and originating action, search and filters, multi-select and scoped bulk actions that preview their exact scope, and in-application dialogs replacing the blocking browser confirmations and prompts.",
+    "commit": null,
+    "verification": null
+  },
+  {
+    "area": "desktop",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Added",
+    "entry": "Added a packaged changelog record and a packaged documentation library generated by the application build, read at run time from allowlisted packaged locations only, rendered from a typed Markdown node list, with wizard steps deep-linking to the article that owns them.",
+    "commit": null,
+    "verification": null
+  },
+  {
+    "area": "desktop",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Added",
+    "entry": "Added a command palette on Control, Shift and F and on a visible title-bar button, covering every destination, wizard question, project action, history action and personalization setting, operating setting results inline and teleporting to the exact element otherwise.",
+    "commit": null,
+    "verification": null
+  },
+  {
+    "area": "desktop",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Added",
+    "entry": "Added one reusable anchored search builder instantiated independently beside every search, filter, picker and menu filter, with the append-only history store keeping plain substring matching unless an explicit validated pattern is passed.",
+    "commit": null,
+    "verification": null
+  },
+  {
+    "area": "desktop",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Added",
+    "entry": "Added exports of the currently filtered view with a manifest stating the encoding, schema version, exact filter, row count and omissions, identity redaction on by default behind a typed confirmation, bulk actions that preview their scope, and an external-editor handoff that opens only the file just written or its folder.",
+    "commit": null,
+    "verification": null
+  },
+  {
+    "area": "desktop",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Added",
+    "entry": "Added Start, Downloading and Complete surfaces for the transfers this application performs, with chunked project-container writes, a working cancel that removes the partial temporary file, and a completion surface that names the path, measured byte count and content hash while making no signature-authenticity claim.",
+    "commit": null,
+    "verification": null
+  },
+  {
+    "area": "desktop",
+    "version": "Unreleased",
+    "date": null,
     "section": "Boundaries",
     "entry": "The application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing.",
     "commit": null,
@@ -85,9 +256,252 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     "version": "Unreleased",
     "date": null,
     "section": "Boundaries",
-    "entry": "No tests, lint, type checks, builds, packages, runtime launches, audits, reviews, or screenshots were run for this ultra-speed implementation lane.",
+    "entry": "No browser-extension download capture exists in this repository and none is claimed. The transfer surfaces cover only the local transfers the application genuinely performs.",
     "commit": null,
     "verification": null
+  },
+  {
+    "area": "desktop",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Boundaries",
+    "entry": "No installer, release asset, tag or download control is produced by this change.",
+    "commit": null,
+    "verification": null
+  },
+  {
+    "area": "desktop",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Verification",
+    "entry": "Run and observed: `npm run build --workspace @material-tax-reporting/desktop` completed and wrote the main, preload, renderer, changelog, documentation-manifest and provenance outputs.",
+    "commit": null,
+    "verification": null
+  },
+  {
+    "area": "desktop",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Verification",
+    "entry": "Run and observed: the generated main and preload bundles were parsed with the Node syntax checker, and the inlined renderer bundle was parsed as a script; all three parsed without error.",
+    "commit": null,
+    "verification": null
+  },
+  {
+    "area": "desktop",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Verification",
+    "entry": "Not run, and therefore not claimed: tests, lint, type checks, packaging, installer creation, release, application launch, screenshots, accessibility conformance checks, performance measurements and native-speaker language review.",
+    "commit": null,
+    "verification": null
+  },
+  {
+    "area": "desktop",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Verification",
+    "entry": "The earlier statement that no build was run applies to the previous implementation lane recorded above; it is superseded for this change by the two run-and-observed lines.",
+    "commit": null,
+    "verification": null
+  },
+  {
+    "area": "docs",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Added",
+    "entry": "Added `docs/features/feature-inventory.json`, the repository's hand-written feature-completeness record: one row per capability per surface, naming its implementation files, its documentation article, its changelog, its tests, the interaction a person would have to perform to exercise it, its capture evidence, its relation to the paper-only product boundary, and its explicit evidence gaps.",
+    "commit": null,
+    "verification": "the four results below were observed by the lanes that produced them, and the inventory was parsed and its paths checked; no application was launched and no capture was taken."
+  },
+  {
+    "area": "docs",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Added",
+    "entry": "Added the inventory's evidence policy, which states that a row may claim runtime or capture evidence only after a real built surface was exercised, and that reading source never upgrades a pending row.",
+    "commit": null,
+    "verification": "the four results below were observed by the lanes that produced them, and the inventory was parsed and its paths checked; no application was launched and no capture was taken."
+  },
+  {
+    "area": "docs",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Added",
+    "entry": "Added `docs/features/README.md` as the index for the feature tree: how to read the inventory, what each state value means, which subtree owns which surface, and the rule that an article describes shipped behaviour only, with anything unbuilt confined to a clearly labelled \"Not yet available\" heading rather than written in the present tense.",
+    "commit": null,
+    "verification": "the four results below were observed by the lanes that produced them, and the inventory was parsed and its paths checked; no application was launched and no capture was taken."
+  },
+  {
+    "area": "docs",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Added",
+    "entry": "Added the public wording contract to `docs/features/README.md`. It states, once and for the whole repository, the ten rules every user-visible string already had to satisfy: ordinary professional English, the permanent filing boundary, no unearned verification claim, no fabricated tax content, visible separation of intent from shipped behaviour, sourced tax statements, no premature download, one product name, bilingual copy that agrees on facts, and synchronized manifests and lockfiles.",
+    "commit": null,
+    "verification": "the four results below were observed by the lanes that produced them, and the inventory was parsed and its paths checked; no application was launched and no capture was taken."
+  },
+  {
+    "area": "docs",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Added",
+    "entry": "Added a website feature inventory table to `docs/site/README.md` with one row per capability the website's source implements, each carrying the state the machine-readable inventory holds and pointing at the article that owns it.",
+    "commit": null,
+    "verification": "the four results below were observed by the lanes that produced them, and the inventory was parsed and its paths checked; no application was launched and no capture was taken."
+  },
+  {
+    "area": "docs",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Added",
+    "entry": "Added a \"What was verified\" section to `docs/site/verification-status.md` naming the four checks that were actually run and their observed results.",
+    "commit": null,
+    "verification": "the four results below were observed by the lanes that produced them, and the inventory was parsed and its paths checked; no application was launched and no capture was taken."
+  },
+  {
+    "area": "docs",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Added",
+    "entry": "Added a local-wording privacy bullet to `docs/site/local-first-privacy.md` stating that a personal vocabulary, display name, or mark stays in the visitor's own browser and can never rewrite a legal, boundary, or disclosure sentence.",
+    "commit": null,
+    "verification": "the four results below were observed by the lanes that produced them, and the inventory was parsed and its paths checked; no application was launched and no capture was taken."
+  },
+  {
+    "area": "docs",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Added",
+    "entry": "Added pointers from `docs/site/installer-and-releases.md` to the website and desktop transfer-surface articles, recording that the release manifest carries no assets and that the site therefore renders its unavailable state.",
+    "commit": null,
+    "verification": "the four results below were observed by the lanes that produced them, and the inventory was parsed and its paths checked; no application was launched and no capture was taken."
+  },
+  {
+    "area": "docs",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Changed",
+    "entry": "Corrected the \"Project state\" section of `AGENTS.md`, which said there is no shipped application, installer, tax engine, PDF generator, documentation site, test suite, or release workflow. It now records that implementation source exists for the documentation site, the desktop application, and the `surface-kernel`, `tax-domain`, `cra-pdf`, `slip-parser`, `local-ollama`, and `local-coding-assistants` packages, that a workflow which builds and publishes the documentation site is defined at `.github/workflows/pages.yml`, and that no installer, release asset, download control, or verified build exists. Every other rule in that file is unchanged.",
+    "commit": null,
+    "verification": "the four results below were observed by the lanes that produced them, and the inventory was parsed and its paths checked; no application was launched and no capture was taken."
+  },
+  {
+    "area": "docs",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Changed",
+    "entry": "Corrected the \"Current stage\" section of `CONTRIBUTING.md`, which said the repository contains only governance, workspace manifests, and bootstrap entry points.",
+    "commit": null,
+    "verification": "the four results below were observed by the lanes that produced them, and the inventory was parsed and its paths checked; no application was launched and no capture was taken."
+  },
+  {
+    "area": "docs",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Changed",
+    "entry": "Corrected the \"Development commands\" section of `CONTRIBUTING.md`, which said there is no runnable build or test suite. It now names the workspace commands that exist and states that there is no repository-wide test, lint, type-check, accessibility, or packaging command. The fail-closed statement about `build.bat` and `build-installer.bat` is kept, and a nonzero exit from them remains the correct result.",
+    "commit": null,
+    "verification": "the four results below were observed by the lanes that produced them, and the inventory was parsed and its paths checked; no application was launched and no capture was taken."
+  },
+  {
+    "area": "docs",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Changed",
+    "entry": "Corrected the repository map in `README.md`, which called `apps/site`, `packages/tax-domain`, and `packages/cra-pdf` reserved workspaces and omitted `packages/slip-parser` and `packages/surface-kernel` entirely. Each row now describes the source the directory actually contains.",
+    "commit": null,
+    "verification": "the four results below were observed by the lanes that produced them, and the inventory was parsed and its paths checked; no application was launched and no capture was taken."
+  },
+  {
+    "area": "docs",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Changed",
+    "entry": "Resolved the contradiction that followed that map, which stated both that the repository includes the packages' source and that they were reserved. The paragraph now states plainly that everything listed is source, and that nothing in the repository establishes that either application was built for distribution, packaged, installed, launched, or exercised by a person.",
+    "commit": null,
+    "verification": "the four results below were observed by the lanes that produced them, and the inventory was parsed and its paths checked; no application was launched and no capture was taken."
+  },
+  {
+    "area": "docs",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Changed",
+    "entry": "Replaced the project-status note in `README.md` and added a documentation index and a development-status section naming the workspace commands.",
+    "commit": null,
+    "verification": "the four results below were observed by the lanes that produced them, and the inventory was parsed and its paths checked; no application was launched and no capture was taken."
+  },
+  {
+    "area": "docs",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Changed",
+    "entry": "Corrected the opening statement of `docs/site/verification-status.md`, which described the change as the initial public website documentation change, and rewrote \"what was not run\" and \"what is not yet verified\" to match the current state: implementation source exists, while browser behaviour, accessibility conformance, responsive layout, packaging, and deployment remain unverified.",
+    "commit": null,
+    "verification": "the four results below were observed by the lanes that produced them, and the inventory was parsed and its paths checked; no application was launched and no capture was taken."
+  },
+  {
+    "area": "docs",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Changed",
+    "entry": "Expanded `docs/site/website-preferences-and-search.md`. Its single clause about an anchored regular-expression builder beside the search field is now a pointer to the articles that own the engine and its bindings, and its vague line about \"presentation choices such as theme and navigation state\" now names the real preference record and the stores that sit beside it.",
+    "commit": null,
+    "verification": "the four results below were observed by the lanes that produced them, and the inventory was parsed and its paths checked; no application was launched and no capture was taken."
+  },
+  {
+    "area": "docs",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Verification",
+    "entry": "The shared surface-kernel package compiled with no diagnostics and its 89 tests passed.",
+    "commit": null,
+    "verification": "the four results below were observed by the lanes that produced them, and the inventory was parsed and its paths checked; no application was launched and no capture was taken."
+  },
+  {
+    "area": "docs",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Verification",
+    "entry": "The local model package compiled with no diagnostics and its 37 tests passed, along with the 6 tests of the local coding-assistant package.",
+    "commit": null,
+    "verification": "the four results below were observed by the lanes that produced them, and the inventory was parsed and its paths checked; no application was launched and no capture was taken."
+  },
+  {
+    "area": "docs",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Verification",
+    "entry": "The website's production build completed and emitted its static bundle.",
+    "commit": null,
+    "verification": "the four results below were observed by the lanes that produced them, and the inventory was parsed and its paths checked; no application was launched and no capture was taken."
+  },
+  {
+    "area": "docs",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Verification",
+    "entry": "The desktop application's build completed and all of its generated bundles parsed.",
+    "commit": null,
+    "verification": "the four results below were observed by the lanes that produced them, and the inventory was parsed and its paths checked; no application was launched and no capture was taken."
+  },
+  {
+    "area": "docs",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Verification",
+    "entry": "`docs/features/feature-inventory.json` was parsed, and every one of the 299 repository-relative paths across its 49 rows was confirmed to exist; the parse also confirmed that no row is duplicated for a surface, that every state is one of the three allowed values, and that no row claims capture evidence.",
+    "commit": null,
+    "verification": "the four results below were observed by the lanes that produced them, and the inventory was parsed and its paths checked; no application was launched and no capture was taken."
+  },
+  {
+    "area": "docs",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Verification",
+    "entry": "Not run for this change: any launch of the website or the desktop application, any screenshot, recording, or other capture, any lint check, any type check beyond the packages' own compilation, any accessibility check, any browser-based or desktop-based user-interface quality assurance, any packaging, installer, tag, or release step, and any performance measurement or native-speaker review.",
+    "commit": null,
+    "verification": "the four results below were observed by the lanes that produced them, and the inventory was parsed and its paths checked; no application was launched and no capture was taken."
   },
   {
     "area": "local-coding-assistants",
@@ -1218,6 +1632,7 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
 
 export const CHANGELOG_AREAS: string[] = [
   "desktop",
+  "docs",
   "local-coding-assistants",
   "ollama",
   "site",

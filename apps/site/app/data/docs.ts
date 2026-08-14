@@ -41,7 +41,7 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
           [
             {
               "kind": "text",
-              "value": "The documentation and landing website are in their initial implementation phase."
+              "value": "Implementation source for the website exists in the repository and produces a static bundle when the publish workflow's build command is run. No browser behaviour, accessibility conformance, responsive layout, or deployment has been verified."
             }
           ],
           [
@@ -79,8 +79,166 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
       {
         "kind": "heading",
         "level": 2,
-        "text": "Feature inventory",
-        "id": "feature-inventory"
+        "text": "Website feature inventory",
+        "id": "website-feature-inventory"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "One row per capability the website's source implements. The state column repeats the value the repository's machine-readable record, "
+          },
+          {
+            "kind": "code",
+            "value": "docs/features/feature-inventory.json"
+          },
+          {
+            "kind": "text",
+            "value": ", holds for the same row; the two are kept identical. A state of "
+          },
+          {
+            "kind": "code",
+            "value": "implemented"
+          },
+          {
+            "kind": "text",
+            "value": " or "
+          },
+          {
+            "kind": "code",
+            "value": "partial"
+          },
+          {
+            "kind": "text",
+            "value": " describes source, not verified behaviour: nothing in this table has been exercised in a browser, and every row's evidence gaps are listed in that file."
+          }
+        ]
+      },
+      {
+        "kind": "table",
+        "headers": [
+          "Capability",
+          "State",
+          "Documentation"
+        ],
+        "rows": [
+          [
+            "Material 3 shell",
+            "implemented",
+            "[Material 3 shell and appearance](../features/site/material-3-shell-and-appearance.md)"
+          ],
+          [
+            "Language modes, humour levels, and decorative emoji",
+            "implemented",
+            "[Language and humour levels](../features/site/language-and-funny-levels.md)"
+          ],
+          [
+            "Personal vocabulary",
+            "implemented",
+            "[Personal vocabulary](../features/site/personal-vocabulary.md)"
+          ],
+          [
+            "Read aloud",
+            "implemented",
+            "[Read aloud](../features/site/narration.md)"
+          ],
+          [
+            "Scheduled and external presentation settings",
+            "partial",
+            "[Scheduled and external presentation settings](../features/site/scheduled-and-external-settings.md)"
+          ],
+          [
+            "Display name and mark",
+            "implemented",
+            "[Display name and mark](../features/site/display-name-and-logo.md)"
+          ],
+          [
+            "File converter",
+            "implemented",
+            "[File converter](../features/site/file-converter.md)"
+          ],
+          [
+            "Local model runtime view",
+            "partial",
+            "[Local Ollama suite](../features/local-ollama-suite/README.md)"
+          ],
+          [
+            "Tabs and navigation",
+            "implemented",
+            "[Tabs and navigation](../features/site/tabs-and-navigation.md)"
+          ],
+          [
+            "Appearance editor and colour translator",
+            "implemented",
+            "[Appearance editor](../features/site/appearance-editor.md)"
+          ],
+          [
+            "Element locks",
+            "partial",
+            "[Element locks](../features/site/element-locks.md)"
+          ],
+          [
+            "Authenticator utility and support notes",
+            "implemented",
+            "[Authenticator utility and support notes](../features/site/authenticator-and-support.md)"
+          ],
+          [
+            "Local history",
+            "implemented",
+            "[Local history](../features/site/local-history.md)"
+          ],
+          [
+            "Notifications",
+            "implemented",
+            "[Notifications](../features/site/notifications.md)"
+          ],
+          [
+            "Changelog viewer",
+            "implemented",
+            "[Changelog viewer](../features/site/changelog-viewer.md)"
+          ],
+          [
+            "Documentation browser",
+            "implemented",
+            "[Documentation browser](../features/site/documentation-browser.md)"
+          ],
+          [
+            "Command palette",
+            "implemented",
+            "[Command palette](../features/site/command-palette.md)"
+          ],
+          [
+            "Regular-expression builders",
+            "implemented",
+            "[Regular-expression builders](../features/site/regex-builders.md)"
+          ],
+          [
+            "Exports and bulk actions",
+            "partial",
+            "[Exports and bulk actions](../features/site/exports-and-bulk-actions.md)"
+          ],
+          [
+            "Transfer surfaces",
+            "partial",
+            "[Download surfaces](../features/site/download-surfaces.md)"
+          ]
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "None of these capabilities is a tax capability. Every one of them is a documentation, navigation, or personalization surface, and none of them changes a tax figure, a rule citation, the paper-only product boundary, or the manual-review requirement."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Product boundary articles",
+        "id": "product-boundary-articles"
       },
       {
         "kind": "table",
@@ -112,7 +270,7 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
           ],
           [
             "Website preferences, search, and accessibility",
-            "Included in the initial website implementation; browser verification not performed in this change",
+            "Implemented in source; no browser verification has been performed",
             "[Website preferences and search](website-preferences-and-search.md)"
           ],
           [
@@ -122,7 +280,7 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
           ],
           [
             "Verification evidence",
-            "Documentation-only status is recorded explicitly",
+            "Recorded explicitly, including everything that was not run",
             "[Verification status](verification-status.md)"
           ]
         ]
@@ -226,6 +384,21 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
               "kind": "text",
               "value": " to distinguish documented intent from verified behavior."
             }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "Read the "
+            },
+            {
+              "kind": "link",
+              "text": "feature documentation index",
+              "href": "../features/README.md"
+            },
+            {
+              "kind": "text",
+              "value": " for the per-capability record and the wording contract that governs every public string in this repository."
+            }
           ]
         ]
       },
@@ -258,8 +431,13 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
       },
       {
         "level": 2,
-        "text": "Feature inventory",
-        "id": "feature-inventory"
+        "text": "Website feature inventory",
+        "id": "website-feature-inventory"
+      },
+      {
+        "level": 2,
+        "text": "Product boundary articles",
+        "id": "product-boundary-articles"
       },
       {
         "level": 2,
@@ -272,7 +450,7 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "id": "important-notice"
       }
     ],
-    "plainText": "Material Tax Reporting documentation\nMaterial Tax Reporting is being developed as a local-first desktop application for preparing Canadian tax reports within a Canada and Ontario scope. Its workflow ends with generation of a CRA mail-in PDF package after mandatory manual review. It does not and will not provide electronic filing or direct transmission to the Canada Revenue Agency (CRA). This documentation establishes the public product boundary without claiming that an installer, tax calculation, PDF package, or production release has been verified.\nCurrent public status\nThe documentation and landing website are in their initial implementation phase.\nNo desktop release or installer is currently verified for public download.\nNo supported tax form, calculation rule, or paper-package workflow is claimed until it is implemented and verified in a published release.\nNETFILE, EFILE, electronic submission, direct CRA transmission, and automatic filing are permanently outside the product boundary. The application must not implement, offer, advertise, simulate, or imply any of them.\nBefore export or print, the user must manually inspect every populated form, calculation, attachment, mailing destination, and signature field, then explicitly acknowledge that review.\nThe product is intended to support preparation and generation of a mail-in PDF package, not to replace professional advice or an official filing service.\nFeature inventory\nArea Public status Documentation Canadian tax-report preparation Product scope defined; released implementation not yet verified [Canadian tax-report preparation](canadian-tax-report-preparation.md) Mail-in PDF and mandatory manual review Permanent paper-only boundary defined; released implementation not yet verified [Mail-in PDF and manual review](mail-in-pdf-and-manual-review.md) Canada and Ontario boundary Defined documentation boundary; detailed form coverage not yet published [Canada and Ontario boundary](canada-ontario-boundaries.md) Local-first privacy Product requirement defined; packaged-runtime verification not yet published [Local-first privacy](local-first-privacy.md) Website preferences, search, and accessibility Included in the initial website implementation; browser verification not performed in this change [Website preferences and search](website-preferences-and-search.md) Installer delivery Unavailable until a verified release asset exists [Installer and releases](installer-and-releases.md) Verification evidence Documentation-only status is recorded explicitly [Verification status](verification-status.md)\nReading order\nStart with Canadian tax-report preparation to understand what the product is intended to do.\nRead Mail-in PDF and manual review for the permanent no-electronic-filing boundary and required pre-export review.\nRead Canada and Ontario boundary before relying on any jurisdiction-specific output.\nReview Local-first privacy for the intended data-handling model and its limits.\nCheck Installer and releases before looking for a download.\nUse Verification status to distinguish documented intent from verified behavior.\nImportant notice\nMaterial Tax Reporting is not tax, legal, accounting, or financial advice. Tax rules, forms, filing requirements, and mailing destinations can change. Users remain responsible for checking current requirements with the Canada Revenue Agency, the Government of Ontario, and a qualified professional when appropriate. The application generates a package for the user to review, print, sign where required, assemble, and mail; it never files on the user's behalf.",
+    "plainText": "Material Tax Reporting documentation\nMaterial Tax Reporting is being developed as a local-first desktop application for preparing Canadian tax reports within a Canada and Ontario scope. Its workflow ends with generation of a CRA mail-in PDF package after mandatory manual review. It does not and will not provide electronic filing or direct transmission to the Canada Revenue Agency (CRA). This documentation establishes the public product boundary without claiming that an installer, tax calculation, PDF package, or production release has been verified.\nCurrent public status\nImplementation source for the website exists in the repository and produces a static bundle when the publish workflow's build command is run. No browser behaviour, accessibility conformance, responsive layout, or deployment has been verified.\nNo desktop release or installer is currently verified for public download.\nNo supported tax form, calculation rule, or paper-package workflow is claimed until it is implemented and verified in a published release.\nNETFILE, EFILE, electronic submission, direct CRA transmission, and automatic filing are permanently outside the product boundary. The application must not implement, offer, advertise, simulate, or imply any of them.\nBefore export or print, the user must manually inspect every populated form, calculation, attachment, mailing destination, and signature field, then explicitly acknowledge that review.\nThe product is intended to support preparation and generation of a mail-in PDF package, not to replace professional advice or an official filing service.\nWebsite feature inventory\nOne row per capability the website's source implements. The state column repeats the value the repository's machine-readable record, docs/features/feature-inventory.json, holds for the same row; the two are kept identical. A state of implemented or partial describes source, not verified behaviour: nothing in this table has been exercised in a browser, and every row's evidence gaps are listed in that file.\nCapability State Documentation Material 3 shell implemented [Material 3 shell and appearance](../features/site/material-3-shell-and-appearance.md) Language modes, humour levels, and decorative emoji implemented [Language and humour levels](../features/site/language-and-funny-levels.md) Personal vocabulary implemented [Personal vocabulary](../features/site/personal-vocabulary.md) Read aloud implemented [Read aloud](../features/site/narration.md) Scheduled and external presentation settings partial [Scheduled and external presentation settings](../features/site/scheduled-and-external-settings.md) Display name and mark implemented [Display name and mark](../features/site/display-name-and-logo.md) File converter implemented [File converter](../features/site/file-converter.md) Local model runtime view partial [Local Ollama suite](../features/local-ollama-suite/README.md) Tabs and navigation implemented [Tabs and navigation](../features/site/tabs-and-navigation.md) Appearance editor and colour translator implemented [Appearance editor](../features/site/appearance-editor.md) Element locks partial [Element locks](../features/site/element-locks.md) Authenticator utility and support notes implemented [Authenticator utility and support notes](../features/site/authenticator-and-support.md) Local history implemented [Local history](../features/site/local-history.md) Notifications implemented [Notifications](../features/site/notifications.md) Changelog viewer implemented [Changelog viewer](../features/site/changelog-viewer.md) Documentation browser implemented [Documentation browser](../features/site/documentation-browser.md) Command palette implemented [Command palette](../features/site/command-palette.md) Regular-expression builders implemented [Regular-expression builders](../features/site/regex-builders.md) Exports and bulk actions partial [Exports and bulk actions](../features/site/exports-and-bulk-actions.md) Transfer surfaces partial [Download surfaces](../features/site/download-surfaces.md)\nNone of these capabilities is a tax capability. Every one of them is a documentation, navigation, or personalization surface, and none of them changes a tax figure, a rule citation, the paper-only product boundary, or the manual-review requirement.\nProduct boundary articles\nArea Public status Documentation Canadian tax-report preparation Product scope defined; released implementation not yet verified [Canadian tax-report preparation](canadian-tax-report-preparation.md) Mail-in PDF and mandatory manual review Permanent paper-only boundary defined; released implementation not yet verified [Mail-in PDF and manual review](mail-in-pdf-and-manual-review.md) Canada and Ontario boundary Defined documentation boundary; detailed form coverage not yet published [Canada and Ontario boundary](canada-ontario-boundaries.md) Local-first privacy Product requirement defined; packaged-runtime verification not yet published [Local-first privacy](local-first-privacy.md) Website preferences, search, and accessibility Implemented in source; no browser verification has been performed [Website preferences and search](website-preferences-and-search.md) Installer delivery Unavailable until a verified release asset exists [Installer and releases](installer-and-releases.md) Verification evidence Recorded explicitly, including everything that was not run [Verification status](verification-status.md)\nReading order\nStart with Canadian tax-report preparation to understand what the product is intended to do.\nRead Mail-in PDF and manual review for the permanent no-electronic-filing boundary and required pre-export review.\nRead Canada and Ontario boundary before relying on any jurisdiction-specific output.\nReview Local-first privacy for the intended data-handling model and its limits.\nCheck Installer and releases before looking for a download.\nUse Verification status to distinguish documented intent from verified behavior.\nRead the feature documentation index for the per-capability record and the wording contract that governs every public string in this repository.\nImportant notice\nMaterial Tax Reporting is not tax, legal, accounting, or financial advice. Tax rules, forms, filing requirements, and mailing destinations can change. Users remain responsible for checking current requirements with the Canada Revenue Agency, the Government of Ontario, and a qualified professional when appropriate. The application generates a package for the user to review, print, sign where required, assemble, and mail; it never files on the user's behalf.",
     "links": [
       {
         "href": "canadian-tax-report-preparation.md",
@@ -303,6 +481,11 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "href": "verification-status.md",
         "targetSlug": "docs-site-verification-status",
         "text": "Verification status"
+      },
+      {
+        "href": "../features/README.md",
+        "targetSlug": "docs-features-readme",
+        "text": "feature documentation index"
       }
     ]
   },
@@ -972,7 +1155,7 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "inline": [
           {
             "kind": "text",
-            "value": "This initial documentation change did not verify desktop behavior, calculations, form coverage, the mandatory review workflow, PDF generation, printing, or packaged application behavior. Electronic submission is not awaiting verification; it is prohibited by the product contract."
+            "value": "Tax-domain, paper-package, and slip-parsing source exists in the repository, and no automated test exercises any of it. Nothing here verified desktop behavior, calculations, form coverage, the mandatory review workflow, PDF generation, printing, or packaged application behavior, and no generated package has been compared against an official form. Electronic submission is not awaiting verification; it is prohibited by the product contract."
           }
         ]
       },
@@ -1066,7 +1249,7 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "id": "related-articles"
       }
     ],
-    "plainText": "Canadian tax-report preparation\nStatus\n**Product scope defined; released implementation not yet verified.**\nThis article describes the intended role of the desktop product. It does not claim that a particular report, form, calculation, import, export, or mail-in PDF workflow is currently available.\nBehavior\nMaterial Tax Reporting is intended to help a user organize information and prepare reports for Canadian tax work. Preparation means helping a user assemble, review, and present information. The application workflow ends with generation of a CRA mail-in PDF package for the user to print, sign where required, assemble, and mail.\nThe application must not implement, offer, advertise, simulate, or imply NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing. It must not show a simulated submission, acceptance, confirmation number, or government-delivery status. Generating, exporting, or printing a PDF is not filing.\nBefore export or print becomes available, the application must require a manual review in which the user inspects every populated form, calculation, attachment, mailing destination, and signature field. The user must then explicitly acknowledge that the review is complete. See Mail-in PDF and manual review for the complete workflow.\nThe public website must name an individual workflow as available only after the corresponding desktop behavior has been implemented and verified in a published release. Until then, the website uses explicit unavailable or not-yet-verified states.\nConfiguration\nNo authoritative list of supported tax years, forms, slips, schedules, calculations, import formats, or export formats has been published yet. A future release must identify each supported item and its applicable jurisdiction and tax year before users can rely on it.\nThe product boundary is Canada and Ontario. See Canada and Ontario boundary for the jurisdiction rules. Mailing instructions and destinations must come from current official CRA guidance; they must not be hard-coded from documentation that can become stale.\nFailure modes\nPreparation can be incomplete or unsuitable when:\na required form, field, tax year, or jurisdiction is not explicitly supported;\nsource information is missing, stale, inconsistent, or entered incorrectly;\nlegislation, agency guidance, thresholds, or forms have changed since the software release;\nthe mandatory review finds an incomplete form, calculation, attachment, mailing destination, or signature field;\nthe application cannot present every populated item for review;\na user interprets a generated, exported, or printed package as an official filing confirmation;\nan exported report is treated as received or accepted by the CRA.\nThe application and website should present unsupported and unverified states directly rather than guessing, silently omitting data, or implying that preparation or PDF generation equals filing. If mandatory review is incomplete, export and print must remain unavailable.\nSecurity and privacy\nTax information can be highly sensitive. The intended product model is local-first. Tax records and package contents must not be transmitted to the CRA or another filing service. Opening official guidance is not permission to upload the user's data. See Local-first privacy for the documented privacy boundary.\nVerification status\nThis initial documentation change did not verify desktop behavior, calculations, form coverage, the mandatory review workflow, PDF generation, printing, or packaged application behavior. Electronic submission is not awaiting verification; it is prohibited by the product contract.\nRelated articles\nCanada and Ontario boundary\nMail-in PDF and manual review\nLocal-first privacy\nInstaller and releases\nVerification status",
+    "plainText": "Canadian tax-report preparation\nStatus\n**Product scope defined; released implementation not yet verified.**\nThis article describes the intended role of the desktop product. It does not claim that a particular report, form, calculation, import, export, or mail-in PDF workflow is currently available.\nBehavior\nMaterial Tax Reporting is intended to help a user organize information and prepare reports for Canadian tax work. Preparation means helping a user assemble, review, and present information. The application workflow ends with generation of a CRA mail-in PDF package for the user to print, sign where required, assemble, and mail.\nThe application must not implement, offer, advertise, simulate, or imply NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing. It must not show a simulated submission, acceptance, confirmation number, or government-delivery status. Generating, exporting, or printing a PDF is not filing.\nBefore export or print becomes available, the application must require a manual review in which the user inspects every populated form, calculation, attachment, mailing destination, and signature field. The user must then explicitly acknowledge that the review is complete. See Mail-in PDF and manual review for the complete workflow.\nThe public website must name an individual workflow as available only after the corresponding desktop behavior has been implemented and verified in a published release. Until then, the website uses explicit unavailable or not-yet-verified states.\nConfiguration\nNo authoritative list of supported tax years, forms, slips, schedules, calculations, import formats, or export formats has been published yet. A future release must identify each supported item and its applicable jurisdiction and tax year before users can rely on it.\nThe product boundary is Canada and Ontario. See Canada and Ontario boundary for the jurisdiction rules. Mailing instructions and destinations must come from current official CRA guidance; they must not be hard-coded from documentation that can become stale.\nFailure modes\nPreparation can be incomplete or unsuitable when:\na required form, field, tax year, or jurisdiction is not explicitly supported;\nsource information is missing, stale, inconsistent, or entered incorrectly;\nlegislation, agency guidance, thresholds, or forms have changed since the software release;\nthe mandatory review finds an incomplete form, calculation, attachment, mailing destination, or signature field;\nthe application cannot present every populated item for review;\na user interprets a generated, exported, or printed package as an official filing confirmation;\nan exported report is treated as received or accepted by the CRA.\nThe application and website should present unsupported and unverified states directly rather than guessing, silently omitting data, or implying that preparation or PDF generation equals filing. If mandatory review is incomplete, export and print must remain unavailable.\nSecurity and privacy\nTax information can be highly sensitive. The intended product model is local-first. Tax records and package contents must not be transmitted to the CRA or another filing service. Opening official guidance is not permission to upload the user's data. See Local-first privacy for the documented privacy boundary.\nVerification status\nTax-domain, paper-package, and slip-parsing source exists in the repository, and no automated test exercises any of it. Nothing here verified desktop behavior, calculations, form coverage, the mandatory review workflow, PDF generation, printing, or packaged application behavior, and no generated package has been compared against an official form. Electronic submission is not awaiting verification; it is prohibited by the product contract.\nRelated articles\nCanada and Ontario boundary\nMail-in PDF and manual review\nLocal-first privacy\nInstaller and releases\nVerification status",
     "links": [
       {
         "href": "mail-in-pdf-and-manual-review.md",
@@ -1148,6 +1331,33 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
           {
             "kind": "text",
             "value": "The website may include an installer area, but it must remain explicitly unavailable and must not expose a download button until a published release asset has been verified. A repository archive, source checkout, placeholder URL, guessed release path, or workflow artifact is not a desktop installer."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The site's transfer states, and the release manifest that drives them, are documented in "
+          },
+          {
+            "kind": "link",
+            "text": "the website download surfaces article",
+            "href": "../features/site/download-surfaces.md"
+          },
+          {
+            "kind": "text",
+            "value": ". That manifest carries no assets, because none has been published and verified, so the site renders its unavailable state and no download control, link, asset name, size, or digest appears anywhere. The desktop equivalent, which covers only transfers the application itself performs on the user's computer, is documented in "
+          },
+          {
+            "kind": "link",
+            "text": "the desktop transfer surfaces article",
+            "href": "../features/desktop/transfer-surfaces.md"
+          },
+          {
+            "kind": "text",
+            "value": "."
           }
         ]
       },
@@ -1329,6 +1539,13 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
           [
             {
               "kind": "link",
+              "text": "Website download surfaces",
+              "href": "../features/site/download-surfaces.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
               "text": "Canadian tax-report preparation",
               "href": "canadian-tax-report-preparation.md"
             }
@@ -1399,8 +1616,23 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "id": "related-articles"
       }
     ],
-    "plainText": "Installer and releases\nStatus\n**No verified public installer is currently available.**\nBehavior\nThe website may include an installer area, but it must remain explicitly unavailable and must not expose a download button until a published release asset has been verified. A repository archive, source checkout, placeholder URL, guessed release path, or workflow artifact is not a desktop installer.\nWhen an installer becomes available, the website should identify:\nthe exact application version;\nthe supported platform and architecture;\nthe release page and immutable asset URL;\nthe asset filename and size;\nthe published integrity digest when available; and\nany unsigned-publisher warning or installation limitation that applies.\nInstaller availability does not change the product boundary. A released application must still end at generation of a manually reviewed CRA mail-in PDF package and must not offer or imply electronic filing.\nConfiguration\nThere is no installer configuration for visitors while the installer is unavailable. The site must not ask users to choose a channel, architecture, or version that has not been verified and published.\nFailure modes\nNo release exists for the intended version.\nA release exists but has no expected installer asset.\nAn asset URL is mutable, missing, or does not resolve to the named file.\nAn asset belongs to a different commit or version.\nA release is a draft or otherwise not intended for public installation.\nIn all of these cases, the website should keep the installer unavailable and explain that no verified download is ready. It must not fall back to a source archive or unrelated asset.\nSecurity and privacy\nVisitors should obtain a future installer only from the repository's verified release page or the immutable release asset linked by this website. The site must not request credentials to download a public installer.\nAn installer, when published, may be unsigned. The release and website must state that condition plainly rather than implying code-signing verification.\nVerification status\nNo installer, release asset, download URL, digest, installation flow, update flow, or packaged desktop runtime was verified as part of this documentation change.\nRelated articles\nCanadian tax-report preparation\nMail-in PDF and manual review\nLocal-first privacy\nVerification status",
+    "plainText": "Installer and releases\nStatus\n**No verified public installer is currently available.**\nBehavior\nThe website may include an installer area, but it must remain explicitly unavailable and must not expose a download button until a published release asset has been verified. A repository archive, source checkout, placeholder URL, guessed release path, or workflow artifact is not a desktop installer.\nThe site's transfer states, and the release manifest that drives them, are documented in the website download surfaces article. That manifest carries no assets, because none has been published and verified, so the site renders its unavailable state and no download control, link, asset name, size, or digest appears anywhere. The desktop equivalent, which covers only transfers the application itself performs on the user's computer, is documented in the desktop transfer surfaces article.\nWhen an installer becomes available, the website should identify:\nthe exact application version;\nthe supported platform and architecture;\nthe release page and immutable asset URL;\nthe asset filename and size;\nthe published integrity digest when available; and\nany unsigned-publisher warning or installation limitation that applies.\nInstaller availability does not change the product boundary. A released application must still end at generation of a manually reviewed CRA mail-in PDF package and must not offer or imply electronic filing.\nConfiguration\nThere is no installer configuration for visitors while the installer is unavailable. The site must not ask users to choose a channel, architecture, or version that has not been verified and published.\nFailure modes\nNo release exists for the intended version.\nA release exists but has no expected installer asset.\nAn asset URL is mutable, missing, or does not resolve to the named file.\nAn asset belongs to a different commit or version.\nA release is a draft or otherwise not intended for public installation.\nIn all of these cases, the website should keep the installer unavailable and explain that no verified download is ready. It must not fall back to a source archive or unrelated asset.\nSecurity and privacy\nVisitors should obtain a future installer only from the repository's verified release page or the immutable release asset linked by this website. The site must not request credentials to download a public installer.\nAn installer, when published, may be unsigned. The release and website must state that condition plainly rather than implying code-signing verification.\nVerification status\nNo installer, release asset, download URL, digest, installation flow, update flow, or packaged desktop runtime was verified as part of this documentation change.\nRelated articles\nWebsite download surfaces\nCanadian tax-report preparation\nMail-in PDF and manual review\nLocal-first privacy\nVerification status",
     "links": [
+      {
+        "href": "../features/site/download-surfaces.md",
+        "targetSlug": "docs-features-site-download-surfaces",
+        "text": "the website download surfaces article"
+      },
+      {
+        "href": "../features/desktop/transfer-surfaces.md",
+        "targetSlug": "docs-features-desktop-transfer-surfaces",
+        "text": "the desktop transfer surfaces article"
+      },
+      {
+        "href": "../features/site/download-surfaces.md",
+        "targetSlug": "docs-features-site-download-surfaces",
+        "text": "Website download surfaces"
+      },
       {
         "href": "canadian-tax-report-preparation.md",
         "targetSlug": "docs-site-canadian-tax-report-preparation",
@@ -1579,6 +1811,21 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
           [
             {
               "kind": "text",
+              "value": "A personal vocabulary, display name, or mark is local wording that stays in the visitor's own browser. It is never transmitted, never shared with another visitor, and never applied to the sentences that carry a legal, boundary, or disclosure statement: those spans are protected, so no local wording change can rewrite the paper-only statement, the prohibition on electronic filing, or a warning. See "
+            },
+            {
+              "kind": "link",
+              "text": "personal vocabulary",
+              "href": "../features/site/personal-vocabulary.md"
+            },
+            {
+              "kind": "text",
+              "value": "."
+            }
+          ],
+          [
+            {
+              "kind": "text",
               "value": "Do not treat browser-local preferences as a secure storage mechanism."
             }
           ],
@@ -1706,8 +1953,13 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "id": "related-articles"
       }
     ],
-    "plainText": "Local-first privacy\nStatus\n**Product requirement defined; packaged-runtime verification not yet published.**\nBehavior\nMaterial Tax Reporting is intended to keep tax-report preparation data on the user's computer. The public website is informational and must not request tax records, account credentials, government identifiers, or financial documents. The desktop application must not transmit tax data or a generated package to the CRA or a third-party filing service.\nLocal-first does not mean that every future feature is automatically offline or risk-free. Any feature that introduces a network request must disclose what is sent, where it is sent, why it is required, and how the user controls it before that feature is described as available. A network request must never be used for NETFILE, EFILE, electronic submission, direct CRA transmission, automatic filing, or a simulated submission.\nConfiguration\nThe website's presentation preferences are intended to remain in browser-local storage. They are separate from desktop tax data and can be reset by clearing the site's stored data. The website must not present these preferences as an account, synchronization service, or secure vault.\nNo desktop storage location, encryption mechanism, retention policy, backup behavior, or deletion workflow is claimed as verified yet. Those details must be documented from an implemented release rather than invented in advance.\nFailure modes\nBrowser storage is unavailable, blocked, full, or cleared, so website preferences return to defaults.\nA private-browsing session discards website preferences when the session ends.\nA future desktop feature requires network access but does not have a complete disclosure.\nAn official guidance link includes taxpayer data in its URL or request.\nA control implies that PDF generation or printing transmitted a return.\nA user assumes that local storage is the same as encryption, secure backup, or protection from another person who can access the computer.\nA user assumes that closing the application deletes retained data.\nThe product must describe the actual storage and network behavior. It must not use the term local-first as a substitute for concrete privacy information.\nSecurity and privacy\nDo not enter tax records or credentials into the public website.\nDo not treat browser-local preferences as a secure storage mechanism.\nDo not publish sensitive report content in issue trackers, discussions, or other public support channels.\nTreat the CRA mail-in PDF package as sensitive local data; generating it does not send it anywhere.\nUse official paper-filing and mailing guidance without including taxpayer data in the link.\nVerify desktop backup and deletion behavior against a released version before relying on it.\nVerification status\nThis documentation change did not inspect network traffic, packaged storage, encryption, PDF generation, printing, deletion, backup, or recovery behavior. The local-first statement and no-electronic-submission boundary are explicit product requirements, not runtime verification.\nRelated articles\nCanadian tax-report preparation\nMail-in PDF and manual review\nWebsite preferences and search\nVerification status",
+    "plainText": "Local-first privacy\nStatus\n**Product requirement defined; packaged-runtime verification not yet published.**\nBehavior\nMaterial Tax Reporting is intended to keep tax-report preparation data on the user's computer. The public website is informational and must not request tax records, account credentials, government identifiers, or financial documents. The desktop application must not transmit tax data or a generated package to the CRA or a third-party filing service.\nLocal-first does not mean that every future feature is automatically offline or risk-free. Any feature that introduces a network request must disclose what is sent, where it is sent, why it is required, and how the user controls it before that feature is described as available. A network request must never be used for NETFILE, EFILE, electronic submission, direct CRA transmission, automatic filing, or a simulated submission.\nConfiguration\nThe website's presentation preferences are intended to remain in browser-local storage. They are separate from desktop tax data and can be reset by clearing the site's stored data. The website must not present these preferences as an account, synchronization service, or secure vault.\nNo desktop storage location, encryption mechanism, retention policy, backup behavior, or deletion workflow is claimed as verified yet. Those details must be documented from an implemented release rather than invented in advance.\nFailure modes\nBrowser storage is unavailable, blocked, full, or cleared, so website preferences return to defaults.\nA private-browsing session discards website preferences when the session ends.\nA future desktop feature requires network access but does not have a complete disclosure.\nAn official guidance link includes taxpayer data in its URL or request.\nA control implies that PDF generation or printing transmitted a return.\nA user assumes that local storage is the same as encryption, secure backup, or protection from another person who can access the computer.\nA user assumes that closing the application deletes retained data.\nThe product must describe the actual storage and network behavior. It must not use the term local-first as a substitute for concrete privacy information.\nSecurity and privacy\nDo not enter tax records or credentials into the public website.\nA personal vocabulary, display name, or mark is local wording that stays in the visitor's own browser. It is never transmitted, never shared with another visitor, and never applied to the sentences that carry a legal, boundary, or disclosure statement: those spans are protected, so no local wording change can rewrite the paper-only statement, the prohibition on electronic filing, or a warning. See personal vocabulary.\nDo not treat browser-local preferences as a secure storage mechanism.\nDo not publish sensitive report content in issue trackers, discussions, or other public support channels.\nTreat the CRA mail-in PDF package as sensitive local data; generating it does not send it anywhere.\nUse official paper-filing and mailing guidance without including taxpayer data in the link.\nVerify desktop backup and deletion behavior against a released version before relying on it.\nVerification status\nThis documentation change did not inspect network traffic, packaged storage, encryption, PDF generation, printing, deletion, backup, or recovery behavior. The local-first statement and no-electronic-submission boundary are explicit product requirements, not runtime verification.\nRelated articles\nCanadian tax-report preparation\nMail-in PDF and manual review\nWebsite preferences and search\nVerification status",
     "links": [
+      {
+        "href": "../features/site/personal-vocabulary.md",
+        "targetSlug": "docs-features-site-personal-vocabulary",
+        "text": "personal vocabulary"
+      },
       {
         "href": "canadian-tax-report-preparation.md",
         "targetSlug": "docs-site-canadian-tax-report-preparation",
@@ -2235,7 +2487,78 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "inline": [
           {
             "kind": "text",
-            "value": "This is the initial public website documentation change. It creates the documentation structure and records product boundaries, privacy intent, website behavior, installer availability, the permanent prohibition on electronic filing, and the mandatory manual-review workflow without treating documentation as proof of a released desktop application."
+            "value": "Implementation source now exists for the website, the desktop application, and the shared packages, and the documentation describes that source. Source is not a released product: no article here treats the presence of a file as proof that a person built, packaged, installed, launched, or used anything. The product boundaries, privacy model, website behavior, installer position, the permanent prohibition on electronic filing, and the mandatory manual-review workflow are recorded as requirements, not as verified behavior."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The per-capability record, including each capability's implementation files, its state, and its explicit evidence gaps, is "
+          },
+          {
+            "kind": "code",
+            "value": "docs/features/feature-inventory.json"
+          },
+          {
+            "kind": "text",
+            "value": ". Its states describe source only."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "What was verified",
+        "id": "what-was-verified"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Exactly four things were run and their results observed:"
+          }
+        ]
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "The shared surface-kernel package compiled with no diagnostics, and its 89 tests passed."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "The local model package compiled with no diagnostics, and its 37 tests passed, along with the 6 tests of the local coding-assistant package."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "The website's production build completed and emitted its static bundle."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "The desktop application's build completed and all of its generated bundles parsed."
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Nothing beyond those four results is established. A successful build shows that source compiles and is emitted; it shows nothing about how a surface looks or behaves."
           }
         ]
       },
@@ -2250,7 +2573,7 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "inline": [
           {
             "kind": "text",
-            "value": "This accelerated implementation did not run:"
+            "value": "This change did not run:"
           }
         ]
       },
@@ -2261,7 +2584,13 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
           [
             {
               "kind": "text",
-              "value": "tests;"
+              "value": "application launches of the website or the desktop application;"
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "screenshots, recordings, or other captures;"
             }
           ],
           [
@@ -2273,7 +2602,7 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
           [
             {
               "kind": "text",
-              "value": "type checks;"
+              "value": "type checks beyond the packages' own compilation;"
             }
           ],
           [
@@ -2285,19 +2614,25 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
           [
             {
               "kind": "text",
-              "value": "reviews;"
+              "value": "browser-based user-interface quality assurance;"
             }
           ],
           [
             {
               "kind": "text",
-              "value": "screenshots or other captures; or"
+              "value": "desktop user-interface quality assurance;"
             }
           ],
           [
             {
               "kind": "text",
-              "value": "browser-based user-interface quality assurance."
+              "value": "packaging, installer, tag, or release steps; or"
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "performance measurement or native-speaker review of any Cantonese wording."
             }
           ]
         ]
@@ -2324,7 +2659,7 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
           [
             {
               "kind": "text",
-              "value": "A public desktop release or installer."
+              "value": "A public desktop release, installer, release asset, or download control. None exists."
             }
           ],
           [
@@ -2361,6 +2696,12 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
             {
               "kind": "text",
               "value": "Browser behavior, accessibility conformance, responsive layout, or deployment at the public site URL."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "Any behavior of the website or desktop capabilities listed in the feature inventory. Every one of them is source that no person has exercised."
             }
           ]
         ]
@@ -2467,6 +2808,11 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
       },
       {
         "level": 2,
+        "text": "What was verified",
+        "id": "what-was-verified"
+      },
+      {
+        "level": 2,
         "text": "What was not run",
         "id": "what-was-not-run"
       },
@@ -2491,7 +2837,7 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "id": "related-articles"
       }
     ],
-    "plainText": "Verification status\nStatus recorded by this change\nThis is the initial public website documentation change. It creates the documentation structure and records product boundaries, privacy intent, website behavior, installer availability, the permanent prohibition on electronic filing, and the mandatory manual-review workflow without treating documentation as proof of a released desktop application.\nWhat was not run\nThis accelerated implementation did not run:\ntests;\nlint checks;\ntype checks;\naccessibility checks;\nreviews;\nscreenshots or other captures; or\nbrowser-based user-interface quality assurance.\nNo statement in these articles should be read as evidence from one of those activities.\nWhat is not yet verified\nA public desktop release or installer.\nA packaged desktop runtime.\nSupported tax years, forms, schedules, calculations, imports, exports, or a CRA mail-in PDF package.\nThe mandatory review of every populated form, calculation, attachment, mailing destination, and signature field, including acknowledgement invalidation after a change.\nPDF generation, export, printing, package completeness, or official-link handling.\nLocal desktop storage, encryption, backup, retention, deletion, or recovery behavior.\nBrowser behavior, accessibility conformance, responsive layout, or deployment at the public site URL.\nEvidence required for future status updates\nA future documentation update should identify the exact release version and commit, the implemented feature, the applicable jurisdiction and tax year, the verification activity actually performed, and the public evidence supporting the claim. Installer availability should also include the verified release and asset details described in Installer and releases.\nNETFILE, EFILE, electronic submission, direct CRA transmission, and automatic filing are not features awaiting evidence. They are permanently outside the product boundary and must not be implemented, advertised, simulated, or implied.\nReporting a discrepancy\nIf the website and a published release disagree, treat the release's verified feature inventory and evidence as authoritative and report the documentation discrepancy without including personal tax data or credentials.\nRelated articles\nDocumentation index\nInstaller and releases\nMail-in PDF and manual review\nCanada and Ontario boundary",
+    "plainText": "Verification status\nStatus recorded by this change\nImplementation source now exists for the website, the desktop application, and the shared packages, and the documentation describes that source. Source is not a released product: no article here treats the presence of a file as proof that a person built, packaged, installed, launched, or used anything. The product boundaries, privacy model, website behavior, installer position, the permanent prohibition on electronic filing, and the mandatory manual-review workflow are recorded as requirements, not as verified behavior.\nThe per-capability record, including each capability's implementation files, its state, and its explicit evidence gaps, is docs/features/feature-inventory.json. Its states describe source only.\nWhat was verified\nExactly four things were run and their results observed:\nThe shared surface-kernel package compiled with no diagnostics, and its 89 tests passed.\nThe local model package compiled with no diagnostics, and its 37 tests passed, along with the 6 tests of the local coding-assistant package.\nThe website's production build completed and emitted its static bundle.\nThe desktop application's build completed and all of its generated bundles parsed.\nNothing beyond those four results is established. A successful build shows that source compiles and is emitted; it shows nothing about how a surface looks or behaves.\nWhat was not run\nThis change did not run:\napplication launches of the website or the desktop application;\nscreenshots, recordings, or other captures;\nlint checks;\ntype checks beyond the packages' own compilation;\naccessibility checks;\nbrowser-based user-interface quality assurance;\ndesktop user-interface quality assurance;\npackaging, installer, tag, or release steps; or\nperformance measurement or native-speaker review of any Cantonese wording.\nNo statement in these articles should be read as evidence from one of those activities.\nWhat is not yet verified\nA public desktop release, installer, release asset, or download control. None exists.\nA packaged desktop runtime.\nSupported tax years, forms, schedules, calculations, imports, exports, or a CRA mail-in PDF package.\nThe mandatory review of every populated form, calculation, attachment, mailing destination, and signature field, including acknowledgement invalidation after a change.\nPDF generation, export, printing, package completeness, or official-link handling.\nLocal desktop storage, encryption, backup, retention, deletion, or recovery behavior.\nBrowser behavior, accessibility conformance, responsive layout, or deployment at the public site URL.\nAny behavior of the website or desktop capabilities listed in the feature inventory. Every one of them is source that no person has exercised.\nEvidence required for future status updates\nA future documentation update should identify the exact release version and commit, the implemented feature, the applicable jurisdiction and tax year, the verification activity actually performed, and the public evidence supporting the claim. Installer availability should also include the verified release and asset details described in Installer and releases.\nNETFILE, EFILE, electronic submission, direct CRA transmission, and automatic filing are not features awaiting evidence. They are permanently outside the product boundary and must not be implemented, advertised, simulated, or implied.\nReporting a discrepancy\nIf the website and a published release disagree, treat the release's verified feature inventory and evidence as authoritative and report the documentation discrepancy without including personal tax data or credentials.\nRelated articles\nDocumentation index\nInstaller and releases\nMail-in PDF and manual review\nCanada and Ontario boundary",
     "links": [
       {
         "href": "installer-and-releases.md",
@@ -2542,7 +2888,7 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "inline": [
           {
             "kind": "text",
-            "value": "**Included in the initial website implementation; browser verification not performed in this change.**"
+            "value": "**Implemented in source; no browser verification has been performed.**"
           }
         ]
       },
@@ -2557,7 +2903,7 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "inline": [
           {
             "kind": "text",
-            "value": "The documentation website is designed as a responsive, tabbed interface using Material Design 3 principles. It provides documentation navigation, local presentation preferences, and site search. Search uses plain text by default and offers an anchored regular-expression builder beside the search field for users who deliberately enable pattern matching."
+            "value": "The documentation website is a responsive, tabbed interface built on Material Design 3 tokens. It provides documentation navigation, local presentation preferences, and site search. Search uses plain text by default and offers an anchored regular-expression builder beside the search field for visitors who deliberately enable pattern matching."
           }
         ]
       },
@@ -2566,7 +2912,43 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "inline": [
           {
             "kind": "text",
-            "value": "The regular-expression builder should expose the active pattern and flags, give syntax feedback, and keep invalid patterns from being applied as though they were valid. Search remains a documentation-navigation feature; it does not search a user's tax records or desktop files. The website must describe the product as a mail-in PDF preparation tool and must not advertise or simulate electronic filing."
+            "value": "The builder exposes the active pattern and flags, reports syntax feedback against a sample, and keeps an invalid pattern from being applied as though it were valid. One engine backs every search field on the site, so a pattern behaves the same way in a list, a filter, a picker, and a menu. The engine and its flag allowlist, length bounds, and anchor tokens are documented in "
+          },
+          {
+            "kind": "link",
+            "text": "the shared surface kernel",
+            "href": "../features/shared-surface-kernel/README.md"
+          },
+          {
+            "kind": "text",
+            "value": "; how the builder is bound beside each field on this site is documented in "
+          },
+          {
+            "kind": "link",
+            "text": "the website regular-expression builders article",
+            "href": "../features/site/regex-builders.md"
+          },
+          {
+            "kind": "text",
+            "value": ", and the equivalent desktop binding in "
+          },
+          {
+            "kind": "link",
+            "text": "the desktop regular-expression builders article",
+            "href": "../features/desktop/regex-builders.md"
+          },
+          {
+            "kind": "text",
+            "value": "."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Search remains a documentation-navigation feature. It searches the site's own bundled articles and lists; it does not search a visitor's tax records or desktop files, and it never sends a query anywhere. The website describes the product as a mail-in PDF preparation tool and must not advertise or simulate electronic filing."
           }
         ]
       },
@@ -2581,7 +2963,7 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "inline": [
           {
             "kind": "text",
-            "value": "Website preferences may include presentation choices such as theme and navigation state. These preferences are intended to be stored only in the visitor's browser and do not create an account. Clearing the site's stored data resets them."
+            "value": "The stored preference record holds the navigation dock position, theme, density, accent colour, font scale, motion setting, language mode, an English humour level and a Cantonese humour level, whether decorative emoji appear in headings, a local display name, the chosen mark, and the read-aloud settings. Alongside it, the site stores the tab layout, per-element appearance overrides, a personal vocabulary document, presentation schedules, element locks, local history, notifications, and support notes, each under its own versioned key."
           }
         ]
       },
@@ -2590,7 +2972,25 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "inline": [
           {
             "kind": "text",
-            "value": "The initial site should remain usable without saved preferences. If storage is unavailable, the site should continue with documented defaults and explain that persistence is unavailable rather than reporting a successful save."
+            "value": "Everything in the previous paragraph is stored only in the visitor's own browser. None of it creates an account, and none of it is transmitted. Clearing the site's stored data resets all of it. Individual articles describe each store: see "
+          },
+          {
+            "kind": "link",
+            "text": "website preferences and personalization",
+            "href": "../features/site/README.md"
+          },
+          {
+            "kind": "text",
+            "value": " for the full set."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The site remains usable without saved preferences. If storage is unavailable, the site continues with the documented defaults and states that persistence is unavailable rather than reporting a successful save."
           }
         ]
       },
@@ -2614,7 +3014,7 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "inline": [
           {
             "kind": "text",
-            "value": "These are implementation requirements. This documentation change did not perform an accessibility evaluation or browser interaction check."
+            "value": "These are implementation requirements, and the source is written to meet them. No accessibility evaluation, keyboard walkthrough, contrast measurement, or browser interaction check has been performed, so none of them is claimed as conformance."
           }
         ]
       },
@@ -2695,7 +3095,15 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "inline": [
           {
             "kind": "text",
-            "value": "No tests, lint checks, type checks, accessibility checks, reviews, screenshots, or browser-based quality assurance were run for this initial website documentation change."
+            "value": "The website's production build completed and emitted its static bundle. Nothing else about this surface was checked: no browser opened the site, and no test, lint check, type check, accessibility check, review, screenshot, or other capture was produced for it. The per-capability evidence gaps are recorded in "
+          },
+          {
+            "kind": "code",
+            "value": "docs/features/feature-inventory.json"
+          },
+          {
+            "kind": "text",
+            "value": "."
           }
         ]
       },
@@ -2709,6 +3117,13 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "kind": "list",
         "ordered": false,
         "items": [
+          [
+            {
+              "kind": "link",
+              "text": "Regular-expression builders",
+              "href": "../features/site/regex-builders.md"
+            }
+          ],
           [
             {
               "kind": "link",
@@ -2787,8 +3202,33 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "id": "related-articles"
       }
     ],
-    "plainText": "Website preferences, search, and accessibility\nStatus\n**Included in the initial website implementation; browser verification not performed in this change.**\nBehavior\nThe documentation website is designed as a responsive, tabbed interface using Material Design 3 principles. It provides documentation navigation, local presentation preferences, and site search. Search uses plain text by default and offers an anchored regular-expression builder beside the search field for users who deliberately enable pattern matching.\nThe regular-expression builder should expose the active pattern and flags, give syntax feedback, and keep invalid patterns from being applied as though they were valid. Search remains a documentation-navigation feature; it does not search a user's tax records or desktop files. The website must describe the product as a mail-in PDF preparation tool and must not advertise or simulate electronic filing.\nConfiguration\nWebsite preferences may include presentation choices such as theme and navigation state. These preferences are intended to be stored only in the visitor's browser and do not create an account. Clearing the site's stored data resets them.\nThe initial site should remain usable without saved preferences. If storage is unavailable, the site should continue with documented defaults and explain that persistence is unavailable rather than reporting a successful save.\nAccessibility\nThe site is designed for keyboard navigation, visible focus, semantic headings and landmarks, readable contrast, reduced-motion preferences, and responsive layouts suitable for narrow screens. Tab controls, preference controls, and search controls require accessible names and states.\nThese are implementation requirements. This documentation change did not perform an accessibility evaluation or browser interaction check.\nFailure modes\nBrowser storage is refused or cleared, causing preferences to reset.\nJavaScript is unavailable, limiting interactive navigation, preferences, or pattern search.\nA regular expression is invalid or exceeds the site's evaluation limits.\nA search has no matching article.\nA narrow viewport requires navigation to collapse without hiding the current location.\nThe site should retain readable documentation and honest status messages in these conditions. It must not imply that a preference was saved or a pattern was applied when it was not.\nSecurity and privacy\nSearch terms and preferences should remain local to the browser. Visitors should not paste tax records, credentials, account numbers, or other sensitive information into the website search field. The site must not use the search field as a network submission form, and no website control may suggest that it sends a return to the CRA.\nVerification status\nNo tests, lint checks, type checks, accessibility checks, reviews, screenshots, or browser-based quality assurance were run for this initial website documentation change.\nRelated articles\nLocal-first privacy\nMail-in PDF and manual review\nInstaller and releases\nVerification status",
+    "plainText": "Website preferences, search, and accessibility\nStatus\n**Implemented in source; no browser verification has been performed.**\nBehavior\nThe documentation website is a responsive, tabbed interface built on Material Design 3 tokens. It provides documentation navigation, local presentation preferences, and site search. Search uses plain text by default and offers an anchored regular-expression builder beside the search field for visitors who deliberately enable pattern matching.\nThe builder exposes the active pattern and flags, reports syntax feedback against a sample, and keeps an invalid pattern from being applied as though it were valid. One engine backs every search field on the site, so a pattern behaves the same way in a list, a filter, a picker, and a menu. The engine and its flag allowlist, length bounds, and anchor tokens are documented in the shared surface kernel; how the builder is bound beside each field on this site is documented in the website regular-expression builders article, and the equivalent desktop binding in the desktop regular-expression builders article.\nSearch remains a documentation-navigation feature. It searches the site's own bundled articles and lists; it does not search a visitor's tax records or desktop files, and it never sends a query anywhere. The website describes the product as a mail-in PDF preparation tool and must not advertise or simulate electronic filing.\nConfiguration\nThe stored preference record holds the navigation dock position, theme, density, accent colour, font scale, motion setting, language mode, an English humour level and a Cantonese humour level, whether decorative emoji appear in headings, a local display name, the chosen mark, and the read-aloud settings. Alongside it, the site stores the tab layout, per-element appearance overrides, a personal vocabulary document, presentation schedules, element locks, local history, notifications, and support notes, each under its own versioned key.\nEverything in the previous paragraph is stored only in the visitor's own browser. None of it creates an account, and none of it is transmitted. Clearing the site's stored data resets all of it. Individual articles describe each store: see website preferences and personalization for the full set.\nThe site remains usable without saved preferences. If storage is unavailable, the site continues with the documented defaults and states that persistence is unavailable rather than reporting a successful save.\nAccessibility\nThe site is designed for keyboard navigation, visible focus, semantic headings and landmarks, readable contrast, reduced-motion preferences, and responsive layouts suitable for narrow screens. Tab controls, preference controls, and search controls require accessible names and states.\nThese are implementation requirements, and the source is written to meet them. No accessibility evaluation, keyboard walkthrough, contrast measurement, or browser interaction check has been performed, so none of them is claimed as conformance.\nFailure modes\nBrowser storage is refused or cleared, causing preferences to reset.\nJavaScript is unavailable, limiting interactive navigation, preferences, or pattern search.\nA regular expression is invalid or exceeds the site's evaluation limits.\nA search has no matching article.\nA narrow viewport requires navigation to collapse without hiding the current location.\nThe site should retain readable documentation and honest status messages in these conditions. It must not imply that a preference was saved or a pattern was applied when it was not.\nSecurity and privacy\nSearch terms and preferences should remain local to the browser. Visitors should not paste tax records, credentials, account numbers, or other sensitive information into the website search field. The site must not use the search field as a network submission form, and no website control may suggest that it sends a return to the CRA.\nVerification status\nThe website's production build completed and emitted its static bundle. Nothing else about this surface was checked: no browser opened the site, and no test, lint check, type check, accessibility check, review, screenshot, or other capture was produced for it. The per-capability evidence gaps are recorded in docs/features/feature-inventory.json.\nRelated articles\nRegular-expression builders\nLocal-first privacy\nMail-in PDF and manual review\nInstaller and releases\nVerification status",
     "links": [
+      {
+        "href": "../features/shared-surface-kernel/README.md",
+        "targetSlug": "docs-features-shared-surface-kernel-readme",
+        "text": "the shared surface kernel"
+      },
+      {
+        "href": "../features/site/regex-builders.md",
+        "targetSlug": "docs-features-site-regex-builders",
+        "text": "the website regular-expression builders article"
+      },
+      {
+        "href": "../features/desktop/regex-builders.md",
+        "targetSlug": "docs-features-desktop-regex-builders",
+        "text": "the desktop regular-expression builders article"
+      },
+      {
+        "href": "../features/site/README.md",
+        "targetSlug": "docs-features-site-readme",
+        "text": "website preferences and personalization"
+      },
+      {
+        "href": "../features/site/regex-builders.md",
+        "targetSlug": "docs-features-site-regex-builders",
+        "text": "Regular-expression builders"
+      },
       {
         "href": "local-first-privacy.md",
         "targetSlug": "docs-site-local-first-privacy",
@@ -2812,6 +3252,599 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
     ]
   },
   {
+    "slug": "docs-features-readme",
+    "title": "Feature documentation",
+    "path": "docs/features/README.md",
+    "nodes": [
+      {
+        "kind": "heading",
+        "level": 1,
+        "text": "Feature documentation",
+        "id": "feature-documentation"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "This directory is the repository's feature record. Every capability that exists in source has an article here describing what it does, how it is configured, how it fails, what it keeps, and what has not been verified about it. Alongside the articles, "
+          },
+          {
+            "kind": "code",
+            "value": "feature-inventory.json"
+          },
+          {
+            "kind": "text",
+            "value": " holds the same picture in machine-readable form, one row per capability per surface."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Nothing in this directory is a release announcement. The repository contains source. It contains no installer, no release asset, and no download control, and no article here may be read as evidence that an application was built for distribution, packaged, installed, launched, or exercised by a person."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Which subtree owns which surface",
+        "id": "which-subtree-owns-which-surface"
+      },
+      {
+        "kind": "table",
+        "headers": [
+          "Directory",
+          "Surface it documents",
+          "Implementation it describes"
+        ],
+        "rows": [
+          [
+            "[`site/`](site/README.md)",
+            "The public documentation and landing website",
+            "`apps/site/`"
+          ],
+          [
+            "[`desktop/`](desktop/README.md)",
+            "The Windows desktop application",
+            "`apps/desktop/`"
+          ],
+          [
+            "[`shared-surface-kernel/`](shared-surface-kernel/README.md)",
+            "The engines both surfaces import",
+            "`packages/surface-kernel/`"
+          ],
+          [
+            "[`local-ollama-suite/`](local-ollama-suite/README.md)",
+            "The loopback-only local model suite",
+            "`packages/local-ollama/`"
+          ],
+          [
+            "[`local-coding-assistants/`](local-coding-assistants/README.md)",
+            "Guided, fail-closed local coding-assistant contracts",
+            "`packages/local-coding-assistants/`"
+          ],
+          [
+            "[`tax/`](tax/README.md)",
+            "The tax-domain model, rules, and boundaries",
+            "`packages/tax-domain/`"
+          ],
+          [
+            "[`pdf/`](pdf/README.md)",
+            "Paper-package preparation and mandatory manual review",
+            "`packages/cra-pdf/`"
+          ],
+          [
+            "[`slip-parser/`](slip-parser/README.md)",
+            "Local slip admission, classification, and extraction",
+            "`packages/slip-parser/`"
+          ]
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "A change edits the subtree that owns the surface it changed. This index, the inventory, and the website documentation under "
+          },
+          {
+            "kind": "link",
+            "text": "`docs/site/`",
+            "href": "../site/README.md"
+          },
+          {
+            "kind": "text",
+            "value": " are the only files that describe the repository as a whole."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "How to read the inventory",
+        "id": "how-to-read-the-inventory"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "code",
+            "value": "feature-inventory.json"
+          },
+          {
+            "kind": "text",
+            "value": " is hand-written and reviewed like any other source file. It is not generated, and no build step updates it."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Its top level records the schema version, the repository name, the surfaces covered, the evidence policy, and the permanent product boundary. Its "
+          },
+          {
+            "kind": "code",
+            "value": "features"
+          },
+          {
+            "kind": "text",
+            "value": " array holds one entry per capability per surface. A row is identified by its "
+          },
+          {
+            "kind": "code",
+            "value": "id"
+          },
+          {
+            "kind": "text",
+            "value": " and "
+          },
+          {
+            "kind": "code",
+            "value": "surface"
+          },
+          {
+            "kind": "text",
+            "value": " together: the same canonical "
+          },
+          {
+            "kind": "code",
+            "value": "id"
+          },
+          {
+            "kind": "text",
+            "value": " appears once for the website and once for the desktop application when both implement it, because the two surfaces are verified separately and can hold different states."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Each row carries:"
+          }
+        ]
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "code",
+              "value": "implementation"
+            },
+            {
+              "kind": "text",
+              "value": " — the repository-relative files that contain the capability, optionally narrowed to a symbol with "
+            },
+            {
+              "kind": "code",
+              "value": "#"
+            },
+            {
+              "kind": "text",
+              "value": ";"
+            }
+          ],
+          [
+            {
+              "kind": "code",
+              "value": "documentation"
+            },
+            {
+              "kind": "text",
+              "value": " — the articles that describe it, which must already exist;"
+            }
+          ],
+          [
+            {
+              "kind": "code",
+              "value": "changelog"
+            },
+            {
+              "kind": "text",
+              "value": " — the changelog files that record it;"
+            }
+          ],
+          [
+            {
+              "kind": "code",
+              "value": "test"
+            },
+            {
+              "kind": "text",
+              "value": " — the automated tests that exercise it, empty when there are none;"
+            }
+          ],
+          [
+            {
+              "kind": "code",
+              "value": "runtimeInteraction"
+            },
+            {
+              "kind": "text",
+              "value": " — what a person would have to do to exercise the capability, written so a reader can see that nobody has done it yet;"
+            }
+          ],
+          [
+            {
+              "kind": "code",
+              "value": "captureEvidence"
+            },
+            {
+              "kind": "text",
+              "value": " — a screenshot, recording, or other capture, and "
+            },
+            {
+              "kind": "code",
+              "value": "\"none\""
+            },
+            {
+              "kind": "text",
+              "value": " when none exists; and"
+            }
+          ],
+          [
+            {
+              "kind": "code",
+              "value": "boundaryNote"
+            },
+            {
+              "kind": "text",
+              "value": " — how the capability relates to the paper-only product boundary and to local-only data."
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 3,
+        "text": "What each state means",
+        "id": "what-each-state-means"
+      },
+      {
+        "kind": "table",
+        "headers": [
+          "`state`",
+          "Meaning"
+        ],
+        "rows": [
+          [
+            "`implemented`",
+            "The capability is present in source in the named implementation files, in the form the article describes."
+          ],
+          [
+            "`partial`",
+            "Source exists but does not cover the whole capability the article describes. The row's `runtimeInteraction` or `boundaryNote` names what is missing."
+          ],
+          [
+            "`absent`",
+            "No source implements the capability on this surface."
+          ]
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "code",
+            "value": "state"
+          },
+          {
+            "kind": "text",
+            "value": " is derived from the source, never from the documentation. An article describing a capability does not make it "
+          },
+          {
+            "kind": "code",
+            "value": "implemented"
+          },
+          {
+            "kind": "text",
+            "value": ", and a missing article does not make an implemented capability "
+          },
+          {
+            "kind": "code",
+            "value": "partial"
+          },
+          {
+            "kind": "text",
+            "value": ". None of the three values says anything about verification: a row can be "
+          },
+          {
+            "kind": "code",
+            "value": "implemented"
+          },
+          {
+            "kind": "text",
+            "value": " with an empty "
+          },
+          {
+            "kind": "code",
+            "value": "test"
+          },
+          {
+            "kind": "text",
+            "value": " array, no capture, and no runtime interaction, and that combination is the normal state of this repository today."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 3,
+        "text": "The evidence rule",
+        "id": "the-evidence-rule"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Empty arrays and "
+          },
+          {
+            "kind": "code",
+            "value": "\"none\""
+          },
+          {
+            "kind": "text",
+            "value": " are the honest default. They record an absence, not an omission, and must never be filled with intent, with a plan, or with a path that does not yet exist. A row may claim runtime or capture evidence only after a real built surface was exercised and the result recorded. Reading source never upgrades a row."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "How an article is written",
+        "id": "how-an-article-is-written"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "An article describes shipped behaviour only, in the present tense. Anything that is designed, intended, or planned but not present in source belongs under a clearly labelled **Not yet available** heading, written as a description of what does not exist rather than as a feature. A control that cannot work is named as unavailable, with the reason, rather than shown as a placeholder."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Every article ends with a Verification section that names exactly what was and was not run for it."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "The public wording contract",
+        "id": "the-public-wording-contract"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "This repository is public. Every user-visible string in it — documentation, source comments, interface copy, changelog entries, commit messages, and workflow output — satisfies all of the following."
+          }
+        ]
+      },
+      {
+        "kind": "list",
+        "ordered": true,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "**Ordinary professional English.** No private operational terminology, personal filesystem paths, host names, tunnel or builder identifiers, tokens, or internal infrastructure references appear anywhere, in line with the Public records section of the repository instructions in "
+            },
+            {
+              "kind": "code",
+              "value": "AGENTS.md"
+            },
+            {
+              "kind": "text",
+              "value": "."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "**The filing boundary is permanent.** No copy implements, offers, advertises, simulates, or implies NETFILE, EFILE, electronic submission, direct transmission to a tax authority, or automatic filing. Each feature article restates that its surface does not move the paper-only boundary. The boundary may be described and prohibited; it is never approached."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "**No unearned verification claim.** No copy asserts a build, installer, release, test, lint, type check, accessibility check, screenshot, capture, performance measurement, or native-speaker review that did not happen. \"The source contains\" is never written as \"the product does\". Every article ends in a Verification section naming exactly what was not run."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "**No fabricated tax content.** No real taxpayer data, no fabricated sample return, no demonstration form output, and no realistic-looking example figures, slips, addresses, or project files. Test fixtures are invented values, labelled as synthetic."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "**Intent and shipped behaviour stay visibly separate.** An unavailable capability is named as unavailable. It is not rendered as a disabled placeholder that reads like a feature, and it is not written in the present tense."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "**Tax statements are sourced.** Any tax statement names its tax year and cites a current official Canada Revenue Agency or Ontario source. No rate, rule, form, mailing address, or deadline is invented, inferred, or carried forward from an earlier year without a citation."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "**No premature download.** No download control, link, asset name, filename, size, or digest appears before a verified immutable release asset exists."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "**One product name.** The existing public product name is kept and no new brand is introduced. No name or mark is positioned so that it implies Canada Revenue Agency endorsement, certification, or affiliation."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "**Bilingual copy agrees on facts.** English and Hong Kong-style Cantonese forms are factually identical, and the humour level never changes a factual, legal, or boundary statement. Where a string carries a fact, its humour variants are the same string."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "**Manifests and lockfiles stay synchronized.** A change that edits a package manifest also regenerates both the root "
+            },
+            {
+              "kind": "code",
+              "value": "package-lock.json"
+            },
+            {
+              "kind": "text",
+              "value": " and the "
+            },
+            {
+              "kind": "code",
+              "value": "apps/site/package-lock.json"
+            },
+            {
+              "kind": "text",
+              "value": " that the publish workflow installs from at "
+            },
+            {
+              "kind": "code",
+              "value": ".github/workflows/pages.yml"
+            },
+            {
+              "kind": "text",
+              "value": ". A documentation change that would require a manifest edit is routed through the lane that owns the manifest instead of editing a lockfile beside the prose."
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Verification status",
+        "id": "verification-status"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "This index and "
+          },
+          {
+            "kind": "code",
+            "value": "feature-inventory.json"
+          },
+          {
+            "kind": "text",
+            "value": " were written by reading the repository's source and the articles they reference, and by parsing the inventory to confirm that every path it names exists. No application was launched, no capture was taken, and no test, lint check, type check, accessibility check, browser interaction, desktop interaction, packaging run, installer, tag, or release was produced for this change. The record of what has and has not been proven for the website is "
+          },
+          {
+            "kind": "link",
+            "text": "the website verification status",
+            "href": "../site/verification-status.md"
+          },
+          {
+            "kind": "text",
+            "value": "."
+          }
+        ]
+      }
+    ],
+    "outline": [
+      {
+        "level": 1,
+        "text": "Feature documentation",
+        "id": "feature-documentation"
+      },
+      {
+        "level": 2,
+        "text": "Which subtree owns which surface",
+        "id": "which-subtree-owns-which-surface"
+      },
+      {
+        "level": 2,
+        "text": "How to read the inventory",
+        "id": "how-to-read-the-inventory"
+      },
+      {
+        "level": 3,
+        "text": "What each state means",
+        "id": "what-each-state-means"
+      },
+      {
+        "level": 3,
+        "text": "The evidence rule",
+        "id": "the-evidence-rule"
+      },
+      {
+        "level": 2,
+        "text": "How an article is written",
+        "id": "how-an-article-is-written"
+      },
+      {
+        "level": 2,
+        "text": "The public wording contract",
+        "id": "the-public-wording-contract"
+      },
+      {
+        "level": 2,
+        "text": "Verification status",
+        "id": "verification-status"
+      }
+    ],
+    "plainText": "Feature documentation\nThis directory is the repository's feature record. Every capability that exists in source has an article here describing what it does, how it is configured, how it fails, what it keeps, and what has not been verified about it. Alongside the articles, feature-inventory.json holds the same picture in machine-readable form, one row per capability per surface.\nNothing in this directory is a release announcement. The repository contains source. It contains no installer, no release asset, and no download control, and no article here may be read as evidence that an application was built for distribution, packaged, installed, launched, or exercised by a person.\nWhich subtree owns which surface\nDirectory Surface it documents Implementation it describes [`site/`](site/README.md) The public documentation and landing website `apps/site/` [`desktop/`](desktop/README.md) The Windows desktop application `apps/desktop/` [`shared-surface-kernel/`](shared-surface-kernel/README.md) The engines both surfaces import `packages/surface-kernel/` [`local-ollama-suite/`](local-ollama-suite/README.md) The loopback-only local model suite `packages/local-ollama/` [`local-coding-assistants/`](local-coding-assistants/README.md) Guided, fail-closed local coding-assistant contracts `packages/local-coding-assistants/` [`tax/`](tax/README.md) The tax-domain model, rules, and boundaries `packages/tax-domain/` [`pdf/`](pdf/README.md) Paper-package preparation and mandatory manual review `packages/cra-pdf/` [`slip-parser/`](slip-parser/README.md) Local slip admission, classification, and extraction `packages/slip-parser/`\nA change edits the subtree that owns the surface it changed. This index, the inventory, and the website documentation under `docs/site/` are the only files that describe the repository as a whole.\nHow to read the inventory\nfeature-inventory.json is hand-written and reviewed like any other source file. It is not generated, and no build step updates it.\nIts top level records the schema version, the repository name, the surfaces covered, the evidence policy, and the permanent product boundary. Its features array holds one entry per capability per surface. A row is identified by its id and surface together: the same canonical id appears once for the website and once for the desktop application when both implement it, because the two surfaces are verified separately and can hold different states.\nEach row carries:\nimplementation — the repository-relative files that contain the capability, optionally narrowed to a symbol with #;\ndocumentation — the articles that describe it, which must already exist;\nchangelog — the changelog files that record it;\ntest — the automated tests that exercise it, empty when there are none;\nruntimeInteraction — what a person would have to do to exercise the capability, written so a reader can see that nobody has done it yet;\ncaptureEvidence — a screenshot, recording, or other capture, and \"none\" when none exists; and\nboundaryNote — how the capability relates to the paper-only product boundary and to local-only data.\nWhat each state means\n`state` Meaning `implemented` The capability is present in source in the named implementation files, in the form the article describes. `partial` Source exists but does not cover the whole capability the article describes. The row's `runtimeInteraction` or `boundaryNote` names what is missing. `absent` No source implements the capability on this surface.\nstate is derived from the source, never from the documentation. An article describing a capability does not make it implemented, and a missing article does not make an implemented capability partial. None of the three values says anything about verification: a row can be implemented with an empty test array, no capture, and no runtime interaction, and that combination is the normal state of this repository today.\nThe evidence rule\nEmpty arrays and \"none\" are the honest default. They record an absence, not an omission, and must never be filled with intent, with a plan, or with a path that does not yet exist. A row may claim runtime or capture evidence only after a real built surface was exercised and the result recorded. Reading source never upgrades a row.\nHow an article is written\nAn article describes shipped behaviour only, in the present tense. Anything that is designed, intended, or planned but not present in source belongs under a clearly labelled **Not yet available** heading, written as a description of what does not exist rather than as a feature. A control that cannot work is named as unavailable, with the reason, rather than shown as a placeholder.\nEvery article ends with a Verification section that names exactly what was and was not run for it.\nThe public wording contract\nThis repository is public. Every user-visible string in it — documentation, source comments, interface copy, changelog entries, commit messages, and workflow output — satisfies all of the following.\n**Ordinary professional English.** No private operational terminology, personal filesystem paths, host names, tunnel or builder identifiers, tokens, or internal infrastructure references appear anywhere, in line with the Public records section of the repository instructions in AGENTS.md.\n**The filing boundary is permanent.** No copy implements, offers, advertises, simulates, or implies NETFILE, EFILE, electronic submission, direct transmission to a tax authority, or automatic filing. Each feature article restates that its surface does not move the paper-only boundary. The boundary may be described and prohibited; it is never approached.\n**No unearned verification claim.** No copy asserts a build, installer, release, test, lint, type check, accessibility check, screenshot, capture, performance measurement, or native-speaker review that did not happen. \"The source contains\" is never written as \"the product does\". Every article ends in a Verification section naming exactly what was not run.\n**No fabricated tax content.** No real taxpayer data, no fabricated sample return, no demonstration form output, and no realistic-looking example figures, slips, addresses, or project files. Test fixtures are invented values, labelled as synthetic.\n**Intent and shipped behaviour stay visibly separate.** An unavailable capability is named as unavailable. It is not rendered as a disabled placeholder that reads like a feature, and it is not written in the present tense.\n**Tax statements are sourced.** Any tax statement names its tax year and cites a current official Canada Revenue Agency or Ontario source. No rate, rule, form, mailing address, or deadline is invented, inferred, or carried forward from an earlier year without a citation.\n**No premature download.** No download control, link, asset name, filename, size, or digest appears before a verified immutable release asset exists.\n**One product name.** The existing public product name is kept and no new brand is introduced. No name or mark is positioned so that it implies Canada Revenue Agency endorsement, certification, or affiliation.\n**Bilingual copy agrees on facts.** English and Hong Kong-style Cantonese forms are factually identical, and the humour level never changes a factual, legal, or boundary statement. Where a string carries a fact, its humour variants are the same string.\n**Manifests and lockfiles stay synchronized.** A change that edits a package manifest also regenerates both the root package-lock.json and the apps/site/package-lock.json that the publish workflow installs from at .github/workflows/pages.yml. A documentation change that would require a manifest edit is routed through the lane that owns the manifest instead of editing a lockfile beside the prose.\nVerification status\nThis index and feature-inventory.json were written by reading the repository's source and the articles they reference, and by parsing the inventory to confirm that every path it names exists. No application was launched, no capture was taken, and no test, lint check, type check, accessibility check, browser interaction, desktop interaction, packaging run, installer, tag, or release was produced for this change. The record of what has and has not been proven for the website is the website verification status.",
+    "links": [
+      {
+        "href": "../site/README.md",
+        "targetSlug": "docs-site-readme",
+        "text": "`docs/site/`"
+      },
+      {
+        "href": "../site/verification-status.md",
+        "targetSlug": "docs-site-verification-status",
+        "text": "the website verification status"
+      }
+    ]
+  },
+  {
     "slug": "docs-features-desktop-readme",
     "title": "Windows desktop application",
     "path": "docs/features/desktop/README.md",
@@ -2827,7 +3860,7 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "inline": [
           {
             "kind": "text",
-            "value": "The desktop application guides one tax report at a time and keeps the report local. It is not a filing client. Its delivery boundary is a manually reviewed CRA mail-in PDF package."
+            "value": "The desktop application guides one tax report at a time and keeps the report local. It is not a filing client. Its delivery boundary is a manually reviewed CRA mail-in PDF package. The application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing."
           }
         ]
       },
@@ -2836,6 +3869,12 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "level": 2,
         "text": "Articles",
         "id": "articles"
+      },
+      {
+        "kind": "heading",
+        "level": 3,
+        "text": "Preparing a report",
+        "id": "preparing-a-report"
       },
       {
         "kind": "list",
@@ -2860,6 +3899,156 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
               "kind": "link",
               "text": "Append-only local history",
               "href": "local-history.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "File converter",
+              "href": "file-converter.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Transfer surfaces",
+              "href": "transfer-surfaces.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Exports and bulk actions",
+              "href": "exports-and-bulk-actions.md"
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 3,
+        "text": "Personalizing the application",
+        "id": "personalizing-the-application"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "link",
+              "text": "Settings and preferences",
+              "href": "settings-and-preferences.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Language modes and humour levels",
+              "href": "language-and-funny-levels.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Personal vocabulary",
+              "href": "personal-vocabulary.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Read aloud",
+              "href": "narration.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Scheduled and external settings",
+              "href": "scheduled-and-external-settings.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Display name and logo",
+              "href": "display-name-and-logo.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Appearance editor",
+              "href": "appearance-editor.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Element locks",
+              "href": "element-locks.md"
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 3,
+        "text": "Finding your way around",
+        "id": "finding-your-way-around"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "link",
+              "text": "Tabs and navigation",
+              "href": "tabs-and-navigation.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Command palette",
+              "href": "command-palette.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Regex builders",
+              "href": "regex-builders.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Documentation browser",
+              "href": "documentation-browser.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Changelog viewer",
+              "href": "changelog-viewer.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Notifications",
+              "href": "notifications.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Authenticator and support tickets",
+              "href": "authenticator-and-support.md"
             }
           ]
         ]
@@ -2920,6 +4109,22 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
           [
             {
               "kind": "code",
+              "value": "apps/desktop/dist/changelog.json"
+            }
+          ],
+          [
+            {
+              "kind": "code",
+              "value": "apps/desktop/dist/docs/docs-manifest.json"
+            },
+            {
+              "kind": "text",
+              "value": " and one copied article per tracked feature article"
+            }
+          ],
+          [
+            {
+              "kind": "code",
               "value": "apps/desktop/dist/build-provenance.json"
             }
           ]
@@ -2930,7 +4135,22 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "inline": [
           {
             "kind": "text",
-            "value": "The provenance record contains the repository commit and the three application entry outputs. The build was deliberately not run in the implementation lane documented by the current unreleased changelog entry."
+            "value": "The provenance record contains the repository commit and every generated output. The build was run for the change documented by the current unreleased changelog entry, and it completed. No packaging, installer creation, release, runtime launch or screenshot was performed."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Security posture",
+        "id": "security-posture"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The interface process runs with context isolation on, node integration off and the sandbox on, behind a content security policy that forbids connections. Every file, dialog, process and network decision happens in the privileged main process. The interface subscribes to exactly four allowlisted push channels: transfer progress, local model state, notification pushes and applied schedules. There is no wildcard channel."
           }
         ]
       },
@@ -2962,9 +4182,29 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "id": "articles"
       },
       {
+        "level": 3,
+        "text": "Preparing a report",
+        "id": "preparing-a-report"
+      },
+      {
+        "level": 3,
+        "text": "Personalizing the application",
+        "id": "personalizing-the-application"
+      },
+      {
+        "level": 3,
+        "text": "Finding your way around",
+        "id": "finding-your-way-around"
+      },
+      {
         "level": 2,
         "text": "Build entry points",
         "id": "build-entry-points"
+      },
+      {
+        "level": 2,
+        "text": "Security posture",
+        "id": "security-posture"
       },
       {
         "level": 2,
@@ -2972,7 +4212,7 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "id": "delivery-boundary"
       }
     ],
-    "plainText": "Windows desktop application\nThe desktop application guides one tax report at a time and keeps the report local. It is not a filing client. Its delivery boundary is a manually reviewed CRA mail-in PDF package.\nArticles\nGuided report wizard\nEncrypted project files\nAppend-only local history\nBuild entry points\nThe app-owned build script is npm run build --workspace @material-tax-reporting/desktop. It declares dist/main/main.js as the Electron main entry and produces these packaging inputs:\napps/desktop/dist/main/main.js\napps/desktop/dist/preload/index.cjs\napps/desktop/dist/renderer/index.html\napps/desktop/dist/build-provenance.json\nThe provenance record contains the repository commit and the three application entry outputs. The build was deliberately not run in the implementation lane documented by the current unreleased changelog entry.\nDelivery boundary\nThe application does not offer or imply NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing. The manual review checklist covers populated forms, calculations, attachments, the mailing destination, and signature fields independently.",
+    "plainText": "Windows desktop application\nThe desktop application guides one tax report at a time and keeps the report local. It is not a filing client. Its delivery boundary is a manually reviewed CRA mail-in PDF package. The application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing.\nArticles\nPreparing a report\nGuided report wizard\nEncrypted project files\nAppend-only local history\nFile converter\nTransfer surfaces\nExports and bulk actions\nPersonalizing the application\nSettings and preferences\nLanguage modes and humour levels\nPersonal vocabulary\nRead aloud\nScheduled and external settings\nDisplay name and logo\nAppearance editor\nElement locks\nFinding your way around\nTabs and navigation\nCommand palette\nRegex builders\nDocumentation browser\nChangelog viewer\nNotifications\nAuthenticator and support tickets\nBuild entry points\nThe app-owned build script is npm run build --workspace @material-tax-reporting/desktop. It declares dist/main/main.js as the Electron main entry and produces these packaging inputs:\napps/desktop/dist/main/main.js\napps/desktop/dist/preload/index.cjs\napps/desktop/dist/renderer/index.html\napps/desktop/dist/changelog.json\napps/desktop/dist/docs/docs-manifest.json and one copied article per tracked feature article\napps/desktop/dist/build-provenance.json\nThe provenance record contains the repository commit and every generated output. The build was run for the change documented by the current unreleased changelog entry, and it completed. No packaging, installer creation, release, runtime launch or screenshot was performed.\nSecurity posture\nThe interface process runs with context isolation on, node integration off and the sandbox on, behind a content security policy that forbids connections. Every file, dialog, process and network decision happens in the privileged main process. The interface subscribes to exactly four allowlisted push channels: transfer progress, local model state, notification pushes and applied schedules. There is no wildcard channel.\nDelivery boundary\nThe application does not offer or imply NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing. The manual review checklist covers populated forms, calculations, attachments, the mailing destination, and signature fields independently.",
     "links": [
       {
         "href": "guided-report-wizard.md",
@@ -2983,6 +4223,1803 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "href": "encrypted-project-files.md",
         "targetSlug": "docs-features-desktop-encrypted-project-files",
         "text": "Encrypted project files"
+      },
+      {
+        "href": "local-history.md",
+        "targetSlug": "docs-features-desktop-local-history",
+        "text": "Append-only local history"
+      },
+      {
+        "href": "file-converter.md",
+        "targetSlug": "docs-features-desktop-file-converter",
+        "text": "File converter"
+      },
+      {
+        "href": "transfer-surfaces.md",
+        "targetSlug": "docs-features-desktop-transfer-surfaces",
+        "text": "Transfer surfaces"
+      },
+      {
+        "href": "exports-and-bulk-actions.md",
+        "targetSlug": "docs-features-desktop-exports-and-bulk-actions",
+        "text": "Exports and bulk actions"
+      },
+      {
+        "href": "settings-and-preferences.md",
+        "targetSlug": "docs-features-desktop-settings-and-preferences",
+        "text": "Settings and preferences"
+      },
+      {
+        "href": "language-and-funny-levels.md",
+        "targetSlug": "docs-features-desktop-language-and-funny-levels",
+        "text": "Language modes and humour levels"
+      },
+      {
+        "href": "personal-vocabulary.md",
+        "targetSlug": "docs-features-desktop-personal-vocabulary",
+        "text": "Personal vocabulary"
+      },
+      {
+        "href": "narration.md",
+        "targetSlug": "docs-features-desktop-narration",
+        "text": "Read aloud"
+      },
+      {
+        "href": "scheduled-and-external-settings.md",
+        "targetSlug": "docs-features-desktop-scheduled-and-external-settings",
+        "text": "Scheduled and external settings"
+      },
+      {
+        "href": "display-name-and-logo.md",
+        "targetSlug": "docs-features-desktop-display-name-and-logo",
+        "text": "Display name and logo"
+      },
+      {
+        "href": "appearance-editor.md",
+        "targetSlug": "docs-features-desktop-appearance-editor",
+        "text": "Appearance editor"
+      },
+      {
+        "href": "element-locks.md",
+        "targetSlug": "docs-features-desktop-element-locks",
+        "text": "Element locks"
+      },
+      {
+        "href": "tabs-and-navigation.md",
+        "targetSlug": "docs-features-desktop-tabs-and-navigation",
+        "text": "Tabs and navigation"
+      },
+      {
+        "href": "command-palette.md",
+        "targetSlug": "docs-features-desktop-command-palette",
+        "text": "Command palette"
+      },
+      {
+        "href": "regex-builders.md",
+        "targetSlug": "docs-features-desktop-regex-builders",
+        "text": "Regex builders"
+      },
+      {
+        "href": "documentation-browser.md",
+        "targetSlug": "docs-features-desktop-documentation-browser",
+        "text": "Documentation browser"
+      },
+      {
+        "href": "changelog-viewer.md",
+        "targetSlug": "docs-features-desktop-changelog-viewer",
+        "text": "Changelog viewer"
+      },
+      {
+        "href": "notifications.md",
+        "targetSlug": "docs-features-desktop-notifications",
+        "text": "Notifications"
+      },
+      {
+        "href": "authenticator-and-support.md",
+        "targetSlug": "docs-features-desktop-authenticator-and-support",
+        "text": "Authenticator and support tickets"
+      }
+    ]
+  },
+  {
+    "slug": "docs-features-desktop-appearance-editor",
+    "title": "Appearance editor",
+    "path": "docs/features/desktop/appearance-editor.md",
+    "nodes": [
+      {
+        "kind": "heading",
+        "level": 1,
+        "text": "Appearance editor",
+        "id": "appearance-editor"
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "What this is",
+        "id": "what-this-is"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Every rendered element that may be restyled carries a stable identifier. The appearance editor is opened from an element context menu, from a tab or group context menu, and from command-palette results, and it writes bounded custom properties for that one element."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Shift and F10 opens the editor for the focused element, so the feature is reachable without a pointer."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Tokens and the dark path",
+        "id": "tokens-and-the-dark-path"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The shared Material 3 tokens are the single source of the palette. The complete light palette is defined on the root, and the dark values are defined twice: once for the system preference, guarded so an explicit light choice still wins, and once for an explicit dark choice. The reduced-motion path is complete: it is honoured both from the system preference and from an explicit motion choice."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "What can be overridden",
+        "id": "what-can-be-overridden"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Font family, size, weight, line height, letter spacing and letter case; background, text, outline and accent colour; corner radius and padding. Text alignment is not one of the overridable properties in this build, so it is not offered rather than being offered and always refused."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Colours are translated across hex, rgb, hsl, hwb, lab, lch, oklab, oklch and the supported colour keywords. A value that falls outside a destination gamut is reported as out of gamut rather than quietly clamped."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "What appearance can never do",
+        "id": "what-appearance-can-never-do"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "An override that would make a required disclosure unreadable is refused by the privileged boundary and the refusal is shown in the editor. The mail-in-only boundary statements and the wizard validation line are protected: their text stays at least 12 pixels and their colours must reach a contrast ratio of at least 4.5 to 1."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Presets",
+        "id": "presets"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Overrides can be exported and imported as a bounded preset document. An imported preset is validated property by property, and any entry that would break a protected disclosure is refused and reported. One property, one element, or every override can be reset."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Boundaries",
+        "id": "boundaries"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing. Appearance changes presentation only."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Failure modes",
+        "id": "failure-modes"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "An unknown property or a value containing a URL, a declaration terminator or a block terminator is refused."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "A preset over its size or element limit is refused with the exact reason."
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Verification status",
+        "id": "verification-status"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application build ("
+          },
+          {
+            "kind": "code",
+            "value": "npm run build --workspace @material-tax-reporting/desktop"
+          },
+          {
+            "kind": "text",
+            "value": ") was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Related articles",
+        "id": "related-articles"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "link",
+              "text": "Element locks",
+              "href": "element-locks.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Settings and preferences",
+              "href": "settings-and-preferences.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Command palette",
+              "href": "command-palette.md"
+            }
+          ]
+        ]
+      }
+    ],
+    "outline": [
+      {
+        "level": 1,
+        "text": "Appearance editor",
+        "id": "appearance-editor"
+      },
+      {
+        "level": 2,
+        "text": "What this is",
+        "id": "what-this-is"
+      },
+      {
+        "level": 2,
+        "text": "Tokens and the dark path",
+        "id": "tokens-and-the-dark-path"
+      },
+      {
+        "level": 2,
+        "text": "What can be overridden",
+        "id": "what-can-be-overridden"
+      },
+      {
+        "level": 2,
+        "text": "What appearance can never do",
+        "id": "what-appearance-can-never-do"
+      },
+      {
+        "level": 2,
+        "text": "Presets",
+        "id": "presets"
+      },
+      {
+        "level": 2,
+        "text": "Boundaries",
+        "id": "boundaries"
+      },
+      {
+        "level": 2,
+        "text": "Failure modes",
+        "id": "failure-modes"
+      },
+      {
+        "level": 2,
+        "text": "Verification status",
+        "id": "verification-status"
+      },
+      {
+        "level": 2,
+        "text": "Related articles",
+        "id": "related-articles"
+      }
+    ],
+    "plainText": "Appearance editor\nWhat this is\nEvery rendered element that may be restyled carries a stable identifier. The appearance editor is opened from an element context menu, from a tab or group context menu, and from command-palette results, and it writes bounded custom properties for that one element.\nShift and F10 opens the editor for the focused element, so the feature is reachable without a pointer.\nTokens and the dark path\nThe shared Material 3 tokens are the single source of the palette. The complete light palette is defined on the root, and the dark values are defined twice: once for the system preference, guarded so an explicit light choice still wins, and once for an explicit dark choice. The reduced-motion path is complete: it is honoured both from the system preference and from an explicit motion choice.\nWhat can be overridden\nFont family, size, weight, line height, letter spacing and letter case; background, text, outline and accent colour; corner radius and padding. Text alignment is not one of the overridable properties in this build, so it is not offered rather than being offered and always refused.\nColours are translated across hex, rgb, hsl, hwb, lab, lch, oklab, oklch and the supported colour keywords. A value that falls outside a destination gamut is reported as out of gamut rather than quietly clamped.\nWhat appearance can never do\nAn override that would make a required disclosure unreadable is refused by the privileged boundary and the refusal is shown in the editor. The mail-in-only boundary statements and the wizard validation line are protected: their text stays at least 12 pixels and their colours must reach a contrast ratio of at least 4.5 to 1.\nPresets\nOverrides can be exported and imported as a bounded preset document. An imported preset is validated property by property, and any entry that would break a protected disclosure is refused and reported. One property, one element, or every override can be reset.\nBoundaries\nThe application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing. Appearance changes presentation only.\nFailure modes\nAn unknown property or a value containing a URL, a declaration terminator or a block terminator is refused.\nA preset over its size or element limit is refused with the exact reason.\nVerification status\nThe application build (npm run build --workspace @material-tax-reporting/desktop) was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here.\nRelated articles\nElement locks\nSettings and preferences\nCommand palette",
+    "links": [
+      {
+        "href": "element-locks.md",
+        "targetSlug": "docs-features-desktop-element-locks",
+        "text": "Element locks"
+      },
+      {
+        "href": "settings-and-preferences.md",
+        "targetSlug": "docs-features-desktop-settings-and-preferences",
+        "text": "Settings and preferences"
+      },
+      {
+        "href": "command-palette.md",
+        "targetSlug": "docs-features-desktop-command-palette",
+        "text": "Command palette"
+      }
+    ]
+  },
+  {
+    "slug": "docs-features-desktop-authenticator-and-support",
+    "title": "Authenticator and support tickets",
+    "path": "docs/features/desktop/authenticator-and-support.md",
+    "nodes": [
+      {
+        "kind": "heading",
+        "level": 1,
+        "text": "Authenticator and support tickets",
+        "id": "authenticator-and-support-tickets"
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Authenticator",
+        "id": "authenticator"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application implements the standard time-based one-time password algorithms with the host cryptography implementation. This is a standards utility only: it is bound to no account in this product, it grants access to nothing, and it performs no network access."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "A pairing is presented three ways, all generated on this computer: a pairing code painted as inline vector shapes, the raw pairing address, and the manual base32 secret. The countdown and the next-code window are shown once a pairing is confirmed. A wrong confirmation code is refused with a clear message that discloses nothing about the secret."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The shared secret is sealed with the operating system's protected storage and is never returned to the interface after the registration screen is dismissed."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "There is no network, no email and no server-side recovery. If the shared secret is lost, the pairing has to be removed and registered again."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Support tickets",
+        "id": "support-tickets"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "A ticket is a private note stored on this computer, with open, in progress and resolved states, searchable with the shared search builder and exportable through the export path."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The Social Insurance Number, an address and project answers are never placed in a ticket body. Anything shaped like a government identifier, a monetary amount or an absolute filesystem path is removed from the body before it is stored, and the categories that were removed are reported back."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Boundaries",
+        "id": "boundaries"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing. Neither the authenticator nor a ticket sends anything anywhere."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Failure modes",
+        "id": "failure-modes"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "Protected storage that is unavailable prevents a pairing from being stored, and says so."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "A ticket state change that is not an allowed transition is refused with the reason."
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Verification status",
+        "id": "verification-status"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application build ("
+          },
+          {
+            "kind": "code",
+            "value": "npm run build --workspace @material-tax-reporting/desktop"
+          },
+          {
+            "kind": "text",
+            "value": ") was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Related articles",
+        "id": "related-articles"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "link",
+              "text": "Element locks",
+              "href": "element-locks.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Exports and bulk actions",
+              "href": "exports-and-bulk-actions.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Notifications",
+              "href": "notifications.md"
+            }
+          ]
+        ]
+      }
+    ],
+    "outline": [
+      {
+        "level": 1,
+        "text": "Authenticator and support tickets",
+        "id": "authenticator-and-support-tickets"
+      },
+      {
+        "level": 2,
+        "text": "Authenticator",
+        "id": "authenticator"
+      },
+      {
+        "level": 2,
+        "text": "Support tickets",
+        "id": "support-tickets"
+      },
+      {
+        "level": 2,
+        "text": "Boundaries",
+        "id": "boundaries"
+      },
+      {
+        "level": 2,
+        "text": "Failure modes",
+        "id": "failure-modes"
+      },
+      {
+        "level": 2,
+        "text": "Verification status",
+        "id": "verification-status"
+      },
+      {
+        "level": 2,
+        "text": "Related articles",
+        "id": "related-articles"
+      }
+    ],
+    "plainText": "Authenticator and support tickets\nAuthenticator\nThe application implements the standard time-based one-time password algorithms with the host cryptography implementation. This is a standards utility only: it is bound to no account in this product, it grants access to nothing, and it performs no network access.\nA pairing is presented three ways, all generated on this computer: a pairing code painted as inline vector shapes, the raw pairing address, and the manual base32 secret. The countdown and the next-code window are shown once a pairing is confirmed. A wrong confirmation code is refused with a clear message that discloses nothing about the secret.\nThe shared secret is sealed with the operating system's protected storage and is never returned to the interface after the registration screen is dismissed.\nThere is no network, no email and no server-side recovery. If the shared secret is lost, the pairing has to be removed and registered again.\nSupport tickets\nA ticket is a private note stored on this computer, with open, in progress and resolved states, searchable with the shared search builder and exportable through the export path.\nThe Social Insurance Number, an address and project answers are never placed in a ticket body. Anything shaped like a government identifier, a monetary amount or an absolute filesystem path is removed from the body before it is stored, and the categories that were removed are reported back.\nBoundaries\nThe application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing. Neither the authenticator nor a ticket sends anything anywhere.\nFailure modes\nProtected storage that is unavailable prevents a pairing from being stored, and says so.\nA ticket state change that is not an allowed transition is refused with the reason.\nVerification status\nThe application build (npm run build --workspace @material-tax-reporting/desktop) was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here.\nRelated articles\nElement locks\nExports and bulk actions\nNotifications",
+    "links": [
+      {
+        "href": "element-locks.md",
+        "targetSlug": "docs-features-desktop-element-locks",
+        "text": "Element locks"
+      },
+      {
+        "href": "exports-and-bulk-actions.md",
+        "targetSlug": "docs-features-desktop-exports-and-bulk-actions",
+        "text": "Exports and bulk actions"
+      },
+      {
+        "href": "notifications.md",
+        "targetSlug": "docs-features-desktop-notifications",
+        "text": "Notifications"
+      }
+    ]
+  },
+  {
+    "slug": "docs-features-desktop-changelog-viewer",
+    "title": "Changelog viewer",
+    "path": "docs/features/desktop/changelog-viewer.md",
+    "nodes": [
+      {
+        "kind": "heading",
+        "level": 1,
+        "text": "Changelog viewer",
+        "id": "changelog-viewer"
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "What this is",
+        "id": "what-this-is"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application build parses the tracked changelog files into a bounded record and adds the recorded commits for the application paths. No version-control process is ever started at application run time: the viewer reads only the record the build produced, from an allowlisted packaged location."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "What the viewer shows",
+        "id": "what-the-viewer-shows"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Each entry is presented verbatim as generated: its area, version, date, category, entry text and commit identifier. A from-and-to date filter and a text search with its own builder narrow the list. Entries that carry no commit identifier say so instead of showing a guessed one."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The viewer presents the current unreleased heading exactly as written, including any statement about which checks were and were not run. It does not label anything a release, a tag or a verified build."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Commit links",
+        "id": "commit-links"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "A commit link is built only from a recorded repository address and a real commit identifier. Opening one leaves the application, so it happens only after an explicit confirmation. When no repository address was recorded, no link is offered."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Boundaries",
+        "id": "boundaries"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Failure modes",
+        "id": "failure-modes"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "When no packaged changelog record is present, the destination names the searched locations and says the build has"
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "not been run for this copy."
+          }
+        ]
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "A malformed or over-large record is ignored rather than partially trusted."
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Verification status",
+        "id": "verification-status"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application build ("
+          },
+          {
+            "kind": "code",
+            "value": "npm run build --workspace @material-tax-reporting/desktop"
+          },
+          {
+            "kind": "text",
+            "value": ") was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Related articles",
+        "id": "related-articles"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "link",
+              "text": "Documentation browser",
+              "href": "documentation-browser.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Transfer surfaces",
+              "href": "transfer-surfaces.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Settings and preferences",
+              "href": "settings-and-preferences.md"
+            }
+          ]
+        ]
+      }
+    ],
+    "outline": [
+      {
+        "level": 1,
+        "text": "Changelog viewer",
+        "id": "changelog-viewer"
+      },
+      {
+        "level": 2,
+        "text": "What this is",
+        "id": "what-this-is"
+      },
+      {
+        "level": 2,
+        "text": "What the viewer shows",
+        "id": "what-the-viewer-shows"
+      },
+      {
+        "level": 2,
+        "text": "Commit links",
+        "id": "commit-links"
+      },
+      {
+        "level": 2,
+        "text": "Boundaries",
+        "id": "boundaries"
+      },
+      {
+        "level": 2,
+        "text": "Failure modes",
+        "id": "failure-modes"
+      },
+      {
+        "level": 2,
+        "text": "Verification status",
+        "id": "verification-status"
+      },
+      {
+        "level": 2,
+        "text": "Related articles",
+        "id": "related-articles"
+      }
+    ],
+    "plainText": "Changelog viewer\nWhat this is\nThe application build parses the tracked changelog files into a bounded record and adds the recorded commits for the application paths. No version-control process is ever started at application run time: the viewer reads only the record the build produced, from an allowlisted packaged location.\nWhat the viewer shows\nEach entry is presented verbatim as generated: its area, version, date, category, entry text and commit identifier. A from-and-to date filter and a text search with its own builder narrow the list. Entries that carry no commit identifier say so instead of showing a guessed one.\nThe viewer presents the current unreleased heading exactly as written, including any statement about which checks were and were not run. It does not label anything a release, a tag or a verified build.\nCommit links\nA commit link is built only from a recorded repository address and a real commit identifier. Opening one leaves the application, so it happens only after an explicit confirmation. When no repository address was recorded, no link is offered.\nBoundaries\nThe application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing.\nFailure modes\nWhen no packaged changelog record is present, the destination names the searched locations and says the build has\nnot been run for this copy.\nA malformed or over-large record is ignored rather than partially trusted.\nVerification status\nThe application build (npm run build --workspace @material-tax-reporting/desktop) was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here.\nRelated articles\nDocumentation browser\nTransfer surfaces\nSettings and preferences",
+    "links": [
+      {
+        "href": "documentation-browser.md",
+        "targetSlug": "docs-features-desktop-documentation-browser",
+        "text": "Documentation browser"
+      },
+      {
+        "href": "transfer-surfaces.md",
+        "targetSlug": "docs-features-desktop-transfer-surfaces",
+        "text": "Transfer surfaces"
+      },
+      {
+        "href": "settings-and-preferences.md",
+        "targetSlug": "docs-features-desktop-settings-and-preferences",
+        "text": "Settings and preferences"
+      }
+    ]
+  },
+  {
+    "slug": "docs-features-desktop-command-palette",
+    "title": "Command palette",
+    "path": "docs/features/desktop/command-palette.md",
+    "nodes": [
+      {
+        "kind": "heading",
+        "level": 1,
+        "text": "Command palette",
+        "id": "command-palette"
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "What this is",
+        "id": "what-this-is"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "A palette that opens with Control, Shift and F from anywhere in the application, and from a visible title-bar button so pointer and touch users are not limited to a shortcut."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Coverage",
+        "id": "coverage"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The registry covers every destination and tab, every wizard question, every project action (create, preview and open, save, save a copy, close), every history action (search, compare, label, restore, undo, verify), every personalization setting and the appearance editor. Coverage is asserted rather than assumed: any personalization setting without a command is reported inside the palette itself."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Behaviour",
+        "id": "behaviour"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "Setting results are operable inline in their own result row, so a value can be changed without leaving the list."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "Selecting any other result teleports to the exact element: the owning destination is opened or focused, the element"
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "is scrolled into view, and focus moves to it."
+          }
+        ]
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "The input is a full search builder with its own pattern, flags, sample text and match list."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "Up and Down move the active result, Enter runs it, focus is trapped inside the dialog, and Escape returns focus to"
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "the element that opened it."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Boundaries",
+        "id": "boundaries"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing. No palette command files, transmits or submits anything."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Failure modes",
+        "id": "failure-modes"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "A search that matches nothing says so instead of showing an empty list."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "A result whose target element is not present simply focuses the destination panel."
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Verification status",
+        "id": "verification-status"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application build ("
+          },
+          {
+            "kind": "code",
+            "value": "npm run build --workspace @material-tax-reporting/desktop"
+          },
+          {
+            "kind": "text",
+            "value": ") was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Related articles",
+        "id": "related-articles"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "link",
+              "text": "Tabs and navigation",
+              "href": "tabs-and-navigation.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Regex builders",
+              "href": "regex-builders.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Settings and preferences",
+              "href": "settings-and-preferences.md"
+            }
+          ]
+        ]
+      }
+    ],
+    "outline": [
+      {
+        "level": 1,
+        "text": "Command palette",
+        "id": "command-palette"
+      },
+      {
+        "level": 2,
+        "text": "What this is",
+        "id": "what-this-is"
+      },
+      {
+        "level": 2,
+        "text": "Coverage",
+        "id": "coverage"
+      },
+      {
+        "level": 2,
+        "text": "Behaviour",
+        "id": "behaviour"
+      },
+      {
+        "level": 2,
+        "text": "Boundaries",
+        "id": "boundaries"
+      },
+      {
+        "level": 2,
+        "text": "Failure modes",
+        "id": "failure-modes"
+      },
+      {
+        "level": 2,
+        "text": "Verification status",
+        "id": "verification-status"
+      },
+      {
+        "level": 2,
+        "text": "Related articles",
+        "id": "related-articles"
+      }
+    ],
+    "plainText": "Command palette\nWhat this is\nA palette that opens with Control, Shift and F from anywhere in the application, and from a visible title-bar button so pointer and touch users are not limited to a shortcut.\nCoverage\nThe registry covers every destination and tab, every wizard question, every project action (create, preview and open, save, save a copy, close), every history action (search, compare, label, restore, undo, verify), every personalization setting and the appearance editor. Coverage is asserted rather than assumed: any personalization setting without a command is reported inside the palette itself.\nBehaviour\nSetting results are operable inline in their own result row, so a value can be changed without leaving the list.\nSelecting any other result teleports to the exact element: the owning destination is opened or focused, the element\nis scrolled into view, and focus moves to it.\nThe input is a full search builder with its own pattern, flags, sample text and match list.\nUp and Down move the active result, Enter runs it, focus is trapped inside the dialog, and Escape returns focus to\nthe element that opened it.\nBoundaries\nThe application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing. No palette command files, transmits or submits anything.\nFailure modes\nA search that matches nothing says so instead of showing an empty list.\nA result whose target element is not present simply focuses the destination panel.\nVerification status\nThe application build (npm run build --workspace @material-tax-reporting/desktop) was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here.\nRelated articles\nTabs and navigation\nRegex builders\nSettings and preferences",
+    "links": [
+      {
+        "href": "tabs-and-navigation.md",
+        "targetSlug": "docs-features-desktop-tabs-and-navigation",
+        "text": "Tabs and navigation"
+      },
+      {
+        "href": "regex-builders.md",
+        "targetSlug": "docs-features-desktop-regex-builders",
+        "text": "Regex builders"
+      },
+      {
+        "href": "settings-and-preferences.md",
+        "targetSlug": "docs-features-desktop-settings-and-preferences",
+        "text": "Settings and preferences"
+      }
+    ]
+  },
+  {
+    "slug": "docs-features-desktop-display-name-and-logo",
+    "title": "Display name and logo",
+    "path": "docs/features/desktop/display-name-and-logo.md",
+    "nodes": [
+      {
+        "kind": "heading",
+        "level": 1,
+        "text": "Display name and logo",
+        "id": "display-name-and-logo"
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "What this is",
+        "id": "what-this-is"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application's displayed name and mark can be changed. A bounded display name of at most 60 characters replaces the shipped name in the title bar, in the window title and on the About card. A logo may be one of the shipped marks or a local raster image."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Local image rules",
+        "id": "local-image-rules"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "A chosen image is validated in the privileged boundary: only PNG and JPEG are accepted, the declared type must match the leading bytes of the file, the file must be no larger than 256 KB, and a PNG larger than 512 by 512 pixels is refused. Vector markup is rejected outright. The accepted image is returned as an inline data address, which the shipped content security policy already permits."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "This is presentation only",
+        "id": "this-is-presentation-only"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The About card states it plainly: the package name, the project file extension, the file-dialog filter labels and the application data location are unchanged, so a renamed application still opens exactly the same project files."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Boundaries",
+        "id": "boundaries"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing. Renaming the application does not rename or re-scope anything the report itself depends on."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Failure modes",
+        "id": "failure-modes"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "An image whose contents do not match its declared format is refused with that reason."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "An over-large image or an over-large pixel dimension is refused before anything is stored."
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Verification status",
+        "id": "verification-status"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application build ("
+          },
+          {
+            "kind": "code",
+            "value": "npm run build --workspace @material-tax-reporting/desktop"
+          },
+          {
+            "kind": "text",
+            "value": ") was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Related articles",
+        "id": "related-articles"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "link",
+              "text": "Settings and preferences",
+              "href": "settings-and-preferences.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Appearance editor",
+              "href": "appearance-editor.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Tabs and navigation",
+              "href": "tabs-and-navigation.md"
+            }
+          ]
+        ]
+      }
+    ],
+    "outline": [
+      {
+        "level": 1,
+        "text": "Display name and logo",
+        "id": "display-name-and-logo"
+      },
+      {
+        "level": 2,
+        "text": "What this is",
+        "id": "what-this-is"
+      },
+      {
+        "level": 2,
+        "text": "Local image rules",
+        "id": "local-image-rules"
+      },
+      {
+        "level": 2,
+        "text": "This is presentation only",
+        "id": "this-is-presentation-only"
+      },
+      {
+        "level": 2,
+        "text": "Boundaries",
+        "id": "boundaries"
+      },
+      {
+        "level": 2,
+        "text": "Failure modes",
+        "id": "failure-modes"
+      },
+      {
+        "level": 2,
+        "text": "Verification status",
+        "id": "verification-status"
+      },
+      {
+        "level": 2,
+        "text": "Related articles",
+        "id": "related-articles"
+      }
+    ],
+    "plainText": "Display name and logo\nWhat this is\nThe application's displayed name and mark can be changed. A bounded display name of at most 60 characters replaces the shipped name in the title bar, in the window title and on the About card. A logo may be one of the shipped marks or a local raster image.\nLocal image rules\nA chosen image is validated in the privileged boundary: only PNG and JPEG are accepted, the declared type must match the leading bytes of the file, the file must be no larger than 256 KB, and a PNG larger than 512 by 512 pixels is refused. Vector markup is rejected outright. The accepted image is returned as an inline data address, which the shipped content security policy already permits.\nThis is presentation only\nThe About card states it plainly: the package name, the project file extension, the file-dialog filter labels and the application data location are unchanged, so a renamed application still opens exactly the same project files.\nBoundaries\nThe application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing. Renaming the application does not rename or re-scope anything the report itself depends on.\nFailure modes\nAn image whose contents do not match its declared format is refused with that reason.\nAn over-large image or an over-large pixel dimension is refused before anything is stored.\nVerification status\nThe application build (npm run build --workspace @material-tax-reporting/desktop) was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here.\nRelated articles\nSettings and preferences\nAppearance editor\nTabs and navigation",
+    "links": [
+      {
+        "href": "settings-and-preferences.md",
+        "targetSlug": "docs-features-desktop-settings-and-preferences",
+        "text": "Settings and preferences"
+      },
+      {
+        "href": "appearance-editor.md",
+        "targetSlug": "docs-features-desktop-appearance-editor",
+        "text": "Appearance editor"
+      },
+      {
+        "href": "tabs-and-navigation.md",
+        "targetSlug": "docs-features-desktop-tabs-and-navigation",
+        "text": "Tabs and navigation"
+      }
+    ]
+  },
+  {
+    "slug": "docs-features-desktop-documentation-browser",
+    "title": "Documentation browser",
+    "path": "docs/features/desktop/documentation-browser.md",
+    "nodes": [
+      {
+        "kind": "heading",
+        "level": 1,
+        "text": "Documentation browser",
+        "id": "documentation-browser"
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "What this is",
+        "id": "what-this-is"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application build copies the tracked feature articles into the packaged resources and writes a manifest beside them. At run time the browser resolves that manifest from a fixed list of candidate locations, using the same bounded, allowlisted discipline as the packaged runtime lookup, and refuses any path that resolves outside the packaged root."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Rendering",
+        "id": "rendering"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Markdown is rendered from a typed node list rather than from an HTML string, so the shipped content security policy keeps holding. Headings, paragraphs, ordered and unordered lists, fenced code, pipe tables, inline code and links are supported. Links to other packaged articles resolve inside the browser; anything else is not followed."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Each article shows an outline of its own headings, and the search field is a full search builder over the article text that reports the heading each match sits under."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Deep links from the wizard",
+        "id": "deep-links-from-the-wizard"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Every wizard step names the article that owns it, and the step's own control opens that article directly."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Boundaries",
+        "id": "boundaries"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing. Every packaged article restates that boundary."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Failure modes",
+        "id": "failure-modes"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "When no packaged manifest is present, the destination names the searched locations and explains that the"
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "application build has not been run for this copy."
+          }
+        ]
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "A link that resolves to no packaged article names the missing article rather than leaving a blank pane."
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Verification status",
+        "id": "verification-status"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application build ("
+          },
+          {
+            "kind": "code",
+            "value": "npm run build --workspace @material-tax-reporting/desktop"
+          },
+          {
+            "kind": "text",
+            "value": ") was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Related articles",
+        "id": "related-articles"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "link",
+              "text": "Changelog viewer",
+              "href": "changelog-viewer.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Guided report wizard",
+              "href": "guided-report-wizard.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Regex builders",
+              "href": "regex-builders.md"
+            }
+          ]
+        ]
+      }
+    ],
+    "outline": [
+      {
+        "level": 1,
+        "text": "Documentation browser",
+        "id": "documentation-browser"
+      },
+      {
+        "level": 2,
+        "text": "What this is",
+        "id": "what-this-is"
+      },
+      {
+        "level": 2,
+        "text": "Rendering",
+        "id": "rendering"
+      },
+      {
+        "level": 2,
+        "text": "Deep links from the wizard",
+        "id": "deep-links-from-the-wizard"
+      },
+      {
+        "level": 2,
+        "text": "Boundaries",
+        "id": "boundaries"
+      },
+      {
+        "level": 2,
+        "text": "Failure modes",
+        "id": "failure-modes"
+      },
+      {
+        "level": 2,
+        "text": "Verification status",
+        "id": "verification-status"
+      },
+      {
+        "level": 2,
+        "text": "Related articles",
+        "id": "related-articles"
+      }
+    ],
+    "plainText": "Documentation browser\nWhat this is\nThe application build copies the tracked feature articles into the packaged resources and writes a manifest beside them. At run time the browser resolves that manifest from a fixed list of candidate locations, using the same bounded, allowlisted discipline as the packaged runtime lookup, and refuses any path that resolves outside the packaged root.\nRendering\nMarkdown is rendered from a typed node list rather than from an HTML string, so the shipped content security policy keeps holding. Headings, paragraphs, ordered and unordered lists, fenced code, pipe tables, inline code and links are supported. Links to other packaged articles resolve inside the browser; anything else is not followed.\nEach article shows an outline of its own headings, and the search field is a full search builder over the article text that reports the heading each match sits under.\nDeep links from the wizard\nEvery wizard step names the article that owns it, and the step's own control opens that article directly.\nBoundaries\nThe application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing. Every packaged article restates that boundary.\nFailure modes\nWhen no packaged manifest is present, the destination names the searched locations and explains that the\napplication build has not been run for this copy.\nA link that resolves to no packaged article names the missing article rather than leaving a blank pane.\nVerification status\nThe application build (npm run build --workspace @material-tax-reporting/desktop) was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here.\nRelated articles\nChangelog viewer\nGuided report wizard\nRegex builders",
+    "links": [
+      {
+        "href": "changelog-viewer.md",
+        "targetSlug": "docs-features-desktop-changelog-viewer",
+        "text": "Changelog viewer"
+      },
+      {
+        "href": "guided-report-wizard.md",
+        "targetSlug": "docs-features-desktop-guided-report-wizard",
+        "text": "Guided report wizard"
+      },
+      {
+        "href": "regex-builders.md",
+        "targetSlug": "docs-features-desktop-regex-builders",
+        "text": "Regex builders"
+      }
+    ]
+  },
+  {
+    "slug": "docs-features-desktop-element-locks",
+    "title": "Element locks",
+    "path": "docs/features/desktop/element-locks.md",
+    "nodes": [
+      {
+        "kind": "heading",
+        "level": 1,
+        "text": "Element locks",
+        "id": "element-locks"
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "What this is",
+        "id": "what-this-is"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "A person can lock an individual element, or one appearance property of an element, behind an answer only they know. Each lock carries its own credential, its own grace period and its own recovery note."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "These are presentation locks",
+        "id": "these-are-presentation-locks"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The unlock copy says it plainly: element locks only guard against accidental edits in this interface. They are not a security control and they do not protect stored data. Project confidentiality comes from the project password and the encrypted project file."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "How the secret is handled",
+        "id": "how-the-secret-is-handled"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The interface process never holds a comparison secret. A candidate answer is sent to the privileged boundary, which derives a salted verifier and answers only accepted or not accepted. Each lock keeps its own salt and verifier, and the record is sealed with the operating system's protected storage using the same pattern as the project key store, so no second protected-storage mechanism exists in the application."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Attempts are rate limited in the privileged boundary. After five unsuccessful answers a cooldown applies before another attempt is accepted."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "What a lock may never cover",
+        "id": "what-a-lock-may-never-cover"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The manual PDF review checklist, the mail-in-only disclosure, the wizard validation line, and the ability to save or close a project can never be locked. Attempting to lock one of those elements is refused."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "History",
+        "id": "history"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Every lock, unlock, unsuccessful attempt and reset is recorded as an append-only entry in the project history when a project is open, under the shared action names."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Boundaries",
+        "id": "boundaries"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Failure modes",
+        "id": "failure-modes"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "Protected storage that is unavailable prevents a lock from being stored, and says so."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "A reset removes the lock without needing the answer and records the reset; it is the documented recovery path."
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Verification status",
+        "id": "verification-status"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application build ("
+          },
+          {
+            "kind": "code",
+            "value": "npm run build --workspace @material-tax-reporting/desktop"
+          },
+          {
+            "kind": "text",
+            "value": ") was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Related articles",
+        "id": "related-articles"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "link",
+              "text": "Appearance editor",
+              "href": "appearance-editor.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Authenticator and support tickets",
+              "href": "authenticator-and-support.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Append-only local history",
+              "href": "local-history.md"
+            }
+          ]
+        ]
+      }
+    ],
+    "outline": [
+      {
+        "level": 1,
+        "text": "Element locks",
+        "id": "element-locks"
+      },
+      {
+        "level": 2,
+        "text": "What this is",
+        "id": "what-this-is"
+      },
+      {
+        "level": 2,
+        "text": "These are presentation locks",
+        "id": "these-are-presentation-locks"
+      },
+      {
+        "level": 2,
+        "text": "How the secret is handled",
+        "id": "how-the-secret-is-handled"
+      },
+      {
+        "level": 2,
+        "text": "What a lock may never cover",
+        "id": "what-a-lock-may-never-cover"
+      },
+      {
+        "level": 2,
+        "text": "History",
+        "id": "history"
+      },
+      {
+        "level": 2,
+        "text": "Boundaries",
+        "id": "boundaries"
+      },
+      {
+        "level": 2,
+        "text": "Failure modes",
+        "id": "failure-modes"
+      },
+      {
+        "level": 2,
+        "text": "Verification status",
+        "id": "verification-status"
+      },
+      {
+        "level": 2,
+        "text": "Related articles",
+        "id": "related-articles"
+      }
+    ],
+    "plainText": "Element locks\nWhat this is\nA person can lock an individual element, or one appearance property of an element, behind an answer only they know. Each lock carries its own credential, its own grace period and its own recovery note.\nThese are presentation locks\nThe unlock copy says it plainly: element locks only guard against accidental edits in this interface. They are not a security control and they do not protect stored data. Project confidentiality comes from the project password and the encrypted project file.\nHow the secret is handled\nThe interface process never holds a comparison secret. A candidate answer is sent to the privileged boundary, which derives a salted verifier and answers only accepted or not accepted. Each lock keeps its own salt and verifier, and the record is sealed with the operating system's protected storage using the same pattern as the project key store, so no second protected-storage mechanism exists in the application.\nAttempts are rate limited in the privileged boundary. After five unsuccessful answers a cooldown applies before another attempt is accepted.\nWhat a lock may never cover\nThe manual PDF review checklist, the mail-in-only disclosure, the wizard validation line, and the ability to save or close a project can never be locked. Attempting to lock one of those elements is refused.\nHistory\nEvery lock, unlock, unsuccessful attempt and reset is recorded as an append-only entry in the project history when a project is open, under the shared action names.\nBoundaries\nThe application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing.\nFailure modes\nProtected storage that is unavailable prevents a lock from being stored, and says so.\nA reset removes the lock without needing the answer and records the reset; it is the documented recovery path.\nVerification status\nThe application build (npm run build --workspace @material-tax-reporting/desktop) was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here.\nRelated articles\nAppearance editor\nAuthenticator and support tickets\nAppend-only local history",
+    "links": [
+      {
+        "href": "appearance-editor.md",
+        "targetSlug": "docs-features-desktop-appearance-editor",
+        "text": "Appearance editor"
+      },
+      {
+        "href": "authenticator-and-support.md",
+        "targetSlug": "docs-features-desktop-authenticator-and-support",
+        "text": "Authenticator and support tickets"
       },
       {
         "href": "local-history.md",
@@ -3310,6 +6347,578 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
     ]
   },
   {
+    "slug": "docs-features-desktop-exports-and-bulk-actions",
+    "title": "Exports and bulk actions",
+    "path": "docs/features/desktop/exports-and-bulk-actions.md",
+    "nodes": [
+      {
+        "kind": "heading",
+        "level": 1,
+        "text": "Exports and bulk actions",
+        "id": "exports-and-bulk-actions"
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "What this is",
+        "id": "what-this-is"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The currently filtered view of the history, the notifications, the changelog, the support tickets, an appearance preset or the settings can be written to a file the person chooses, in JSON, CSV, Markdown or plain text."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "The manifest",
+        "id": "the-manifest"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Every export carries a header block stating the encoding and line endings, the export schema version, the exact filter that produced the rows, the row count and what was deliberately left out. Attachment bytes, personal vocabulary content, lock verifiers and authenticator secrets are always omitted, and the header says so."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "CSV cells are neutralized so a value cannot be interpreted as a spreadsheet formula."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Redaction is on by default",
+        "id": "redaction-is-on-by-default"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The declared identity answers — the Social Insurance Number, the date of birth and the address — are replaced by a marker unless the person ticks the option and types the confirmation phrase, modelled on the existing replace-project gate. The manifest records which choice was made."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Bulk actions",
+        "id": "bulk-actions"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "History rows and notification rows can be multi-selected. Every bulk action previews its exact scope before it runs, naming the count, the filter and the first few affected rows. A bulk history action is recorded through the append-only history under the shared action names."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "External editor handoff",
+        "id": "external-editor-handoff"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application uses one executable-discovery path, shared with the rest of the repository. A handoff opens only the file that was just written or the folder containing it; the application-private instances root is never opened or revealed. When no supported editor is detected, the surface says so and offers reveal-in-folder instead."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Boundaries",
+        "id": "boundaries"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing. An export is a local file. It is not a return, and writing one files nothing."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Failure modes",
+        "id": "failure-modes"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "A request over the row, column or cell limits is refused with the exact limit."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "A failed write leaves no partial file at the destination."
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Verification status",
+        "id": "verification-status"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application build ("
+          },
+          {
+            "kind": "code",
+            "value": "npm run build --workspace @material-tax-reporting/desktop"
+          },
+          {
+            "kind": "text",
+            "value": ") was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Related articles",
+        "id": "related-articles"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "link",
+              "text": "Transfer surfaces",
+              "href": "transfer-surfaces.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Notifications",
+              "href": "notifications.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Append-only local history",
+              "href": "local-history.md"
+            }
+          ]
+        ]
+      }
+    ],
+    "outline": [
+      {
+        "level": 1,
+        "text": "Exports and bulk actions",
+        "id": "exports-and-bulk-actions"
+      },
+      {
+        "level": 2,
+        "text": "What this is",
+        "id": "what-this-is"
+      },
+      {
+        "level": 2,
+        "text": "The manifest",
+        "id": "the-manifest"
+      },
+      {
+        "level": 2,
+        "text": "Redaction is on by default",
+        "id": "redaction-is-on-by-default"
+      },
+      {
+        "level": 2,
+        "text": "Bulk actions",
+        "id": "bulk-actions"
+      },
+      {
+        "level": 2,
+        "text": "External editor handoff",
+        "id": "external-editor-handoff"
+      },
+      {
+        "level": 2,
+        "text": "Boundaries",
+        "id": "boundaries"
+      },
+      {
+        "level": 2,
+        "text": "Failure modes",
+        "id": "failure-modes"
+      },
+      {
+        "level": 2,
+        "text": "Verification status",
+        "id": "verification-status"
+      },
+      {
+        "level": 2,
+        "text": "Related articles",
+        "id": "related-articles"
+      }
+    ],
+    "plainText": "Exports and bulk actions\nWhat this is\nThe currently filtered view of the history, the notifications, the changelog, the support tickets, an appearance preset or the settings can be written to a file the person chooses, in JSON, CSV, Markdown or plain text.\nThe manifest\nEvery export carries a header block stating the encoding and line endings, the export schema version, the exact filter that produced the rows, the row count and what was deliberately left out. Attachment bytes, personal vocabulary content, lock verifiers and authenticator secrets are always omitted, and the header says so.\nCSV cells are neutralized so a value cannot be interpreted as a spreadsheet formula.\nRedaction is on by default\nThe declared identity answers — the Social Insurance Number, the date of birth and the address — are replaced by a marker unless the person ticks the option and types the confirmation phrase, modelled on the existing replace-project gate. The manifest records which choice was made.\nBulk actions\nHistory rows and notification rows can be multi-selected. Every bulk action previews its exact scope before it runs, naming the count, the filter and the first few affected rows. A bulk history action is recorded through the append-only history under the shared action names.\nExternal editor handoff\nThe application uses one executable-discovery path, shared with the rest of the repository. A handoff opens only the file that was just written or the folder containing it; the application-private instances root is never opened or revealed. When no supported editor is detected, the surface says so and offers reveal-in-folder instead.\nBoundaries\nThe application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing. An export is a local file. It is not a return, and writing one files nothing.\nFailure modes\nA request over the row, column or cell limits is refused with the exact limit.\nA failed write leaves no partial file at the destination.\nVerification status\nThe application build (npm run build --workspace @material-tax-reporting/desktop) was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here.\nRelated articles\nTransfer surfaces\nNotifications\nAppend-only local history",
+    "links": [
+      {
+        "href": "transfer-surfaces.md",
+        "targetSlug": "docs-features-desktop-transfer-surfaces",
+        "text": "Transfer surfaces"
+      },
+      {
+        "href": "notifications.md",
+        "targetSlug": "docs-features-desktop-notifications",
+        "text": "Notifications"
+      },
+      {
+        "href": "local-history.md",
+        "targetSlug": "docs-features-desktop-local-history",
+        "text": "Append-only local history"
+      }
+    ]
+  },
+  {
+    "slug": "docs-features-desktop-file-converter",
+    "title": "File converter",
+    "path": "docs/features/desktop/file-converter.md",
+    "nodes": [
+      {
+        "kind": "heading",
+        "level": 1,
+        "text": "File converter",
+        "id": "file-converter"
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "What this is",
+        "id": "what-this-is"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "A converter destination that lists guided categories and, inside each category, the adapters this build actually carries. An adapter that is not bundled stays visible as a disabled row naming exactly what is missing, rather than being hidden."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Bundled adapters in this build",
+        "id": "bundled-adapters-in-this-build"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "Comma-separated values to JSON."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "JSON rows to comma-separated values."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "Markdown pipe table to comma-separated values."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "Plain text line-ending and trailing-space normalization."
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Adapters that are not bundled",
+        "id": "adapters-that-are-not-bundled"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Document text extraction and scanned-image text extraction are listed as disabled rows. The scanned-image row reports the result of the packaged offline optical-character-recognition discovery that the application already performs, so the reason shown is the real one rather than a generic message."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "How a conversion runs",
+        "id": "how-a-conversion-runs"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Every conversion runs in the privileged boundary against files the person chose. Each file is bounded by the same 96 MB limit that applies to an attachment, output is written only to a folder chosen through a dialog, and an existing output file is never overwritten. Each file returns its own validated result with an explicit failure reason. A conversion is strictly offline."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Converted output is not confirmed tax data",
+        "id": "converted-output-is-not-confirmed-tax-data"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Converted output that later feeds the report must still pass the existing manual parser-confirmation step, so nothing derived by a converter is ever treated as confirmed tax data."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Boundaries",
+        "id": "boundaries"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing. The converter neither prepares nor transmits a return."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Failure modes",
+        "id": "failure-modes"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "A file whose detected format does not match the chosen converter is blocked before the batch runs, with the reason"
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "shown on that row."
+          }
+        ]
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "A file over the size limit, an empty file or an unreadable file is refused individually; the rest of the batch"
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "still runs."
+          }
+        ]
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "Cancelling a batch stops the remaining files and reports which ones were not read."
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Verification status",
+        "id": "verification-status"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application build ("
+          },
+          {
+            "kind": "code",
+            "value": "npm run build --workspace @material-tax-reporting/desktop"
+          },
+          {
+            "kind": "text",
+            "value": ") was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Related articles",
+        "id": "related-articles"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "link",
+              "text": "Transfer surfaces",
+              "href": "transfer-surfaces.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Encrypted project files",
+              "href": "encrypted-project-files.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Guided report wizard",
+              "href": "guided-report-wizard.md"
+            }
+          ]
+        ]
+      }
+    ],
+    "outline": [
+      {
+        "level": 1,
+        "text": "File converter",
+        "id": "file-converter"
+      },
+      {
+        "level": 2,
+        "text": "What this is",
+        "id": "what-this-is"
+      },
+      {
+        "level": 2,
+        "text": "Bundled adapters in this build",
+        "id": "bundled-adapters-in-this-build"
+      },
+      {
+        "level": 2,
+        "text": "Adapters that are not bundled",
+        "id": "adapters-that-are-not-bundled"
+      },
+      {
+        "level": 2,
+        "text": "How a conversion runs",
+        "id": "how-a-conversion-runs"
+      },
+      {
+        "level": 2,
+        "text": "Converted output is not confirmed tax data",
+        "id": "converted-output-is-not-confirmed-tax-data"
+      },
+      {
+        "level": 2,
+        "text": "Boundaries",
+        "id": "boundaries"
+      },
+      {
+        "level": 2,
+        "text": "Failure modes",
+        "id": "failure-modes"
+      },
+      {
+        "level": 2,
+        "text": "Verification status",
+        "id": "verification-status"
+      },
+      {
+        "level": 2,
+        "text": "Related articles",
+        "id": "related-articles"
+      }
+    ],
+    "plainText": "File converter\nWhat this is\nA converter destination that lists guided categories and, inside each category, the adapters this build actually carries. An adapter that is not bundled stays visible as a disabled row naming exactly what is missing, rather than being hidden.\nBundled adapters in this build\nComma-separated values to JSON.\nJSON rows to comma-separated values.\nMarkdown pipe table to comma-separated values.\nPlain text line-ending and trailing-space normalization.\nAdapters that are not bundled\nDocument text extraction and scanned-image text extraction are listed as disabled rows. The scanned-image row reports the result of the packaged offline optical-character-recognition discovery that the application already performs, so the reason shown is the real one rather than a generic message.\nHow a conversion runs\nEvery conversion runs in the privileged boundary against files the person chose. Each file is bounded by the same 96 MB limit that applies to an attachment, output is written only to a folder chosen through a dialog, and an existing output file is never overwritten. Each file returns its own validated result with an explicit failure reason. A conversion is strictly offline.\nConverted output is not confirmed tax data\nConverted output that later feeds the report must still pass the existing manual parser-confirmation step, so nothing derived by a converter is ever treated as confirmed tax data.\nBoundaries\nThe application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing. The converter neither prepares nor transmits a return.\nFailure modes\nA file whose detected format does not match the chosen converter is blocked before the batch runs, with the reason\nshown on that row.\nA file over the size limit, an empty file or an unreadable file is refused individually; the rest of the batch\nstill runs.\nCancelling a batch stops the remaining files and reports which ones were not read.\nVerification status\nThe application build (npm run build --workspace @material-tax-reporting/desktop) was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here.\nRelated articles\nTransfer surfaces\nEncrypted project files\nGuided report wizard",
+    "links": [
+      {
+        "href": "transfer-surfaces.md",
+        "targetSlug": "docs-features-desktop-transfer-surfaces",
+        "text": "Transfer surfaces"
+      },
+      {
+        "href": "encrypted-project-files.md",
+        "targetSlug": "docs-features-desktop-encrypted-project-files",
+        "text": "Encrypted project files"
+      },
+      {
+        "href": "guided-report-wizard.md",
+        "targetSlug": "docs-features-desktop-guided-report-wizard",
+        "text": "Guided report wizard"
+      }
+    ]
+  },
+  {
     "slug": "docs-features-desktop-guided-report-wizard",
     "title": "Guided report wizard",
     "path": "docs/features/desktop/guided-report-wizard.md",
@@ -3593,6 +7202,208 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
     ]
   },
   {
+    "slug": "docs-features-desktop-language-and-funny-levels",
+    "title": "Language modes and humour levels",
+    "path": "docs/features/desktop/language-and-funny-levels.md",
+    "nodes": [
+      {
+        "kind": "heading",
+        "level": 1,
+        "text": "Language modes and humour levels",
+        "id": "language-modes-and-humour-levels"
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "What this is",
+        "id": "what-this-is"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "User-facing wording is resolved from a copy bundle rather than from strings embedded in the interface code. Three language modes are available: English, Hong Kong-style Cantonese, and both together. Each language carries its own humour level from 1 to 5, and the two levels are independent."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "A separate switch adds a decorative emoji to dialog headings. The emoji is non-semantic: it never carries meaning and never replaces a word."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "The rule humour cannot break",
+        "id": "the-rule-humour-cannot-break"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Humour changes tone and never changes a fact. Strings that carry a field name, a validation rule, a numeric limit or the mail-in-only boundary statement are declared as fixed text, so all five variants of those strings are literally identical and no humour level can alter them. The shared kernel exposes a check that reports any copy key whose variants disagree on a fact-bearing token."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Boundaries",
+        "id": "boundaries"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing. The boundary statement on the welcome destination and the boundary statement in the manual review step are fixed text in both languages."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Failure modes",
+        "id": "failure-modes"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "A missing copy key resolves to the key itself, so a gap is visible instead of blank."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "A humour level outside 1 to 5 is clamped by the shared resolver."
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Verification status",
+        "id": "verification-status"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application build ("
+          },
+          {
+            "kind": "code",
+            "value": "npm run build --workspace @material-tax-reporting/desktop"
+          },
+          {
+            "kind": "text",
+            "value": ") was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Related articles",
+        "id": "related-articles"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "link",
+              "text": "Settings and preferences",
+              "href": "settings-and-preferences.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Personal vocabulary",
+              "href": "personal-vocabulary.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Read aloud",
+              "href": "narration.md"
+            }
+          ]
+        ]
+      }
+    ],
+    "outline": [
+      {
+        "level": 1,
+        "text": "Language modes and humour levels",
+        "id": "language-modes-and-humour-levels"
+      },
+      {
+        "level": 2,
+        "text": "What this is",
+        "id": "what-this-is"
+      },
+      {
+        "level": 2,
+        "text": "The rule humour cannot break",
+        "id": "the-rule-humour-cannot-break"
+      },
+      {
+        "level": 2,
+        "text": "Boundaries",
+        "id": "boundaries"
+      },
+      {
+        "level": 2,
+        "text": "Failure modes",
+        "id": "failure-modes"
+      },
+      {
+        "level": 2,
+        "text": "Verification status",
+        "id": "verification-status"
+      },
+      {
+        "level": 2,
+        "text": "Related articles",
+        "id": "related-articles"
+      }
+    ],
+    "plainText": "Language modes and humour levels\nWhat this is\nUser-facing wording is resolved from a copy bundle rather than from strings embedded in the interface code. Three language modes are available: English, Hong Kong-style Cantonese, and both together. Each language carries its own humour level from 1 to 5, and the two levels are independent.\nA separate switch adds a decorative emoji to dialog headings. The emoji is non-semantic: it never carries meaning and never replaces a word.\nThe rule humour cannot break\nHumour changes tone and never changes a fact. Strings that carry a field name, a validation rule, a numeric limit or the mail-in-only boundary statement are declared as fixed text, so all five variants of those strings are literally identical and no humour level can alter them. The shared kernel exposes a check that reports any copy key whose variants disagree on a fact-bearing token.\nBoundaries\nThe application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing. The boundary statement on the welcome destination and the boundary statement in the manual review step are fixed text in both languages.\nFailure modes\nA missing copy key resolves to the key itself, so a gap is visible instead of blank.\nA humour level outside 1 to 5 is clamped by the shared resolver.\nVerification status\nThe application build (npm run build --workspace @material-tax-reporting/desktop) was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here.\nRelated articles\nSettings and preferences\nPersonal vocabulary\nRead aloud",
+    "links": [
+      {
+        "href": "settings-and-preferences.md",
+        "targetSlug": "docs-features-desktop-settings-and-preferences",
+        "text": "Settings and preferences"
+      },
+      {
+        "href": "personal-vocabulary.md",
+        "targetSlug": "docs-features-desktop-personal-vocabulary",
+        "text": "Personal vocabulary"
+      },
+      {
+        "href": "narration.md",
+        "targetSlug": "docs-features-desktop-narration",
+        "text": "Read aloud"
+      }
+    ]
+  },
+  {
     "slug": "docs-features-desktop-local-history",
     "title": "Append-only local history",
     "path": "docs/features/desktop/local-history.md",
@@ -3864,6 +7675,2106 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "href": "../pdf/manual-review.md",
         "targetSlug": "docs-features-pdf-manual-review",
         "text": "Manual PDF review"
+      }
+    ]
+  },
+  {
+    "slug": "docs-features-desktop-narration",
+    "title": "Read aloud",
+    "path": "docs/features/desktop/narration.md",
+    "nodes": [
+      {
+        "kind": "heading",
+        "level": 1,
+        "text": "Read aloud",
+        "id": "read-aloud"
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "What this is",
+        "id": "what-this-is"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Narration is rendered entirely in the interface process: the browser engine already provides speech synthesis, so the only privileged dependency is storing the choice. Narration is off by default."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Behaviour",
+        "id": "behaviour"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "Installed voices are enumerated from the host. An English voice and a Cantonese voice are selected independently."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "When no voice is installed for a language, the surface says so plainly. Nothing is spoken in another language"
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "instead."
+          }
+        ]
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "Speaking rate and pitch are adjustable."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "A shared queue serializes utterances, so a bilingual announcement is spoken English first and then Cantonese and the"
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "two never overlap."
+          }
+        ]
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "Notices, the current question title and the validation line can be read aloud."
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "What is never read aloud",
+        "id": "what-is-never-read-aloud"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The Social Insurance Number field, any mailing address, an unlock answer and an attachment display name are never narrated, because speaking them can disclose them to anyone within earshot. That exclusion is stated in the setting's own supporting text and is enforced by the shared rule rather than by convention."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Boundaries",
+        "id": "boundaries"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Failure modes",
+        "id": "failure-modes"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "When the host reports no speech engine, the control explains that read aloud cannot start."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "Requesting narration of an excluded field kind returns the reason instead of speaking."
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Verification status",
+        "id": "verification-status"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application build ("
+          },
+          {
+            "kind": "code",
+            "value": "npm run build --workspace @material-tax-reporting/desktop"
+          },
+          {
+            "kind": "text",
+            "value": ") was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Related articles",
+        "id": "related-articles"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "link",
+              "text": "Settings and preferences",
+              "href": "settings-and-preferences.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Language modes and humour levels",
+              "href": "language-and-funny-levels.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Notifications",
+              "href": "notifications.md"
+            }
+          ]
+        ]
+      }
+    ],
+    "outline": [
+      {
+        "level": 1,
+        "text": "Read aloud",
+        "id": "read-aloud"
+      },
+      {
+        "level": 2,
+        "text": "What this is",
+        "id": "what-this-is"
+      },
+      {
+        "level": 2,
+        "text": "Behaviour",
+        "id": "behaviour"
+      },
+      {
+        "level": 2,
+        "text": "What is never read aloud",
+        "id": "what-is-never-read-aloud"
+      },
+      {
+        "level": 2,
+        "text": "Boundaries",
+        "id": "boundaries"
+      },
+      {
+        "level": 2,
+        "text": "Failure modes",
+        "id": "failure-modes"
+      },
+      {
+        "level": 2,
+        "text": "Verification status",
+        "id": "verification-status"
+      },
+      {
+        "level": 2,
+        "text": "Related articles",
+        "id": "related-articles"
+      }
+    ],
+    "plainText": "Read aloud\nWhat this is\nNarration is rendered entirely in the interface process: the browser engine already provides speech synthesis, so the only privileged dependency is storing the choice. Narration is off by default.\nBehaviour\nInstalled voices are enumerated from the host. An English voice and a Cantonese voice are selected independently.\nWhen no voice is installed for a language, the surface says so plainly. Nothing is spoken in another language\ninstead.\nSpeaking rate and pitch are adjustable.\nA shared queue serializes utterances, so a bilingual announcement is spoken English first and then Cantonese and the\ntwo never overlap.\nNotices, the current question title and the validation line can be read aloud.\nWhat is never read aloud\nThe Social Insurance Number field, any mailing address, an unlock answer and an attachment display name are never narrated, because speaking them can disclose them to anyone within earshot. That exclusion is stated in the setting's own supporting text and is enforced by the shared rule rather than by convention.\nBoundaries\nThe application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing.\nFailure modes\nWhen the host reports no speech engine, the control explains that read aloud cannot start.\nRequesting narration of an excluded field kind returns the reason instead of speaking.\nVerification status\nThe application build (npm run build --workspace @material-tax-reporting/desktop) was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here.\nRelated articles\nSettings and preferences\nLanguage modes and humour levels\nNotifications",
+    "links": [
+      {
+        "href": "settings-and-preferences.md",
+        "targetSlug": "docs-features-desktop-settings-and-preferences",
+        "text": "Settings and preferences"
+      },
+      {
+        "href": "language-and-funny-levels.md",
+        "targetSlug": "docs-features-desktop-language-and-funny-levels",
+        "text": "Language modes and humour levels"
+      },
+      {
+        "href": "notifications.md",
+        "targetSlug": "docs-features-desktop-notifications",
+        "text": "Notifications"
+      }
+    ]
+  },
+  {
+    "slug": "docs-features-desktop-notifications",
+    "title": "Notifications",
+    "path": "docs/features/desktop/notifications.md",
+    "nodes": [
+      {
+        "kind": "heading",
+        "level": 1,
+        "text": "Notifications",
+        "id": "notifications"
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "What this is",
+        "id": "what-this-is"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The transient notice region stays where it was. Behind it, a bounded local log records every notice with its severity, its message, the recovery sentence the privileged boundary produces, its timestamp and the action that raised it."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "What a notice body never contains",
+        "id": "what-a-notice-body-never-contains"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "A notice body never carries the Social Insurance Number or an answer value. Only the field path is recorded, in the same way a project mutation is summarized."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Behaviour",
+        "id": "behaviour"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "Failure notices are persistent: they stay until they are acknowledged, and they do not disappear on a timer."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "Search uses the shared search builder, and severity and date-range filters narrow the list further."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "Rows can be multi-selected. A bulk acknowledge or bulk delete first previews exactly how many entries and which"
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "filter the action covers, and names the first few by title."
+          }
+        ]
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "Blocking browser confirmations and prompts have been replaced by in-application dialogs that match the existing"
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "dialog pattern."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Boundaries",
+        "id": "boundaries"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing. A notice never claims that anything was filed or transmitted."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Failure modes",
+        "id": "failure-modes"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "A log file over its size limit is trimmed to the newest half rather than being discarded."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "An entry with an unknown severity is dropped during validation."
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Verification status",
+        "id": "verification-status"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application build ("
+          },
+          {
+            "kind": "code",
+            "value": "npm run build --workspace @material-tax-reporting/desktop"
+          },
+          {
+            "kind": "text",
+            "value": ") was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Related articles",
+        "id": "related-articles"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "link",
+              "text": "Transfer surfaces",
+              "href": "transfer-surfaces.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Exports and bulk actions",
+              "href": "exports-and-bulk-actions.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Regex builders",
+              "href": "regex-builders.md"
+            }
+          ]
+        ]
+      }
+    ],
+    "outline": [
+      {
+        "level": 1,
+        "text": "Notifications",
+        "id": "notifications"
+      },
+      {
+        "level": 2,
+        "text": "What this is",
+        "id": "what-this-is"
+      },
+      {
+        "level": 2,
+        "text": "What a notice body never contains",
+        "id": "what-a-notice-body-never-contains"
+      },
+      {
+        "level": 2,
+        "text": "Behaviour",
+        "id": "behaviour"
+      },
+      {
+        "level": 2,
+        "text": "Boundaries",
+        "id": "boundaries"
+      },
+      {
+        "level": 2,
+        "text": "Failure modes",
+        "id": "failure-modes"
+      },
+      {
+        "level": 2,
+        "text": "Verification status",
+        "id": "verification-status"
+      },
+      {
+        "level": 2,
+        "text": "Related articles",
+        "id": "related-articles"
+      }
+    ],
+    "plainText": "Notifications\nWhat this is\nThe transient notice region stays where it was. Behind it, a bounded local log records every notice with its severity, its message, the recovery sentence the privileged boundary produces, its timestamp and the action that raised it.\nWhat a notice body never contains\nA notice body never carries the Social Insurance Number or an answer value. Only the field path is recorded, in the same way a project mutation is summarized.\nBehaviour\nFailure notices are persistent: they stay until they are acknowledged, and they do not disappear on a timer.\nSearch uses the shared search builder, and severity and date-range filters narrow the list further.\nRows can be multi-selected. A bulk acknowledge or bulk delete first previews exactly how many entries and which\nfilter the action covers, and names the first few by title.\nBlocking browser confirmations and prompts have been replaced by in-application dialogs that match the existing\ndialog pattern.\nBoundaries\nThe application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing. A notice never claims that anything was filed or transmitted.\nFailure modes\nA log file over its size limit is trimmed to the newest half rather than being discarded.\nAn entry with an unknown severity is dropped during validation.\nVerification status\nThe application build (npm run build --workspace @material-tax-reporting/desktop) was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here.\nRelated articles\nTransfer surfaces\nExports and bulk actions\nRegex builders",
+    "links": [
+      {
+        "href": "transfer-surfaces.md",
+        "targetSlug": "docs-features-desktop-transfer-surfaces",
+        "text": "Transfer surfaces"
+      },
+      {
+        "href": "exports-and-bulk-actions.md",
+        "targetSlug": "docs-features-desktop-exports-and-bulk-actions",
+        "text": "Exports and bulk actions"
+      },
+      {
+        "href": "regex-builders.md",
+        "targetSlug": "docs-features-desktop-regex-builders",
+        "text": "Regex builders"
+      }
+    ]
+  },
+  {
+    "slug": "docs-features-desktop-personal-vocabulary",
+    "title": "Personal vocabulary",
+    "path": "docs/features/desktop/personal-vocabulary.md",
+    "nodes": [
+      {
+        "kind": "heading",
+        "level": 1,
+        "text": "Personal vocabulary",
+        "id": "personal-vocabulary"
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "What this is",
+        "id": "what-this-is"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "A person may supply a small local JSON file that renames wording in the interface. The control is present and explained on the settings destination before any file exists, so the feature is discoverable rather than hidden."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Schema",
+        "id": "schema"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "A version 1 object with exactly one "
+          },
+          {
+            "kind": "code",
+            "value": "replacements"
+          },
+          {
+            "kind": "text",
+            "value": " map and no other root fields. Every key is 1 to 80 characters, every value is a string of at most 200 characters, at most 200 replacements are accepted, and the whole document is bounded to 64 KB. Keys shaped like prototype members are rejected. The shipped fixtures carry no payload beyond this neutral schema description."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "What the substitution never changes",
+        "id": "what-the-substitution-never-changes"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Official names and product boundaries survive substitution untouched. The following spans are always preserved: "
+          },
+          {
+            "kind": "code",
+            "value": "CRA"
+          },
+          {
+            "kind": "text",
+            "value": ", "
+          },
+          {
+            "kind": "code",
+            "value": "Ontario"
+          },
+          {
+            "kind": "text",
+            "value": ", "
+          },
+          {
+            "kind": "code",
+            "value": "Social Insurance Number"
+          },
+          {
+            "kind": "text",
+            "value": ", "
+          },
+          {
+            "kind": "code",
+            "value": "mail-in"
+          },
+          {
+            "kind": "text",
+            "value": ", "
+          },
+          {
+            "kind": "code",
+            "value": "NETFILE"
+          },
+          {
+            "kind": "text",
+            "value": " and "
+          },
+          {
+            "kind": "code",
+            "value": "EFILE"
+          },
+          {
+            "kind": "text",
+            "value": "."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Where the data lives",
+        "id": "where-the-data-lives"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Parsing and the derived cache stay in the privileged boundary, inside the application data directory. Vocabulary content is never placed in a project file, a history record, an export, a log or a notification body. A rejected document never replaces an accepted one, so the wording already in use cannot be broken by a malformed file."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Shared mode",
+        "id": "shared-mode"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "A renamable shared mode suppresses the non-English wording features while it is on and restores the previous choices when it is turned off. The mode's name is stored with the preferences."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Boundaries",
+        "id": "boundaries"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing. Renaming wording never renames a form, a field, a limit or the boundary statement."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Failure modes",
+        "id": "failure-modes"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "A document that fails validation is refused with the exact reason, and the previous wording stays in place."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "Removing the accepted vocabulary restores the shipped wording immediately and does not touch the file on disk."
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Verification status",
+        "id": "verification-status"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application build ("
+          },
+          {
+            "kind": "code",
+            "value": "npm run build --workspace @material-tax-reporting/desktop"
+          },
+          {
+            "kind": "text",
+            "value": ") was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Related articles",
+        "id": "related-articles"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "link",
+              "text": "Language modes and humour levels",
+              "href": "language-and-funny-levels.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Settings and preferences",
+              "href": "settings-and-preferences.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Exports and bulk actions",
+              "href": "exports-and-bulk-actions.md"
+            }
+          ]
+        ]
+      }
+    ],
+    "outline": [
+      {
+        "level": 1,
+        "text": "Personal vocabulary",
+        "id": "personal-vocabulary"
+      },
+      {
+        "level": 2,
+        "text": "What this is",
+        "id": "what-this-is"
+      },
+      {
+        "level": 2,
+        "text": "Schema",
+        "id": "schema"
+      },
+      {
+        "level": 2,
+        "text": "What the substitution never changes",
+        "id": "what-the-substitution-never-changes"
+      },
+      {
+        "level": 2,
+        "text": "Where the data lives",
+        "id": "where-the-data-lives"
+      },
+      {
+        "level": 2,
+        "text": "Shared mode",
+        "id": "shared-mode"
+      },
+      {
+        "level": 2,
+        "text": "Boundaries",
+        "id": "boundaries"
+      },
+      {
+        "level": 2,
+        "text": "Failure modes",
+        "id": "failure-modes"
+      },
+      {
+        "level": 2,
+        "text": "Verification status",
+        "id": "verification-status"
+      },
+      {
+        "level": 2,
+        "text": "Related articles",
+        "id": "related-articles"
+      }
+    ],
+    "plainText": "Personal vocabulary\nWhat this is\nA person may supply a small local JSON file that renames wording in the interface. The control is present and explained on the settings destination before any file exists, so the feature is discoverable rather than hidden.\nSchema\nA version 1 object with exactly one replacements map and no other root fields. Every key is 1 to 80 characters, every value is a string of at most 200 characters, at most 200 replacements are accepted, and the whole document is bounded to 64 KB. Keys shaped like prototype members are rejected. The shipped fixtures carry no payload beyond this neutral schema description.\nWhat the substitution never changes\nOfficial names and product boundaries survive substitution untouched. The following spans are always preserved: CRA, Ontario, Social Insurance Number, mail-in, NETFILE and EFILE.\nWhere the data lives\nParsing and the derived cache stay in the privileged boundary, inside the application data directory. Vocabulary content is never placed in a project file, a history record, an export, a log or a notification body. A rejected document never replaces an accepted one, so the wording already in use cannot be broken by a malformed file.\nShared mode\nA renamable shared mode suppresses the non-English wording features while it is on and restores the previous choices when it is turned off. The mode's name is stored with the preferences.\nBoundaries\nThe application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing. Renaming wording never renames a form, a field, a limit or the boundary statement.\nFailure modes\nA document that fails validation is refused with the exact reason, and the previous wording stays in place.\nRemoving the accepted vocabulary restores the shipped wording immediately and does not touch the file on disk.\nVerification status\nThe application build (npm run build --workspace @material-tax-reporting/desktop) was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here.\nRelated articles\nLanguage modes and humour levels\nSettings and preferences\nExports and bulk actions",
+    "links": [
+      {
+        "href": "language-and-funny-levels.md",
+        "targetSlug": "docs-features-desktop-language-and-funny-levels",
+        "text": "Language modes and humour levels"
+      },
+      {
+        "href": "settings-and-preferences.md",
+        "targetSlug": "docs-features-desktop-settings-and-preferences",
+        "text": "Settings and preferences"
+      },
+      {
+        "href": "exports-and-bulk-actions.md",
+        "targetSlug": "docs-features-desktop-exports-and-bulk-actions",
+        "text": "Exports and bulk actions"
+      }
+    ]
+  },
+  {
+    "slug": "docs-features-desktop-regex-builders",
+    "title": "Regex builders",
+    "path": "docs/features/desktop/regex-builders.md",
+    "nodes": [
+      {
+        "kind": "heading",
+        "level": 1,
+        "text": "Regex builders",
+        "id": "regex-builders"
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "What this is",
+        "id": "what-this-is"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "One reusable anchored search builder, bound to the shared search engine, is instantiated independently beside every search, filter, lookup, picker and menu filter in the application. Each instance owns its own pattern, flags, validation message, sample text, live match list and capture-group readout."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Plain text is the default, so a person who never opens a builder sees an ordinary search box and no change in behaviour."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Where builders are attached",
+        "id": "where-builders-are-attached"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The history search and the history action filter, the notifications search, the changelog search, the documentation search, the converter catalogue search, the tab overflow filter, the bulk-close filter, the settings search, the appearance element finder, the locks search, the ticket search, the palette input, and every search scope inside the local model destination."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Fixed semantics",
+        "id": "fixed-semantics"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Filtering compiles without the global flag, so a test is not stateful. Analysis compiles with the global flag so every match can be listed, and a zero-width match advances the cursor instead of looping. An over-long pattern or sample returns a reason string instead of throwing. Only the documented flag set is accepted, repeated flags are refused, and the two Unicode flags cannot be combined."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "The append-only store stays safe",
+        "id": "the-append-only-store-stays-safe"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The local history store keeps plain lowercased substring matching unless an explicit validated pattern search is requested. Record enumeration and the current-revision lookup happen before any matching runs, so a malformed pattern can never affect them; it simply matches nothing and the compile error is reported."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Boundaries",
+        "id": "boundaries"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Failure modes",
+        "id": "failure-modes"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "An invalid pattern shows its compile error and matches nothing."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "An over-long sample reports its limit rather than being analysed."
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Verification status",
+        "id": "verification-status"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application build ("
+          },
+          {
+            "kind": "code",
+            "value": "npm run build --workspace @material-tax-reporting/desktop"
+          },
+          {
+            "kind": "text",
+            "value": ") was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Related articles",
+        "id": "related-articles"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "link",
+              "text": "Command palette",
+              "href": "command-palette.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Append-only local history",
+              "href": "local-history.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Notifications",
+              "href": "notifications.md"
+            }
+          ]
+        ]
+      }
+    ],
+    "outline": [
+      {
+        "level": 1,
+        "text": "Regex builders",
+        "id": "regex-builders"
+      },
+      {
+        "level": 2,
+        "text": "What this is",
+        "id": "what-this-is"
+      },
+      {
+        "level": 2,
+        "text": "Where builders are attached",
+        "id": "where-builders-are-attached"
+      },
+      {
+        "level": 2,
+        "text": "Fixed semantics",
+        "id": "fixed-semantics"
+      },
+      {
+        "level": 2,
+        "text": "The append-only store stays safe",
+        "id": "the-append-only-store-stays-safe"
+      },
+      {
+        "level": 2,
+        "text": "Boundaries",
+        "id": "boundaries"
+      },
+      {
+        "level": 2,
+        "text": "Failure modes",
+        "id": "failure-modes"
+      },
+      {
+        "level": 2,
+        "text": "Verification status",
+        "id": "verification-status"
+      },
+      {
+        "level": 2,
+        "text": "Related articles",
+        "id": "related-articles"
+      }
+    ],
+    "plainText": "Regex builders\nWhat this is\nOne reusable anchored search builder, bound to the shared search engine, is instantiated independently beside every search, filter, lookup, picker and menu filter in the application. Each instance owns its own pattern, flags, validation message, sample text, live match list and capture-group readout.\nPlain text is the default, so a person who never opens a builder sees an ordinary search box and no change in behaviour.\nWhere builders are attached\nThe history search and the history action filter, the notifications search, the changelog search, the documentation search, the converter catalogue search, the tab overflow filter, the bulk-close filter, the settings search, the appearance element finder, the locks search, the ticket search, the palette input, and every search scope inside the local model destination.\nFixed semantics\nFiltering compiles without the global flag, so a test is not stateful. Analysis compiles with the global flag so every match can be listed, and a zero-width match advances the cursor instead of looping. An over-long pattern or sample returns a reason string instead of throwing. Only the documented flag set is accepted, repeated flags are refused, and the two Unicode flags cannot be combined.\nThe append-only store stays safe\nThe local history store keeps plain lowercased substring matching unless an explicit validated pattern search is requested. Record enumeration and the current-revision lookup happen before any matching runs, so a malformed pattern can never affect them; it simply matches nothing and the compile error is reported.\nBoundaries\nThe application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing.\nFailure modes\nAn invalid pattern shows its compile error and matches nothing.\nAn over-long sample reports its limit rather than being analysed.\nVerification status\nThe application build (npm run build --workspace @material-tax-reporting/desktop) was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here.\nRelated articles\nCommand palette\nAppend-only local history\nNotifications",
+    "links": [
+      {
+        "href": "command-palette.md",
+        "targetSlug": "docs-features-desktop-command-palette",
+        "text": "Command palette"
+      },
+      {
+        "href": "local-history.md",
+        "targetSlug": "docs-features-desktop-local-history",
+        "text": "Append-only local history"
+      },
+      {
+        "href": "notifications.md",
+        "targetSlug": "docs-features-desktop-notifications",
+        "text": "Notifications"
+      }
+    ]
+  },
+  {
+    "slug": "docs-features-desktop-scheduled-and-external-settings",
+    "title": "Scheduled and external settings",
+    "path": "docs/features/desktop/scheduled-and-external-settings.md",
+    "nodes": [
+      {
+        "kind": "heading",
+        "level": 1,
+        "text": "Scheduled and external settings",
+        "id": "scheduled-and-external-settings"
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "What this is",
+        "id": "what-this-is"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Presentation settings can follow a time of day, and can optionally come from an external document. Both carry presentation settings only."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Precedence",
+        "id": "precedence"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The order is fixed and reported: an explicit manual override beats an active schedule rule, and an active rule beats the stored default. The schedules editor lists, target by target, which layer is currently winning and why, and names the rules that are active at the moment of evaluation."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Rules are evaluated against a named time zone. A window that crosses midnight stays active until its end time on the following day. An unusable time zone is reported rather than silently substituted."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "External sources",
+        "id": "external-sources"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "External sources are opt-in and off by default. Because the interface process is forbidden from opening connections, any read happens in the privileged boundary, against an https address whose origin the person added to an allowlist, with a bounded schema, a bounded response size and a short timeout. A received document is shown as received and not applied until it validates. On failure the last applied local value stays in force and the surface says so."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "No project answer, attachment name or vocabulary content is ever transmitted on this path."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Boundaries",
+        "id": "boundaries"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing. An external document can change presentation settings only. It cannot change an answer, a limit, a validation rule or the boundary statement."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Failure modes",
+        "id": "failure-modes"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "An address that is not on the allowlist is refused before any request is made."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "A non-success status, a timeout or an unreadable body leaves the last applied value in force."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "A document that fails the bounded schema is reported as received and not applied, with the exact reason."
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Verification status",
+        "id": "verification-status"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application build ("
+          },
+          {
+            "kind": "code",
+            "value": "npm run build --workspace @material-tax-reporting/desktop"
+          },
+          {
+            "kind": "text",
+            "value": ") was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Related articles",
+        "id": "related-articles"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "link",
+              "text": "Settings and preferences",
+              "href": "settings-and-preferences.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Appearance editor",
+              "href": "appearance-editor.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Notifications",
+              "href": "notifications.md"
+            }
+          ]
+        ]
+      }
+    ],
+    "outline": [
+      {
+        "level": 1,
+        "text": "Scheduled and external settings",
+        "id": "scheduled-and-external-settings"
+      },
+      {
+        "level": 2,
+        "text": "What this is",
+        "id": "what-this-is"
+      },
+      {
+        "level": 2,
+        "text": "Precedence",
+        "id": "precedence"
+      },
+      {
+        "level": 2,
+        "text": "External sources",
+        "id": "external-sources"
+      },
+      {
+        "level": 2,
+        "text": "Boundaries",
+        "id": "boundaries"
+      },
+      {
+        "level": 2,
+        "text": "Failure modes",
+        "id": "failure-modes"
+      },
+      {
+        "level": 2,
+        "text": "Verification status",
+        "id": "verification-status"
+      },
+      {
+        "level": 2,
+        "text": "Related articles",
+        "id": "related-articles"
+      }
+    ],
+    "plainText": "Scheduled and external settings\nWhat this is\nPresentation settings can follow a time of day, and can optionally come from an external document. Both carry presentation settings only.\nPrecedence\nThe order is fixed and reported: an explicit manual override beats an active schedule rule, and an active rule beats the stored default. The schedules editor lists, target by target, which layer is currently winning and why, and names the rules that are active at the moment of evaluation.\nRules are evaluated against a named time zone. A window that crosses midnight stays active until its end time on the following day. An unusable time zone is reported rather than silently substituted.\nExternal sources\nExternal sources are opt-in and off by default. Because the interface process is forbidden from opening connections, any read happens in the privileged boundary, against an https address whose origin the person added to an allowlist, with a bounded schema, a bounded response size and a short timeout. A received document is shown as received and not applied until it validates. On failure the last applied local value stays in force and the surface says so.\nNo project answer, attachment name or vocabulary content is ever transmitted on this path.\nBoundaries\nThe application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing. An external document can change presentation settings only. It cannot change an answer, a limit, a validation rule or the boundary statement.\nFailure modes\nAn address that is not on the allowlist is refused before any request is made.\nA non-success status, a timeout or an unreadable body leaves the last applied value in force.\nA document that fails the bounded schema is reported as received and not applied, with the exact reason.\nVerification status\nThe application build (npm run build --workspace @material-tax-reporting/desktop) was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here.\nRelated articles\nSettings and preferences\nAppearance editor\nNotifications",
+    "links": [
+      {
+        "href": "settings-and-preferences.md",
+        "targetSlug": "docs-features-desktop-settings-and-preferences",
+        "text": "Settings and preferences"
+      },
+      {
+        "href": "appearance-editor.md",
+        "targetSlug": "docs-features-desktop-appearance-editor",
+        "text": "Appearance editor"
+      },
+      {
+        "href": "notifications.md",
+        "targetSlug": "docs-features-desktop-notifications",
+        "text": "Notifications"
+      }
+    ]
+  },
+  {
+    "slug": "docs-features-desktop-settings-and-preferences",
+    "title": "Settings and preferences",
+    "path": "docs/features/desktop/settings-and-preferences.md",
+    "nodes": [
+      {
+        "kind": "heading",
+        "level": 1,
+        "text": "Settings and preferences",
+        "id": "settings-and-preferences"
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "What this is",
+        "id": "what-this-is"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application keeps one bounded, schema-validated preference record in the application data directory, beside the application-private project instances root and the protected key store. The record holds the personalization preferences, the per-element appearance overrides, the tab layout, the presentation schedules, lock metadata, and the pointers to the notification log and to the accepted personal vocabulary."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Where the record lives and what it never touches",
+        "id": "where-the-record-lives-and-what-it-never-touches"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Preferences are application level. They are never written into an encrypted project file and never into a history record, so sharing a project file with another person cannot disclose one person's settings. The record is read through a bounded validator: an unknown field, an over-long value or a corrupted document falls back to the shipped defaults rather than widening what the application accepts."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Boundaries",
+        "id": "boundaries"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing. Nothing on the settings destination changes a field name, a validation rule, a numeric limit or the mail-in-only boundary statement."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Failure modes",
+        "id": "failure-modes"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "An unreadable or malformed preference record is replaced in memory by the shipped defaults; the file on disk is"
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "only rewritten when a setting is next changed."
+          }
+        ]
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "A preference value outside its documented range is clamped to the range by the shared validator."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "A request to store more than the bounded number of entries is refused with a plain message."
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Verification status",
+        "id": "verification-status"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application build ("
+          },
+          {
+            "kind": "code",
+            "value": "npm run build --workspace @material-tax-reporting/desktop"
+          },
+          {
+            "kind": "text",
+            "value": ") was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Related articles",
+        "id": "related-articles"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "link",
+              "text": "Language modes and humour levels",
+              "href": "language-and-funny-levels.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Appearance editor",
+              "href": "appearance-editor.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Command palette",
+              "href": "command-palette.md"
+            }
+          ]
+        ]
+      }
+    ],
+    "outline": [
+      {
+        "level": 1,
+        "text": "Settings and preferences",
+        "id": "settings-and-preferences"
+      },
+      {
+        "level": 2,
+        "text": "What this is",
+        "id": "what-this-is"
+      },
+      {
+        "level": 2,
+        "text": "Where the record lives and what it never touches",
+        "id": "where-the-record-lives-and-what-it-never-touches"
+      },
+      {
+        "level": 2,
+        "text": "Boundaries",
+        "id": "boundaries"
+      },
+      {
+        "level": 2,
+        "text": "Failure modes",
+        "id": "failure-modes"
+      },
+      {
+        "level": 2,
+        "text": "Verification status",
+        "id": "verification-status"
+      },
+      {
+        "level": 2,
+        "text": "Related articles",
+        "id": "related-articles"
+      }
+    ],
+    "plainText": "Settings and preferences\nWhat this is\nThe application keeps one bounded, schema-validated preference record in the application data directory, beside the application-private project instances root and the protected key store. The record holds the personalization preferences, the per-element appearance overrides, the tab layout, the presentation schedules, lock metadata, and the pointers to the notification log and to the accepted personal vocabulary.\nWhere the record lives and what it never touches\nPreferences are application level. They are never written into an encrypted project file and never into a history record, so sharing a project file with another person cannot disclose one person's settings. The record is read through a bounded validator: an unknown field, an over-long value or a corrupted document falls back to the shipped defaults rather than widening what the application accepts.\nBoundaries\nThe application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing. Nothing on the settings destination changes a field name, a validation rule, a numeric limit or the mail-in-only boundary statement.\nFailure modes\nAn unreadable or malformed preference record is replaced in memory by the shipped defaults; the file on disk is\nonly rewritten when a setting is next changed.\nA preference value outside its documented range is clamped to the range by the shared validator.\nA request to store more than the bounded number of entries is refused with a plain message.\nVerification status\nThe application build (npm run build --workspace @material-tax-reporting/desktop) was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here.\nRelated articles\nLanguage modes and humour levels\nAppearance editor\nCommand palette",
+    "links": [
+      {
+        "href": "language-and-funny-levels.md",
+        "targetSlug": "docs-features-desktop-language-and-funny-levels",
+        "text": "Language modes and humour levels"
+      },
+      {
+        "href": "appearance-editor.md",
+        "targetSlug": "docs-features-desktop-appearance-editor",
+        "text": "Appearance editor"
+      },
+      {
+        "href": "command-palette.md",
+        "targetSlug": "docs-features-desktop-command-palette",
+        "text": "Command palette"
+      }
+    ]
+  },
+  {
+    "slug": "docs-features-desktop-tabs-and-navigation",
+    "title": "Tabs and navigation",
+    "path": "docs/features/desktop/tabs-and-navigation.md",
+    "nodes": [
+      {
+        "kind": "heading",
+        "level": 1,
+        "text": "Tabs and navigation",
+        "id": "tabs-and-navigation"
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "What this is",
+        "id": "what-this-is"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Destinations are opened as tabs in a strip that can dock to any of the four window edges. The layout is stored in the application preference record, so it survives a restart without ever entering the encrypted project file."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Keyboard behaviour",
+        "id": "keyboard-behaviour"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "A strip docked to the left or right runs vertically, reports "
+            },
+            {
+              "kind": "code",
+              "value": "aria-orientation=\"vertical\""
+            },
+            {
+              "kind": "text",
+              "value": " and responds to the Up"
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "and Down arrows."
+          }
+        ]
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "A strip docked to the top or bottom runs horizontally and responds to the Left and Right arrows."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "Home and End move to the first and last tab in both orientations."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "The strip uses the tablist, tab and tabpanel roles with roving focus and an explicit selected state."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "Delete closes a closable tab from the keyboard."
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Grouping, pinning and overflow",
+        "id": "grouping-pinning-and-overflow"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Tabs can be pinned, assigned to a named group through a move-to-group picker, and reordered. When the strip runs out of room the remaining tabs move into an overflow menu that carries its own independent filter. A bulk close matches tabs by their visible text and confirms by naming the exact set it would close; pinned and non-closable tabs are never included."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Sizing",
+        "id": "sizing"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Interactive targets in the strip are at least 48 pixels, and a narrow-window fallback keeps the strip usable at the 760-pixel minimum window width. Below the narrow breakpoint the strip moves to the bottom edge and shows icons with accessible names."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Boundaries",
+        "id": "boundaries"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing. Closing or rearranging a tab never changes an answer or the recorded history."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Failure modes",
+        "id": "failure-modes"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "A stored layout that references an unknown destination is dropped during validation, and the default layout is"
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "seeded instead."
+          }
+        ]
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "A bulk close that matches nothing says so rather than opening an empty confirmation."
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Verification status",
+        "id": "verification-status"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application build ("
+          },
+          {
+            "kind": "code",
+            "value": "npm run build --workspace @material-tax-reporting/desktop"
+          },
+          {
+            "kind": "text",
+            "value": ") was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Related articles",
+        "id": "related-articles"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "link",
+              "text": "Command palette",
+              "href": "command-palette.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Regex builders",
+              "href": "regex-builders.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Settings and preferences",
+              "href": "settings-and-preferences.md"
+            }
+          ]
+        ]
+      }
+    ],
+    "outline": [
+      {
+        "level": 1,
+        "text": "Tabs and navigation",
+        "id": "tabs-and-navigation"
+      },
+      {
+        "level": 2,
+        "text": "What this is",
+        "id": "what-this-is"
+      },
+      {
+        "level": 2,
+        "text": "Keyboard behaviour",
+        "id": "keyboard-behaviour"
+      },
+      {
+        "level": 2,
+        "text": "Grouping, pinning and overflow",
+        "id": "grouping-pinning-and-overflow"
+      },
+      {
+        "level": 2,
+        "text": "Sizing",
+        "id": "sizing"
+      },
+      {
+        "level": 2,
+        "text": "Boundaries",
+        "id": "boundaries"
+      },
+      {
+        "level": 2,
+        "text": "Failure modes",
+        "id": "failure-modes"
+      },
+      {
+        "level": 2,
+        "text": "Verification status",
+        "id": "verification-status"
+      },
+      {
+        "level": 2,
+        "text": "Related articles",
+        "id": "related-articles"
+      }
+    ],
+    "plainText": "Tabs and navigation\nWhat this is\nDestinations are opened as tabs in a strip that can dock to any of the four window edges. The layout is stored in the application preference record, so it survives a restart without ever entering the encrypted project file.\nKeyboard behaviour\nA strip docked to the left or right runs vertically, reports aria-orientation=\"vertical\" and responds to the Up\nand Down arrows.\nA strip docked to the top or bottom runs horizontally and responds to the Left and Right arrows.\nHome and End move to the first and last tab in both orientations.\nThe strip uses the tablist, tab and tabpanel roles with roving focus and an explicit selected state.\nDelete closes a closable tab from the keyboard.\nGrouping, pinning and overflow\nTabs can be pinned, assigned to a named group through a move-to-group picker, and reordered. When the strip runs out of room the remaining tabs move into an overflow menu that carries its own independent filter. A bulk close matches tabs by their visible text and confirms by naming the exact set it would close; pinned and non-closable tabs are never included.\nSizing\nInteractive targets in the strip are at least 48 pixels, and a narrow-window fallback keeps the strip usable at the 760-pixel minimum window width. Below the narrow breakpoint the strip moves to the bottom edge and shows icons with accessible names.\nBoundaries\nThe application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing. Closing or rearranging a tab never changes an answer or the recorded history.\nFailure modes\nA stored layout that references an unknown destination is dropped during validation, and the default layout is\nseeded instead.\nA bulk close that matches nothing says so rather than opening an empty confirmation.\nVerification status\nThe application build (npm run build --workspace @material-tax-reporting/desktop) was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here.\nRelated articles\nCommand palette\nRegex builders\nSettings and preferences",
+    "links": [
+      {
+        "href": "command-palette.md",
+        "targetSlug": "docs-features-desktop-command-palette",
+        "text": "Command palette"
+      },
+      {
+        "href": "regex-builders.md",
+        "targetSlug": "docs-features-desktop-regex-builders",
+        "text": "Regex builders"
+      },
+      {
+        "href": "settings-and-preferences.md",
+        "targetSlug": "docs-features-desktop-settings-and-preferences",
+        "text": "Settings and preferences"
+      }
+    ]
+  },
+  {
+    "slug": "docs-features-desktop-transfer-surfaces",
+    "title": "Transfer surfaces",
+    "path": "docs/features/desktop/transfer-surfaces.md",
+    "nodes": [
+      {
+        "kind": "heading",
+        "level": 1,
+        "text": "Transfer surfaces",
+        "id": "transfer-surfaces"
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "What this is",
+        "id": "what-this-is"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Start, Downloading and Complete states for the transfers this application actually performs: saving the project, saving a password-wrapped copy, choosing an import copy destination, taking in an attachment, writing converter output and writing an export."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "There is no browser-extension capture path in this repository, and none is claimed. No state here describes a build, an installer or a release, because this repository produces none."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Start",
+        "id": "start"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "A pre-flight dialog names the source, the exact destination path, the expected byte size and the unsigned status, and requires explicit confirmation. Nothing is written before that confirmation. When the size cannot be known before the data is prepared, the surface says so rather than showing a fabricated figure."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Downloading",
+        "id": "downloading"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "A non-modal progress surface driven by the single allowlisted progress channel shows the bytes written and the elapsed time, and offers a cancel. The encrypted project container is written in bounded chunks so progress is real; cancelling aborts the write and removes the partial temporary file, leaving the destination untouched."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Complete",
+        "id": "complete"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "A non-blocking completion surface names the final path, the measured byte count and the content hash, and offers reveal-in-folder and open-in-an-external-editor. It states that the resulting file is unsigned and makes no signature-authenticity claim."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The underlying state machine cannot enter its complete state without a measured byte count, so a finished transfer can never be announced without having been measured."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Boundaries",
+        "id": "boundaries"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing. A transfer copies data on this computer. It never sends anything anywhere."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Failure modes",
+        "id": "failure-modes"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "A reported size that moves backwards, or that exceeds the expected total, fails the transfer rather than being"
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "smoothed over."
+          }
+        ]
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "A cancelled transfer reports that the partial file was removed."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "A failed transfer leaves the previous destination file in place."
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Verification status",
+        "id": "verification-status"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The application build ("
+          },
+          {
+            "kind": "code",
+            "value": "npm run build --workspace @material-tax-reporting/desktop"
+          },
+          {
+            "kind": "text",
+            "value": ") was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Related articles",
+        "id": "related-articles"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "link",
+              "text": "Exports and bulk actions",
+              "href": "exports-and-bulk-actions.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "File converter",
+              "href": "file-converter.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Encrypted project files",
+              "href": "encrypted-project-files.md"
+            }
+          ]
+        ]
+      }
+    ],
+    "outline": [
+      {
+        "level": 1,
+        "text": "Transfer surfaces",
+        "id": "transfer-surfaces"
+      },
+      {
+        "level": 2,
+        "text": "What this is",
+        "id": "what-this-is"
+      },
+      {
+        "level": 2,
+        "text": "Start",
+        "id": "start"
+      },
+      {
+        "level": 2,
+        "text": "Downloading",
+        "id": "downloading"
+      },
+      {
+        "level": 2,
+        "text": "Complete",
+        "id": "complete"
+      },
+      {
+        "level": 2,
+        "text": "Boundaries",
+        "id": "boundaries"
+      },
+      {
+        "level": 2,
+        "text": "Failure modes",
+        "id": "failure-modes"
+      },
+      {
+        "level": 2,
+        "text": "Verification status",
+        "id": "verification-status"
+      },
+      {
+        "level": 2,
+        "text": "Related articles",
+        "id": "related-articles"
+      }
+    ],
+    "plainText": "Transfer surfaces\nWhat this is\nStart, Downloading and Complete states for the transfers this application actually performs: saving the project, saving a password-wrapped copy, choosing an import copy destination, taking in an attachment, writing converter output and writing an export.\nThere is no browser-extension capture path in this repository, and none is claimed. No state here describes a build, an installer or a release, because this repository produces none.\nStart\nA pre-flight dialog names the source, the exact destination path, the expected byte size and the unsigned status, and requires explicit confirmation. Nothing is written before that confirmation. When the size cannot be known before the data is prepared, the surface says so rather than showing a fabricated figure.\nDownloading\nA non-modal progress surface driven by the single allowlisted progress channel shows the bytes written and the elapsed time, and offers a cancel. The encrypted project container is written in bounded chunks so progress is real; cancelling aborts the write and removes the partial temporary file, leaving the destination untouched.\nComplete\nA non-blocking completion surface names the final path, the measured byte count and the content hash, and offers reveal-in-folder and open-in-an-external-editor. It states that the resulting file is unsigned and makes no signature-authenticity claim.\nThe underlying state machine cannot enter its complete state without a measured byte count, so a finished transfer can never be announced without having been measured.\nBoundaries\nThe application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing. A transfer copies data on this computer. It never sends anything anywhere.\nFailure modes\nA reported size that moves backwards, or that exceeds the expected total, fails the transfer rather than being\nsmoothed over.\nA cancelled transfer reports that the partial file was removed.\nA failed transfer leaves the previous destination file in place.\nVerification status\nThe application build (npm run build --workspace @material-tax-reporting/desktop) was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here.\nRelated articles\nExports and bulk actions\nFile converter\nEncrypted project files",
+    "links": [
+      {
+        "href": "exports-and-bulk-actions.md",
+        "targetSlug": "docs-features-desktop-exports-and-bulk-actions",
+        "text": "Exports and bulk actions"
+      },
+      {
+        "href": "file-converter.md",
+        "targetSlug": "docs-features-desktop-file-converter",
+        "text": "File converter"
+      },
+      {
+        "href": "encrypted-project-files.md",
+        "targetSlug": "docs-features-desktop-encrypted-project-files",
+        "text": "Encrypted project files"
       }
     ]
   },
@@ -14648,10 +20559,29 @@ export const DOC_AREAS: Record<string, string> = {
   "docs-site-mail-in-pdf-and-manual-review": "Website",
   "docs-site-verification-status": "Website",
   "docs-site-website-preferences-and-search": "Website",
+  "docs-features-readme": "Features",
   "docs-features-desktop-readme": "Features",
+  "docs-features-desktop-appearance-editor": "Features",
+  "docs-features-desktop-authenticator-and-support": "Features",
+  "docs-features-desktop-changelog-viewer": "Features",
+  "docs-features-desktop-command-palette": "Features",
+  "docs-features-desktop-display-name-and-logo": "Features",
+  "docs-features-desktop-documentation-browser": "Features",
+  "docs-features-desktop-element-locks": "Features",
   "docs-features-desktop-encrypted-project-files": "Features",
+  "docs-features-desktop-exports-and-bulk-actions": "Features",
+  "docs-features-desktop-file-converter": "Features",
   "docs-features-desktop-guided-report-wizard": "Features",
+  "docs-features-desktop-language-and-funny-levels": "Features",
   "docs-features-desktop-local-history": "Features",
+  "docs-features-desktop-narration": "Features",
+  "docs-features-desktop-notifications": "Features",
+  "docs-features-desktop-personal-vocabulary": "Features",
+  "docs-features-desktop-regex-builders": "Features",
+  "docs-features-desktop-scheduled-and-external-settings": "Features",
+  "docs-features-desktop-settings-and-preferences": "Features",
+  "docs-features-desktop-tabs-and-navigation": "Features",
+  "docs-features-desktop-transfer-surfaces": "Features",
   "docs-features-local-coding-assistants-readme": "Features",
   "docs-features-local-ollama-suite-readme": "Features",
   "docs-features-pdf-readme": "Features",
