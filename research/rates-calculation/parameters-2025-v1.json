@@ -1,0 +1,227 @@
+{
+  "schemaVersion": "1.0.0",
+  "proposalId": "ca-on-personal-income-tax-2025-v1",
+  "status": "research-proposal",
+  "accessedOn": "2026-08-14",
+  "taxYear": 2025,
+  "jurisdiction": "CA-ON",
+  "currency": "CAD",
+  "composition": {
+    "mode": "authoritative-fragment-manifest",
+    "reconciliation": "Final form or worksheet instructions take precedence over narrative summaries. If a source fragment disagrees internally, retain unavailable/null state and require the final official source before implementation.",
+    "authoritativeFragmentPaths": [
+      "research/rates-calculation/federal-2025.md",
+      "research/rates-calculation/federal-2025.parameters.json",
+      "research/rates-calculation/ontario-2025.md",
+      "research/rates-calculation/ontario-2025.parameters.json",
+      "research/rates-calculation/paper-filing-manual-review.md",
+      "research/rates-calculation/paper-filing-manual-review.parameters.json"
+    ]
+  },
+  "productBoundary": {
+    "allowedTerminalArtifact": "CRA mail-in PDF package",
+    "filingMode": "paper-mail-only",
+    "prohibitedCapabilities": [
+      "NETFILE",
+      "EFILE",
+      "ReFILE",
+      "SimpleFile",
+      "Auto-fill my return",
+      "electronic submission",
+      "direct CRA transmission",
+      "automatic filing"
+    ],
+    "manualReviewRequiredBeforeExportOrPrint": true,
+    "manualReviewItems": [
+      "every populated form",
+      "every calculation",
+      "every attachment",
+      "mailing destination",
+      "every signature field",
+      "every date field"
+    ],
+    "explicitAcknowledgementRequired": true,
+    "acknowledgementIsNotCraAcceptance": true,
+    "taxOrLegalAdvice": false,
+    "craCertified": false,
+    "mailingDestination": {
+      "freshOfficialLookupRequired": true,
+      "userConfirmedRoutingFactorsRequired": true,
+      "hardcodedOfficeAllowed": false,
+      "sourceFragmentPath": "research/rates-calculation/paper-filing-manual-review.parameters.json"
+    }
+  },
+  "sourceHierarchy": [
+    "final CRA form PDF/e-text and line instructions",
+    "final CRA worksheet, schedule, and package guide",
+    "official CRA line pages and notices",
+    "official Ontario government source where the fragment identifies it"
+  ],
+  "sources": [
+    {
+      "id": "cra-ontario-package-2025",
+      "publisher": "Canada Revenue Agency",
+      "title": "Ontario - 2025 Income tax package",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario.html",
+      "revisionOrPageDate": "2026-01-20"
+    },
+    {
+      "id": "cra-5006-r-2025",
+      "publisher": "Canada Revenue Agency",
+      "title": "5006-R Income Tax and Benefit Return (for ON only)",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-r.html",
+      "revision": "5006-r-25e",
+      "revisionOrPageDate": "2026-01-20"
+    },
+    {
+      "id": "cra-5006-c-2025",
+      "publisher": "Canada Revenue Agency",
+      "title": "5006-C ON428 - Ontario Tax",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-c.html",
+      "revision": "5006-c-25e",
+      "revisionOrPageDate": "2026-01-20"
+    },
+    {
+      "id": "cra-5000-d1-2025",
+      "publisher": "Canada Revenue Agency",
+      "title": "Federal Worksheet 5000-D1",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/5000-d1.html",
+      "revision": "5000-d1-25e",
+      "revisionOrPageDate": "2026-01-20"
+    },
+    {
+      "id": "cra-schedule3-2025",
+      "publisher": "Canada Revenue Agency",
+      "title": "Schedule 3, Capital Gains or Losses (5000-S3)",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/5000-s3.html",
+      "revisionOrPageDate": "2026-01-20"
+    },
+    {
+      "id": "cra-t691-2025",
+      "publisher": "Canada Revenue Agency",
+      "title": "Form T691 Alternative Minimum Tax",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/forms/t691.html",
+      "revisions": ["t691-fill-25e", "t691-25e"]
+    },
+    {
+      "id": "cra-mail-paper-t1",
+      "publisher": "Canada Revenue Agency",
+      "title": "Where to mail your paper T1 return",
+      "url": "https://www.canada.ca/en/revenue-agency/corporate/contact-information/where-mail-your-paper-t1-return.html",
+      "revisionOrPageDate": "2025-09-26"
+    },
+    {
+      "id": "cra-5000-s6-2025",
+      "publisher": "Canada Revenue Agency",
+      "title": "Schedule 6 Canada workers benefit",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/5000-s6.html/1000?wbdisable=true",
+      "revisionOrPageDate": "2026-01-20"
+    },
+    {
+      "id": "ontario-dividend-tax-credit",
+      "publisher": "Ontario Ministry of Finance",
+      "title": "Ontario Dividend Tax Credit",
+      "url": "https://www.ontario.ca/page/ontario-dividend-tax-credit"
+    }
+  ],
+  "forms": [
+    {"formNumber": "5006-R", "title": "Income Tax and Benefit Return (for ON only)", "revision": "5006-r-25e", "effectiveOrUpdated": "2026-01-20"},
+    {"formNumber": "5006-C", "title": "ON428 - Ontario Tax", "revision": "5006-c-25e", "effectiveOrUpdated": "2026-01-20"},
+    {"formNumber": "5006-D", "title": "Worksheet ON428", "revision": "5006-d-25e", "effectiveOrUpdated": "2026-01-20"},
+    {"formNumber": "5006-TC", "title": "ON479 - Ontario Credits", "revision": "5006-tc-25e", "effectiveOrUpdated": "2026-01-20"},
+    {"formNumber": "5006-A", "title": "Schedule ON428-A LIFT", "revision": "5006-a-25e", "effectiveOrUpdated": "2025 package"},
+    {"formNumber": "5006-TCA", "title": "Schedule ON479-A CARE", "revision": "5006-tca-25e", "effectiveOrUpdated": "2025 package"},
+    {"formNumber": "5006-TG", "title": "ON-BEN 2026 benefit application", "revision": null, "effectiveOrUpdated": "2025 package", "availability": "form listed; deterministic benefit formulas unavailable"},
+    {"formNumber": "5000-D1", "title": "Federal Worksheet", "revision": "5000-d1-25e", "effectiveOrUpdated": "2026-01-20"},
+    {"formNumber": "5000-S3", "title": "Schedule 3 Capital Gains or Losses", "revision": "5000-s3-25e", "effectiveOrUpdated": "2026-01-20"},
+    {"formNumber": "T691", "title": "Alternative Minimum Tax", "revisions": ["t691-fill-25e", "t691-25e"], "effectiveOrUpdated": null, "availability": "final files; page date not transcribed"},
+    {"formNumber": "5000-S6", "title": "Canada workers benefit", "revision": "5000-s6-25e", "effectiveOrUpdated": "2026-01-20"}
+  ],
+  "federalParameters": {
+    "fragmentPath": "research/rates-calculation/federal-2025.parameters.json",
+    "jurisdiction": "CA-federal",
+    "taxableIncomeLine": "26000",
+    "taxResultLine": "76",
+    "taxTransferLine": "119",
+    "creditRateWhereDirected": "0.145",
+    "brackets": [
+      {"lowerInclusive": "0.00", "upperInclusive": "57375.00", "rate": "0.145", "baseTax": "0.00", "baseIncome": "0.00"},
+      {"lowerExclusive": "57375.00", "upperInclusive": "114750.00", "rate": "0.205", "baseTax": "8319.38", "baseIncome": "57375.00"},
+      {"lowerExclusive": "114750.00", "upperInclusive": "177882.00", "rate": "0.26", "baseTax": "20081.25", "baseIncome": "114750.00"},
+      {"lowerExclusive": "177882.00", "upperInclusive": "253414.00", "rate": "0.29", "baseTax": "36495.57", "baseIncome": "177882.00"},
+      {"lowerExclusive": "253414.00", "upperInclusive": null, "rate": "0.33", "baseTax": "58399.85", "baseIncome": "253414.00"}
+    ],
+    "calculation": "For the selected bracket, baseTax + (line26000 - baseIncome) * rate; first bracket is line26000 * 0.145; apply final form-line rounding.",
+    "basicPersonalAmount": {
+      "returnLine": "30000",
+      "netIncomeLine": "23600",
+      "atOrBelowThreshold": {"threshold": "177882.00", "amount": "16129.00"},
+      "atOrAboveThreshold": {"threshold": "253414.00", "amount": "14538.00"},
+      "betweenThresholds": {"formula": null, "availability": "unavailable", "reason": "Interpolation was not transcribed", "sourceNeeded": "Final 5000-D1 Federal Worksheet"}
+    },
+    "dividends": {
+      "eligibleLine": "12000",
+      "eligibleGrossUp": "1.38",
+      "otherThanEligibleLine": "12010",
+      "otherThanEligibleGrossUp": "1.15",
+      "creditLine": "40425",
+      "creditRate": null,
+      "creditRateAvailability": {"status": "unavailable", "reason": "No no-slip percentage was transcribed", "sourceNeeded": "Final Federal Worksheet chart"}
+    },
+    "capitalGains": {"line": "12700", "ordinaryInclusionRate": "0.50", "appliesToGainsBefore": "2026-01-01", "authority": "Schedule 3"},
+    "cpp": {"effectiveOn": "2025-01-01", "basicExemption": "3500.00", "ympe": "71300.00", "yampe": "81200.00", "employeeRate": "0.0595", "employeeMaximum": "4034.10", "selfEmployedRate": "0.119", "selfEmployedMaximum": "8068.20", "cpp2EmployeeRate": "0.04", "cpp2EmployeeMaximum": "396.00", "cpp2SelfEmployedRate": "0.08", "cpp2SelfEmployedMaximum": "792.00", "completeScheduleMechanics": null, "completeScheduleMechanicsAvailability": {"status": "unavailable", "reason": "Mixed-income and exception mechanics not transcribed", "sourceNeeded": "Final Schedule 8 and RC381"}},
+    "ei": {"effectiveOn": "2025-01-01", "maximumInsurableEarnings": "65700.00", "employeeRate": "0.0164", "maximumEmployeePremium": "1077.48", "selfEmployedPremium": null, "selfEmployedPremiumAvailability": {"status": "unavailable", "reason": "No universal premium; participation and Schedule 13 control", "sourceNeeded": "Taxpayer status and final Schedule 13"}},
+    "alternativeMinimumTax": {"screeningThreshold": "177882.00", "returnLine": "41700", "carryoverLine": "40427", "fullMechanics": null, "availability": {"status": "unavailable", "reason": "T691 mechanics not transcribed", "sourceNeeded": "Final T691 files"}},
+    "refundableCredits": {"medicalSupplementFormula": null, "medicalSupplementAvailability": {"status": "unavailable", "reason": "Only boundaries were transcribed", "sourceNeeded": "Final 5000-D1"}, "canadaWorkersBenefitFormula": null, "canadaWorkersBenefitAvailability": {"status": "unavailable", "reason": "Ontario rate/table not transcribed", "sourceNeeded": "Final 5000-S6"}},
+    "rounding": {"globalRule": null, "availability": {"status": "unavailable", "reason": "No global rule; use form-line instructions", "sourceNeeded": "Each final form or worksheet"}}
+  },
+  "ontarioParameters": {
+    "fragmentPath": "research/rates-calculation/ontario-2025.parameters.json",
+    "packageEligibility": "Use Ontario package only when official residence and routing rules point to Ontario; business income allocable to a permanent establishment outside Ontario requires the official T2203 route.",
+    "taxableIncomeLine": "26000",
+    "on428TaxLine": "31",
+    "brackets": [
+      {"lowerInclusive": "0", "upperInclusive": "52886", "rate": "0.0505", "baseTax": "0", "baseIncome": "0"},
+      {"lowerExclusive": "52886", "upperInclusive": "105775", "rate": "0.0915", "baseTax": "2671", "baseIncome": "52886"},
+      {"lowerExclusive": "105775", "upperInclusive": "150000", "rate": "0.1116", "baseTax": "7510", "baseIncome": "105775"},
+      {"lowerExclusive": "150000", "upperInclusive": "220000", "rate": "0.1216", "baseTax": "12446", "baseIncome": "150000"},
+      {"lowerExclusive": "220000", "upperInclusive": null, "rate": "0.1316", "baseTax": "20958", "baseIncome": "220000"}
+    ],
+    "nonRefundableCreditRate": "0.0505",
+    "basicPersonalAmount": {"line": "58040", "amount": "12747"},
+    "surtax": {"baseLine": "65", "component1": {"line": "66", "threshold": "5710", "rate": "0.20"}, "component2": {"line": "67", "threshold": "7307", "rate": "0.36"}, "resultLine": "68", "componentsAreAdditive": true},
+    "taxReduction": {"basicReductionAmount": "294", "additionalPerEligibleDependant": "544"},
+    "healthPremium": {"sourceLine": "89", "resultLine": "90", "bands": "See authoritative fragment; piecewise plateaus and phase-in bands", "simplifiedFormula": null, "simplifiedFormulaAvailability": {"status": "unavailable", "reason": "Must not replace official piecewise chart", "sourceNeeded": "Final ON428"}},
+    "liftCredit": {"resultLine": "62140", "rate": "0.0505", "maximum": "875", "individualThreshold": "32500", "familyThreshold": "65000", "reductionRate": "0.05"},
+    "dividendCredit": {"otherThanEligibleRate": "0.029863", "eligibleRate": "0.10", "authority": "Worksheet ON428"},
+    "minimumTax": {"ontarioAdditionalTaxRate": "0.2463", "completeDependencyGraph": null, "availability": {"status": "unavailable", "reason": "Federal minimum-tax dependency lines not mapped", "sourceNeeded": "Final federal minimum-tax forms plus Worksheet ON428"}},
+    "refundableCredits": {"totalLine": "47900", "on479PoliticalContributionFormula": null, "on479PoliticalContributionAvailability": {"status": "unavailable", "reason": "Worksheet ON479 content was not consistently resolvable", "sourceNeeded": "Official 2025 Worksheet ON479"}, "careCreditRateTable": "See authoritative fragment; full table retained there"},
+    "onBen": {"benefitYear": 2026, "entitlementFormula": null, "availability": {"status": "unavailable", "reason": "Deterministic benefit formulas were not transcribed", "sourceNeeded": "Final official ON-BEN guidance or worksheet"}},
+    "rounding": {"globalRule": null, "availability": {"status": "unavailable", "reason": "Use official per-form/per-line rounding and clamps", "sourceNeeded": "Final ON428 and applicable schedules"}}
+  },
+  "paperFilingManualReview": {
+    "fragmentPath": "research/rates-calculation/paper-filing-manual-review.parameters.json",
+    "packageSelection": {"residenceDate": "2025-12-31", "specialSituations": ["Quebec resident", "deceased person", "newcomer", "emigrant", "multiple residential ties", "factual/deemed resident or non-resident", "business permanent-establishment allocation"]},
+    "signatureAndDate": {"mustRemainUserAction": true, "handSignatureAfterPrinting": true, "requiredFields": ["signature", "telephone number", "date in Year/Month/Day format"]},
+    "attachments": {"attachWhenOfficiallyRequired": true, "retainOtherSupportingRecords": true, "retentionYears": 6},
+    "mailingDestination": {"freshLookup": true, "routingFactorsMustBeConfirmed": true, "sourceUrl": "https://www.canada.ca/en/revenue-agency/corporate/contact-information/where-mail-your-paper-t1-return.html", "address": null, "addressAvailability": {"status": "unavailable until fresh lookup", "reason": "Routing depends on current official table and user factors", "sourceNeeded": "Current CRA mailing page"}},
+    "printing": {"pageSizeCheck": true, "AdobeReaderGuidance": true, "printAsImageTroubleshooting": true, "oneSidedOrDuplex": null, "inkColour": null, "stapleOrFastenerRule": null, "unresolvedReason": "No reviewed 2025 T1-specific source stated these details", "sourceNeeded": "Current CRA instructions if later published"},
+    "paymentSeparation": {"generatePayment": false, "paymentMailingAddress": null, "payee": null, "freshOfficialLookupRequired": true, "userReviewRequired": true, "lookupReason": "Payment destinations and instructions may change and must not be hardcoded", "sourceNeeded": "Current official CRA payment instructions", "mustRemainSeparateFromReturnMailing": true}
+  },
+  "eligibilityBoundaries": [
+    {"boundary": "Ontario package selection", "rule": "Official package-selection rules and residence on December 31, 2025; emigration uses the official emigration-date rule", "sourceNeeded": "CRA 2025 package guide"},
+    {"boundary": "Business permanent establishment outside Ontario", "rule": "Use T2203 instead of ON428 when the official condition applies", "sourceNeeded": "CRA Ontario package guide"},
+    {"boundary": "Other special situations", "rule": "Quebec, deceased, newcomer, emigrant, multiple ties, factual/deemed resident, non-resident, and other listed cases require their official route", "sourceNeeded": "CRA 2025 federal and provincial guides"}
+  ],
+  "unresolvedGaps": [
+    {"item": "Federal basic-personal-amount interpolation", "value": null, "reason": "Not transcribed between $177,882 and $253,414", "sourceNeeded": "Final 5000-D1 Federal Worksheet"},
+    {"item": "Federal no-slip dividend-credit percentage", "value": null, "reason": "No percentage transcribed", "sourceNeeded": "Final Federal Worksheet chart"},
+    {"item": "Complete federal credit and schedule mechanics", "value": null, "reason": "Eligibility, reductions, and exceptions are form-driven and incomplete here", "sourceNeeded": "Final 5006-R, 5000-D1, Schedules 3, 6, 8, 13, RC381, and T691"},
+    {"item": "Ontario Worksheet ON479 political-contribution formula", "value": null, "reason": "Direct 2025 worksheet content was not consistently resolvable", "sourceNeeded": "Official 2025 Worksheet ON479"},
+    {"item": "Ontario minimum-tax dependency graph", "value": null, "reason": "The 24.63% rate is captured but federal dependency lines are not mapped", "sourceNeeded": "Final federal minimum-tax forms and Worksheet ON428"},
+    {"item": "Ontario global rounding shortcut", "value": null, "reason": "No province-wide shortcut; use line-level rules", "sourceNeeded": "Each final applicable form or worksheet"},
+    {"item": "Quarterly prescribed interest rates", "value": null, "reason": "Rates change quarterly", "sourceNeeded": "Current CRA prescribed-rate notices"},
+    {"item": "Special returns", "value": null, "reason": "Bankruptcy, non-residence, immigration, emigration, deceased-return, and multi-jurisdiction mechanics are not transcribed", "sourceNeeded": "Applicable final CRA package and schedules"},
+    {"item": "CRA address", "value": null, "reason": "Must be looked up afresh from routing factors", "sourceNeeded": "Current CRA Where to mail your paper T1 return page"}
+  ]
+}

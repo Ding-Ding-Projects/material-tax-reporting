@@ -1,0 +1,552 @@
+{
+  "accessDate": "2026-08-14",
+  "taxYear": 2025,
+  "jurisdiction": {
+    "country": "Canada",
+    "province": "Ontario",
+    "residenceRule": "Use the Ontario package only when the official package-selection rules point to Ontario. ON428 is for Ontario residents on December 31, 2025, with special routing for emigrants and business income allocated to a permanent establishment outside Ontario.",
+    "businessAllocationBoundary": {
+      "requiresT2203InsteadOfON428": true,
+      "officialCondition": "Ontario resident on December 31, 2025, or on the date of emigration in 2025, with all or part of 2025 business income earned and allocable to a permanent establishment outside Ontario."
+    }
+  },
+  "productBoundary": {
+    "allowedEndState": "CRA mail-in PDF package after mandatory user review, printing, and hand-signing where required.",
+    "prohibitedCapabilities": [
+      "NETFILE",
+      "EFILE",
+      "ReFILE",
+      "SimpleFile",
+      "Auto-fill my return",
+      "electronic submission",
+      "direct CRA transmission",
+      "automatic filing",
+      "CRA certification or approval claims",
+      "tax, accounting, or legal advice"
+    ],
+    "mailingDestinationPolicy": "Fresh official CRA lookup required; do not hardcode a default Ontario mailing office."
+  },
+  "forms": {
+    "ON428": {
+      "formNumber": "5006-C",
+      "title": "ON428 - Ontario Tax",
+      "pageUrl": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-c.html",
+      "pdfUrl": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-c/5006-c-25e.pdf",
+      "eTextUrl": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-c/5006-c-25e.txt",
+      "lastUpdateObserved": "2026-01-20"
+    },
+    "WorksheetON428": {
+      "formNumber": "5006-D",
+      "title": "Worksheet ON428",
+      "pageUrl": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-d.html",
+      "pdfUrl": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-d/5006-d-25e.pdf",
+      "lastUpdateObserved": "2026-01-20"
+    },
+    "ON479": {
+      "formNumber": "5006-TC",
+      "title": "ON479 - Ontario Credits",
+      "pageUrl": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-tc.html",
+      "pdfUrl": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-tc/5006-tc-25e.pdf",
+      "lastUpdateObserved": "2026-01-20"
+    },
+    "WorksheetON479": {
+      "formNumber": "5006-D1",
+      "title": "Worksheet ON479",
+      "pageUrl": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-d1.html",
+      "status": "Listed in the official 2025 Ontario package, but direct 2025 worksheet content was not resolvable through this research pass. Do not implement worksheet-only formulas from secondary sources."
+    },
+    "ON428A": {
+      "formNumber": "5006-A",
+      "title": "Schedule ON428-A - Low-income Individuals and Families Tax (LIFT) Credit",
+      "pageUrl": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-a.html",
+      "pdfUrl": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-a/5006-a-25e.pdf"
+    },
+    "ON479A": {
+      "formNumber": "5006-TCA",
+      "title": "Schedule ON479-A - Ontario Childcare Access and Relief from Expenses (CARE) Tax Credit",
+      "pageUrl": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-tca.html",
+      "pdfUrl": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-tca/5006-tca-25e.pdf"
+    },
+    "ONBEN": {
+      "formNumber": "5006-TG",
+      "title": "ON-BEN - Application for the 2026 Ontario Trillium Benefit and Ontario Senior Homeowners' Property Tax Grant",
+      "pageUrl": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-tg.html"
+    }
+  },
+  "taxOnTaxableIncome": {
+    "sourceForm": "ON428",
+    "taxableIncomeLine": "26000",
+    "resultLine": "ON428 line 31",
+    "brackets": [
+      {
+        "lowerExclusive": null,
+        "upperInclusive": 52886,
+        "rate": 0.0505,
+        "baseTax": 0,
+        "baseIncome": 0
+      },
+      {
+        "lowerExclusive": 52886,
+        "upperInclusive": 105775,
+        "rate": 0.0915,
+        "baseTax": 2671,
+        "baseIncome": 52886
+      },
+      {
+        "lowerExclusive": 105775,
+        "upperInclusive": 150000,
+        "rate": 0.1116,
+        "baseTax": 7510,
+        "baseIncome": 105775
+      },
+      {
+        "lowerExclusive": 150000,
+        "upperInclusive": 220000,
+        "rate": 0.1216,
+        "baseTax": 12446,
+        "baseIncome": 150000
+      },
+      {
+        "lowerExclusive": 220000,
+        "upperInclusive": null,
+        "rate": 0.1316,
+        "baseTax": 20958,
+        "baseIncome": 220000
+      }
+    ]
+  },
+  "nonRefundableCredits": {
+    "sourceForm": "ON428",
+    "creditRate": 0.0505,
+    "result": "Total Ontario non-refundable tax credits multiplied by 5.05%",
+    "amounts": [
+      {
+        "line": "58040",
+        "name": "Basic personal amount",
+        "amount": 12747
+      },
+      {
+        "line": "58080",
+        "name": "Age amount",
+        "maximumAmount": 6223,
+        "worksheet": "Worksheet ON428",
+        "reduction": "Use official Worksheet ON428 age amount calculation."
+      },
+      {
+        "line": "58120",
+        "name": "Spouse or common-law partner amount",
+        "maximumAmount": 10823,
+        "reduction": "Reduced by spouse or common-law partner net income according to ON428/Worksheet ON428."
+      },
+      {
+        "line": "58160",
+        "name": "Amount for an eligible dependant",
+        "maximumAmount": 10823,
+        "reduction": "Reduced by dependant net income according to ON428/Worksheet ON428."
+      },
+      {
+        "line": "58330",
+        "name": "Adoption expenses",
+        "maximumAmount": 14951
+      },
+      {
+        "line": "58689",
+        "name": "Medical expenses for self, spouse or common-law partner, and dependent children",
+        "formula": "Eligible expenses minus the lesser of 3% of net income from line 23600 or 2834; if negative, enter 0.",
+        "netIncomeLine": "23600",
+        "dollarLimit": 2834
+      },
+      {
+        "line": "58729",
+        "name": "Allowable medical expenses for other dependants",
+        "maximumAmount": 15046
+      },
+      {
+        "line": "58560",
+        "name": "Unused tuition and education amounts",
+        "source": "Schedule ON(S11)"
+      },
+      {
+        "line": "58640",
+        "name": "Amounts transferred from spouse or common-law partner",
+        "source": "Schedule ON(S2)"
+      }
+    ]
+  },
+  "dividendTaxCredit": {
+    "sourceForm": "Worksheet ON428",
+    "otherThanEligibleDividends": {
+      "rate": 0.029863,
+      "base": "taxable amount of dividends other than eligible dividends from the official federal return line imported by Worksheet ON428"
+    },
+    "eligibleDividends": {
+      "rate": 0.1,
+      "base": "taxable amount of eligible dividends from the official federal return line imported by Worksheet ON428"
+    }
+  },
+  "minimumTax": {
+    "sourceForm": "Worksheet ON428",
+    "ontarioAdditionalTaxForMinimumTaxBasicRate": 0.2463,
+    "status": "Rate captured from official Worksheet ON428. Full calculation requires the official federal minimum-tax dependency lines and should remain disabled until those lines are mapped."
+  },
+  "surtax": {
+    "sourceForm": "ON428",
+    "baseLine": "65",
+    "components": [
+      {
+        "line": "66",
+        "threshold": 5710,
+        "rate": 0.2,
+        "formula": "max(0, line65 - 5710) * 0.20"
+      },
+      {
+        "line": "67",
+        "threshold": 7307,
+        "rate": 0.36,
+        "formula": "max(0, line65 - 7307) * 0.36"
+      }
+    ],
+    "resultLine": "68",
+    "formula": "line66 + line67",
+    "importantBoundary": "The two components are additive; the 36% component does not replace the 20% component."
+  },
+  "ontarioTaxReduction": {
+    "sourceForm": "ON428",
+    "basicReductionAmount": 294,
+    "additionalReductionPerEligibleDependant": 544,
+    "status": "Use the ON428 line sequence and clamps. Do not model as a refundable credit."
+  },
+  "ontarioHealthPremium": {
+    "sourceForm": "ON428",
+    "sourceLine": "89",
+    "incomeBase": "taxable income from ON428 line 1 / return line 26000",
+    "bands": [
+      {
+        "lowerExclusive": null,
+        "upperInclusive": 20000,
+        "amountFormula": "0"
+      },
+      {
+        "lowerExclusive": 20000,
+        "upperInclusive": 25000,
+        "amountFormula": "(taxableIncome - 20000) * 0.06"
+      },
+      {
+        "lowerExclusive": 25000,
+        "upperInclusive": 36000,
+        "amountFormula": "300"
+      },
+      {
+        "lowerExclusive": 36000,
+        "upperInclusive": 38500,
+        "amountFormula": "300 + (taxableIncome - 36000) * 0.06"
+      },
+      {
+        "lowerExclusive": 38500,
+        "upperInclusive": 48000,
+        "amountFormula": "450"
+      },
+      {
+        "lowerExclusive": 48000,
+        "upperInclusive": 48600,
+        "amountFormula": "450 + (taxableIncome - 48000) * 0.25"
+      },
+      {
+        "lowerExclusive": 48600,
+        "upperInclusive": 72000,
+        "amountFormula": "600"
+      },
+      {
+        "lowerExclusive": 72000,
+        "upperInclusive": 72600,
+        "amountFormula": "600 + (taxableIncome - 72000) * 0.25"
+      },
+      {
+        "lowerExclusive": 72600,
+        "upperInclusive": 200000,
+        "amountFormula": "750"
+      },
+      {
+        "lowerExclusive": 200000,
+        "upperInclusive": 200600,
+        "amountFormula": "750 + (taxableIncome - 200000) * 0.25"
+      },
+      {
+        "lowerExclusive": 200600,
+        "upperInclusive": null,
+        "amountFormula": "900"
+      }
+    ],
+    "resultLine": "90",
+    "implementationNote": "This is a piecewise premium with plateaus and short phase-in bands, not a normal marginal tax bracket table."
+  },
+  "liftCredit": {
+    "sourceForm": "Schedule ON428-A",
+    "resultLine": "ON428 line 62140",
+    "employmentIncomeLines": [
+      "10100",
+      "10400"
+    ],
+    "applicableRate": 0.0505,
+    "maximumCredit": 875,
+    "individualIncomeThreshold": 32500,
+    "familyIncomeThreshold": 65000,
+    "reductionRate": 0.05,
+    "adjustedIncomeRequired": true
+  },
+  "refundableCredits": {
+    "sourceForm": "ON479",
+    "totalLine": "47900",
+    "lines": [
+      {
+        "line": "63050",
+        "name": "Ontario Childcare Access and Relief from Expenses (CARE) tax credit",
+        "source": "Schedule ON479-A"
+      },
+      {
+        "line": "63110",
+        "name": "Ontario political contribution tax credit",
+        "source": "Worksheet ON479",
+        "status": "Official 2025 worksheet dependency captured; formula unavailable until direct official Worksheet ON479 content is obtained."
+      },
+      {
+        "line": "63010",
+        "name": "Ontario focused flow-through share tax credit"
+      },
+      {
+        "line": "63020",
+        "name": "Ontario co-operative education tax credit"
+      },
+      {
+        "line": "63140",
+        "name": "Ontario seniors' public transit tax credit"
+      }
+    ]
+  },
+  "careCredit": {
+    "sourceForm": "Schedule ON479-A",
+    "resultLine": "ON479 line 63050",
+    "requiresT778": true,
+    "childCareExpenseDeductionLine": "21400",
+    "familyAdjustedIncomeLine": "Schedule ON479-A line 5",
+    "creditBaseLine": "Schedule ON479-A line 6",
+    "rateLine": "Schedule ON479-A line 7",
+    "rateTable": [
+      { "moreThan": 0, "notMoreThan": 20000, "rate": 0.75 },
+      { "moreThan": 20000, "notMoreThan": 22500, "rate": 0.73 },
+      { "moreThan": 22500, "notMoreThan": 25000, "rate": 0.71 },
+      { "moreThan": 25000, "notMoreThan": 27500, "rate": 0.69 },
+      { "moreThan": 27500, "notMoreThan": 30000, "rate": 0.67 },
+      { "moreThan": 30000, "notMoreThan": 32500, "rate": 0.65 },
+      { "moreThan": 32500, "notMoreThan": 35000, "rate": 0.63 },
+      { "moreThan": 35000, "notMoreThan": 37500, "rate": 0.61 },
+      { "moreThan": 37500, "notMoreThan": 40000, "rate": 0.59 },
+      { "moreThan": 40000, "notMoreThan": 45000, "rate": 0.57 },
+      { "moreThan": 45000, "notMoreThan": 50000, "rate": 0.55 },
+      { "moreThan": 50000, "notMoreThan": 55000, "rate": 0.53 },
+      { "moreThan": 55000, "notMoreThan": 60000, "rate": 0.51 },
+      { "moreThan": 60000, "notMoreThan": 63600, "rate": 0.49 },
+      { "moreThan": 63600, "notMoreThan": 67200, "rate": 0.47 },
+      { "moreThan": 67200, "notMoreThan": 70800, "rate": 0.45 },
+      { "moreThan": 70800, "notMoreThan": 74400, "rate": 0.43 },
+      { "moreThan": 74400, "notMoreThan": 78000, "rate": 0.41 },
+      { "moreThan": 78000, "notMoreThan": 81600, "rate": 0.39 },
+      { "moreThan": 81600, "notMoreThan": 85200, "rate": 0.37 },
+      { "moreThan": 85200, "notMoreThan": 88800, "rate": 0.35 },
+      { "moreThan": 88800, "notMoreThan": 92400, "rate": 0.33 },
+      { "moreThan": 92400, "notMoreThan": 96000, "rate": 0.31 },
+      { "moreThan": 96000, "notMoreThan": 99600, "rate": 0.29 },
+      { "moreThan": 99600, "notMoreThan": 103200, "rate": 0.27 },
+      { "moreThan": 103200, "notMoreThan": 106800, "rate": 0.25 },
+      { "moreThan": 106800, "notMoreThan": 110400, "rate": 0.23 },
+      { "moreThan": 110400, "notMoreThan": 114000, "rate": 0.21 },
+      { "moreThan": 114000, "notMoreThan": 117600, "rate": 0.19 },
+      { "moreThan": 117600, "notMoreThan": 121200, "rate": 0.17 },
+      { "moreThan": 121200, "notMoreThan": 124800, "rate": 0.15 },
+      { "moreThan": 124800, "notMoreThan": 128400, "rate": 0.13 },
+      { "moreThan": 128400, "notMoreThan": 132000, "rate": 0.11 },
+      { "moreThan": 132000, "notMoreThan": 135600, "rate": 0.09 },
+      { "moreThan": 135600, "notMoreThan": 139200, "rate": 0.07 },
+      { "moreThan": 139200, "notMoreThan": 142800, "rate": 0.05 },
+      { "moreThan": 142800, "notMoreThan": 146400, "rate": 0.03 },
+      { "moreThan": 146400, "notMoreThan": 150000, "rate": 0.01 },
+      { "moreThan": 150000, "notMoreThan": null, "rate": 0 }
+    ]
+  },
+  "onBen": {
+    "sourceForm": "ON-BEN",
+    "benefitYear": 2026,
+    "status": "Application form captured as part of the 2025 package. Deterministic entitlement formulas were not transcribed in this pass; do not calculate Ontario Trillium Benefit or Ontario Senior Homeowners' Property Tax Grant from unofficial sources."
+  },
+  "rounding": {
+    "policy": "Use official form and guide rounding instructions at the line level. Preserve official whole-dollar constants and line-level clamps such as 'if negative, enter 0'.",
+    "openItem": "No Ontario-specific global rounding shortcut was located in this pass."
+  },
+  "instalmentsInterestPenalties": {
+    "administeredBy": "Canada Revenue Agency",
+    "ontarioSpecificThresholdFound": false,
+    "individualInstalmentThreshold": {
+      "netTaxOwingMoreThan": 3000,
+      "quebecThresholdMoreThan": 1800,
+      "testYearsFor2026": [
+        2026,
+        "either 2025 or 2024"
+      ],
+      "standardDueDates": [
+        "March 15",
+        "June 15",
+        "September 15",
+        "December 15"
+      ]
+    },
+    "lateFilingPenalty2025": {
+      "standard": "5% of 2025 balance owing plus 1% for each full month late, up to 12 months",
+      "repeated": "10% of 2025 balance owing plus 2% for each full month late, up to 20 months, when the official previous-penalty and demand-to-file conditions apply"
+    },
+    "interest": {
+      "balanceOwing": "CRA charges compound daily interest starting the day after the due date.",
+      "rates": "CRA interest rates can change every three months.",
+      "instalmentPenaltyBoundary": "CRA applies an instalment penalty only if instalment interest for 2026 is more than $1,000."
+    }
+  },
+  "mailing": {
+    "sourceTitle": "Where to mail your paper T1 return",
+    "sourceUrl": "https://www.canada.ca/en/revenue-agency/corporate/contact-information/where-mail-your-paper-t1-return.html",
+    "pageDateObserved": "2025-09-26",
+    "policy": "Do not hardcode. Ask user to confirm resident/non-resident status and official routing area, then display the current official result for review.",
+    "ontarioResidentRoutingFactorsObserved": [
+      "Hamilton",
+      "Kitchener",
+      "Waterloo",
+      "London",
+      "Thunder Bay",
+      "Windsor",
+      "Barrie",
+      "Belleville",
+      "Kingston",
+      "Ottawa",
+      "Peterborough",
+      "St. Catharines",
+      "Sudbury",
+      "Toronto"
+    ],
+    "nonResidentHasSeparateTable": true
+  },
+  "unresolvedOfficialSourceGaps": [
+    {
+      "item": "Worksheet ON479 political contribution formula",
+      "reason": "Worksheet ON479 is listed in the official package, but the direct 2025 worksheet content was not consistently resolvable through this research pass.",
+      "requiredAction": "Obtain official 2025 Worksheet ON479 PDF/e-text and map line 63110 before implementing."
+    },
+    {
+      "item": "Complete Ontario minimum-tax dependency graph",
+      "reason": "Worksheet ON428 rate was captured, but complete calculation depends on federal minimum-tax forms/lines.",
+      "requiredAction": "Map final 2025 federal minimum-tax lines before enabling complete minimum-tax calculation."
+    },
+    {
+      "item": "Global Ontario rounding shortcut",
+      "reason": "No single Ontario-specific global rounding rule was located.",
+      "requiredAction": "Use official per-form/per-line rounding and clamps."
+    }
+  ],
+  "officialSources": [
+    {
+      "id": "cra-ontario-package-2025",
+      "publisher": "Canada Revenue Agency",
+      "title": "Ontario - 2025 Income tax package",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario.html",
+      "pageDateObserved": "2026-01-20"
+    },
+    {
+      "id": "cra-on428-2025",
+      "publisher": "Canada Revenue Agency",
+      "title": "5006-C ON428 - Ontario Tax",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-c.html",
+      "pageDateObserved": "2026-01-20"
+    },
+    {
+      "id": "cra-on428-2025-pdf",
+      "publisher": "Canada Revenue Agency",
+      "title": "5006-C ON428 - Ontario Tax PDF",
+      "url": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-c/5006-c-25e.pdf"
+    },
+    {
+      "id": "cra-on428-2025-etext",
+      "publisher": "Canada Revenue Agency",
+      "title": "5006-C ON428 - Ontario Tax e-text",
+      "url": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-c/5006-c-25e.txt"
+    },
+    {
+      "id": "cra-worksheet-on428-2025",
+      "publisher": "Canada Revenue Agency",
+      "title": "5006-D Worksheet ON428",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-d.html",
+      "pageDateObserved": "2026-01-20"
+    },
+    {
+      "id": "cra-on479-2025",
+      "publisher": "Canada Revenue Agency",
+      "title": "5006-TC ON479 - Ontario Credits",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-tc.html",
+      "pageDateObserved": "2026-01-20"
+    },
+    {
+      "id": "cra-on428-a-2025",
+      "publisher": "Canada Revenue Agency",
+      "title": "5006-A Schedule ON428-A - Low-income Individuals and Families Tax (LIFT) Credit",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-a.html"
+    },
+    {
+      "id": "cra-on479-a-2025",
+      "publisher": "Canada Revenue Agency",
+      "title": "5006-TCA Schedule ON479-A - Ontario Childcare Access and Relief from Expenses (CARE) Tax Credit",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-tca.html"
+    },
+    {
+      "id": "cra-on-ben-2025",
+      "publisher": "Canada Revenue Agency",
+      "title": "5006-TG ON-BEN - Application for the 2026 Ontario Trillium Benefit and Ontario Senior Homeowners' Property Tax Grant",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-tg.html"
+    },
+    {
+      "id": "cra-ontario-tax-info-2025",
+      "publisher": "Canada Revenue Agency",
+      "title": "Ontario tax information for 2025",
+      "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-pc.html",
+      "pageDateObserved": "2026-01-20"
+    },
+    {
+      "id": "cra-mail-paper-t1",
+      "publisher": "Canada Revenue Agency",
+      "title": "Where to mail your paper T1 return",
+      "url": "https://www.canada.ca/en/revenue-agency/corporate/contact-information/where-mail-your-paper-t1-return.html",
+      "pageDateObserved": "2025-09-26"
+    },
+    {
+      "id": "cra-instalments-individuals",
+      "publisher": "Canada Revenue Agency",
+      "title": "Required tax instalments for individuals",
+      "url": "https://www.canada.ca/en/revenue-agency/services/payments/payments-cra/individual-payments/income-tax-instalments.html"
+    },
+    {
+      "id": "cra-instalments-who-pays",
+      "publisher": "Canada Revenue Agency",
+      "title": "Who has to pay - Required tax instalments for individuals",
+      "url": "https://www.canada.ca/en/revenue-agency/services/payments/payments-cra/individual-payments/income-tax-instalments/who-pays-instalments.html",
+      "pageDateObserved": "2026-01-20"
+    },
+    {
+      "id": "cra-interest-penalties-2025",
+      "publisher": "Canada Revenue Agency",
+      "title": "Interest and penalties on late taxes - Personal income tax",
+      "url": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/interest-penalties/late-filing-penalty.html",
+      "pageDateObserved": "2026-01-20"
+    },
+    {
+      "id": "ontario-dividend-tax-credit",
+      "publisher": "Ontario Ministry of Finance",
+      "title": "Ontario Dividend Tax Credit",
+      "url": "https://www.ontario.ca/page/ontario-dividend-tax-credit"
+    }
+  ]
+}
