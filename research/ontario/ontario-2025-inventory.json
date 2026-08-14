@@ -1,0 +1,559 @@
+{
+  "schema_version": "1.0.0",
+  "jurisdiction": "CA-ON",
+  "tax_year": 2025,
+  "benefit_year": "2026-07-01/2027-06-30",
+  "accessed_on": "2026-08-14",
+  "research_only": true,
+  "disclaimer": "Implementation research from official sources; not tax or legal advice.",
+  "product_contract": {
+    "output": "CRA mail-in PDF package",
+    "electronic_filing": false,
+    "netfile": false,
+    "efile": false,
+    "direct_cra_transmission": false,
+    "automatic_filing": false,
+    "cra_certification_claim": false,
+    "manual_review_required_before_export_or_print": true,
+    "manual_review_items": [
+      "every populated form",
+      "every calculation",
+      "every required attachment",
+      "every retained-document instruction",
+      "current CRA mailing destination",
+      "identity fields",
+      "marital-status fields",
+      "dependant fields",
+      "declarations",
+      "dates",
+      "signature fields"
+    ],
+    "explicit_user_acknowledgement_required": true
+  },
+  "source_precedence": [
+    "year-stamped CRA form PDF",
+    "year-stamped CRA Ontario guide",
+    "year-stamped CRA package index",
+    "CRA line and form guidance for the same tax year",
+    "Ontario government program and legislative guidance",
+    "live benefit information only when its benefit year matches"
+  ],
+  "version_rules": {
+    "form_suffix": "-25e",
+    "cra_form_last_update": "2026-01-20",
+    "do_not_mix_tax_years": true,
+    "fail_closed_on_template_calculation_year_mismatch": true,
+    "revalidate_live_mailing_destination_at_export_or_print": true,
+    "live_ontario_pages_may_show_later_year_values": true
+  },
+  "forms": [
+    {
+      "id": "5006-R",
+      "name": "Income Tax and Benefit Return for Ontario",
+      "kind": "main_return",
+      "tax_year": 2025,
+      "source_id": "cra_5006_r_page",
+      "outputs": ["T1-42800", "T1-47900", "T1-46500"],
+      "paper_handling": "include"
+    },
+    {
+      "id": "ON428",
+      "cra_code": "5006-C",
+      "name": "Ontario Tax",
+      "kind": "provincial_tax_form",
+      "tax_year": 2025,
+      "source_id": "cra_on428_pdf",
+      "output": "T1-42800",
+      "paper_handling": "attach_even_if_zero",
+      "replaced_by": "T2203 when CRA multi-jurisdiction conditions apply"
+    },
+    {
+      "id": "Worksheet ON428",
+      "cra_code": "5006-D",
+      "name": "Worksheet ON428 - Ontario",
+      "kind": "worksheet",
+      "tax_year": 2025,
+      "source_id": "cra_on428_worksheet_pdf",
+      "paper_handling": "retain_do_not_attach"
+    },
+    {
+      "id": "ON479",
+      "cra_code": "5006-TC",
+      "name": "Ontario Credits",
+      "kind": "provincial_refundable_credits_form",
+      "tax_year": 2025,
+      "source_id": "cra_on479_pdf",
+      "output": "T1-47900",
+      "paper_handling": "attach_when_applicable"
+    },
+    {
+      "id": "Worksheet ON479",
+      "cra_code": "5006-D1",
+      "name": "Worksheet ON479 - Ontario",
+      "kind": "worksheet",
+      "tax_year": 2025,
+      "source_id": "cra_on479_worksheet_pdf",
+      "paper_handling": "retain_do_not_attach"
+    },
+    {
+      "id": "ON-BEN",
+      "cra_code": "5006-TG",
+      "name": "Application for the 2026 Ontario Trillium Benefit and Ontario Senior Homeowners' Property Tax Grant",
+      "kind": "benefit_application",
+      "fact_year": 2025,
+      "benefit_year": 2026,
+      "source_id": "cra_on_ben_pdf",
+      "paper_handling": "attach_when_applying",
+      "tax_refund_output": null,
+      "payments_separate_from_tax_refund": true
+    },
+    {
+      "id": "ON428-A",
+      "cra_code": "5006-A",
+      "name": "Low-income Individuals and Families Tax Credit",
+      "kind": "schedule",
+      "tax_year": 2025,
+      "source_id": "cra_on428_a_pdf",
+      "output": "ON428-62140",
+      "paper_handling": "attach_when_claimed"
+    },
+    {
+      "id": "ON479-A",
+      "cra_code": "5006-TCA",
+      "name": "Ontario Childcare Access and Relief from Expenses Tax Credit",
+      "kind": "schedule",
+      "tax_year": 2025,
+      "source_id": "cra_on479_a_pdf",
+      "output": "ON479-63050",
+      "paper_handling": "attach_when_claimed"
+    },
+    {
+      "id": "ON(S2)",
+      "cra_code": "5006-S2",
+      "name": "Provincial Amounts Transferred from your Spouse or Common-Law Partner",
+      "kind": "schedule",
+      "tax_year": 2025,
+      "source_id": "cra_on_s2_pdf",
+      "output": "ON428-58640",
+      "paper_handling": "attach; also attach spouse information slips when spouse does not file"
+    },
+    {
+      "id": "ON(S11)",
+      "cra_code": "5006-S11",
+      "name": "Ontario Tuition and Education Amounts",
+      "kind": "schedule",
+      "tax_year": 2025,
+      "source_id": "cra_on_s11_pdf",
+      "output": "ON428-58560",
+      "paper_handling": "attach; retain supporting documents"
+    },
+    {
+      "id": "T2203",
+      "name": "Provincial and Territorial Taxes for Multiple Jurisdictions",
+      "kind": "federal_multi_jurisdiction_substitute",
+      "tax_year": 2025,
+      "source_id": "cra_t2203_page",
+      "output": "T1-42800",
+      "paper_handling": "attach_applicable_completed_parts",
+      "substitutes_for": "ON428"
+    }
+  ],
+  "on428": {
+    "input": "T1-26000",
+    "output": "T1-42800",
+    "tax_brackets": [
+      {"over": 0, "up_to": 52886, "rate": 0.0505, "base_tax": 0, "base_income": 0},
+      {"over": 52886, "up_to": 105775, "rate": 0.0915, "base_tax": 2670.74, "base_income": 52886},
+      {"over": 105775, "up_to": 150000, "rate": 0.1116, "base_tax": 7510.09, "base_income": 105775},
+      {"over": 150000, "up_to": 220000, "rate": 0.1216, "base_tax": 12445.60, "base_income": 150000},
+      {"over": 220000, "up_to": null, "rate": 0.1316, "base_tax": 20957.60, "base_income": 220000}
+    ],
+    "non_refundable_credit_rate": 0.0505,
+    "non_refundable_amounts": {
+      "58040": {"name": "basic personal amount", "amount": 12747, "federal_correspondence": "T1-30000"},
+      "58080": {"name": "age amount", "maximum": 6223, "phaseout_rate": 0.15, "phaseout_start": 46330, "zero_at_or_above": 87817, "federal_correspondence": "T1-30100"},
+      "58120": {"name": "spouse or common-law partner amount", "base": 11905, "maximum": 10823, "subtract": "spouse T1-23600", "federal_correspondence": "T1-30300"},
+      "58160": {"name": "amount for eligible dependant", "base": 11905, "maximum": 10823, "subtract": "dependant T1-23600", "federal_correspondence": "T1-30400"},
+      "58185": {"name": "Ontario caregiver amount", "base": 26562, "maximum_per_dependant": 6008, "federal_correspondence": "T1-30450"},
+      "58240": {"name": "CPP or QPP contributions through employment", "input": "T1-30800"},
+      "58280": {"name": "CPP or QPP contributions on self-employment and other earnings", "input": "T1-31000"},
+      "58300": {"name": "employment insurance premiums", "input": "T1-31200"},
+      "58305": {"name": "employment insurance premiums on self-employment and other eligible earnings", "input": "T1-31217"},
+      "58330": {"name": "adoption expenses"},
+      "58360": {"name": "pension income amount", "maximum": 1762, "input": "T1-31400"},
+      "58440": {"name": "disability amount for self", "age_18_or_older": 10298, "under_18_maximum": 16305, "federal_correspondence": "T1-31600"},
+      "58480": {"name": "disability amount transferred from a dependant", "federal_correspondence": "T1-31800"},
+      "58520": {"name": "interest paid on student loans", "input": "T1-31900"},
+      "58560": {"name": "unused Ontario tuition and education amounts", "input": "ON(S11)"},
+      "58640": {"name": "amounts transferred from spouse or common-law partner", "input": "ON(S2)", "federal_correspondence": "T1-32600"},
+      "58689": {"name": "medical expenses for self, spouse or partner, and young dependent children"},
+      "58729": {"name": "medical expenses for other dependants", "maximum_per_dependant": 15551},
+      "58769": {"name": "allowable medical expenses total", "feeds": ["ON479 seniors care at home", "ON479 fertility expense eligibility"]},
+      "58969": {"name": "Ontario donations and gifts credit", "first_rate": 0.0505, "second_rate": 0.1116, "input": "federal Schedule 9 lines 13 and 14"}
+    },
+    "dividend_credit": {
+      "field": "61520",
+      "non_eligible_rate": 0.029863,
+      "eligible_rate": 0.10,
+      "inputs": ["T1-12000", "T1-12010"]
+    },
+    "minimum_tax_carryover": {
+      "field": "61540",
+      "rate": 0.2463,
+      "input": "T1-40427",
+      "limit": "lesser of post-dividend-credit tax and 24.63% of T1-40427"
+    },
+    "surtax": [
+      {"threshold": 5710, "rate": 0.20},
+      {"threshold": 7307, "rate": 0.36}
+    ],
+    "additional_tax_for_minimum_tax": {
+      "form_input": "T691 Part 5 line 11",
+      "base_rate": 0.2463,
+      "calculated_on": "Worksheet ON428",
+      "output": "ON428 line 72"
+    },
+    "tax_reduction": {
+      "base": 294,
+      "dependent_child_supplement": 544,
+      "dependant_impairment_supplement": 544,
+      "formula": "max(0, 2 * (base + supplements) - Ontario tax before reduction)",
+      "disallowed_when": [
+        "not resident of Canada at beginning of year",
+        "not resident of Ontario on 2025-12-31",
+        "Ontario additional tax for minimum-tax purposes applies",
+        "bankrupt at any time in 2025",
+        "return filed by trustee in bankruptcy",
+        "claimant elects not to claim"
+      ]
+    },
+    "provincial_foreign_tax_credit": {"input": "T2036", "output": "ON428 line 82", "paper_attachment": true},
+    "lift": {
+      "input_lines": ["T1-10100", "T1-10400"],
+      "maximum_rate": 0.0505,
+      "maximum_credit": 875,
+      "individual_income_threshold": 32500,
+      "family_income_threshold": 65000,
+      "reduction_rate": 0.05,
+      "adjusted_net_income_add": ["T1-21300", "RDSP repayment included in T1-23200"],
+      "adjusted_net_income_subtract": ["T1-11700", "RDSP income included in T1-12500"],
+      "output": "ON428-62140",
+      "paper_attachment": "ON428-A",
+      "disallowed_when": [
+        "Ontario additional tax for minimum-tax purposes applies",
+        "specified long-term prison confinement",
+        "bankrupt at any time in 2025"
+      ]
+    },
+    "community_food_program_donation_credit": {
+      "field": "62150",
+      "rate": 0.25,
+      "requires": ["Ontario resident at year end", "farmer claimant or spouse", "qualifying Ontario agricultural-product donation", "same donation on federal Schedule 9 line 34000 and ON428-58969"]
+    },
+    "health_premium": [
+      {"over": 0, "up_to": 20000, "base": 0, "rate": 0, "excess_over": 0},
+      {"over": 20000, "up_to": 25000, "base": 0, "rate": 0.06, "excess_over": 20000},
+      {"over": 25000, "up_to": 36000, "base": 300, "rate": 0, "excess_over": 0},
+      {"over": 36000, "up_to": 38500, "base": 300, "rate": 0.06, "excess_over": 36000},
+      {"over": 38500, "up_to": 48000, "base": 450, "rate": 0, "excess_over": 0},
+      {"over": 48000, "up_to": 48600, "base": 450, "rate": 0.25, "excess_over": 48000},
+      {"over": 48600, "up_to": 72000, "base": 600, "rate": 0, "excess_over": 0},
+      {"over": 72000, "up_to": 72600, "base": 600, "rate": 0.25, "excess_over": 72000},
+      {"over": 72600, "up_to": 200000, "base": 750, "rate": 0, "excess_over": 0},
+      {"over": 200000, "up_to": 200600, "base": 750, "rate": 0.25, "excess_over": 200000},
+      {"over": 200600, "up_to": null, "base": 900, "rate": 0, "excess_over": 0}
+    ]
+  },
+  "on479": {
+    "output": "T1-47900",
+    "paper_attachment": true,
+    "credits": [
+      {
+        "id": "fertility_treatment",
+        "field": "61268",
+        "line": 1,
+        "effective_from": "2025-01-01",
+        "rate": 0.25,
+        "maximum_eligible_expenses": 20000,
+        "maximum_credit": 5000,
+        "requires": ["Ontario resident at year end", "not bankrupt in 2025", "same expenses included in ON428-58689", "goods and services entirely in Canada", "one spouse or partner claims"],
+        "paper_support": "retain receipts; do not routinely attach"
+      },
+      {
+        "id": "care",
+        "field": "63050",
+        "line": 2,
+        "schedule": "ON479-A",
+        "required_prior_form": "T778",
+        "required_t1_input": "T1-21400",
+        "family_adjusted_income_inputs": ["T1-23600", "T1-21400", "T1-23500", "applicable supporting-person equivalents"],
+        "rate_table": [
+          {"over": 0, "up_to": 20000, "rate": 0.75},
+          {"over": 20000, "up_to": 22500, "rate": 0.73},
+          {"over": 22500, "up_to": 25000, "rate": 0.71},
+          {"over": 25000, "up_to": 27500, "rate": 0.69},
+          {"over": 27500, "up_to": 30000, "rate": 0.67},
+          {"over": 30000, "up_to": 32500, "rate": 0.65},
+          {"over": 32500, "up_to": 35000, "rate": 0.63},
+          {"over": 35000, "up_to": 37500, "rate": 0.61},
+          {"over": 37500, "up_to": 40000, "rate": 0.59},
+          {"over": 40000, "up_to": 45000, "rate": 0.57},
+          {"over": 45000, "up_to": 50000, "rate": 0.55},
+          {"over": 50000, "up_to": 55000, "rate": 0.53},
+          {"over": 55000, "up_to": 60000, "rate": 0.51},
+          {"over": 60000, "up_to": 63600, "rate": 0.49},
+          {"over": 63600, "up_to": 67200, "rate": 0.47},
+          {"over": 67200, "up_to": 70800, "rate": 0.45},
+          {"over": 70800, "up_to": 74400, "rate": 0.43},
+          {"over": 74400, "up_to": 78000, "rate": 0.41},
+          {"over": 78000, "up_to": 81600, "rate": 0.39},
+          {"over": 81600, "up_to": 85200, "rate": 0.37},
+          {"over": 85200, "up_to": 88800, "rate": 0.35},
+          {"over": 88800, "up_to": 92400, "rate": 0.33},
+          {"over": 92400, "up_to": 96000, "rate": 0.31},
+          {"over": 96000, "up_to": 99600, "rate": 0.29},
+          {"over": 99600, "up_to": 103200, "rate": 0.27},
+          {"over": 103200, "up_to": 106800, "rate": 0.25},
+          {"over": 106800, "up_to": 110400, "rate": 0.23},
+          {"over": 110400, "up_to": 114000, "rate": 0.21},
+          {"over": 114000, "up_to": 117600, "rate": 0.19},
+          {"over": 117600, "up_to": 121200, "rate": 0.17},
+          {"over": 121200, "up_to": 124800, "rate": 0.15},
+          {"over": 124800, "up_to": 128400, "rate": 0.13},
+          {"over": 128400, "up_to": 132000, "rate": 0.11},
+          {"over": 132000, "up_to": 135600, "rate": 0.09},
+          {"over": 135600, "up_to": 139200, "rate": 0.07},
+          {"over": 139200, "up_to": 142800, "rate": 0.05},
+          {"over": 142800, "up_to": 146400, "rate": 0.03},
+          {"over": 146400, "up_to": 150000, "rate": 0.01},
+          {"over": 150000, "up_to": null, "rate": 0}
+        ],
+        "paper_support": "attach ON479-A and ON479"
+      },
+      {
+        "id": "seniors_care_at_home",
+        "field": "63095",
+        "line": 13,
+        "input": "ON428-58769",
+        "rate": 0.25,
+        "maximum_credit_before_income_reduction": 1500,
+        "family_income_reduction_start": 35000,
+        "family_income_zero_over": 65000,
+        "reduction_rate": 0.05,
+        "minimum_age_on_2025_12_31": 70,
+        "paper_support": "retain receipts; do not routinely attach"
+      },
+      {
+        "id": "seniors_public_transit",
+        "field": "63100",
+        "line": 14,
+        "rate": 0.15,
+        "maximum_expenses": 3000,
+        "maximum_credit": 450,
+        "minimum_age_on_2024_12_31": 65,
+        "paper_support": "retain receipts and payment/usage evidence; do not routinely attach"
+      },
+      {
+        "id": "political_contribution",
+        "field": "63110",
+        "line": 16,
+        "maximum_credit": 1666.82,
+        "maximum_threshold": 3793,
+        "brackets": [
+          {"over": 0, "up_to": 500.05, "rate": 0.75, "base_credit": 0, "base_contribution": 0},
+          {"over": 500.05, "up_to": 1666.82, "rate": 0.50, "base_credit": 375.03, "base_contribution": 500.05},
+          {"over": 1666.82, "up_to": 3793, "rate": 0.3333, "base_credit": 958.41, "base_contribution": 1666.82},
+          {"over": 3793, "up_to": null, "rate": 0, "base_credit": 1666.82, "base_contribution": 3793}
+        ],
+        "paper_support": "attach all official receipts; retain Worksheet ON479"
+      },
+      {
+        "id": "focused_flow_through_share",
+        "field": "63220",
+        "line": 17,
+        "input": "T1221",
+        "rate": 0.05,
+        "paper_support": "attach T1221 and copies of applicable T101 or T5013 slips"
+      },
+      {
+        "id": "cooperative_education",
+        "fields": ["63260", "63265", "63270", "63300"],
+        "line": 20,
+        "prior_year_salary_low_threshold": 400000,
+        "prior_year_salary_high_threshold": 600000,
+        "low_salary_rate": 0.30,
+        "high_salary_rate": 0.25,
+        "maximum_per_student_per_placement": 3000,
+        "interpolation": "25% of eligible expenses plus 5% of eligible expenses multiplied by (1 - (prior-year salaries and wages - 400000) / 200000)",
+        "future_income_inclusion": "credit claimed for 2025 is self-employment income on the 2026 return",
+        "paper_support": "retain certificates and evidence; do not routinely attach"
+      }
+    ]
+  },
+  "on_ben": {
+    "fact_year": 2025,
+    "application_for": 2026,
+    "payments_separate_from_tax_refund": true,
+    "fields": {
+      "61020": "apply for OEPTC",
+      "61040": "apply for NOEC",
+      "61060": "choose delayed single 2026 OTB payment in June 2027",
+      "61070": "apply for OSHPTG",
+      "61080": "involuntary separation for medical reasons with individual applications",
+      "61100": "eligible principal-residence rent",
+      "61120": "eligible principal-residence property tax actually paid",
+      "61140": "designated Ontario student residence",
+      "61210": "principal-residence home-energy costs on a reserve",
+      "61230": "public or non-profit long-term-care accommodation costs"
+    },
+    "part_b_residence_fields": ["address", "postal code", "months resident in 2025", "amount paid for 2025", "long-term-care indicator", "landlord municipality or supplier"],
+    "part_c": "other spouse or partner address for involuntary separation",
+    "benefits": [
+      {"id": "ostc", "name": "Ontario Sales Tax Credit", "on_ben_application_required": false, "determined_from_return": true, "2026_maximum_per_adult_or_child": 378},
+      {
+        "id": "oeptc",
+        "name": "Ontario Energy and Property Tax Credit",
+        "application_field": "61020",
+        "required_parts": ["A", "B"],
+        "monthly_calculation": true,
+        "occupancy_cost": "20% of 2025 Ontario rent + 2025 Ontario property tax + $25 designated-student-residence amount",
+        "energy_component": {"long_term_care_rate": 0.20, "reserve_energy_costs_added": true, "student_residence_amount_removed": 25, "maximum": 290},
+        "non_senior_property_component": {"occupancy_rate": 0.10, "rate_amount_cap": 944, "base_addition": 73, "limited_to_occupancy_cost": true},
+        "senior_property_component": {"occupancy_rate": 0.10, "rate_amount_cap": 581, "base_addition": 617, "limited_to_occupancy_cost": true, "oshptg_interaction": true},
+        "income_reduction_rate": 0.02,
+        "income_thresholds": {"single_non_senior_no_child": 29047, "married_or_common_law_non_senior_or_sole_care_parent": 36309, "single_senior_no_child": 36309, "senior_couple_or_sole_care_senior": 43571}
+      },
+      {
+        "id": "noec",
+        "name": "Northern Ontario Energy Credit",
+        "application_field": "61040",
+        "required_parts": ["A", "B"],
+        "monthly_calculation": true,
+        "single_no_children": {"maximum": 189, "income_threshold": 50833, "reduction_rate": 0.01},
+        "couple_or_single_parent": {"maximum": 290, "family_income_threshold": 65356, "reduction_rate": 0.01},
+        "shared_care": "one half of applicable single calculation plus one half of applicable family calculation",
+        "northern_districts": ["Algoma", "Cochrane", "Kenora", "Manitoulin", "Nipissing", "Parry Sound", "Rainy River", "Sudbury including Greater Sudbury", "Thunder Bay", "Timiskaming"]
+      },
+      {
+        "id": "oshptg",
+        "name": "Ontario Senior Homeowners' Property Tax Grant",
+        "application_field": "61070",
+        "property_tax_field": "61120",
+        "minimum_age_on_2025_12_31": 64,
+        "required_parts": ["A", "B"],
+        "maximum": "lesser of $500 and eligible 2025 property tax",
+        "single": {"income_threshold": 35000, "reduction_rate": 0.0333, "nil_at_or_above": 50000},
+        "married_or_common_law": {"family_income_threshold": 45000, "reduction_rate": 0.0333, "nil_at_or_above": 60000},
+        "cra_calculates_after_application": true
+      }
+    ],
+    "one_spouse_generally_applies_for_household": true,
+    "receipts": "retain; do not routinely attach",
+    "separate_sheet_when_part_b_lacks_space": true,
+    "local_calculation_label": "estimate only; not a CRA assessment"
+  },
+  "paper_package": {
+    "attach": [
+      "5006-R main return",
+      "ON428 even if zero, unless T2203 replaces it",
+      "ON479 when any refundable Ontario credit is claimed",
+      "ON479-A when CARE is claimed",
+      "ON-BEN when applying for OEPTC, NOEC, or OSHPTG",
+      "ON428-A when LIFT is claimed",
+      "ON(S2) when spouse or partner amounts are transferred",
+      "ON(S11) when Ontario tuition or education carryforward is claimed",
+      "T2036 when provincial foreign tax credit is claimed",
+      "T1221 and applicable T101 or T5013 copies for focused flow-through share credit",
+      "official Ontario political-contribution receipts",
+      "applicable T2203 parts when multi-jurisdiction rules apply",
+      "separate ON-BEN residence-detail sheet when Part B lacks space"
+    ],
+    "retain_do_not_routinely_attach": [
+      "Worksheet ON428",
+      "Worksheet ON479",
+      "fertility receipts",
+      "medical receipts",
+      "transit receipts and usage evidence",
+      "co-operative placement certificates",
+      "ordinary ON-BEN rent, property-tax, energy, and accommodation receipts",
+      "tuition supporting documents other than the attached schedule"
+    ],
+    "mailing_source_id": "cra_paper_mailing_page",
+    "hard_code_mailing_address": false,
+    "manual_address_verification_required": true
+  },
+  "special_cases": {
+    "multi_jurisdiction": "T2203 replaces ON428 when CRA conditions apply",
+    "newcomer_or_emigrant": "corresponding provincial non-refundable amounts may require the same proration as federal amounts",
+    "bankruptcy": "credit-specific rules apply; many ON479 credits and Ontario tax reduction are nil; health premium uses combined 2025 taxable income; ON-BEN accompanies post-bankruptcy return",
+    "deceased": "credit-specific final-return rules apply; estate cannot receive later ON-BEN payments when death occurred on or before 2025-12-31",
+    "split_income": "T1206 feeds ON428 line 54",
+    "minimum_tax": "T691 feeds ON428 minimum-tax calculations",
+    "foreign_tax_credit": "T2036 feeds ON428 line 82",
+    "opportunities_fund": "optional T1 line 46500 refund donation; not a tax credit; amounts below $2 are not processed"
+  },
+  "source_conflicts": [
+    {
+      "id": "otb_small_entitlement_threshold",
+      "description": "The 2025 Ontario guide says $360 or less; newer 2026 benefit calculation material uses $500 or less.",
+      "resolution": "Do not silently select; pin source and require current-instruction review."
+    },
+    {
+      "id": "on479_etext_political_field",
+      "description": "The 2025 ON479 e-text labels political contributions field 63100; the PDF, guide, and Worksheet ON479 use 63110.",
+      "resolution": "Use PDF-confirmed field 63110 and retain discrepancy metadata."
+    },
+    {
+      "id": "on428_a_etext_family_threshold",
+      "description": "The e-text prints 65,0000.00; the form context and guide use $65,000.",
+      "resolution": "Use $65,000 from the year-stamped PDF/guide and retain discrepancy metadata."
+    },
+    {
+      "id": "on479_a_etext_rate_transition",
+      "description": "The e-text mistypes one transition around $132,000-$139,200.",
+      "resolution": "Use the official PDF table: $132,000-$135,600 at 9%; $135,600-$139,200 at 7%."
+    }
+  ],
+  "unresolved_gaps": [
+    "Original commencement dates were not established for every continuing credit; only current 2025 applicability was required and confirmed.",
+    "ON-BEN benefit results are CRA assessments after filing; local calculations can only be estimates.",
+    "Mailing destinations must be refreshed from the live CRA page at export or print time.",
+    "No reviewed source supports a CRA certification claim for independently generated forms or calculations."
+  ],
+  "sources": [
+    {"id": "cra_ontario_package", "publisher": "Canada Revenue Agency", "title": "Ontario - 2025 Income tax package", "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario.html", "tax_year": 2025},
+    {"id": "cra_ontario_guide", "publisher": "Canada Revenue Agency", "title": "Ontario tax information for 2025", "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-pc.html", "tax_year": 2025},
+    {"id": "cra_5006_r_page", "publisher": "Canada Revenue Agency", "title": "5006-R Income Tax and Benefit Return for Ontario", "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package/ontario/5006-r.html", "tax_year": 2025},
+    {"id": "cra_on428_pdf", "publisher": "Canada Revenue Agency", "title": "2025 ON428 Ontario Tax", "url": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-c/5006-c-25e.pdf", "tax_year": 2025},
+    {"id": "cra_on428_worksheet_pdf", "publisher": "Canada Revenue Agency", "title": "2025 Worksheet ON428", "url": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-d/5006-d-25e.pdf", "tax_year": 2025},
+    {"id": "cra_on479_pdf", "publisher": "Canada Revenue Agency", "title": "2025 ON479 Ontario Credits", "url": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-tc/5006-tc-25e.pdf", "tax_year": 2025},
+    {"id": "cra_on479_worksheet_pdf", "publisher": "Canada Revenue Agency", "title": "2025 Worksheet ON479", "url": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-d1/5006-d1-25e.pdf", "tax_year": 2025},
+    {"id": "cra_on479_a_pdf", "publisher": "Canada Revenue Agency", "title": "2025 Schedule ON479-A CARE Tax Credit", "url": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-tca/5006-tca-25e.pdf", "tax_year": 2025},
+    {"id": "cra_on_ben_pdf", "publisher": "Canada Revenue Agency", "title": "2025 ON-BEN application for 2026 benefits", "url": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-tg/5006-tg-25e.pdf", "tax_year": 2025},
+    {"id": "cra_on428_a_pdf", "publisher": "Canada Revenue Agency", "title": "2025 Schedule ON428-A LIFT Credit", "url": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-a/5006-a-25e.pdf", "tax_year": 2025},
+    {"id": "cra_on_s2_pdf", "publisher": "Canada Revenue Agency", "title": "2025 Schedule ON(S2)", "url": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-s2/5006-s2-25e.pdf", "tax_year": 2025},
+    {"id": "cra_on_s11_pdf", "publisher": "Canada Revenue Agency", "title": "2025 Schedule ON(S11)", "url": "https://www.canada.ca/content/dam/cra-arc/formspubs/pbg/5006-s11/5006-s11-25e.pdf", "tax_year": 2025},
+    {"id": "cra_line_42800", "publisher": "Canada Revenue Agency", "title": "Line 42800 - Provincial or territorial tax", "url": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/deductions-credits-expenses/line-42800-provincial-territorial-tax.html", "tax_year": 2025},
+    {"id": "cra_line_47900", "publisher": "Canada Revenue Agency", "title": "Line 47900 - Provincial or territorial credits", "url": "https://www.canada.ca/en/revenue-agency/services/tax/individuals/topics/about-your-tax-return/tax-return/completing-a-tax-return/deductions-credits-expenses/line-47900-provincial-territorial-credits.html", "tax_year": 2025},
+    {"id": "cra_t2203_page", "publisher": "Canada Revenue Agency", "title": "T2203 Provincial and Territorial Taxes for Multiple Jurisdictions", "url": "https://www.canada.ca/en/revenue-agency/services/forms-publications/forms/t2203.html", "tax_year": 2025},
+    {"id": "cra_paper_mailing_page", "publisher": "Canada Revenue Agency", "title": "Where to mail your paper T1 return", "url": "https://www.canada.ca/en/revenue-agency/corporate/contact-information/where-mail-your-paper-t1-return.html", "live": true},
+    {"id": "cra_oeptc_2026_sheets", "publisher": "Canada Revenue Agency", "title": "2026 Ontario energy and property tax credit calculation sheets", "url": "https://www.canada.ca/en/revenue-agency/services/child-family-benefits/provincial-territorial-programs/ontario-energy-property-tax-credit-oeptc-calculation-sheets/2026-ontario-energy-property-tax-credit-calculation-sheets.html", "benefit_year": 2026},
+    {"id": "cra_oeptc_2026_single_non_senior", "publisher": "Canada Revenue Agency", "title": "2026 OEPTC calculation sheet for single non-senior with no children", "url": "https://www.canada.ca/content/dam/cra-arc/serv-info/benefits/ptc26_clc_sns-eng.pdf", "benefit_year": 2026},
+    {"id": "cra_oeptc_2026_single_senior", "publisher": "Canada Revenue Agency", "title": "2026 OEPTC calculation sheet for single senior with no children", "url": "https://www.canada.ca/en/revenue-agency/services/child-family-benefits/provincial-territorial-programs/ontario-energy-property-tax-credit-oeptc-calculation-sheets/2026-ontario-energy-property-tax-credit-calculation-sheets/2026-ontario-energy-property-tax-credit-calculation-sheet-single-senior-no-children.html", "benefit_year": 2026},
+    {"id": "cra_noec_2026_sheets", "publisher": "Canada Revenue Agency", "title": "2026 Northern Ontario energy credit calculation sheets", "url": "https://www.canada.ca/en/revenue-agency/services/child-family-benefits/provincial-territorial-programs/2026-northern-ontario-energy-credit-noec-calculation-sheets.html", "benefit_year": 2026},
+    {"id": "cra_oshptg_2026", "publisher": "Canada Revenue Agency", "title": "Ontario Senior Homeowners' Property Tax Grant questions and answers", "url": "https://www.canada.ca/en/revenue-agency/services/child-family-benefits/provincial-territorial-programs/ontario-senior-homeowners-property-tax-grant-oshptg-questions-answers.html", "benefit_year": 2026},
+    {"id": "cra_ostc_seniors", "publisher": "Canada Revenue Agency", "title": "Ontario Sales Tax Credit seniors' income threshold questions and answers", "url": "https://www.canada.ca/en/revenue-agency/services/child-family-benefits/provincial-territorial-programs/province-ontario/ostc-seniors-income-threshold-qa.html", "live": true},
+    {"id": "ontario_filing_return", "publisher": "Government of Ontario", "title": "Filing your personal income tax return", "url": "https://www.ontario.ca/document/filing-your-personal-income-tax-return", "live": true},
+    {"id": "ontario_health_premium", "publisher": "Government of Ontario", "title": "Health premium", "url": "https://www.ontario.ca/page/health-premium", "live": true},
+    {"id": "ontario_fertility_credit", "publisher": "Government of Ontario", "title": "Ontario Fertility Treatment Tax Credit", "url": "https://www.ontario.ca/page/ontario-fertility-treatment-tax-credit", "effective_from": "2025-01-01"},
+    {"id": "ontario_seniors_care", "publisher": "Government of Ontario", "title": "Ontario Seniors Care at Home Tax Credit", "url": "https://www.ontario.ca/seniorscareathome", "live": true},
+    {"id": "ontario_seniors_transit", "publisher": "Government of Ontario", "title": "Ontario Seniors' Public Transit Tax Credit", "url": "https://www.ontario.ca/page/ontario-seniors-public-transit-tax-credit", "live": true},
+    {"id": "ontario_political_contribution_individuals", "publisher": "Government of Ontario", "title": "Political contribution tax credit for individuals", "url": "https://www.ontario.ca/page/political-contribution-tax-credit-individuals", "live": true},
+    {"id": "ontario_focused_flow_through", "publisher": "Government of Ontario", "title": "Ontario focused flow-through share tax credit", "url": "https://www.ontario.ca/page/ontario-focused-flow-through-share-tax-credit", "live": true},
+    {"id": "ontario_cooperative_education", "publisher": "Government of Ontario", "title": "Co-operative education tax credit", "url": "https://www.ontario.ca/page/co-operative-education-tax-credit", "live": true},
+    {"id": "ontario_food_donation", "publisher": "Government of Ontario", "title": "Community food program donation tax credit for farmers", "url": "https://www.ontario.ca/page/community-food-program-donation-tax-credit-farmers", "live": true},
+    {"id": "ontario_trillium_benefit", "publisher": "Government of Ontario", "title": "Ontario Trillium Benefit", "url": "https://www.ontario.ca/page/ontario-trillium-benefit", "live": true},
+    {"id": "ontario_gains", "publisher": "Government of Ontario", "title": "Ontario Guaranteed Annual Income System payments for seniors", "url": "https://www.ontario.ca/page/guaranteed-annual-income-system-payments-seniors", "live": true},
+    {"id": "ontario_opportunities_fund", "publisher": "Government of Ontario", "title": "Ontario Opportunities Fund", "url": "https://www.ontario.ca/page/ontario-opportunities-fund", "live": true}
+  ]
+}
