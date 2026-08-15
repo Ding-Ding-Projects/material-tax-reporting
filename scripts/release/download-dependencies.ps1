@@ -135,7 +135,6 @@ $lockPath = Join-Path $repositoryRoot 'package-lock.json'
 $lockHash = Get-Sha256 -Path $lockPath
 $markerPath = Join-Path $repositoryRoot 'node_modules\.mtr-dependencies.sha256'
 $requiredPackages = @(
-    'node_modules\electron\dist\electron.exe',
     'node_modules\electron\package.json',
     'node_modules\electron-builder\package.json',
     'node_modules\electron-builder-squirrel-windows\package.json',
@@ -197,6 +196,36 @@ if ($warmInstall) {
     }
     $lockHash | Set-Content -LiteralPath $markerPath -Encoding ascii -NoNewline
     Write-Phase 'Package dependencies: exact locked graph installed and verified.'
+}
+
+# Electron 43 removed the postinstall hook that older releases used to fetch the
+# runtime and now exposes the same downloader as an explicit install-electron
+# binary, so a successful npm ci never materializes dist\electron.exe on its own.
+# Provision it deliberately here and verify the result, which also warms the
+# shared Electron download cache that packaging reads later.
+$electronBinary = Join-Path $repositoryRoot 'node_modules\electron\dist\electron.exe'
+if (Test-Path -LiteralPath $electronBinary -PathType Leaf) {
+    Write-Phase 'Electron runtime: already present.'
+} else {
+    $electronInstaller = Join-Path $repositoryRoot 'node_modules\electron\install.js'
+    if (-not (Test-Path -LiteralPath $electronInstaller -PathType Leaf)) {
+        throw "The installed electron package does not provide its declared installer at $electronInstaller."
+    }
+    Write-Phase 'Electron runtime: downloading the pinned runtime through the declared Electron installer.'
+    $previousLocation = Get-Location
+    try {
+        Set-Location -LiteralPath $repositoryRoot
+        $env:npm_config_cache = $npmCache
+        & $nodeExe $electronInstaller
+        if ($LASTEXITCODE -ne 0) { throw "The Electron runtime installer exited with code $LASTEXITCODE." }
+    }
+    finally {
+        Set-Location -LiteralPath $previousLocation
+    }
+    if (-not (Test-Path -LiteralPath $electronBinary -PathType Leaf)) {
+        throw "The Electron runtime installer reported success without producing $electronBinary."
+    }
+    Write-Phase 'Electron runtime: downloaded and verified.'
 }
 
 $taskWatch.Stop()
