@@ -2,6 +2,15 @@ name: Windows release
 
 on:
   push:
+    # Branches only. A bare `push:` also matches tag pushes, and because a
+    # successful run publishes a release with a new tag, that tag push
+    # retriggered this workflow, which published another tag, and so on. Each
+    # iteration rebuilt the same commit and uploaded another installer. Keep
+    # this filter: it is the only thing stopping that loop.
+    branches:
+      - '**'
+    tags-ignore:
+      - '**'
   workflow_dispatch:
 
 permissions:
