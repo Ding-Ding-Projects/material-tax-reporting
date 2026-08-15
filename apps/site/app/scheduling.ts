@@ -17,7 +17,15 @@ import {
   type AppliedOverlay,
   type Preferences,
   type ScheduleRule,
+  DEFAULT_PREFERENCES,
+  DENSITIES,
+  DOCKS,
+  MAX_FONT_SCALE,
+  MIN_FONT_SCALE,
+  MOTION_CHOICES,
+  THEMES,
   evaluateSchedule,
+  normalizeAccent,
   resolvePrecedence,
   validateExternalSettings,
   validatePreferences,
@@ -75,8 +83,85 @@ export const DEFAULT_SCHEDULE_STATE: ScheduleState = {
   external: { enabled: false, url: "" },
 };
 
-function isSchedulable(target: string): target is SchedulableTarget {
+export function isSchedulableTarget(target: string): target is SchedulableTarget {
   return (SCHEDULABLE_TARGETS as readonly string[]).includes(target);
+}
+
+/**
+ * How a target's value is chosen.
+ *
+ * A colour and a scale are free-form within the bounds the kernel already
+ * enforces, so any accent colour and any supported scale can be scheduled.
+ * Every other target is an enumeration, where a value outside the set has no
+ * meaning and a list of choices is the correct control rather than a limit.
+ */
+export type ScheduleValueControl = "choice" | "colour" | "scale";
+
+/** The choices for a target whose value is an enumeration. */
+export const SCHEDULE_VALUE_CHOICES: Readonly<Partial<Record<SchedulableTarget, readonly string[]>>> = {
+  theme: THEMES,
+  density: DENSITIES,
+  motion: MOTION_CHOICES,
+  dock: DOCKS,
+  dialogEmoji: ["true", "false"],
+};
+
+/** The step the scale control moves in, as a fraction of the normal size. */
+export const SCHEDULE_FONT_SCALE_STEP = 0.05;
+
+export function scheduleValueControl(target: SchedulableTarget): ScheduleValueControl {
+  if (target === "accent") return "colour";
+  if (target === "fontScale") return "scale";
+  return "choice";
+}
+
+/**
+ * Brings a value into the range its target accepts.
+ *
+ * The editor calls this on every change and `validateScheduleState` calls it on
+ * every read, so a value left behind by an earlier version or edited by hand in
+ * browser storage is corrected where it can be seen, rather than being dropped
+ * later and silently by `validatePreferences` when the overlay is applied.
+ */
+export function normalizeScheduleValue(target: SchedulableTarget, raw: unknown): unknown {
+  if (target === "accent") return normalizeAccent(raw, DEFAULT_PREFERENCES.accent);
+  if (target === "fontScale") {
+    const numeric =
+      typeof raw === "number" ? raw : typeof raw === "string" && raw.trim() !== "" ? Number(raw) : Number.NaN;
+    if (!Number.isFinite(numeric)) return DEFAULT_PREFERENCES.fontScale;
+    return Math.min(MAX_FONT_SCALE, Math.max(MIN_FONT_SCALE, numeric));
+  }
+  if (target === "dialogEmoji") return typeof raw === "boolean" ? raw : raw === "true";
+  const choices = SCHEDULE_VALUE_CHOICES[target] ?? [];
+  return typeof raw === "string" && choices.includes(raw) ? raw : DEFAULT_PREFERENCES[target];
+}
+
+/** The value a rule starts at when it is created or its target is changed. */
+export function defaultScheduleValue(target: SchedulableTarget): unknown {
+  return DEFAULT_PREFERENCES[target];
+}
+
+/**
+ * The flat shape a schedule change is recorded as in the local history.
+ *
+ * The address is never included, only whether one is set, so a history record
+ * cannot disclose an address the reader typed.
+ */
+export function describeScheduleShape(state: ScheduleState): Record<string, unknown> {
+  return {
+    "schedule.ruleCount": state.rules.length,
+    "schedule.enabledRuleCount": state.rules.filter((rule) => rule.enabled).length,
+    "schedule.rules": state.rules
+      .map(
+        (rule) =>
+          `${rule.enabled ? "on" : "off"} ${rule.target}=${String(rule.value)} ${rule.startTime}-${rule.endTime} ${
+            rule.weekdays.length === 0 ? "every day" : rule.weekdays.join(",")
+          }`,
+      )
+      .join("; "),
+    "schedule.externalEnabled": state.external.enabled,
+    "schedule.externalAddressSet": state.external.url.trim().length > 0,
+  };
 }
 
 /** Reads a persisted record, discarding anything outside the allowed shape. */
@@ -88,7 +173,7 @@ export function validateScheduleState(raw: unknown): ScheduleState {
     for (const entry of record.rules.slice(0, 40)) {
       if (!entry || typeof entry !== "object" || Array.isArray(entry)) continue;
       const rule = entry as Record<string, unknown>;
-      if (typeof rule.id !== "string" || typeof rule.target !== "string" || !isSchedulable(rule.target)) {
+      if (typeof rule.id !== "string" || typeof rule.target !== "string" || !isSchedulableTarget(rule.target)) {
         continue;
       }
       rules.push({
@@ -102,7 +187,7 @@ export function validateScheduleState(raw: unknown): ScheduleState {
         startTime: typeof rule.startTime === "string" ? rule.startTime.slice(0, 5) : "20:00",
         endTime: typeof rule.endTime === "string" ? rule.endTime.slice(0, 5) : "07:00",
         target: rule.target,
-        value: rule.value,
+        value: normalizeScheduleValue(rule.target, rule.value),
       });
     }
   }
@@ -135,7 +220,7 @@ export function applyOverlay(
   const withExternal: Record<string, unknown> = { ...merged.values };
   const sources = { ...merged.sources };
   for (const [key, value] of Object.entries(external)) {
-    if (!isSchedulable(key)) continue;
+    if (!isSchedulableTarget(key)) continue;
     if (sources[key] === "rule") continue;
     withExternal[key] = value;
     sources[key] = "rule";
@@ -247,7 +332,7 @@ export function useScheduling(options: {
       const presentationOnly: Record<string, unknown> = {};
       const rejected: string[] = [];
       for (const [key, value] of Object.entries(verdict.values)) {
-        if (isSchedulable(key)) presentationOnly[key] = value;
+        if (isSchedulableTarget(key)) presentationOnly[key] = value;
         else rejected.push(key);
       }
       setExternalState({

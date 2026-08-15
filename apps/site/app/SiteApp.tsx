@@ -73,7 +73,15 @@ import {
 import { DOC_ENTRIES } from "./data/docs.ts";
 import { DocumentationBrowser } from "./docs-browser.tsx";
 import { DownloadSurfaces, RELEASE_ASSET_COUNT } from "./download-surfaces.tsx";
-import { EXPORT_SANDBOX_NOTE, copyExport, deliverExport, folderSaveSupported, type ExportRequest } from "./exports.ts";
+import {
+  EXPORT_SANDBOX_NOTE,
+  copyExport,
+  deliverConvertedFile,
+  deliverExport,
+  folderSaveSupported,
+  type ConvertedFileRequest,
+  type ExportRequest,
+} from "./exports.ts";
 import { HistoryPanel } from "./history-panel.tsx";
 import { diffRecords, useHistory, vocabularyShape } from "./history.ts";
 import { BrandMark, IdentitySettings } from "./identity.tsx";
@@ -86,6 +94,7 @@ import { ExternalSettingsPanel, SchedulePanel } from "./scheduling-panel.tsx";
 import {
   DEFAULT_SCHEDULE_STATE,
   applyOverlay,
+  describeScheduleShape,
   useScheduling,
   validateScheduleState,
   type ScheduleState,
@@ -248,7 +257,17 @@ export function SiteApp(): ReactNode {
     },
   });
 
-  const scheduling = useScheduling({ state: schedule, onChange: setSchedule });
+  // A schedule edit is a settings change, so it is recorded like one. The
+  // shape carries the rules and whether an external address is set, never the
+  // address itself.
+  const scheduling = useScheduling({
+    state: schedule,
+    onChange: (next) => {
+      const diff = diffRecords(describeScheduleShape(schedule), describeScheduleShape(next));
+      setSchedule(next);
+      if (diff.length > 0) history.record("schedule-change", "Changed the presentation schedule", diff);
+    },
+  });
 
   const effective = useMemo(
     () => applyOverlay(preferences, scheduling.overlay, scheduling.externalState.values).preferences,
@@ -380,6 +399,38 @@ export function SiteApp(): ReactNode {
             "error",
             "Export not delivered",
             error instanceof Error ? error.message : "The export could not be delivered.",
+          ),
+        );
+    },
+    [history, notify],
+  );
+
+  /**
+   * A converted file leaves through the same delivery the exports use, so it
+   * reports the same way and is recorded the same way. The reader's own file
+   * name is not written to the record: the pair that produced the result is
+   * what the record is about.
+   */
+  const saveConvertedFile = useCallback(
+    (request: ConvertedFileRequest) => {
+      void deliverConvertedFile(request)
+        .then((outcome) => {
+          notify(
+            "success",
+            "Converted file delivered",
+            `${outcome.fileName} (${outcome.byteLength} bytes) via the ${outcome.method} path. ${outcome.manifestNote}`,
+          );
+          history.record("conversion", `Saved a converted ${request.targetType} file`, [
+            { path: "conversion.source", before: null, after: request.sourceType },
+            { path: "conversion.target", before: null, after: request.targetType },
+            { path: "conversion.manifest", before: null, after: outcome.manifestStamped ? "stamped" : "omitted" },
+          ]);
+        })
+        .catch((error: unknown) =>
+          notify(
+            "error",
+            "Converted file not delivered",
+            error instanceof Error ? error.message : "The converted file could not be delivered.",
           ),
         );
     },
@@ -860,6 +911,7 @@ export function SiteApp(): ReactNode {
             <ConverterPanel
               binding={bind("converter-catalog-search", "Search registered conversions", "Search formats")}
               onNotify={notify}
+              onSave={saveConvertedFile}
               copy={copy}
             />
           </section>
