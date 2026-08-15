@@ -1,92 +1,114 @@
-# Material Tax Reporting
+# CLAUDE.md
 
-Material Tax Reporting is a public repository for a Windows desktop application and documentation site focused on preparing Canadian and Ontario annual income tax reports.
+Instructions for Claude Code working in this repository. This file is self-contained: everything needed to
+work here correctly is below, including a sanitized mirror of the shared agent instructions.
 
-> **Project status:** Implementation source, and source only. **Nothing has been released** — there is no published release, no verified installer, no release asset, and no download control, and neither application has been packaged, installed, launched, or exercised by a person. The repository contains a guided Electron desktop application, a documentation site, a shared surface kernel, tax-domain and CRA PDF preparation packages, a local slip parser with bundled offline OCR contracts, a local Ollama suite, and guided local coding-assistant contracts. Per-capability status, including exactly what has not been checked, is recorded in [`docs/features/feature-inventory.json`](docs/features/feature-inventory.json).
+**This repository is public.** Everything committed here is a public record.
 
-**Documentation site:** <https://ding-ding-projects.github.io/material-tax-reporting/>
+## Orientation
 
-## Contents
+Material Tax Reporting is an npm workspace for a Windows desktop application and a documentation site that
+help prepare Canadian and Ontario annual income tax reports. **Nothing has been released**: there is no
+published release, no verified installer, and no packaged desktop runtime.
 
-- [Filing boundary](#filing-boundary) — what this product may and may never do
-- [Repository map](#repository-map) — what each workspace holds
-- [Documentation](#documentation) — the feature tree and per-capability status
-- [Commands](#commands) — the scripts that actually exist
-- [Development status](#development-status) — what is built, what is not, what is unverified
-- Governance and contributions — collapsed below, above the licence
-- [Shared agent instructions](#shared-agent-instructions-sanitized-mirror) — sanitized mirror, collapsed below
-- [License](#license)
+### Workspace layout
 
-## Filing boundary
+| Path | What it is |
+| --- | --- |
+| `apps/desktop` | Guided Windows Electron application source — main, preload, and renderer. Encrypted single-file projects and app-private append-only local history. Declares Electron 43.3.0 and esbuild 0.28.0. |
+| `apps/site` | Documentation site source, built with Vite and React, deployed to GitHub Pages by the repository's only workflow. |
+| `packages/surface-kernel` | Framework-neutral engines shared by the site and the desktop application. |
+| `packages/tax-domain` | Tax-domain source. |
+| `packages/cra-pdf` | Paper-package preparation source. |
+| `packages/slip-parser` | Local slip parsing with bundled offline OCR asset staging. |
+| `packages/local-ollama` | Loopback-only local model store, pull queue, local chat, hardware-fit evidence, allowlisted harness orchestration, renderer surface. |
+| `packages/local-coding-assistants` | Guided, fail-closed contracts for local coding assistance. |
+| `docs/features` | Categorized feature documentation. |
+| `docs/site` | Website articles, including a verification-status article. |
+| `research` | Official-source research notes. |
+| `.github/workflows` | One workflow: the documentation-site build and deploy. |
 
-This project is intended to end at generation of a CRA mail-in PDF package. It must never implement, offer, advertise, simulate, or imply NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing.
+Workspace membership changes as the project grows. **Verify this list against your actual checkout** rather
+than trusting it.
 
-Before any future export or print action is allowed, the product must require a manual review workflow. The user must inspect every populated form, calculation, attachment, mailing destination, and signature field, then explicitly acknowledge that review. Software output is not a substitute for professional tax advice or current instructions from the Canada Revenue Agency and the Government of Ontario.
+### Commands that actually exist
 
-## Repository map
-
-- `apps/desktop` — guided Windows Electron application with encrypted single-file projects and app-private append-only local history.
-- `apps/site` — documentation and landing site; its build command produces a static bundle, and a workflow that publishes one is defined at `.github/workflows/pages.yml`.
-- `packages/surface-kernel` — framework-neutral engines shared by both surfaces: search, preferences, language, vocabulary, commands, notifications, history, exports, appearance, colour, locks, tabs, scheduling, narration, identity, conversion, documentation indexing, changelog parsing, one-time passwords, QR encoding, support notes, transfer states, and the Material 3 tokens.
-- `packages/tax-domain` — tax-domain model, rules, calculation, validation, and serialization source.
-- `packages/cra-pdf` — paper-package preparation source: form catalogue, field mapping, review model, validation, and the generation engine.
-- `packages/slip-parser` — local slip admission, classification, extraction, official mappings, and bundled offline OCR contracts.
-- `packages/local-coding-assistants` — guided, fail-closed contracts for local Codex CLI and OpenCode assistance.
-- `packages/local-ollama` — loopback-only Ollama model store, pull queue, local chat, conservative hardware-fit evidence, and allowlisted harness orchestration, expressed as a portable view model that renders nothing itself.
-
-Everything listed above is source in this repository. Nothing here establishes that either application was built for distribution, packaged, installed, launched, or exercised by a person. There is no verified installer, production release, download control, sample taxpayer data, demonstration return content, or committed build output.
-
-## Documentation
-
-- [Feature documentation index](docs/features/README.md) — how to read the feature tree, what each verification state means, and the wording contract every public string in this repository must satisfy.
-- [Feature inventory](docs/features/feature-inventory.json) — one row per capability, naming its implementation files, its article, its verification state, and its explicit evidence gaps.
-- [Website documentation](docs/site/README.md) — the public product boundary, privacy model, preferences, installer position, and verification status.
-- [Desktop application documentation](docs/features/desktop/README.md) — the guided report, encrypted project container, app-private local history, and the exact, unverified outputs of the build entry point.
-- [Shared surface kernel documentation](docs/features/shared-surface-kernel/README.md) — the engines both surfaces import, and the invariants they hold.
-- [Local Ollama suite documentation](docs/features/local-ollama-suite/README.md) — its loopback-only API boundary, official model-catalogue refresh, offline states, reviewed tax-data handling, pull queue, local chat, and allowlisted harnesses. It never provides electronic filing or direct government transmission.
-
-## Commands
-
-Verify these against the manifests before relying on them; workspaces are added as the project grows.
+Verified against the manifests. Do not invent a script that is not here.
 
 | Where | Command | What it does |
 | --- | --- | --- |
 | root | `build.bat` | **Fails closed** — checks dependencies, then exits non-zero because no repository-wide build is wired yet. |
 | root | `build-installer.bat` | **Fails closed** — exits non-zero because no installer configuration exists yet. |
 | root | `download-dependencies.bat` | Dependency bootstrap entry point; its repository-wide implementation is still incomplete. |
-| `apps/site` | `npm run pages:dev` / `pages:build` / `pages:preview` | Run, build, and preview the documentation site. |
-| `apps/desktop` | `npm run build` / `npm start` | Build the desktop bundles, and build then launch Electron. |
-| `packages/surface-kernel` | `npm run build` / `npm test` | Type-build, and run its `node --test` suite. |
+| `apps/site` | `npm run pages:dev`, `npm run pages:build`, `npm run pages:preview` | Run, build, preview the documentation site. |
+| `apps/desktop` | `npm run build`, `npm start` | Build the bundles; build then launch Electron. |
+| `packages/surface-kernel` | `npm run build`, `npm test` | Type-build; run its `node --test` suite. |
 | `packages/tax-domain`, `packages/cra-pdf` | `npm run build` | Type-build the package. |
-| `packages/slip-parser` | `npm run stage:offline-ocr-assets` | Stage the bundled offline OCR assets. |
+| `packages/slip-parser` | `npm run stage:offline-ocr-assets` | Stage bundled offline OCR assets. |
 
-All three root scripts accept `/s` and `--silent`; `SILENT=1` is also recognized. Silent mode suppresses prompts and never turns an unavailable build into a successful one.
+The root workspace itself declares no scripts. All three root batch scripts accept `/s` and `--silent`, and
+recognize `SILENT=1`. Silent mode suppresses prompts and **never** turns an unavailable build into a success.
+Leave them fail-closed until real build and installer commands exist; do not replace a non-zero status with a
+simulated success.
 
-## Development status
+### What is and is not verified
 
-Install dependencies with `npm install` at the repository root. The workspace commands that exist are:
+- **No release of any kind exists.** No release workflow runs on `main`. A Windows release workflow lives on a
+  separate packaging branch, its runs have failed, and it is being repaired separately. Treat every installer,
+  packaged runtime, and release claim as unverified until a published release exists with attached,
+  downloadable assets.
+- **The only workflow on `main`** builds `apps/site` and deploys the documentation site. Its runs both fail and
+  succeed from commit to commit — a recent failure was followed by a fix whose run succeeded. Do not assume the
+  site is currently published; check the latest run for the commit you care about.
+- **Nothing runs the tests automatically.** Several packages carry `node --test` suites, run per package by
+  hand. No workflow executes tests, lint, type checks, accessibility checks, or captures, and no check gates a
+  merge or a release. A green push proves only that the documentation site built.
+- **Source presence is not product behaviour.** Never describe a capability as working because code for it
+  exists. State what has actually been built, run, or published, and name what remains unverified.
 
-- `npm run build --workspace @material-tax-reporting/desktop` — bundles the desktop sources into `apps/desktop/dist`.
-- `npm run pages:build --workspace @material-tax-reporting/site` — produces the static site, and is the command `.github/workflows/pages.yml` runs.
-- `npm test --workspace @material-tax-reporting/surface-kernel` — runs the shared kernel's test suite.
+## Product boundary
 
-There is no repository-wide test, lint, type-check, accessibility, or packaging command. The root npm workspace lockfile pins the current application and package dependencies. The desktop workspace declares Electron 43.3.0 and esbuild 0.28.0, while the root bootstrap scripts remain fail-closed until the repository-wide build and installer routes are wired.
+- The future product may generate a **CRA mail-in PDF package only**.
+- **Never** implement, offer, advertise, simulate, or imply NETFILE, EFILE, electronic submission, direct CRA
+  transmission, or automatic filing.
+- Any future export or print path must require manual inspection of every populated form, calculation,
+  attachment, mailing destination, and signature field, followed by explicit user acknowledgement.
+- Tax behaviour must identify its tax year and rely on cited, current official CRA or Ontario sources. Do not
+  invent rates, rules, forms, addresses, or deadlines.
 
-- **No release exists.** No installer, no packaged runtime, no release workflow on `main`. A Windows release workflow lives on a separate packaging branch and is being repaired; its runs have failed.
-- **The only workflow on `main`** builds `apps/site` and deploys the documentation site. Its runs both fail and succeed from commit to commit — check the latest run rather than assuming the site is current.
-- **Nothing runs the tests automatically.** Several packages carry `node --test` suites, run per package by hand. No workflow executes tests, lint, type checks, accessibility checks, or captures, and no check gates a merge or a release. A green push proves only that the documentation site built.
-- Source presence is not product behaviour. Do not read "the repository contains X" as "the product does X".
+## Privacy and security
 
-<details>
-<summary><strong>Governance and contributions</strong></summary>
+- Never commit real taxpayer data, credentials, government identifiers, completed tax forms, local secrets, or
+  machine-specific configuration.
+- Use synthetic fixtures only after a test or development-data policy exists and clearly labels them.
+- Keep future tax data local by default and document every storage, import, export, logging, and network
+  boundary.
+- Do not add demonstration taxpayer records, fabricated forms, or sample data that could be mistaken for
+  product output.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md), [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md), and [LICENSE](LICENSE). Contributions must preserve the paper-only filing boundary and must not include real taxpayer information.
+## Repository discipline
 
-</details>
+- Inspect repository status before editing and preserve unrelated changes.
+- Use isolated branches and linked worktrees when concurrent work could overlap.
+- Keep changes within assigned paths and avoid unrelated cleanup.
+- Keep the npm lockfile synchronized with package manifests.
+- Run only checks authorized for the task and report exactly what was and was not run.
+- Do not publish, tag, release, merge, rewrite history, or delete work without explicit authority.
+- Keep claims in source files, documentation, commits, and hosted records factual and tied to obtained
+  evidence.
 
-## License
+## Public records
 
-This repository is licensed under the MIT License. See [LICENSE](LICENSE).
+Use ordinary professional language in every file and public record. Do not include private operational
+terminology, personal filesystem paths, host details, usernames, machine names, network addresses, tokens, or
+internal infrastructure information.
+
+Commits are bilingual — a concise, precise English subject plus a playful Hong Kong-style Cantonese
+counterpart in the body, both witty, both factual, roasting the code and never a person — and end with:
+
+`Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>`
+
+Set that identity per repository, never globally.
 
 ---
 
