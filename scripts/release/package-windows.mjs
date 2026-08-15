@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
-import { mkdtemp, readFile, readdir, realpath, rm, stat, writeFile } from "node:fs/promises";
+import { copyFile, mkdtemp, readFile, readdir, realpath, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -13,7 +13,11 @@ const provenancePath = path.join(appRoot, "dist", "build-provenance.json");
 const packagePath = path.join(appRoot, "package.json");
 const generatedIcon = path.join(appRoot, "build", "icon.ico");
 const releasedIcon = path.join(outputRoot, "material-tax-reporting.ico");
-const electronBuilder = path.join(repositoryRoot, "node_modules", ".bin", "electron-builder.cmd");
+// Run the packaged JavaScript entry point through Node rather than the .cmd
+// shim. Node refuses to spawn a .bat or .cmd without a shell, so the shim fails
+// with EINVAL, and routing it through a shell instead would put generated paths
+// back through command-line quoting for no benefit.
+const electronBuilderCli = path.join(repositoryRoot, "node_modules", "electron-builder", "cli.js");
 const offlineOcrStager = path.join(
   repositoryRoot,
   "packages",
@@ -165,7 +169,7 @@ const gitResult = spawnSync("git", ["-C", repositoryRoot, "rev-parse", "HEAD"], 
 if (gitResult.status !== 0 || gitResult.stdout.trim() !== provenance.sourceCommit) {
   fail("desktop build provenance does not match the current source commit");
 }
-await requiredFile(electronBuilder, "the pinned electron-builder executable");
+await requiredFile(electronBuilderCli, "the pinned electron-builder entry point");
 
 await rm(outputRoot, { recursive: true, force: true });
 run(process.execPath, [path.join(scriptDirectory, "generate-windows-icon.mjs")]);
@@ -193,10 +197,26 @@ let packagedOfflineOcr;
 try {
   run(process.execPath, [offlineOcrStager, "--output", stagedOfflineOcrRoot]);
   const stagedOfflineOcr = await verifyOfflineOcrRuntime(stagedOfflineOcrRoot);
-  packageEnvironment.MTR_OFFLINE_OCR_STAGE = stagedOfflineOcrRoot;
+  // Hand the staging root to electron-builder with forward slashes. It resolves
+  // extraResources.from with glob semantics, where a Windows backslash is an
+  // escape character rather than a separator, so a native absolute path stops
+  // looking absolute and gets appended to the project directory instead. A
+  // missing source is only a warning there, so the packaged runtime would then
+  // be silently absent; the packaged verification below is what catches it.
+  packageEnvironment.MTR_OFFLINE_OCR_STAGE = stagedOfflineOcrRoot.split(path.sep).join("/");
   run(
-    electronBuilder,
-    ["--projectDir", "apps/desktop", "--config", "../../electron-builder.yml", "--win", "squirrel", "--publish", "never"],
+    process.execPath,
+    [
+      electronBuilderCli,
+      "--projectDir",
+      "apps/desktop",
+      "--config",
+      "../../electron-builder.yml",
+      "--win",
+      "squirrel",
+      "--publish",
+      "never",
+    ],
     { env: packageEnvironment },
   );
   const packagedOfflineOcrRoot = path.join(
@@ -215,6 +235,21 @@ try {
 
 const expectedSetupName = `MaterialTaxReporting-${packageJson.version}-Setup.exe`;
 const expectedFullName = `MaterialTaxReporting-${packageJson.version}-full.nupkg`;
+
+// The Squirrel target writes its own artifacts into a squirrel-windows folder
+// inside the configured output directory, while win-unpacked stays at the root.
+// The release manifest and the publishing step both read every asset from one
+// directory, so lift the artifacts up. Accept either layout rather than assuming
+// the nested one, so a packaging change cannot quietly strand the installer.
+const nestedSquirrelRoot = path.join(outputRoot, "squirrel-windows");
+const nestedSetup = await stat(path.join(nestedSquirrelRoot, expectedSetupName)).catch(() => null);
+if (nestedSetup?.isFile()) {
+  for (const entry of await readdir(nestedSquirrelRoot, { withFileTypes: true })) {
+    if (!entry.isFile()) continue;
+    await copyFile(path.join(nestedSquirrelRoot, entry.name), path.join(outputRoot, entry.name));
+  }
+}
+
 const setupPath = path.join(outputRoot, expectedSetupName);
 const releasesPath = path.join(outputRoot, "RELEASES");
 const fullPackagePath = path.join(outputRoot, expectedFullName);
