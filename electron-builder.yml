@@ -1,0 +1,40 @@
+appId: ca.dingdingprojects.materialtaxreporting
+productName: Material Tax Reporting
+asar: true
+directories:
+  output: ../../dist/squirrel-windows
+  buildResources: build
+files:
+  - dist/**/*
+  - package.json
+extraResources:
+  # The copy filter unconditionally drops a directory named exactly node_modules
+  # at the root of a copy source, whatever the filter patterns say. The offline
+  # OCR closure keeps its dependency tree in such a directory, so it needs a
+  # second entry that begins inside node_modules, where the rule no longer
+  # applies. Without it the runtime packages are silently omitted and only the
+  # manifest beside them is copied.
+  - from: ${env.MTR_OFFLINE_OCR_STAGE}
+    to: offline-ocr-runtime
+    filter:
+      - "**/*"
+  - from: ${env.MTR_OFFLINE_OCR_STAGE}/node_modules
+    to: offline-ocr-runtime/node_modules
+    filter:
+      - "**/*"
+icon: build/icon.ico
+win:
+  executableName: MaterialTaxReporting
+  icon: build/icon.ico
+  target:
+    - target: squirrel
+      arch:
+        - x64
+  forceCodeSigning: false
+  signExecutable: false
+  signAndEditExecutable: false
+squirrelWindows:
+  name: MaterialTaxReporting
+  artifactName: MaterialTaxReporting-${version}-Setup.${ext}
+  iconUrl: https://github.com/Ding-Ding-Projects/material-tax-reporting/releases/latest/download/material-tax-reporting.ico
+  msi: false

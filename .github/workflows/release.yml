@@ -1,0 +1,148 @@
+name: Windows release
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: windows-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Build, package, and publish
+    runs-on: windows-2022
+    timeout-minutes: 120
+    env:
+      GH_TOKEN: ${{ secrets.RELEASE_TOKEN || secrets.ORG_TOKEN || secrets.GITHUB_TOKEN }}
+      CSC_IDENTITY_AUTO_DISCOVERY: "false"
+      CSC_LINK: ""
+      WIN_CSC_LINK: ""
+      CSC_KEY_PASSWORD: ""
+    steps:
+      - name: Record workflow start
+        id: timing
+        shell: pwsh
+        run: |
+          "started_at=$((Get-Date).ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ'))" | Out-File -LiteralPath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+
+      - name: Check out the exact source commit
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+
+      - name: Bootstrap the pinned workflow Node.js runtime
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 22.14.0
+          cache: npm
+
+      - name: Verify Windows runner inventory
+        shell: pwsh
+        run: |
+          if ($env:RUNNER_OS -ne 'Windows' -or $env:RUNNER_ARCH -ne 'X64') {
+            throw "Required Windows X64 runner; received $env:RUNNER_OS $env:RUNNER_ARCH."
+          }
+          "Runner image: $env:ImageOS"
+          "Runner architecture: $env:RUNNER_ARCH"
+          node --version
+          npm --version
+
+      - name: Bootstrap pinned GitHub CLI
+        shell: pwsh
+        run: |
+          $bootstrapOutput = @(& ./scripts/release/bootstrap-gh.ps1 -DestinationRoot (Join-Path $env:RUNNER_TEMP 'material-tax-reporting-tools'))
+          $ghDirectory = @($bootstrapOutput | Where-Object { $_ -is [string] -and $_.Trim() }) | Select-Object -Last 1
+          if (-not $ghDirectory) {
+            throw "The pinned GitHub CLI bootstrap returned no executable directory. Received: $($bootstrapOutput -join ' | ')"
+          }
+          $ghExecutable = Join-Path $ghDirectory 'gh.exe'
+          if (-not (Test-Path -LiteralPath $ghExecutable -PathType Leaf)) {
+            throw "The pinned GitHub CLI bootstrap returned '$ghDirectory', which does not contain gh.exe."
+          }
+          "Pinned GitHub CLI ready at $ghExecutable"
+          $ghDirectory | Out-File -LiteralPath $env:GITHUB_PATH -Encoding utf8 -Append
+
+      - name: Prepare unique release identity
+        id: version
+        shell: pwsh
+        run: |
+          $releaseIdentity = node scripts/release/prepare-release-version.mjs '${{ github.run_number }}' '${{ github.run_attempt }}' | ConvertFrom-Json
+          if ($LASTEXITCODE -ne 0 -or -not $releaseIdentity.version -or -not $releaseIdentity.tag) { throw 'Release identity generation failed.' }
+          "version=$($releaseIdentity.version)" | Out-File -LiteralPath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          "tag=$($releaseIdentity.tag)" | Out-File -LiteralPath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+
+      - name: Resolve unused public dim-sum code name
+        shell: pwsh
+        run: node scripts/release/select-dim-sum.mjs dim-sum-release.json
+
+      - name: Build the desktop application through the committed entrypoint
+        shell: pwsh
+        run: |
+          & "$pwd\build.bat" /s *>&1 | Tee-Object -LiteralPath build.log
+          $exitCode = $LASTEXITCODE
+          "EXIT=$exitCode" | Out-File -LiteralPath build.log -Encoding utf8 -Append
+          if ($exitCode -ne 0) { exit $exitCode }
+
+      - name: Build the unsigned installer through the committed entrypoint
+        shell: pwsh
+        run: |
+          & "$pwd\build-installer.bat" /s *>&1 | Tee-Object -LiteralPath installer.log
+          $exitCode = $LASTEXITCODE
+          "EXIT=$exitCode" | Out-File -LiteralPath installer.log -Encoding utf8 -Append
+          if ($exitCode -ne 0) { exit $exitCode }
+
+      - name: Count surviving lines at the source commit
+        shell: pwsh
+        run: node scripts/count-lines.mjs | Out-File -LiteralPath dist/squirrel-windows/line-count.md -Encoding utf8
+
+      - name: Publish exactly one non-draft release
+        shell: pwsh
+        run: |
+          & ./scripts/release/publish-release.ps1 `
+            -Repository $env:GITHUB_REPOSITORY `
+            -CommitSha $env:GITHUB_SHA `
+            -Tag '${{ steps.version.outputs.tag }}' `
+            -Version '${{ steps.version.outputs.version }}' `
+            -WorkflowStartedAt '${{ steps.timing.outputs.started_at }}' `
+            -DimSumPath "$pwd\dim-sum-release.json"
+
+      - name: Collect safe diagnostics
+        if: always()
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path diagnostics -Force | Out-Null
+          [ordered]@{
+            runId = $env:GITHUB_RUN_ID
+            runAttempt = $env:GITHUB_RUN_ATTEMPT
+            sourceCommit = $env:GITHUB_SHA
+            runnerOS = $env:RUNNER_OS
+            runnerArchitecture = $env:RUNNER_ARCH
+            jobStatus = '${{ job.status }}'
+          } | ConvertTo-Json | Set-Content -LiteralPath diagnostics/run.json -Encoding utf8
+          foreach ($candidate in @(
+            'build.log',
+            'installer.log',
+            'dim-sum-release.json',
+            'dist/squirrel-windows/release-manifest.json',
+            'dist/squirrel-windows/SHA256SUMS.txt',
+            'dist/squirrel-windows/workflow-timing.json',
+            'dist/squirrel-windows/line-count.md',
+            'dist/squirrel-windows/release-notes.md'
+          )) {
+            if (Test-Path -LiteralPath $candidate -PathType Leaf) { Copy-Item -LiteralPath $candidate -Destination diagnostics }
+          }
+
+      - name: Upload safe diagnostics
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: windows-release-diagnostics-${{ github.run_id }}-${{ github.run_attempt }}
+          path: diagnostics/
+          if-no-files-found: warn
+          retention-days: 7

@@ -3,9 +3,27 @@
   "version": "0.0.0",
   "private": true,
   "description": "Repository foundation for a future Windows desktop tax-report preparation application and documentation site.",
+  "author": "Ding Ding Projects",
   "license": "MIT",
+  "engines": {
+    "node": "22.14.0",
+    "npm": "10.9.2"
+  },
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "scripts": {
+    "build:desktop": "npm run build --workspace @material-tax-reporting/desktop",
+    "build:icon": "node scripts/release/generate-windows-icon.mjs",
+    "package:windows": "node scripts/release/package-windows.mjs",
+    "count:lines": "node scripts/count-lines.mjs"
+  },
+  "devDependencies": {
+    "electron": "43.3.0",
+    "electron-builder": "26.15.3",
+    "electron-builder-squirrel-windows": "26.15.3",
+    "png-to-ico": "3.0.2",
+    "sharp": "0.35.3"
+  }
 }
