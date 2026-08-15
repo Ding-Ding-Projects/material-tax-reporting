@@ -8,6 +8,18 @@
  * an active rule wins over the stored default. Turning a rule off therefore
  * restores the stored value exactly, because that value was never replaced.
  *
+ * A change made by hand while a rule is active is recorded as a hold, in
+ * `ManualOverrides`, and that hold is the manual layer the kernel resolves
+ * against. Without it the precedence above would be a sentence rather than a
+ * behaviour: the overlay would keep winning and the control would appear to do
+ * nothing. A hold lasts while a rule or an external document is still setting
+ * that value, or until the reader hands it back; `pruneManualOverrides` is
+ * where it expires.
+ *
+ * A locked setting is resolved from the stored preference alone. The overlay,
+ * the external document and any surviving hold are all withheld for it, so a
+ * lock and the guarded preference setter agree about what a lock means.
+ *
  * Only presentation may be changed. A tax figure, a rule citation, the
  * paper-only boundary statement and the manual-review requirement are not
  * preferences and are not reachable from here.
@@ -77,6 +89,22 @@ export type ScheduleState = {
   rules: ScheduleRule[];
   external: ExternalSettingsConfig;
 };
+
+/**
+ * A value the reader chose by hand while a rule or an external document was
+ * setting that same value, held so their choice is the one that shows.
+ *
+ * Holds are stored beside the schedule rather than inside it: a rule is
+ * something the reader authored, and a hold records the reader disagreeing with
+ * one. Keeping them apart means editing a rule cannot silently drop a hold, and
+ * handing a setting back cannot silently edit a rule.
+ */
+export type ManualOverrides = Record<string, unknown>;
+
+/** Where an effective presentation value came from, in precedence order. */
+export type EffectiveSource = "manual" | "rule" | "external" | "default";
+
+export const MANUAL_OVERRIDE_STORAGE_KEY = "material-tax-reporting.site.schedule-holds.v1";
 
 export const DEFAULT_SCHEDULE_STATE: ScheduleState = {
   rules: [],
@@ -201,6 +229,57 @@ export function validateScheduleState(raw: unknown): ScheduleState {
   };
 }
 
+/**
+ * Reads persisted holds. The key set is bounded by `SCHEDULABLE_TARGETS`, so a
+ * record cannot grow past seven entries however it was edited, and every value
+ * passes the same normalizer a rule value passes.
+ */
+export function validateManualOverrides(raw: unknown): ManualOverrides {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return {};
+  const accepted: ManualOverrides = {};
+  for (const [key, value] of Object.entries(raw as Record<string, unknown>)) {
+    if (!isSchedulableTarget(key)) continue;
+    accepted[key] = normalizeScheduleValue(key, value);
+  }
+  return accepted;
+}
+
+/** Every schedulable setting a rule or the external document is setting now. */
+export function governedTargets(
+  overlay: AppliedOverlay,
+  external: Record<string, unknown>,
+): Set<string> {
+  const governed = new Set<string>();
+  for (const key of Object.keys(overlay.values)) if (isSchedulableTarget(key)) governed.add(key);
+  for (const key of Object.keys(external)) if (isSchedulableTarget(key)) governed.add(key);
+  return governed;
+}
+
+/**
+ * Expires every hold whose rule has stopped. A hold exists only to win against
+ * something, so once nothing is setting that value it has nothing to win
+ * against and the stored preference is what shows.
+ *
+ * Nothing visible changes at that moment: a hold is always written together
+ * with the stored preference it came from, so the two already agree. What
+ * expiry restores is the rule's next window, which a hold that never expired
+ * would silently defeat for good.
+ *
+ * The same object is returned when nothing expired, so a caller may use this
+ * directly in a state update without provoking a render loop.
+ */
+export function pruneManualOverrides(
+  overrides: ManualOverrides,
+  governed: ReadonlySet<string>,
+): ManualOverrides {
+  const keys = Object.keys(overrides);
+  const kept = keys.filter((key) => governed.has(key));
+  if (kept.length === keys.length) return overrides;
+  const next: ManualOverrides = {};
+  for (const key of kept) next[key] = overrides[key];
+  return next;
+}
+
 function baselineOf(preferences: Preferences): Record<string, unknown> {
   const baseline: Record<string, unknown> = {};
   for (const target of SCHEDULABLE_TARGETS) baseline[target] = preferences[target];
@@ -210,20 +289,38 @@ function baselineOf(preferences: Preferences): Record<string, unknown> {
 /**
  * Applies an overlay to the stored preferences without writing to them, so the
  * baseline is still intact when the rule stops being active.
+ *
+ * Precedence, highest first: a hold the reader placed by hand, then an active
+ * rule, then the external document, then the stored preference. A locked target
+ * takes none of them and resolves to the stored preference alone.
  */
 export function applyOverlay(
   preferences: Preferences,
   overlay: AppliedOverlay,
   external: Record<string, unknown>,
-): { preferences: Preferences; sources: Record<string, "manual" | "rule" | "default"> } {
-  const merged = resolvePrecedence(baselineOf(preferences), overlay, {});
+  manual: ManualOverrides = {},
+  lockedTargets: ReadonlySet<string> = new Set<string>(),
+): { preferences: Preferences; sources: Record<string, EffectiveSource> } {
+  const allowedOverlay: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(overlay.values)) {
+    if (isSchedulableTarget(key) && !lockedTargets.has(key)) allowedOverlay[key] = value;
+  }
+  const allowedManual: ManualOverrides = {};
+  for (const [key, value] of Object.entries(manual)) {
+    if (isSchedulableTarget(key) && !lockedTargets.has(key)) allowedManual[key] = value;
+  }
+  const merged = resolvePrecedence(
+    baselineOf(preferences),
+    { values: allowedOverlay, activeRuleIds: overlay.activeRuleIds },
+    allowedManual,
+  );
   const withExternal: Record<string, unknown> = { ...merged.values };
-  const sources = { ...merged.sources };
+  const sources: Record<string, EffectiveSource> = { ...merged.sources };
   for (const [key, value] of Object.entries(external)) {
-    if (!isSchedulableTarget(key)) continue;
-    if (sources[key] === "rule") continue;
+    if (!isSchedulableTarget(key) || lockedTargets.has(key)) continue;
+    if (sources[key] === "rule" || sources[key] === "manual") continue;
     withExternal[key] = value;
-    sources[key] = "rule";
+    sources[key] = "external";
   }
   return {
     preferences: validatePreferences({ ...preferences, ...withExternal }),

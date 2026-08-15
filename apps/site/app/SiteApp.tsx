@@ -93,10 +93,17 @@ import { LocalModelRuntimePanel } from "./ollama-tab.tsx";
 import { ExternalSettingsPanel, SchedulePanel } from "./scheduling-panel.tsx";
 import {
   DEFAULT_SCHEDULE_STATE,
+  MANUAL_OVERRIDE_STORAGE_KEY,
+  SCHEDULABLE_TARGETS,
   applyOverlay,
   describeScheduleShape,
+  governedTargets,
+  pruneManualOverrides,
   useScheduling,
+  validateManualOverrides,
   validateScheduleState,
+  type EffectiveSource,
+  type ManualOverrides,
   type ScheduleState,
 } from "./scheduling.ts";
 import { MenuFilterWithBuilder, SearchWithBuilder, type SearchBinding } from "./search-builder.tsx";
@@ -106,6 +113,19 @@ import { SITE_TABS, defaultTabsState, tabDescriptor, validateTabsState, type Sit
 import { AuthenticatorPanel } from "./totp-panel.tsx";
 
 const AUTHENTICATOR_STORAGE = STORAGE_KEYS.authenticator;
+
+/** The settings card, and the lock check, both address a setting by this id. */
+const SETTING_ID_BY_PREFERENCE_KEY: ReadonlyMap<string, string> = new Map(
+  SETTING_DESCRIPTORS.map((descriptor) => [descriptor.preferenceKey as string, descriptor.id]),
+);
+
+/** What the settings card says about where its current value came from. */
+const SOURCE_LABELS: Record<EffectiveSource, string> = {
+  manual: "your own change, held while a rule is setting this",
+  rule: "an active schedule rule",
+  external: "the external settings document",
+  default: "local preference",
+};
 
 function readJson<T>(key: string, fallback: T): T {
   if (typeof window === "undefined") return fallback;
@@ -146,6 +166,7 @@ export function SiteApp(): ReactNode {
   const [appearance, setAppearance] = useState<AppearanceStore>({});
   const [locks, setLocks] = useState<LockRecord[]>([]);
   const [schedule, setSchedule] = useState<ScheduleState>(DEFAULT_SCHEDULE_STATE);
+  const [overrides, setOverrides] = useState<ManualOverrides>({});
   const [tickets, setTickets] = useState<SupportTicket[]>([]);
   const [authenticatorSecret, setAuthenticatorSecret] = useState<string | null>(null);
   const [searches, setSearches] = useState<Record<string, SearchState>>({});
@@ -186,6 +207,7 @@ export function SiteApp(): ReactNode {
     }
     setLocks(validateLocks(readJson(STORAGE_KEYS.locks, [])));
     setSchedule(validateScheduleState(readJson(STORAGE_KEYS.schedules, null)));
+    setOverrides(validateManualOverrides(readJson(MANUAL_OVERRIDE_STORAGE_KEY, null)));
     setTickets(validateTickets(readJson(STORAGE_KEYS.tickets, [])));
     const secret = window.localStorage.getItem(AUTHENTICATOR_STORAGE);
     setAuthenticatorSecret(secret !== null && secret.length > 0 ? secret : null);
@@ -210,6 +232,11 @@ export function SiteApp(): ReactNode {
   useEffect(() => {
     if (loaded) writeJson(STORAGE_KEYS.schedules, schedule);
   }, [loaded, schedule]);
+  // A hold has to survive a reload, or a rule would win again on the next load
+  // and the control the reader just used would appear to have done nothing.
+  useEffect(() => {
+    if (loaded) writeJson(MANUAL_OVERRIDE_STORAGE_KEY, overrides);
+  }, [loaded, overrides]);
   useEffect(() => {
     if (loaded) writeJson(STORAGE_KEYS.tickets, tickets);
   }, [loaded, tickets]);
@@ -269,9 +296,53 @@ export function SiteApp(): ReactNode {
     },
   });
 
-  const effective = useMemo(
-    () => applyOverlay(preferences, scheduling.overlay, scheduling.externalState.values).preferences,
-    [preferences, scheduling.overlay, scheduling.externalState.values],
+  // A lock is enforced in two places because a value can be changed in two
+  // ways: the guarded setter refuses a write to the stored preference, and this
+  // withholds the overlay. A rule reaches the effective settings without
+  // passing the setter, so without this half a lock on a setting would be
+  // bypassed by a rule naming the same setting.
+  const isBlocked = locksApi.blocked;
+  const lockedTargets = useMemo(() => {
+    const locked = new Set<string>();
+    for (const target of SCHEDULABLE_TARGETS) {
+      const id = SETTING_ID_BY_PREFERENCE_KEY.get(target);
+      if (id !== undefined && isBlocked(id)) locked.add(target);
+    }
+    return locked;
+  }, [isBlocked]);
+
+  /** The settings a rule or the external document is setting at this moment. */
+  const governed = useMemo(
+    () => governedTargets(scheduling.overlay, scheduling.externalState.values),
+    [scheduling.externalState.values, scheduling.overlay],
+  );
+
+  // A hold expires when nothing is setting that value any more. Returning the
+  // same object when nothing expired is what keeps this from looping.
+  useEffect(() => {
+    if (!loaded) return;
+    setOverrides((current) => pruneManualOverrides(current, governed));
+  }, [governed, loaded]);
+
+  const resolution = useMemo(
+    () =>
+      applyOverlay(
+        preferences,
+        scheduling.overlay,
+        scheduling.externalState.values,
+        overrides,
+        lockedTargets,
+      ),
+    [lockedTargets, overrides, preferences, scheduling.externalState.values, scheduling.overlay],
+  );
+  const effective = resolution.preferences;
+
+  // Read back from the resolution rather than from the stored record, so the
+  // list names the settings a hold is actually deciding. A locked setting takes
+  // no hold, and saying otherwise would describe an effect that is not there.
+  const heldTargets = useMemo(
+    () => SCHEDULABLE_TARGETS.filter((target) => resolution.sources[target] === "manual"),
+    [resolution.sources],
   );
 
   const narration = useNarration(effective.narration, effective.language);
@@ -314,9 +385,18 @@ export function SiteApp(): ReactNode {
 
   // ------------------------------------------------------- guarded setter --
   const settingIdFor = useCallback((key: string) => {
-    return SETTING_DESCRIPTORS.find((descriptor) => descriptor.preferenceKey === key)?.id ?? null;
+    return SETTING_ID_BY_PREFERENCE_KEY.get(key) ?? null;
   }, []);
 
+  /**
+   * The one guarded setter every surface writes a preference through.
+   *
+   * A change to a setting a rule is currently setting also becomes a hold. The
+   * stored preference alone is not enough there: the rule would keep winning,
+   * and where the stored value already equalled the chosen one there would be
+   * no change at all to record, so the control would write nothing, announce
+   * nothing and snap straight back to the rule's value.
+   */
   const updatePreferences = useCallback(
     (patch: Partial<Preferences>, summary: string) => {
       const blocked = Object.keys(patch).filter((key) => {
@@ -336,11 +416,44 @@ export function SiteApp(): ReactNode {
         preferences as unknown as Record<string, unknown>,
         next as unknown as Record<string, unknown>,
       );
-      if (diff.length === 0) return;
-      setPreferences(next);
-      history.record("preference-change", summary, diff);
+      const held: ManualOverrides = { ...overrides };
+      const newlyHeld: string[] = [];
+      for (const key of Object.keys(patch)) {
+        if (!governed.has(key)) continue;
+        if (!(key in held)) newlyHeld.push(key);
+        held[key] = (next as unknown as Record<string, unknown>)[key];
+      }
+      const heldDiff = diffRecords(overrides, held, "scheduleHold.");
+      if (diff.length === 0 && heldDiff.length === 0) return;
+      if (diff.length > 0) setPreferences(next);
+      if (heldDiff.length > 0) setOverrides(held);
+      history.record("preference-change", summary, [...diff, ...heldDiff]);
+      if (newlyHeld.length > 0) {
+        notify(
+          "info",
+          "Held over the schedule",
+          `${newlyHeld.join(", ")} will keep the value you just chose while a rule is still setting it, and your stored value is what shows once no rule applies. Choose "Follow the schedule rule again" on that setting to hand it back sooner.`,
+        );
+      }
     },
-    [history, locksApi, notify, preferences, settingIdFor],
+    [governed, history, locksApi, notify, overrides, preferences, settingIdFor],
+  );
+
+  /** Ends a hold early, so the rule setting that value takes it back. */
+  const releaseHold = useCallback(
+    (key: string) => {
+      if (!(key in overrides)) return;
+      const next = { ...overrides };
+      delete next[key];
+      setOverrides(next);
+      history.record(
+        "preference-change",
+        `Handed ${key} back to the schedule`,
+        diffRecords(overrides, next, "scheduleHold."),
+      );
+      notify("info", "Handed back to the schedule", `${key} follows its schedule rule again.`);
+    },
+    [history, notify, overrides],
   );
 
   const updateAppearance = useCallback(
@@ -973,6 +1086,7 @@ export function SiteApp(): ReactNode {
                   const locked = locksApi.blocked(descriptor.id);
                   const control = descriptor.control;
                   const value = effective[descriptor.preferenceKey];
+                  const source: EffectiveSource = resolution.sources[descriptor.preferenceKey] ?? "default";
                   return (
                     <section
                       className={`setting-card${control.control === "range" ? " wide-setting" : ""}`}
@@ -1112,12 +1226,22 @@ export function SiteApp(): ReactNode {
                       )}
                       <small>
                         {locked
-                          ? `This setting is locked in this browser. ${LOCK_DISCLOSURE}`
-                          : `Current source: ${
-                              scheduling.overlay.values[descriptor.preferenceKey] === undefined
-                                ? "local preference"
-                                : "an active schedule rule"
-                            }.`}
+                          ? `This setting is locked in this browser${
+                              governed.has(descriptor.preferenceKey)
+                                ? ", so the rule naming it is not applied either"
+                                : ""
+                            }. ${LOCK_DISCLOSURE}`
+                          : `Current source: ${SOURCE_LABELS[source]}.`}
+                        {!locked && source === "manual" && (
+                          <button
+                            type="button"
+                            className="text-button"
+                            aria-label={`Follow the schedule rule again for ${copy(descriptor.titleKey)}`}
+                            onClick={() => releaseHold(descriptor.preferenceKey)}
+                          >
+                            Follow the schedule rule again
+                          </button>
+                        )}
                       </small>
                     </section>
                   );
@@ -1321,6 +1445,8 @@ export function SiteApp(): ReactNode {
                   api={scheduling}
                   binding={bind("schedule-rule-search", "Search schedule rules", "Search settings and times")}
                   copy={copy}
+                  held={heldTargets}
+                  onRelease={releaseHold}
                 />
               )}
 
