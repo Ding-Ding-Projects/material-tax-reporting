@@ -1,5 +1,5 @@
-import { getCodingAssistantProfile } from "./profiles.js";
-import { createPromptPreview } from "./prompt.js";
+import { getCodingAssistantProfile } from "./profiles.ts";
+import { createPromptPreview } from "./prompt.ts";
 import type {
   CodingAssistantProfile,
   DirectLaunchHost,
@@ -9,7 +9,7 @@ import type {
   LaunchPreflightResult,
   LaunchProcessResult,
   LaunchSelection,
-} from "./types.js";
+} from "./types.ts";
 
 const ABSOLUTE_WINDOWS_PATH = /^(?:[A-Za-z]:[\\/]|\\\\[^\\]+\\[^\\]+)/;
 const ABSOLUTE_POSIX_PATH = /^\//;

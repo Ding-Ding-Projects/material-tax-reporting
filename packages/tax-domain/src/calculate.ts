@@ -4,14 +4,14 @@ import type {
   TaxCalculationResult,
   TaxLineResult,
   TaxReturnInput,
-} from "./model.js";
+} from "./model.ts";
 import {
   getTaxYearRules,
   OFFICIAL_SOURCES_2025,
   type ProgressiveBracket,
   type RateFraction,
-} from "./rules.js";
-import { validateTaxReturn } from "./validation.js";
+} from "./rules.ts";
+import { validateTaxReturn } from "./validation.ts";
 
 const round = (value: number): Money => Math.round(value);
 const clampAtZero = (value: Money): Money => Math.max(0, value);

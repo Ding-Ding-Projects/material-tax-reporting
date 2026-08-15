@@ -1,5 +1,5 @@
-import { CRA_DOCUMENT_2025_BY_ID, OFFICIAL_SOURCES_2025 } from "./catalog/2025.js";
-import { parseCalculationLineKey } from "./mapping/2025.js";
+import { CRA_DOCUMENT_2025_BY_ID, OFFICIAL_SOURCES_2025 } from "./catalog/2025.ts";
+import { parseCalculationLineKey } from "./mapping/2025.ts";
 import type {
   CraDocumentDefinition,
   CraPdfCaseFileV1,
@@ -7,7 +7,7 @@ import type {
   EligibilityFinding,
   FormInclusionFlags,
   PortableCarryForwardExportV1,
-} from "./types.js";
+} from "./types.ts";
 
 const OFFICIAL_SOURCE_IDS = new Set(OFFICIAL_SOURCES_2025.map((source) => source.id));
 

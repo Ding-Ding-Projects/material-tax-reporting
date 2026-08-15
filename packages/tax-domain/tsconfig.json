@@ -1,15 +1,22 @@
 {
+  // No compiler is installed: TypeScript is not a dependency of this repository
+  // or of any workspace, so nothing reads this file today. It records the
+  // strictness this package expects and stays consistent with the '.ts' relative
+  // specifiers in src/, so that whoever first adds a checker inherits both.
+  //
+  // "noEmit" is deliberate. This package has no build step and produces no
+  // ./dist, so a config promising declaration output would describe a path that
+  // does not exist. See the "//" note in package.json for the whole story.
   "compilerOptions": {
     "target": "ES2022",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "declaration": true,
-    "declarationMap": true,
-    "outDir": "dist",
-    "rootDir": "src",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ES2022"],
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
     "skipLibCheck": true
   },
   "include": ["src/**/*.ts"]

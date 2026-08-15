@@ -28,6 +28,28 @@ These tools assist with local preparation work. They never replace taxpayer revi
 5. Call `preflightAssistantLaunch`, display its complete preview, exact preflight list, and blockers, and collect both acknowledgements.
 6. Pass only a ready plan, the current approved discovery results, and the current allowed workspace roots to `launchCodingAssistant` through a `DirectLaunchHost` that starts the exact executable with `shell: false`.
 
+## Consuming this package
+
+The package entry is TypeScript source, and it is meant for a bundler. Its only importer today is the
+desktop main process, which reaches it through `require()` inside a bundle that esbuild builds, so the
+specifier is resolved at build time and Node never loads it.
+
+Node cannot load this entry on its own. It runs a `.ts` file only where type stripping is enabled, and the
+toolchain pinned in `dependency-manifest.json` is older than the release that made stripping the default —
+so a script Node executes directly would fail on the first import with `ERR_UNKNOWN_FILE_EXTENSION` naming
+`src/index.ts`. There is no compiled entry here because nothing currently needs one; a build step nobody
+runs is worse than none.
+
+If a future script that Node executes directly needs this package, adding a `node` export condition is a
+two-part change that has to land in one commit: a transpile-only build producing `dist/index.js`, **and**
+the wiring that runs that build in every consumer resolving the condition — which includes esbuild, whose
+`node` platform matches the same condition. Without the second half, the desktop bundle stops resolving
+this package on any checkout that has not already built it. The note in `package.json` records the exact
+evidence.
+
+Modules under `src/` reference their siblings with real `.ts` extensions, so a Node that does strip types
+loads the entry as written.
+
 ## Official sources
 
 - [OpenAI Codex CLI developer command reference](https://developers.openai.com/codex/cli/reference) — `codex exec`, `--cd`, `--sandbox`, `--ask-for-approval`, `--ephemeral`, and stdin prompt transport.
@@ -39,4 +61,13 @@ Sources were retrieved on 2026-08-14. Reconcile the fixed profiles with the curr
 
 ## Verification status
 
-Tests, lint, type checks, reviews, runtime launches, captures, builds, and packaging were intentionally not run for this ultra-speed implementation.
+`node --test --experimental-strip-types test/*.test.ts` was run and observed: 6 tests passed, 0 failed. The
+package entry was loaded directly on Node 26.4.0 and exported the expected seven names, and the same import
+under `--no-experimental-strip-types` was observed to fail with `ERR_UNKNOWN_FILE_EXTENSION`, which is the
+behaviour the section above describes.
+
+Lint, type checks, reviews, real runtime launches of Codex CLI or OpenCode, captures, builds, and packaging
+were not run and no claim is made about them. The regression uses an injected launch host; no external
+process was started. No Node matching the pinned toolchain version was available on the machine that ran
+these checks, so the pinned-runtime behaviour above was reproduced by disabling type stripping rather than
+by running that version.

@@ -1,4 +1,4 @@
-import type { Money, OfficialSourceCitation, TaxYear } from "./model.js";
+import type { Money, OfficialSourceCitation, TaxYear } from "./model.ts";
 
 export interface RateFraction {
   readonly numerator: number;

@@ -8,10 +8,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { useTypeScriptSources } from "./typescript-source-resolver.ts";
-
-useTypeScriptSources();
-
 const { preflightAssistantLaunch, launchCodingAssistant } = await import("../src/launch.ts");
 type LaunchModule = typeof import("../src/launch.ts");
 type LaunchPlan = Awaited<ReturnType<LaunchModule["preflightAssistantLaunch"]>> extends infer Result

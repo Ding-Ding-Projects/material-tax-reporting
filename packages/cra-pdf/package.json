@@ -5,19 +5,56 @@
   "description": "Tax-year-versioned local preparation of CRA mail-in PDF packages after mandatory manual review; no electronic filing.",
   "license": "MIT",
   "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "//": [
+    "The '.' entry names TypeScript source, and there is deliberately no compiled",
+    "'node' condition and no build script, because nothing consumes this package yet.",
+    "Outside prose — this package's README, and the repository's documentation and",
+    "changelog records — the specifier appears only as this manifest's own name, and no",
+    "manifest, bundler alias, build script, test or workflow resolves it. A build step",
+    "nothing runs is a build step nobody maintains.",
+    "",
+    "It replaces an entry that could not have worked. 'main', 'types' and both export",
+    "conditions named files under ./dist, which is git-ignored and which nothing in this",
+    "repository produces: the 'build' script meant to produce them ran 'tsc', and",
+    "TypeScript is declared in no manifest here, appears in neither lockfile, and is",
+    "installed nowhere, so that script had never run once. Every consumer, bundler and",
+    "Node alike, would have failed with ERR_MODULE_NOT_FOUND naming a compiled file no",
+    "command in this repository can create.",
+    "",
+    "The relative specifiers inside src/ moved with the entry, from '.js' to '.ts',",
+    "matching packages/surface-kernel. They were written in the NodeNext convention,",
+    "where './adapter.js' exists only after a TypeScript emit — an emit nothing here",
+    "performs — and stripping types does not rewrite a specifier, so that source could",
+    "not be loaded by Node at any version, including one new enough to strip types. With",
+    "'.ts' specifiers a bundler and a type-stripping Node both read it: esbuild resolves",
+    "this package by name through this entry and bundles it, and Node 26.4.0 imports it",
+    "by name and loads all 28 exports.",
+    "",
+    "THE TRAP, if you are the first to import this from a file Node executes directly:",
+    "the pinned toolchain cannot load a '.ts' file at all. Type stripping arrived in Node",
+    "22.18.0, which is newer than the 22.13.0 and 22.14.0 the workflows pin, so you will",
+    "get ERR_UNKNOWN_FILE_EXTENSION naming src/index.ts. Fix it by copying",
+    "packages/surface-kernel rather than improvising: add a 'node' condition ahead of",
+    "'default' naming ./dist/index.js; add scripts/build.mjs that transpiles with esbuild",
+    "and never with tsc, which type-checks and so could withhold a release on a verdict;",
+    "add 'esbuild' both to this manifest and to this package's node in package-lock.json",
+    "in that same commit, because the release path installs with 'npm ci' and that",
+    "refuses a manifest and a lockfile which disagree; and add a 'prebuild' hook in the",
+    "consuming workspace exactly as apps/desktop already does for surface-kernel, so the",
+    "ordering is inherited rather than repeated at every call site.",
+    "",
+    "Until then this manifest declares no dependency and no 'engines' field, which is why",
+    "package-lock.json's record of this package is still accurate and needs no",
+    "regeneration."
+  ],
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
     }
   },
   "files": [
-    "dist",
+    "src",
     "README.md"
-  ],
-  "scripts": {
-    "build": "tsc -p tsconfig.json"
-  }
+  ]
 }

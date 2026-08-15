@@ -2,7 +2,7 @@ import type {
   AssistantContextItem,
   PromptPreview,
   PromptRedaction,
-} from "./types.js";
+} from "./types.ts";
 
 const MAX_INSTRUCTION_LENGTH = 8_000;
 const MAX_CONTEXT_ITEM_LENGTH = 24_000;

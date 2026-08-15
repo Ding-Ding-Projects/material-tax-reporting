@@ -4,14 +4,49 @@
   "private": true,
   "description": "Local-only Canadian tax slip and receipt parsing contracts with mandatory manual confirmation.",
   "type": "module",
+  "//": [
+    "The '.' entry is conditional because a bare '.ts' entry point is a trap for",
+    "Node, and this package was carrying one.",
+    "",
+    "Bundlers take 'default' and read the TypeScript source directly. Node takes",
+    "'node' and reads ./dist/index.js, because Node cannot load a '.ts' file: it",
+    "strips types only when asked until 22.18.0, and the toolchain this repository",
+    "pins is older than that (22.14.0 in the root manifest and the release",
+    "workflow, 22.13.0 in the documentation-site workflow). Before this entry",
+    "existed, the first file Node executed directly that imported this package by",
+    "name would have died on that import with ERR_UNKNOWN_FILE_EXTENSION naming",
+    "src/index.ts. A sibling package in this repository shipped exactly that entry",
+    "and broke two builds with it.",
+    "",
+    "Nothing imports this package yet, so this is prevention rather than a repair:",
+    "no workspace declares it as a dependency and no source file imports it. That",
+    "also means ./dist is not built by anything today. 'npm run build' in this",
+    "package writes it, and THE FIRST CONSUMER MUST RUN THAT BUILD FROM ITS OWN",
+    "'prebuild' IN THE SAME CHANGE THAT ADDS THE IMPORT — the way the desktop",
+    "workspace already does for the surface kernel. Wiring a hook here instead",
+    "would be a build step no workspace runs. A consumer that reaches the 'node'",
+    "condition without building gets ERR_MODULE_NOT_FOUND naming dist/index.js,",
+    "which says what to do; the failure it replaces did not.",
+    "",
+    "./dist is generated and git-ignored, so the compiled entry is never a tracked",
+    "file. scripts/stage-offline-ocr-assets.mjs is unaffected by all of this: the",
+    "Windows packaging script spawns it by file path rather than by package name,",
+    "so it never consults this map, and it imports only node: builtins."
+  ],
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "types": "./src/index.ts",
+      "node": "./dist/index.js",
+      "default": "./src/index.ts"
+    }
   },
   "scripts": {
+    "build": "node scripts/build.mjs",
     "stage:offline-ocr-assets": "node scripts/stage-offline-ocr-assets.mjs"
   },
   "files": [
     "src",
+    "dist",
     "assets",
     "scripts",
     "README.md"
@@ -27,7 +62,8 @@
     "tesseract.js-core": "7.0.0"
   },
   "devDependencies": {
-    "@types/node": "24.13.3"
+    "@types/node": "24.13.3",
+    "esbuild": "0.28.0"
   },
   "engines": {
     "node": ">=22.13.0 || >=24"

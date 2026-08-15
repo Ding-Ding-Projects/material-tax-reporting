@@ -1,7 +1,7 @@
 import type {
   CodingAssistantProfile,
   CodingAssistantProfileId,
-} from "./types.js";
+} from "./types.ts";
 
 const OPENAI_CLI_REFERENCE = {
   title: "OpenAI Codex CLI developer command reference",

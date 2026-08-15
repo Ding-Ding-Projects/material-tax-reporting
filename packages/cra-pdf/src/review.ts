@@ -4,7 +4,7 @@ import type {
   ManualReviewItem,
   ManualReviewState,
   PrintAuthorization,
-} from "./types.js";
+} from "./types.ts";
 
 export const FINAL_REVIEW_ACKNOWLEDGEMENT =
   "I inspected every listed form, calculation, attachment, mailing destination, and signature field. I understand that I must sign and mail the package myself and that no return has been filed." as const;

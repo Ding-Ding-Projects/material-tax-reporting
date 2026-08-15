@@ -3,7 +3,7 @@ import type {
   CraDocumentId,
   MailingDestination,
   OfficialSourceCitation,
-} from "../types.js";
+} from "../types.ts";
 
 const CRA_TAX_PACKAGE_ROOT =
   "https://www.canada.ca/en/revenue-agency/services/forms-publications/tax-packages-years/general-income-tax-benefit-package";

@@ -3,7 +3,7 @@ import type {
   DiscoveredExecutable,
   ExecutableCandidate,
   ExecutableDiscoveryHost,
-} from "./types.js";
+} from "./types.ts";
 
 const VERSION_ARGUMENTS = ["--version"] as const;
 const MAX_VERSION_OUTPUT = 512;

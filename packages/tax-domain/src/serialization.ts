@@ -1,5 +1,5 @@
-import type { TaxReturnInput } from "./model.js";
-import { validateTaxReturn } from "./validation.js";
+import type { TaxReturnInput } from "./model.ts";
+import { validateTaxReturn } from "./validation.ts";
 
 const MAX_IMPORT_BYTES = 1_048_576;
 const MAX_DEPTH = 24;

@@ -3,7 +3,7 @@ import type {
   TaxReturnInput,
   ValidationIssue,
   ValidationSeverity,
-} from "./model.js";
+} from "./model.ts";
 
 const MAX_MONEY = 100_000_000_000;
 

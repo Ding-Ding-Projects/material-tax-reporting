@@ -42,6 +42,19 @@ Harnesses are application-owned orchestration, not an Ollama capability. Only co
 4. Construct `LocalOllamaSuiteController`, call `initialize()`, and mount `mountLocalOllamaSuiteSurface` into the renderer container.
 5. Load `src/surface.css` through the application's normal bundled-style path.
 
+### Package entry
+
+The `.` export resolves to the TypeScript source, so **this package can only be consumed through a
+bundler**. Every consumer today is one: the desktop main process reaches it through its esbuild
+bundle, and the documentation site rewrites the specifier to an absolute source path before
+resolution. There is no compiled entry and no build script.
+
+A file that Node executes directly cannot import this package by name — it fails on that import with
+`ERR_UNKNOWN_FILE_EXTENSION` naming `src/index.ts`, because the pinned Node 22.14.0 toolchain does
+not strip types unless explicitly asked to. Before writing such a file, add the `node` condition and
+the compiled entry behind it that the manifest's `//` note describes, together with the consuming
+workspace's `prebuild` hook that produces the artifact. The two must land in the same change.
+
 ## Failure modes
 
 - Missing or stopped service: installed/catalog/history/profile surfaces remain available and the troubleshooter gives the exact next action.

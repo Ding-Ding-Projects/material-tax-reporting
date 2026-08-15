@@ -4,7 +4,7 @@ import type {
   PrintAuthorization,
   SemanticFieldAssignment,
   SupportedTaxYear,
-} from "./types.js";
+} from "./types.ts";
 
 export interface LocalPdfAdapterCapabilities {
   readonly networkAccess: "disabled";

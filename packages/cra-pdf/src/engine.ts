@@ -3,7 +3,7 @@ import {
   OFFICIAL_SOURCES_2025,
   type OntarioTaxCentreSelection,
   createOntarioMailingDestination,
-} from "./catalog/2025.js";
+} from "./catalog/2025.ts";
 import {
   assertLocalOnlyAdapter,
   assertSafePdf,
@@ -13,10 +13,10 @@ import {
   type LocalTemplateSelection,
   type PdfFieldProfile,
   type PreparedPdfArtifact,
-} from "./adapter.js";
-import { createFillPlans2025 } from "./mapping/2025.js";
-import { assertPrintAuthorization } from "./review.js";
-import { assertCaseFileCanBePrepared } from "./validation.js";
+} from "./adapter.ts";
+import { createFillPlans2025 } from "./mapping/2025.ts";
+import { assertPrintAuthorization } from "./review.ts";
+import { assertCaseFileCanBePrepared } from "./validation.ts";
 import type {
   AssemblyDocument,
   AssemblyManifest,
@@ -25,7 +25,7 @@ import type {
   DocumentFillPlan,
   EligibilityAssessment,
   PrintAuthorization,
-} from "./types.js";
+} from "./types.ts";
 
 export const ELECTRONIC_FILING_CAPABILITIES = Object.freeze({
   NETFILE: false,

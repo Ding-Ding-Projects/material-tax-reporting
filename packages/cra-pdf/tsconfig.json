@@ -1,16 +1,26 @@
 {
+  // No compiler is installed. TypeScript is declared in no manifest in this
+  // repository, appears in neither lockfile, and no binary is on the path, so
+  // nothing reads this file today. It records the strictness this package
+  // expects and keeps the module settings consistent with the '.ts' relative
+  // specifiers in src/, so whoever first adds a checker inherits both.
+  //
+  // "noEmit" is deliberate. This package has no build step and produces no
+  // ./dist, so a configuration promising declaration output into a directory
+  // nothing creates would be describing a path that does not exist. That is
+  // exactly the trap the "//" note in package.json records; do not reintroduce
+  // it here. If a compiled entry is ever needed, add it the way that note
+  // describes rather than by turning emit back on.
   "compilerOptions": {
-    "declaration": true,
-    "declarationMap": true,
-    "exactOptionalPropertyTypes": true,
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "lib": ["ES2022"],
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "noUncheckedIndexedAccess": true,
-    "outDir": "dist",
-    "rootDir": "src",
     "strict": true,
-    "target": "ES2022"
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true
   },
   "include": ["src/**/*.ts"]
 }

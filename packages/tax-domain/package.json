@@ -5,19 +5,64 @@
   "description": "Tax-year-versioned Canada and Ontario annual personal tax calculations for local return preparation; not filing software.",
   "license": "MIT",
   "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "//": [
+    "Nothing imports this package yet. '@material-tax-reporting/tax-domain'",
+    "appears nowhere in apps/, packages/ or scripts/ as an import specifier, and",
+    "neither workflow builds it. The entry below is therefore written for the",
+    "consumer that does not exist yet, and the trap it replaces is named here so",
+    "the next person does not rediscover it.",
+    "",
+    "What was here before: 'main', 'types' and the '.' entry all named",
+    "'./dist/*', and the build script was 'tsc -p tsconfig.json'. TypeScript is",
+    "not a dependency of this repository or of any workspace, and no compiler is",
+    "installed, so that script could not run. ./dist does not exist and is",
+    "git-ignored, so every consumer would have failed on a file nothing produces:",
+    "Node with ERR_MODULE_NOT_FOUND naming dist/index.js, and a bundler with its",
+    "own unresolved-import error for that same path.",
+    "",
+    "The entry now names TypeScript source, which a bundler reads directly, as",
+    "the documentation site and the desktop renderer already do for",
+    "packages/surface-kernel. There is deliberately no 'node' condition and no",
+    "build script: nothing Node-direct consumes this package, and a build step",
+    "nothing runs is a build step nobody maintains.",
+    "",
+    "THE TRAP, if you are the first to import this from a file Node executes",
+    "directly: this entry cannot work for you, and no Node upgrade will change",
+    "that. Node refuses to strip types for any file under node_modules at every",
+    "version, and a workspace package is reached through a node_modules link, so",
+    "importing it by name fails with ERR_UNSUPPORTED_NODE_MODULES_TYPE_STRIPPING",
+    "even on a Node new enough to strip types elsewhere (verified on 26.4.0, with",
+    "and without --experimental-strip-types). On the 22.13.0 and 22.14.0 the",
+    "workflows pin, which strip nothing at all, the same import fails earlier as",
+    "ERR_UNKNOWN_FILE_EXTENSION. This is exactly why surface-kernel ships a",
+    "compiled ./dist rather than relying on a newer runtime.",
+    "",
+    "So do not 'fix' it by bumping Node or adding a strip-types flag. Copy",
+    "packages/surface-kernel instead: add a 'node' condition naming",
+    "./dist/index.js, add scripts/build.mjs that transpiles with esbuild (never",
+    "tsc, which type-checks and so could withhold a release), add esbuild to",
+    "devDependencies AND regenerate package-lock.json in the same commit because",
+    "npm ci refuses a manifest the lockfile does not match, and add a 'prebuild'",
+    "hook in the consuming workspace exactly as apps/desktop already does for",
+    "surface-kernel.",
+    "",
+    "Relative specifiers inside src/ end in '.ts', matching surface-kernel. They",
+    "used to end in '.js', the form tsc wants under NodeNext, which nothing here",
+    "runs. Node's type stripping does not rewrite '.js' to '.ts' (verified), so",
+    "those specifiers made src/ unloadable by Node by path as well as by package",
+    "name -- which is the form a test suite in this package would use, as",
+    "surface-kernel's 'node --test --experimental-strip-types' script does.",
+    "esbuild does perform that rewrite, so the old specifiers did not break the",
+    "bundler; this constraint comes from Node alone."
+  ],
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
     }
   },
   "files": [
-    "dist",
+    "src",
     "README.md"
-  ],
-  "scripts": {
-    "build": "tsc -p tsconfig.json"
-  }
+  ]
 }

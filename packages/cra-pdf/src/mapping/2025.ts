@@ -1,4 +1,4 @@
-import { CRA_DOCUMENTS_2025 } from "../catalog/2025.js";
+import { CRA_DOCUMENTS_2025 } from "../catalog/2025.ts";
 import type {
   CalculationSnapshot,
   CraDocumentDefinition,
@@ -6,7 +6,7 @@ import type {
   DocumentFillPlan,
   SemanticFieldAssignment,
   TaxpayerIdentity,
-} from "../types.js";
+} from "../types.ts";
 
 const SUPPORTED_DOCUMENT_IDS = new Set<CraDocumentId>(CRA_DOCUMENTS_2025.map((entry) => entry.id));
 
