@@ -17,7 +17,9 @@ Nothing in this directory is a release announcement. The repository contains sou
 | [`pdf/`](pdf/README.md) | Paper-package preparation and mandatory manual review | `packages/cra-pdf/` |
 | [`slip-parser/`](slip-parser/README.md) | Local slip admission, classification, and extraction | `packages/slip-parser/` |
 
-A change edits the subtree that owns the surface it changed. This index, the inventory, and the website documentation under [`docs/site/`](../site/README.md) are the only files that describe the repository as a whole.
+A change edits the subtree that owns the surface it changed. This index, the inventory, the [test suite inventory](test-suite-inventory.md), and the website documentation under [`docs/site/`](../site/README.md) are the only files that describe the repository as a whole.
+
+[`test-suite-inventory.md`](test-suite-inventory.md) is the companion record for automated tests: every workspace, the exact command that runs its suite, what that suite covers, what it deliberately leaves uncovered, and the defects the suites found and pinned. It names the workspaces with no suite too, so an absence is a visible row rather than a silent gap. No workflow runs any of those suites and none gates a release.
 
 ## How to read the inventory
 
