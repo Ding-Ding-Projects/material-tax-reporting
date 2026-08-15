@@ -524,18 +524,22 @@
       "id": "file-converter",
       "title": "File converter",
       "surface": "desktop",
-      "state": "partial",
-      "implementation": ["apps/desktop/src/main/converter.js", "apps/desktop/src/renderer/converter.js"],
+      "state": "implemented",
+      "implementation": [
+        "apps/desktop/src/main/converter.js",
+        "apps/desktop/src/main/pdf-text.js",
+        "apps/desktop/src/renderer/converter.js"
+      ],
       "documentation": ["docs/features/desktop/file-converter.md"],
       "changelog": ["CHANGELOG.desktop.md"],
       "test": [],
-      "runtimeInteraction": "Launch the application, add files of a supported source format, run a conversion, and read the stated reason on a disabled row.",
+      "runtimeInteraction": "Launch the application, add files of a supported source format, run a conversion, and read the stated reason on the disabled optical-character-recognition row.",
       "captureEvidence": "none",
-      "boundaryNote": "Converts the application's own record formats. It produces no tax form, no return, and no package for a tax authority.",
+      "boundaryNote": "Converts the application's own record formats and reads the text layer a document already carries. It produces no tax form, no return, and no package for a tax authority.",
       "evidenceGaps": [
-        "The catalogue carries rows that are present but disabled, so the shipped conversion set is narrower than the catalogue it lists; this is why the row is partial.",
-        "The offline optical-character-recognition row is driven by the existing runtime discovery rather than by a conversion adapter, and no runtime has been discovered on any machine.",
-        "No conversion has been run."
+        "The one remaining disabled row is scanned-image text extraction, which needs packaged optical-character-recognition assets that no build has yet carried; it stays visible and names the exact missing dependency rather than being hidden, so the catalogue no longer advertises a document conversion the build cannot perform.",
+        "Portable-document extraction does not resolve glyph widths from the embedded font program, so the space between two separately positioned runs on one line is inferred; a glyph mapped through a private encoding with no ToUnicode entry is dropped rather than guessed at.",
+        "Conversions have been run against the shipped module and against three real documents, but not through the built application by a person, so the converter destination, its catalogue rendering and its progress surface remain unobserved at runtime and no capture exists."
       ]
     },
     {
@@ -786,6 +790,7 @@
       "implementation": [
         "apps/desktop/src/main/transfer-progress.js",
         "apps/desktop/src/main/project-bundle.js",
+        "apps/desktop/src/main/main.js",
         "apps/desktop/src/renderer/download-surfaces.js"
       ],
       "documentation": ["docs/features/desktop/transfer-surfaces.md"],
@@ -795,9 +800,11 @@
       "captureEvidence": "none",
       "boundaryNote": "These states describe transfers the application itself performs on the user's computer. Nothing is sent to a tax authority, no release asset is offered, and no artifact is described as signature-verified.",
       "evidenceGaps": [
-        "The canonical row for this capability is written against an installed browser extension capturing a real browser download. No extension exists in this repository and none is proposed, which is why the row is partial.",
-        "No transfer has been run, so the chunked write, the progress channel, and the completion checks are unobserved.",
-        "There is no release asset to transfer and no download control anywhere in the application."
+        "The canonical row for this capability is written against an installed browser extension capturing a real browser download. No extension exists in this repository and none is proposed, which is why the row is partial and will stay partial until that decision changes.",
+        "There is no release asset to transfer and no download control anywhere in the application.",
+        "Three completion claims that were not measured have been removed: the import-copy step no longer reports a placeholder byte count for a write it never performs, conversion now reports running progress and a digest taken from the bytes on disk, and attachment intake now reports the plaintext digest it already computed.",
+        "The renderer words every successful commit as \"Written to <path>\", which is wrong for the import-copy destination step even though that step now correctly reports zero bytes and no digest. Aligning the card's wording is a renderer change and has not been made.",
+        "Only the converter transfer has been exercised, and only against the shipped module rather than through a running application. Project save, save copy, attachment intake, export and import-copy are unobserved at runtime, so the chunked container write, the progress channel and the cancel-and-remove path have never been watched, and no capture exists."
       ]
     },
     {
