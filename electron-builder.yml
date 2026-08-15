@@ -8,8 +8,18 @@ files:
   - dist/**/*
   - package.json
 extraResources:
+  # The copy filter unconditionally drops a directory named exactly node_modules
+  # at the root of a copy source, whatever the filter patterns say. The offline
+  # OCR closure keeps its dependency tree in such a directory, so it needs a
+  # second entry that begins inside node_modules, where the rule no longer
+  # applies. Without it the runtime packages are silently omitted and only the
+  # manifest beside them is copied.
   - from: ${env.MTR_OFFLINE_OCR_STAGE}
     to: offline-ocr-runtime
+    filter:
+      - "**/*"
+  - from: ${env.MTR_OFFLINE_OCR_STAGE}/node_modules
+    to: offline-ocr-runtime/node_modules
     filter:
       - "**/*"
 icon: build/icon.ico

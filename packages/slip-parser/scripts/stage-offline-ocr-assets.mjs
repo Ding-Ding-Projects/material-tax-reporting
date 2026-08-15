@@ -319,6 +319,21 @@ async function assertFreshOutput(repositoryRoot, output) {
   return { existed: Boolean(information), information, parent };
 }
 
+// The packaging copier silently drops version-control and packaging metadata
+// files wherever it finds them, and that behaviour is not configurable. Staging
+// them would record entries in the manifest that can never appear in the
+// packaged runtime, so the packaged completeness check would fail over empty
+// placeholders that carry no runtime content. Leave them out of the closure
+// rather than teaching that check to tolerate missing files.
+const unpackableFileNames = new Set([
+  ".gitkeep",
+  ".gitignore",
+  ".gitattributes",
+  ".npmignore",
+  ".DS_Store",
+  "thumbs.db",
+]);
+
 async function copyPackage(source, destination) {
   await mkdir(dirname(destination), { recursive: true });
   await cp(source, destination, {
@@ -327,7 +342,9 @@ async function copyPackage(source, destination) {
     errorOnExist: true,
     filter: (candidate) => {
       const path = relative(source, candidate);
-      return path === "" || !path.split(sep).includes("node_modules");
+      if (path === "") return true;
+      if (path.split(sep).includes("node_modules")) return false;
+      return !unpackableFileNames.has(basename(candidate));
     },
   });
 }
