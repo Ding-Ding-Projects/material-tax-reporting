@@ -28,6 +28,23 @@ function Write-Phase([string]$Message) {
     if (-not $Silent) { Write-Host $Message }
 }
 
+# Hash through .NET rather than Get-FileHash. This script runs under Windows
+# PowerShell, which inherits PSModulePath from the PowerShell 7 process that
+# launches the build, so its own module-provided cmdlets cannot always be
+# autoloaded. Engine-intrinsic cmdlets keep working, which makes the failure
+# look arbitrary; the .NET call has no such dependency.
+function Get-Sha256([string]$Path) {
+    $stream = [IO.File]::OpenRead($Path)
+    $sha256 = [Security.Cryptography.SHA256]::Create()
+    try {
+        return ([BitConverter]::ToString($sha256.ComputeHash($stream))).Replace('-', '').ToLowerInvariant()
+    }
+    finally {
+        $sha256.Dispose()
+        $stream.Dispose()
+    }
+}
+
 function Assert-GeneratedDirectory([string]$Path, [string]$ExpectedRelativePath) {
     $expected = [IO.Path]::GetFullPath((Join-Path $repositoryRoot $ExpectedRelativePath)).TrimEnd('\')
     $actual = [IO.Path]::GetFullPath($Path).TrimEnd('\')
@@ -79,7 +96,7 @@ function Invoke-DesktopBuild {
         $outputRecords += [ordered]@{
             path = $relativePath.Replace('\', '/')
             bytes = $item.Length
-            sha256 = (Get-FileHash -LiteralPath $fullPath -Algorithm SHA256).Hash.ToLowerInvariant()
+            sha256 = Get-Sha256 -Path $fullPath
         }
     }
 
@@ -109,7 +126,7 @@ function Assert-CurrentBuildProvenance {
     foreach ($output in @($provenance.outputs)) {
         $fullPath = Join-Path $repositoryRoot $output.path
         if (-not (Test-Path -LiteralPath $fullPath -PathType Leaf)) { throw "Provenance output is missing: $($output.path)" }
-        $actualHash = (Get-FileHash -LiteralPath $fullPath -Algorithm SHA256).Hash.ToLowerInvariant()
+        $actualHash = Get-Sha256 -Path $fullPath
         if ($actualHash -ne $output.sha256) { throw "Provenance hash mismatch for $($output.path)." }
     }
     return $provenance
@@ -147,7 +164,7 @@ switch ($Mode) {
         $setupRecord = @($releaseManifest.artifacts | Where-Object kind -eq 'setup')
         if ($setupRecord.Count -ne 1) { throw 'The packaging manifest must contain exactly one Setup.exe.' }
         $setupPath = Join-Path $repositoryRoot ("dist\squirrel-windows\" + $setupRecord[0].name)
-        $setupHash = (Get-FileHash -LiteralPath $setupPath -Algorithm SHA256).Hash.ToLowerInvariant()
+        $setupHash = Get-Sha256 -Path $setupPath
         if ($setupHash -ne $setupRecord[0].sha256) { throw 'The reported Setup.exe SHA-256 does not match the built file.' }
         $phaseWatch.Stop()
         Write-Host ("Unsigned installer build complete in {0:n1} seconds." -f $phaseWatch.Elapsed.TotalSeconds)

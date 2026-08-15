@@ -215,13 +215,31 @@ for (const packageName of [expectedFullName, ...deltaNames]) {
 }
 
 const escapedSetupPath = setupPath.replaceAll("'", "''");
+// Windows PowerShell inherits PSModulePath from whichever process launches the
+// build. When that is PowerShell 7 the inherited value points at PowerShell 7's
+// module directories, and Windows PowerShell can then fail to autoload its own
+// modules. Hand this child the Windows PowerShell module locations so the
+// signature cmdlet resolves regardless of who invoked packaging.
+const windowsPowerShellModulePath = [
+  path.join(process.env.ProgramFiles ?? "C:\\Program Files", "WindowsPowerShell", "Modules"),
+  path.join(process.env.SystemRoot ?? "C:\\Windows", "System32", "WindowsPowerShell", "v1.0", "Modules"),
+].join(path.delimiter);
 const signature = spawnSync(
   "powershell.exe",
   ["-NoProfile", "-Command", `(Get-AuthenticodeSignature -LiteralPath '${escapedSetupPath}').Status.ToString()`],
-  { encoding: "utf8", windowsHide: true },
+  {
+    encoding: "utf8",
+    windowsHide: true,
+    env: { ...process.env, PSModulePath: windowsPowerShellModulePath },
+  },
 );
 if (signature.status !== 0 || signature.stdout.trim() !== "NotSigned") {
-  fail(`code signing is prohibited; Setup.exe signature status was ${signature.stdout.trim() || "unavailable"}`);
+  const reportedStatus = signature.stdout?.trim() || "unavailable";
+  const reportedError = signature.stderr?.trim() || "no error output";
+  fail(
+    `code signing is prohibited; Setup.exe signature status was ${reportedStatus} ` +
+      `(exit ${signature.status}: ${reportedError})`,
+  );
 }
 
 await writeFile(releasedIcon, await readFile(generatedIcon));
