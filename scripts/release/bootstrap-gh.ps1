@@ -48,9 +48,19 @@ if (-not (Test-Path -LiteralPath $ghPath -PathType Leaf)) {
     }
 }
 
-$reportedVersion = (& $ghPath --version | Select-Object -First 1)
+# Capture the whole version banner before selecting a line. Piping a native
+# command straight into Select-Object -First 1 stops the pipeline as soon as the
+# first line arrives, which can terminate gh.exe mid-write and leave a non-zero
+# $LASTEXITCODE behind even though the version lookup itself succeeded.
+$versionOutput = @(& $ghPath --version)
+$versionExitCode = $LASTEXITCODE
+if ($versionExitCode -ne 0) {
+    throw "The pinned GitHub CLI at $ghPath exited with code $versionExitCode during its version check."
+}
+$reportedVersion = ($versionOutput | Select-Object -First 1)
 if ($reportedVersion -notmatch [Regex]::Escape($entry[0].version)) {
     throw "GitHub CLI version mismatch: expected $($entry[0].version); received $reportedVersion."
 }
 Write-Output (Split-Path -Parent $ghPath)
+exit 0
 
