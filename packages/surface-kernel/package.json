@@ -33,7 +33,7 @@
   },
   "scripts": {
     "build": "node scripts/build.mjs",
-    "prepare": "node scripts/build.mjs",
+    "prepare": "node scripts/build.mjs --if-available",
     "test": "node --test --experimental-strip-types test/*.test.ts"
   },
   "files": [
