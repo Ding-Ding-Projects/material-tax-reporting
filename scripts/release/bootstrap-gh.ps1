@@ -26,12 +26,21 @@ if (-not (Test-Path -LiteralPath $ghPath -PathType Leaf)) {
         }
         New-Item -ItemType Directory -Path $stagingPath -Force | Out-Null
         Expand-Archive -LiteralPath $partialPath -DestinationPath $stagingPath -Force
-        $candidate = @(Get-ChildItem -LiteralPath $stagingPath -Directory)
-        if ($candidate.Count -ne 1 -or -not (Test-Path -LiteralPath (Join-Path $candidate[0].FullName 'bin\gh.exe'))) {
-            throw 'The GitHub CLI archive did not contain the expected bin\gh.exe path.'
+        # The Windows GitHub CLI archive keeps bin\gh.exe at its root beside LICENSE,
+        # while other platform archives nest that same layout inside one versioned
+        # directory. Accept either shape instead of assuming the nested one.
+        $candidateRoot = $stagingPath
+        $topLevel = @(Get-ChildItem -LiteralPath $stagingPath -Force)
+        if ($topLevel.Count -eq 1 -and $topLevel[0].PSIsContainer) {
+            $candidateRoot = $topLevel[0].FullName
+        }
+        if (-not (Test-Path -LiteralPath (Join-Path $candidateRoot 'bin\gh.exe') -PathType Leaf)) {
+            $observed = ($topLevel | ForEach-Object { $_.Name }) -join ', '
+            throw "The GitHub CLI archive did not contain bin\gh.exe. Top-level archive entries: $observed"
         }
         if (Test-Path -LiteralPath $destination) { Remove-Item -LiteralPath $destination -Recurse -Force }
-        Move-Item -LiteralPath $candidate[0].FullName -Destination $destination
+        New-Item -ItemType Directory -Path (Split-Path -Parent $destination) -Force | Out-Null
+        Move-Item -LiteralPath $candidateRoot -Destination $destination
     }
     finally {
         if (Test-Path -LiteralPath $partialPath) { Remove-Item -LiteralPath $partialPath -Force }
