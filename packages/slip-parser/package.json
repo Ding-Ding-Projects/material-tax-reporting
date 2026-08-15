@@ -8,7 +8,8 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "stage:offline-ocr-assets": "node scripts/stage-offline-ocr-assets.mjs"
+    "stage:offline-ocr-assets": "node scripts/stage-offline-ocr-assets.mjs",
+    "test": "node --test --experimental-strip-types test/*.test.ts"
   },
   "files": [
     "src",
