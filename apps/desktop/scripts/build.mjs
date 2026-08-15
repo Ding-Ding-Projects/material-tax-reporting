@@ -3,6 +3,11 @@ import { execFileSync } from 'node:child_process';
 import { cp, mkdir, readFile, readdir, rm, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+// Node executes this file directly, so it resolves the surface kernel through
+// that package's `node` export condition and loads compiled JavaScript. The
+// TypeScript source it offers bundlers cannot be loaded here. The `prebuild`
+// script in this package's manifest compiles the kernel first; without it this
+// import fails with ERR_MODULE_NOT_FOUND, and the two must not be separated.
 import { parseChangelog } from '@material-tax-reporting/surface-kernel';
 
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
