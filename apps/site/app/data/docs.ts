@@ -6667,7 +6667,141 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
               "kind": "text",
               "value": "Plain text line-ending and trailing-space normalization."
             }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "Portable document text layer to plain text."
+            }
           ]
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Portable document text extraction",
+        "id": "portable-document-text-extraction"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The document adapter reads the text layer a document already carries. It is bundled: extraction uses the runtime's own zlib to decode the "
+          },
+          {
+            "kind": "code",
+            "value": "FlateDecode"
+          },
+          {
+            "kind": "text",
+            "value": " streams that hold page content, so nothing is downloaded, nothing is discovered on the machine, no extra dependency is installed and no packaged resource directory is required. It makes no network request."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Objects are located by scanning the file rather than by following the cross-reference table, so a document that was saved incrementally, that uses a cross-reference stream, or whose table is damaged is still readable. Compressed object streams are expanded, because that is where a document produced by current software keeps its page tree. Characters are mapped through a font's "
+          },
+          {
+            "kind": "code",
+            "value": "ToUnicode"
+          },
+          {
+            "kind": "text",
+            "value": " map when the font supplies one and through Windows-1252 when it does not."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Two limits are worth stating because they shape the output. Glyph widths are not resolved from the embedded font program, so the space between two separately positioned runs on one line is inferred from an estimated advance; a document that positions text word by word reads correctly, and a document that positions every glyph individually is left unsplit rather than being given a space between every letter. A glyph that the font maps through a private encoding with no "
+          },
+          {
+            "kind": "code",
+            "value": "ToUnicode"
+          },
+          {
+            "kind": "text",
+            "value": " entry cannot be recovered and is dropped rather than guessed at."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The adapter refuses rather than producing a plausible-looking wrong answer:"
+          }
+        ]
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "A page with no text layer is a scanned picture. The adapter says so and names the optical-character-recognition"
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "row, instead of returning an empty file that reads as a successful conversion."
+          }
+        ]
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "An encrypted document is refused with instructions to save an unencrypted copy first."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "A file whose bytes are not a document is refused on its content, even when it is named "
+            },
+            {
+              "kind": "code",
+              "value": ".pdf"
+            },
+            {
+              "kind": "text",
+              "value": "."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "Page content compressed with a predictor this build does not un-filter is reported as unread rather than decoded"
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "into noise."
+          }
         ]
       },
       {
@@ -6681,7 +6815,7 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "inline": [
           {
             "kind": "text",
-            "value": "Document text extraction and scanned-image text extraction are listed as disabled rows. The scanned-image row reports the result of the packaged offline optical-character-recognition discovery that the application already performs, so the reason shown is the real one rather than a generic message."
+            "value": "Scanned-image text extraction is listed as a disabled row. It reports the result of the packaged offline optical-character-recognition discovery that the application already performs, so the reason shown is the real one rather than a generic message. It is the only disabled row in the catalogue."
           }
         ]
       },
@@ -6697,6 +6831,15 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
           {
             "kind": "text",
             "value": "Every conversion runs in the privileged boundary against files the person chose. Each file is bounded by the same 96 MB limit that applies to an attachment, output is written only to a folder chosen through a dialog, and an existing output file is never overwritten. Each file returns its own validated result with an explicit failure reason. A conversion is strictly offline."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Progress is reported as each output lands rather than in one jump at the end, and a cancel raised on the surrounding transfer stops the batch at the next file boundary. Each converted file carries the digest of the bytes written. When the batch produced exactly one file the transfer reports that file's digest; when it produced several it reports a digest over the manifest of output names and digests, named as a manifest digest rather than presented as a file hash."
           }
         ]
       },
@@ -6787,7 +6930,22 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
               "kind": "text",
               "value": "Cancelling a batch stops the remaining files and reports which ones were not read."
             }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "A document with no readable text layer, an encrypted document, and a file that is not a document at all are each"
+            }
           ]
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "refused by name; the rest of the batch still runs."
+          }
         ]
       },
       {
@@ -6809,7 +6967,57 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
           },
           {
             "kind": "text",
-            "value": ") was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here."
+            "value": ") was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The document adapter was additionally exercised directly against the shipped module, outside the packaged application, using a scratch script that was not committed. Eight constructed documents covered uncompressed page content, "
+          },
+          {
+            "kind": "code",
+            "value": "FlateDecode"
+          },
+          {
+            "kind": "text",
+            "value": " page content, multi-page tree order, a "
+          },
+          {
+            "kind": "code",
+            "value": "Type0"
+          },
+          {
+            "kind": "text",
+            "value": " font with a "
+          },
+          {
+            "kind": "code",
+            "value": "ToUnicode"
+          },
+          {
+            "kind": "text",
+            "value": " map, a page whose only content is an image, an encrypted document, a file that is not a document, and a page dictionary held inside a compressed object stream; all eight behaved as this article describes. Three real documents present on the verification machine were extracted, the largest being 88 pages in about 0.7 seconds. The whole converter path was then exercised through "
+          },
+          {
+            "kind": "code",
+            "value": "FileConverter"
+          },
+          {
+            "kind": "text",
+            "value": " itself, confirming the catalogue state, the per-file preview blockers, progress reporting, cancellation, refusal to overwrite an existing output, and a reported digest equal to the digest of the bytes on disk."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "This is module-level evidence, not runtime evidence. The application was not launched, the converter destination was not operated by a person, and no capture was taken. No tests, lint, type checks, packaging, installer creation, release, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here."
           }
         ]
       },
@@ -6865,6 +7073,11 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
       },
       {
         "level": 2,
+        "text": "Portable document text extraction",
+        "id": "portable-document-text-extraction"
+      },
+      {
+        "level": 2,
         "text": "Adapters that are not bundled",
         "id": "adapters-that-are-not-bundled"
       },
@@ -6899,7 +7112,7 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "id": "related-articles"
       }
     ],
-    "plainText": "File converter\nWhat this is\nA converter destination that lists guided categories and, inside each category, the adapters this build actually carries. An adapter that is not bundled stays visible as a disabled row naming exactly what is missing, rather than being hidden.\nBundled adapters in this build\nComma-separated values to JSON.\nJSON rows to comma-separated values.\nMarkdown pipe table to comma-separated values.\nPlain text line-ending and trailing-space normalization.\nAdapters that are not bundled\nDocument text extraction and scanned-image text extraction are listed as disabled rows. The scanned-image row reports the result of the packaged offline optical-character-recognition discovery that the application already performs, so the reason shown is the real one rather than a generic message.\nHow a conversion runs\nEvery conversion runs in the privileged boundary against files the person chose. Each file is bounded by the same 96 MB limit that applies to an attachment, output is written only to a folder chosen through a dialog, and an existing output file is never overwritten. Each file returns its own validated result with an explicit failure reason. A conversion is strictly offline.\nConverted output is not confirmed tax data\nConverted output that later feeds the report must still pass the existing manual parser-confirmation step, so nothing derived by a converter is ever treated as confirmed tax data.\nBoundaries\nThe application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing. The converter neither prepares nor transmits a return.\nFailure modes\nA file whose detected format does not match the chosen converter is blocked before the batch runs, with the reason\nshown on that row.\nA file over the size limit, an empty file or an unreadable file is refused individually; the rest of the batch\nstill runs.\nCancelling a batch stops the remaining files and reports which ones were not read.\nVerification status\nThe application build (npm run build --workspace @material-tax-reporting/desktop) was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here.\nRelated articles\nTransfer surfaces\nEncrypted project files\nGuided report wizard",
+    "plainText": "File converter\nWhat this is\nA converter destination that lists guided categories and, inside each category, the adapters this build actually carries. An adapter that is not bundled stays visible as a disabled row naming exactly what is missing, rather than being hidden.\nBundled adapters in this build\nComma-separated values to JSON.\nJSON rows to comma-separated values.\nMarkdown pipe table to comma-separated values.\nPlain text line-ending and trailing-space normalization.\nPortable document text layer to plain text.\nPortable document text extraction\nThe document adapter reads the text layer a document already carries. It is bundled: extraction uses the runtime's own zlib to decode the FlateDecode streams that hold page content, so nothing is downloaded, nothing is discovered on the machine, no extra dependency is installed and no packaged resource directory is required. It makes no network request.\nObjects are located by scanning the file rather than by following the cross-reference table, so a document that was saved incrementally, that uses a cross-reference stream, or whose table is damaged is still readable. Compressed object streams are expanded, because that is where a document produced by current software keeps its page tree. Characters are mapped through a font's ToUnicode map when the font supplies one and through Windows-1252 when it does not.\nTwo limits are worth stating because they shape the output. Glyph widths are not resolved from the embedded font program, so the space between two separately positioned runs on one line is inferred from an estimated advance; a document that positions text word by word reads correctly, and a document that positions every glyph individually is left unsplit rather than being given a space between every letter. A glyph that the font maps through a private encoding with no ToUnicode entry cannot be recovered and is dropped rather than guessed at.\nThe adapter refuses rather than producing a plausible-looking wrong answer:\nA page with no text layer is a scanned picture. The adapter says so and names the optical-character-recognition\nrow, instead of returning an empty file that reads as a successful conversion.\nAn encrypted document is refused with instructions to save an unencrypted copy first.\nA file whose bytes are not a document is refused on its content, even when it is named .pdf.\nPage content compressed with a predictor this build does not un-filter is reported as unread rather than decoded\ninto noise.\nAdapters that are not bundled\nScanned-image text extraction is listed as a disabled row. It reports the result of the packaged offline optical-character-recognition discovery that the application already performs, so the reason shown is the real one rather than a generic message. It is the only disabled row in the catalogue.\nHow a conversion runs\nEvery conversion runs in the privileged boundary against files the person chose. Each file is bounded by the same 96 MB limit that applies to an attachment, output is written only to a folder chosen through a dialog, and an existing output file is never overwritten. Each file returns its own validated result with an explicit failure reason. A conversion is strictly offline.\nProgress is reported as each output lands rather than in one jump at the end, and a cancel raised on the surrounding transfer stops the batch at the next file boundary. Each converted file carries the digest of the bytes written. When the batch produced exactly one file the transfer reports that file's digest; when it produced several it reports a digest over the manifest of output names and digests, named as a manifest digest rather than presented as a file hash.\nConverted output is not confirmed tax data\nConverted output that later feeds the report must still pass the existing manual parser-confirmation step, so nothing derived by a converter is ever treated as confirmed tax data.\nBoundaries\nThe application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing. The converter neither prepares nor transmits a return.\nFailure modes\nA file whose detected format does not match the chosen converter is blocked before the batch runs, with the reason\nshown on that row.\nA file over the size limit, an empty file or an unreadable file is refused individually; the rest of the batch\nstill runs.\nCancelling a batch stops the remaining files and reports which ones were not read.\nA document with no readable text layer, an encrypted document, and a file that is not a document at all are each\nrefused by name; the rest of the batch still runs.\nVerification status\nThe application build (npm run build --workspace @material-tax-reporting/desktop) was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid.\nThe document adapter was additionally exercised directly against the shipped module, outside the packaged application, using a scratch script that was not committed. Eight constructed documents covered uncompressed page content, FlateDecode page content, multi-page tree order, a Type0 font with a ToUnicode map, a page whose only content is an image, an encrypted document, a file that is not a document, and a page dictionary held inside a compressed object stream; all eight behaved as this article describes. Three real documents present on the verification machine were extracted, the largest being 88 pages in about 0.7 seconds. The whole converter path was then exercised through FileConverter itself, confirming the catalogue state, the per-file preview blockers, progress reporting, cancellation, refusal to overwrite an existing output, and a reported digest equal to the digest of the bytes on disk.\nThis is module-level evidence, not runtime evidence. The application was not launched, the converter destination was not operated by a person, and no capture was taken. No tests, lint, type checks, packaging, installer creation, release, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here.\nRelated articles\nTransfer surfaces\nEncrypted project files\nGuided report wizard",
     "links": [
       {
         "href": "transfer-surfaces.md",
@@ -9596,6 +9809,65 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         ]
       },
       {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Each transfer kind reports the digest it can actually measure:"
+          }
+        ]
+      },
+      {
+        "kind": "table",
+        "headers": [
+          "Kind",
+          "Byte count",
+          "Digest"
+        ],
+        "rows": [
+          [
+            "Project save, project save copy",
+            "Measured over the container written",
+            "The container's own digest"
+          ],
+          [
+            "Attachment intake",
+            "The plaintext size taken in",
+            "The plaintext digest, reproducible from the source file"
+          ],
+          [
+            "Converter output",
+            "The total written across the batch",
+            "The single output's digest, or a named manifest digest for a batch"
+          ],
+          [
+            "Export",
+            "Measured over the export body",
+            "The export body's digest"
+          ],
+          [
+            "Import copy destination",
+            "None; nothing is written at this step",
+            "None"
+          ]
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "A step that chooses a destination is not a transfer",
+        "id": "a-step-that-chooses-a-destination-is-not-a-transfer"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Choosing where an imported copy will go writes nothing. That step therefore does not enter the downloading phase and does not complete: it stays in its start phase, returns the chosen destination, and states that no bytes are written until the import is activated, at which point the real write reports its own measured size and digest. Passing the state machine a placeholder byte count to make that step look finished would defeat the one structural promise the machine exists to make, so it is not done."
+          }
+        ]
+      },
+      {
         "kind": "heading",
         "level": 2,
         "text": "Boundaries",
@@ -9652,7 +9924,45 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
               "kind": "text",
               "value": "A failed transfer leaves the previous destination file in place."
             }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "A conversion that produced nothing fails the transfer rather than completing with an empty result, and says whether"
+            }
           ]
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "it was cancelled or simply converted no file."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Known gap",
+        "id": "known-gap"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The completion card is rendered by the renderer, which words every successful commit as "
+          },
+          {
+            "kind": "code",
+            "value": "Written to <path>"
+          },
+          {
+            "kind": "text",
+            "value": ". For the import-copy destination step that wording is wrong: the path shown is where the copy *will* be written, and the card correctly reports zero bytes and no digest beside it. The main process no longer claims a measured transfer for that step; aligning the card's wording is a renderer change and has not been made."
+          }
         ]
       },
       {
@@ -9674,7 +9984,16 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
           },
           {
             "kind": "text",
-            "value": ") was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here."
+            "value": ") was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The converter transfer's progress reporting, cancellation relay and digest measurement were exercised directly against the shipped converter module using a scratch script that was not committed, confirming that the reported byte total and digest equal the bytes on disk. No transfer has been performed by a running application: the project save, save copy, attachment intake, export and import-copy paths are unobserved at runtime, and no capture was taken. No tests, lint, type checks, packaging, installer creation, release, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here."
           }
         ]
       },
@@ -9740,6 +10059,11 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
       },
       {
         "level": 2,
+        "text": "A step that chooses a destination is not a transfer",
+        "id": "a-step-that-chooses-a-destination-is-not-a-transfer"
+      },
+      {
+        "level": 2,
         "text": "Boundaries",
         "id": "boundaries"
       },
@@ -9747,6 +10071,11 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "level": 2,
         "text": "Failure modes",
         "id": "failure-modes"
+      },
+      {
+        "level": 2,
+        "text": "Known gap",
+        "id": "known-gap"
       },
       {
         "level": 2,
@@ -9759,7 +10088,7 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "id": "related-articles"
       }
     ],
-    "plainText": "Transfer surfaces\nWhat this is\nStart, Downloading and Complete states for the transfers this application actually performs: saving the project, saving a password-wrapped copy, choosing an import copy destination, taking in an attachment, writing converter output and writing an export.\nThere is no browser-extension capture path in this repository, and none is claimed. No state here describes a build, an installer or a release, because this repository produces none.\nStart\nA pre-flight dialog names the source, the exact destination path, the expected byte size and the unsigned status, and requires explicit confirmation. Nothing is written before that confirmation. When the size cannot be known before the data is prepared, the surface says so rather than showing a fabricated figure.\nDownloading\nA non-modal progress surface driven by the single allowlisted progress channel shows the bytes written and the elapsed time, and offers a cancel. The encrypted project container is written in bounded chunks so progress is real; cancelling aborts the write and removes the partial temporary file, leaving the destination untouched.\nComplete\nA non-blocking completion surface names the final path, the measured byte count and the content hash, and offers reveal-in-folder and open-in-an-external-editor. It states that the resulting file is unsigned and makes no signature-authenticity claim.\nThe underlying state machine cannot enter its complete state without a measured byte count, so a finished transfer can never be announced without having been measured.\nBoundaries\nThe application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing. A transfer copies data on this computer. It never sends anything anywhere.\nFailure modes\nA reported size that moves backwards, or that exceeds the expected total, fails the transfer rather than being\nsmoothed over.\nA cancelled transfer reports that the partial file was removed.\nA failed transfer leaves the previous destination file in place.\nVerification status\nThe application build (npm run build --workspace @material-tax-reporting/desktop) was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid. No tests, lint, type checks, packaging, installer creation, release, runtime launch, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here.\nRelated articles\nExports and bulk actions\nFile converter\nEncrypted project files",
+    "plainText": "Transfer surfaces\nWhat this is\nStart, Downloading and Complete states for the transfers this application actually performs: saving the project, saving a password-wrapped copy, choosing an import copy destination, taking in an attachment, writing converter output and writing an export.\nThere is no browser-extension capture path in this repository, and none is claimed. No state here describes a build, an installer or a release, because this repository produces none.\nStart\nA pre-flight dialog names the source, the exact destination path, the expected byte size and the unsigned status, and requires explicit confirmation. Nothing is written before that confirmation. When the size cannot be known before the data is prepared, the surface says so rather than showing a fabricated figure.\nDownloading\nA non-modal progress surface driven by the single allowlisted progress channel shows the bytes written and the elapsed time, and offers a cancel. The encrypted project container is written in bounded chunks so progress is real; cancelling aborts the write and removes the partial temporary file, leaving the destination untouched.\nComplete\nA non-blocking completion surface names the final path, the measured byte count and the content hash, and offers reveal-in-folder and open-in-an-external-editor. It states that the resulting file is unsigned and makes no signature-authenticity claim.\nThe underlying state machine cannot enter its complete state without a measured byte count, so a finished transfer can never be announced without having been measured.\nEach transfer kind reports the digest it can actually measure:\nKind Byte count Digest Project save, project save copy Measured over the container written The container's own digest Attachment intake The plaintext size taken in The plaintext digest, reproducible from the source file Converter output The total written across the batch The single output's digest, or a named manifest digest for a batch Export Measured over the export body The export body's digest Import copy destination None; nothing is written at this step None\nA step that chooses a destination is not a transfer\nChoosing where an imported copy will go writes nothing. That step therefore does not enter the downloading phase and does not complete: it stays in its start phase, returns the chosen destination, and states that no bytes are written until the import is activated, at which point the real write reports its own measured size and digest. Passing the state machine a placeholder byte count to make that step look finished would defeat the one structural promise the machine exists to make, so it is not done.\nBoundaries\nThe application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing. A transfer copies data on this computer. It never sends anything anywhere.\nFailure modes\nA reported size that moves backwards, or that exceeds the expected total, fails the transfer rather than being\nsmoothed over.\nA cancelled transfer reports that the partial file was removed.\nA failed transfer leaves the previous destination file in place.\nA conversion that produced nothing fails the transfer rather than completing with an empty result, and says whether\nit was cancelled or simply converted no file.\nKnown gap\nThe completion card is rendered by the renderer, which words every successful commit as Written to <path>. For the import-copy destination step that wording is wrong: the path shown is where the copy *will* be written, and the card correctly reports zero bytes and no digest beside it. The main process no longer claims a measured transfer for that step; aligning the card's wording is a renderer change and has not been made.\nVerification status\nThe application build (npm run build --workspace @material-tax-reporting/desktop) was run and completed, and the generated main, preload and renderer bundles were parsed to confirm they are syntactically valid.\nThe converter transfer's progress reporting, cancellation relay and digest measurement were exercised directly against the shipped converter module using a scratch script that was not committed, confirming that the reported byte total and digest equal the bytes on disk. No transfer has been performed by a running application: the project save, save copy, attachment intake, export and import-copy paths are unobserved at runtime, and no capture was taken. No tests, lint, type checks, packaging, installer creation, release, screenshot, accessibility conformance check, performance measurement or native-speaker language review were run for this change, so none is claimed here.\nRelated articles\nExports and bulk actions\nFile converter\nEncrypted project files",
     "links": [
       {
         "href": "exports-and-bulk-actions.md",
@@ -17455,7 +17784,7 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "inline": [
           {
             "kind": "text",
-            "value": "A rule changes a presentation setting during a time window. A rule never writes to the stored preference: the kernel evaluates the active rules into an overlay, and precedence is fixed and documented, with a change made by hand winning over an active rule and an active rule winning over the stored default. Turning a rule off therefore restores the stored value exactly, because that value was never replaced."
+            "value": "A rule changes a presentation setting during a time window. A rule never writes to the stored preference: the kernel evaluates the active rules into an overlay, and precedence is fixed. Highest first, the layers are a hold the reader placed by hand, then an active rule, then the external document, then the stored preference. Turning a rule off restores the stored value exactly, because that value was never replaced."
           }
         ]
       },
@@ -17465,6 +17794,106 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
           {
             "kind": "text",
             "value": "The window is evaluated in the browser's own time zone, including a window that crosses midnight. One interval re-evaluates while the tab is visible, and a visibility change re-evaluates immediately, so a tab that was in the background catches up instead of showing a stale window."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 3,
+        "text": "A change made by hand, and how long it is held",
+        "id": "a-change-made-by-hand-and-how-long-it-is-held"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Changing a setting a rule is currently setting does two things. It writes the stored preference, as any settings change does, and it records a **hold** for that setting. The hold is what makes the change visible: without it the rule would go on winning, and where the stored value already equalled the value the reader chose there would be no change to write at all, so the control would appear to do nothing and snap back to the rule's value."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "A hold is stored in this browser under its own key, separate from the rules, so editing a rule cannot drop a hold and handing a setting back cannot edit a rule. It survives a reload, because otherwise the rule would win again on the next load and the reader's change would be lost exactly as if the control had never worked."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "**A hold lasts while a rule or the external document is still setting that value, or until the reader hands it back.** It ends in one of two ways:"
+          }
+        ]
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "**It expires** as soon as nothing is scheduling that setting. Nothing visible happens at that moment, because a hold is always written together with the stored preference it came from, so the two already agree. What expiry restores is the rule's *next* window. A hold that never expired would silently defeat that rule for good, with nothing on screen to say why the rule had stopped applying."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "**The reader ends it early** with "
+            },
+            {
+              "kind": "code",
+              "value": "Follow the schedule rule again"
+            },
+            {
+              "kind": "text",
+              "value": ", offered on the settings card whose value is currently held and in the schedule panel's list of held settings. The rule setting that value takes it back immediately."
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Both a new hold and a hold handed back are recorded in the local history alongside the preference change, under a "
+          },
+          {
+            "kind": "code",
+            "value": "scheduleHold."
+          },
+          {
+            "kind": "text",
+            "value": " path, and each is announced as a non-blocking notification. The schedule panel names every setting currently held, or says plainly that none is."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 3,
+        "text": "Locked settings",
+        "id": "locked-settings"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "A setting locked in the settings tab is resolved from the stored preference alone: the overlay, the external document and any surviving hold are all withheld for it."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "This is enforced in two places, because a value can be changed in two ways. The settings grid, the command palette and the appearance editor write through one guarded setter, which refuses a write to a locked setting. A rule and an external document do not write at all — they contribute an overlay — so the same lock check is applied where the overlay is resolved. Both halves read the same kernel predicate, so they cannot come to disagree about what is locked. The settings card for a locked setting says so, and adds that the rule naming it is not applied either when one is active."
           }
         ]
       },
@@ -17515,6 +17944,20 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
             {
               "kind": "text",
               "value": "External presentation settings: off by default, with an address and an explicit read control."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "Holds, which are not configured directly. One appears when a setting is changed by hand while a rule or the external document is setting it, and is removed by "
+            },
+            {
+              "kind": "code",
+              "value": "Follow the schedule rule again"
+            },
+            {
+              "kind": "text",
+              "value": " or by its own expiry."
             }
           ]
         ]
@@ -17589,6 +18032,18 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
           [
             {
               "kind": "text",
+              "value": "A stored hold naming a setting that cannot be scheduled is dropped when the record is read, and a held value outside its range is corrected by the same normalizer a rule value passes. The key set is bounded by the schedulable settings themselves, so the record cannot grow past seven entries however it was edited."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "A hold on a setting that is later locked stops being applied, because a locked setting resolves from the stored preference alone. The hold itself is left intact and applies again if the lock is removed while a rule is still setting that value."
+            }
+          ],
+          [
+            {
+              "kind": "text",
               "value": "A stored value outside the range its target accepts is corrected when the record is read, so the editor shows the value that will actually be used. A scale beyond either end is brought to that end, and a colour or a choice that is not recognized returns to the shipped default for that setting."
             }
           ],
@@ -17632,7 +18087,16 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "inline": [
           {
             "kind": "text",
-            "value": "This lane ran the site build ("
+            "value": "An earlier revision of this article described the manual-over-rule precedence as behaviour when it was only a sentence. The site passed an empty override map to the kernel, so an active rule always won and a settings control the rule named was inert: choosing the value the rule was hiding diffed against an unchanged stored preference, wrote nothing and snapped back. The same revision inherited a comment claiming a scheduled rule passed the guarded preference setter, which it never did, so a lock was bypassed by a rule naming the same setting. Both are now implemented and described above; this note is kept so the correction is legible rather than silent."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The lane that implemented them ran the site build ("
           },
           {
             "kind": "code",
@@ -17648,39 +18112,7 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
           },
           {
             "kind": "text",
-            "value": "), the source checks in "
-          },
-          {
-            "kind": "code",
-            "value": "apps/site/src/checks"
-          },
-          {
-            "kind": "text",
-            "value": " ("
-          },
-          {
-            "kind": "code",
-            "value": "search-builders"
-          },
-          {
-            "kind": "text",
-            "value": ", "
-          },
-          {
-            "kind": "code",
-            "value": "command-coverage"
-          },
-          {
-            "kind": "text",
-            "value": " and "
-          },
-          {
-            "kind": "code",
-            "value": "copy-facts"
-          },
-          {
-            "kind": "text",
-            "value": "), and the server-side render smoke check, which reported that the shell rendered and its structural checks held. The normalizer and the overlay were exercised in process against the shared validator, and an arbitrary accent colour and an arbitrary scale were observed reaching the effective presentation without changing the stored baseline."
+            "value": ", exit 0) and the server-side render smoke check, which reported that the shell rendered and every structural check held — 10 tabs against 10 panels, 20 search fields against 20 builder toggles, and no rendered button without an accessible name, which covers the two controls added here."
           }
         ]
       },
@@ -17689,7 +18121,24 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "inline": [
           {
             "kind": "text",
-            "value": "It did not run tests, lint checks, type checks, accessibility checks, screenshots or other captures, or browser-based user-interface quality assurance. No rule has fired from a real clock in a browser, no external document has been read from a running page, and the rendered value controls have not been operated by a person. Nothing in this article should be read as evidence from one of those activities."
+            "value": "The precedence and expiry functions were exercised in process against the real module and the shared kernel, over twenty cases: a rule winning with no hold; a hold equal to the stored value beating an active rule, which is the exact case that used to write nothing; a hold of a different value beating an active rule; a locked target taking neither the rule nor a hold; the external document applying only where no rule does; a hold beating the external document; expiry dropping an ungoverned hold, preserving object identity when nothing expired, and clearing every hold when nothing is scheduled; and the validator dropping an unschedulable key, normalizing an out-of-range scale, and refusing a value that is not an object."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "It did not run tests, lint checks, accessibility checks, screenshots or other captures, or browser-based user-interface quality assurance. "
+          },
+          {
+            "kind": "code",
+            "value": "apps/site"
+          },
+          {
+            "kind": "text",
+            "value": " carries no TypeScript project configuration and the build strips types without checking them, so **no type check was run against this application**, here or previously. No rule has fired from a real clock in a browser, no external document has been read from a running page, and neither the value controls nor the new hand-back control has been operated by a person. Nothing in this article should be read as evidence from one of those activities."
           }
         ]
       },
@@ -17732,6 +18181,16 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "id": "behaviour"
       },
       {
+        "level": 3,
+        "text": "A change made by hand, and how long it is held",
+        "id": "a-change-made-by-hand-and-how-long-it-is-held"
+      },
+      {
+        "level": 3,
+        "text": "Locked settings",
+        "id": "locked-settings"
+      },
+      {
         "level": 2,
         "text": "Configuration",
         "id": "configuration"
@@ -17757,7 +18216,7 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "id": "related-articles"
       }
     ],
-    "plainText": "Scheduled and external presentation settings\nBehaviour\nThis article is about the site's own presentation settings. It has nothing to do with a tax schedule or an official form.\nA rule changes a presentation setting during a time window. A rule never writes to the stored preference: the kernel evaluates the active rules into an overlay, and precedence is fixed and documented, with a change made by hand winning over an active rule and an active rule winning over the stored default. Turning a rule off therefore restores the stored value exactly, because that value was never replaced.\nThe window is evaluated in the browser's own time zone, including a window that crosses midnight. One interval re-evaluates while the tab is visible, and a visibility change re-evaluates immediately, so a tab that was in the background catches up instead of showing a stale window.\nThe external half is off by default. When it is switched on, one address the reader types may supply presentation values only. The address must be a complete https address, the fetch is bounded by an abort timeout, and the document is validated against the kernel's bounded schema and must declare the same origin it was served from. Any failure falls back to the local rules and states the exact reason.\nA change to a rule or to the external switch is recorded in the local history like any other settings change. The record carries how many rules exist, how many are active, a one-line description of each rule, whether the external half is on, and whether an address is set. The address itself is never written to a record.\nThis surface does not move the paper-only product boundary. It changes no tax figure, no rule citation, no boundary statement and no review requirement, and it implements nothing resembling NETFILE, EFILE, electronic submission, direct CRA transmission or automatic filing.\nConfiguration\nRules, each with a target setting, a value, a start time, an end time and an optional set of weekdays.\nExternal presentation settings: off by default, with an address and an explicit read control.\nOnly presentation settings are reachable: theme, density, motion, dock edge, accent colour, font scale and the decorative emoji. A key outside that set is ignored by name.\nThe value control follows the target it belongs to, so a rule can carry any value the setting itself accepts:\nAccent colour is a colour control over the whole range, with the chosen value shown beside it. Any six-digit hexadecimal colour can be scheduled, not a shortlist of them.\nFont scale is a slider between the smallest and largest scale the shared validator accepts, shown as a percentage.\nTheme, density, motion, dock edge and the decorative emoji are lists of their own choices, taken from the shared validator's own sets so the editor and the validator cannot disagree. These are enumerations, so a list is the correct control rather than a limit on what can be scheduled.\nEvery value passes through one normalizer, both when it is edited and when the stored record is read.\nFailure modes\nA malformed time or an empty window makes the rule inactive rather than raising an error.\nA stored value outside the range its target accepts is corrected when the record is read, so the editor shows the value that will actually be used. A scale beyond either end is brought to that end, and a colour or a choice that is not recognized returns to the shipped default for that setting.\nA non-https address, a failed request, a timeout, a document that is too large, a document with unknown fields, or a document declaring a different origin all fall back to the local rules with the reason shown.\nValues that are not presentation settings are listed as ignored rather than silently dropped.\nPrivacy and security\nNothing is uploaded. The external read is a plain request for a document the reader chose, made without credentials and without following a redirect, and it can change presentation only.\nVerification status\nThis lane ran the site build (npm run pages:build in apps/site), the source checks in apps/site/src/checks (search-builders, command-coverage and copy-facts), and the server-side render smoke check, which reported that the shell rendered and its structural checks held. The normalizer and the overlay were exercised in process against the shared validator, and an arbitrary accent colour and an arbitrary scale were observed reaching the effective presentation without changing the stored baseline.\nIt did not run tests, lint checks, type checks, accessibility checks, screenshots or other captures, or browser-based user-interface quality assurance. No rule has fired from a real clock in a browser, no external document has been read from a running page, and the rendered value controls have not been operated by a person. Nothing in this article should be read as evidence from one of those activities.\nRelated articles\nMaterial 3 shell and appearance\nLocal history",
+    "plainText": "Scheduled and external presentation settings\nBehaviour\nThis article is about the site's own presentation settings. It has nothing to do with a tax schedule or an official form.\nA rule changes a presentation setting during a time window. A rule never writes to the stored preference: the kernel evaluates the active rules into an overlay, and precedence is fixed. Highest first, the layers are a hold the reader placed by hand, then an active rule, then the external document, then the stored preference. Turning a rule off restores the stored value exactly, because that value was never replaced.\nThe window is evaluated in the browser's own time zone, including a window that crosses midnight. One interval re-evaluates while the tab is visible, and a visibility change re-evaluates immediately, so a tab that was in the background catches up instead of showing a stale window.\nA change made by hand, and how long it is held\nChanging a setting a rule is currently setting does two things. It writes the stored preference, as any settings change does, and it records a **hold** for that setting. The hold is what makes the change visible: without it the rule would go on winning, and where the stored value already equalled the value the reader chose there would be no change to write at all, so the control would appear to do nothing and snap back to the rule's value.\nA hold is stored in this browser under its own key, separate from the rules, so editing a rule cannot drop a hold and handing a setting back cannot edit a rule. It survives a reload, because otherwise the rule would win again on the next load and the reader's change would be lost exactly as if the control had never worked.\n**A hold lasts while a rule or the external document is still setting that value, or until the reader hands it back.** It ends in one of two ways:\n**It expires** as soon as nothing is scheduling that setting. Nothing visible happens at that moment, because a hold is always written together with the stored preference it came from, so the two already agree. What expiry restores is the rule's *next* window. A hold that never expired would silently defeat that rule for good, with nothing on screen to say why the rule had stopped applying.\n**The reader ends it early** with Follow the schedule rule again, offered on the settings card whose value is currently held and in the schedule panel's list of held settings. The rule setting that value takes it back immediately.\nBoth a new hold and a hold handed back are recorded in the local history alongside the preference change, under a scheduleHold. path, and each is announced as a non-blocking notification. The schedule panel names every setting currently held, or says plainly that none is.\nLocked settings\nA setting locked in the settings tab is resolved from the stored preference alone: the overlay, the external document and any surviving hold are all withheld for it.\nThis is enforced in two places, because a value can be changed in two ways. The settings grid, the command palette and the appearance editor write through one guarded setter, which refuses a write to a locked setting. A rule and an external document do not write at all — they contribute an overlay — so the same lock check is applied where the overlay is resolved. Both halves read the same kernel predicate, so they cannot come to disagree about what is locked. The settings card for a locked setting says so, and adds that the rule naming it is not applied either when one is active.\nThe external half is off by default. When it is switched on, one address the reader types may supply presentation values only. The address must be a complete https address, the fetch is bounded by an abort timeout, and the document is validated against the kernel's bounded schema and must declare the same origin it was served from. Any failure falls back to the local rules and states the exact reason.\nA change to a rule or to the external switch is recorded in the local history like any other settings change. The record carries how many rules exist, how many are active, a one-line description of each rule, whether the external half is on, and whether an address is set. The address itself is never written to a record.\nThis surface does not move the paper-only product boundary. It changes no tax figure, no rule citation, no boundary statement and no review requirement, and it implements nothing resembling NETFILE, EFILE, electronic submission, direct CRA transmission or automatic filing.\nConfiguration\nRules, each with a target setting, a value, a start time, an end time and an optional set of weekdays.\nExternal presentation settings: off by default, with an address and an explicit read control.\nHolds, which are not configured directly. One appears when a setting is changed by hand while a rule or the external document is setting it, and is removed by Follow the schedule rule again or by its own expiry.\nOnly presentation settings are reachable: theme, density, motion, dock edge, accent colour, font scale and the decorative emoji. A key outside that set is ignored by name.\nThe value control follows the target it belongs to, so a rule can carry any value the setting itself accepts:\nAccent colour is a colour control over the whole range, with the chosen value shown beside it. Any six-digit hexadecimal colour can be scheduled, not a shortlist of them.\nFont scale is a slider between the smallest and largest scale the shared validator accepts, shown as a percentage.\nTheme, density, motion, dock edge and the decorative emoji are lists of their own choices, taken from the shared validator's own sets so the editor and the validator cannot disagree. These are enumerations, so a list is the correct control rather than a limit on what can be scheduled.\nEvery value passes through one normalizer, both when it is edited and when the stored record is read.\nFailure modes\nA malformed time or an empty window makes the rule inactive rather than raising an error.\nA stored hold naming a setting that cannot be scheduled is dropped when the record is read, and a held value outside its range is corrected by the same normalizer a rule value passes. The key set is bounded by the schedulable settings themselves, so the record cannot grow past seven entries however it was edited.\nA hold on a setting that is later locked stops being applied, because a locked setting resolves from the stored preference alone. The hold itself is left intact and applies again if the lock is removed while a rule is still setting that value.\nA stored value outside the range its target accepts is corrected when the record is read, so the editor shows the value that will actually be used. A scale beyond either end is brought to that end, and a colour or a choice that is not recognized returns to the shipped default for that setting.\nA non-https address, a failed request, a timeout, a document that is too large, a document with unknown fields, or a document declaring a different origin all fall back to the local rules with the reason shown.\nValues that are not presentation settings are listed as ignored rather than silently dropped.\nPrivacy and security\nNothing is uploaded. The external read is a plain request for a document the reader chose, made without credentials and without following a redirect, and it can change presentation only.\nVerification status\nAn earlier revision of this article described the manual-over-rule precedence as behaviour when it was only a sentence. The site passed an empty override map to the kernel, so an active rule always won and a settings control the rule named was inert: choosing the value the rule was hiding diffed against an unchanged stored preference, wrote nothing and snapped back. The same revision inherited a comment claiming a scheduled rule passed the guarded preference setter, which it never did, so a lock was bypassed by a rule naming the same setting. Both are now implemented and described above; this note is kept so the correction is legible rather than silent.\nThe lane that implemented them ran the site build (npm run pages:build in apps/site, exit 0) and the server-side render smoke check, which reported that the shell rendered and every structural check held — 10 tabs against 10 panels, 20 search fields against 20 builder toggles, and no rendered button without an accessible name, which covers the two controls added here.\nThe precedence and expiry functions were exercised in process against the real module and the shared kernel, over twenty cases: a rule winning with no hold; a hold equal to the stored value beating an active rule, which is the exact case that used to write nothing; a hold of a different value beating an active rule; a locked target taking neither the rule nor a hold; the external document applying only where no rule does; a hold beating the external document; expiry dropping an ungoverned hold, preserving object identity when nothing expired, and clearing every hold when nothing is scheduled; and the validator dropping an unschedulable key, normalizing an out-of-range scale, and refusing a value that is not an object.\nIt did not run tests, lint checks, accessibility checks, screenshots or other captures, or browser-based user-interface quality assurance. apps/site carries no TypeScript project configuration and the build strips types without checking them, so **no type check was run against this application**, here or previously. No rule has fired from a real clock in a browser, no external document has been read from a running page, and neither the value controls nor the new hand-back control has been operated by a person. Nothing in this article should be read as evidence from one of those activities.\nRelated articles\nMaterial 3 shell and appearance\nLocal history",
     "links": [
       {
         "href": "material-3-shell-and-appearance.md",
