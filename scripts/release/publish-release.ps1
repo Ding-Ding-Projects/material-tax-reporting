@@ -19,7 +19,7 @@ if ($Repository -notmatch '^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$') { throw 'Reposito
 if ($CommitSha -notmatch '^[0-9a-f]{40}$') { throw 'CommitSha must be a full lowercase SHA-1.' }
 if ($Tag -ne "v$Version" -or $Version -notmatch '^\d+\.\d+\.\d+$') { throw 'Tag and Version do not form the expected semantic release identity.' }
 if ([string]::IsNullOrWhiteSpace($env:GH_TOKEN)) { throw 'GH_TOKEN is required through the release-token fallback chain.' }
-foreach ($requiredPath in @($manifestPath, $lineCountPath, $releaseTemplatePath, $DimSumPath)) {
+foreach ($requiredPath in @($manifestPath, $lineCountPath, $releaseTemplatePath)) {
     if (-not (Test-Path -LiteralPath $requiredPath -PathType Leaf)) { throw "Required release input is missing: $requiredPath" }
 }
 
@@ -63,9 +63,23 @@ if ($LASTEXITCODE -eq 0 -and -not [string]::IsNullOrWhiteSpace(($existingTag -jo
     throw "Release tag $Tag already exists; immutable release identities are never reused."
 }
 
-$dimSum = Get-Content -LiteralPath $DimSumPath -Raw | ConvertFrom-Json
+. (Join-Path $PSScriptRoot 'dim-sum-asset.ps1')
+# The dish code name and photo are decoration with a purpose and are never a
+# release gate, so an absent or unreadable selection record degrades to an
+# unavailable result that the notes state plainly. It must not be able to stop
+# an installer that has already been built and verified from reaching anyone.
+$dimSum = $null
+try { $dimSum = Get-Content -LiteralPath $DimSumPath -Raw -ErrorAction Stop | ConvertFrom-Json -ErrorAction Stop }
+catch { Write-Warning "The dim-sum selection record at $DimSumPath could not be read: $($_.Exception.Message)" }
+$dishPhoto = Resolve-DimSumReleasePhoto -Selection $dimSum -RepositoryRoot $repositoryRoot -ReleaseRoot $releaseRoot
 $title = "Material Tax Reporting $Tag"
-if ($dimSum.available) { $title = "$title - $($dimSum.codeName)" }
+if ($dishPhoto.Available) { $title = "$title - $($dishPhoto.CodeName)" }
+$dishPhotoAssets = @()
+$dishPhotoNames = @()
+if ($dishPhoto.Available) {
+    $dishPhotoAssets = @($dishPhoto.AssetPath)
+    $dishPhotoNames = @($dishPhoto.AssetName)
+}
 $started = [DateTimeOffset]::Parse($WorkflowStartedAt).ToUniversalTime()
 $timingCaptured = [DateTimeOffset]::UtcNow
 $prepublicationElapsed = $timingCaptured - $started
@@ -86,17 +100,18 @@ $timing = [ordered]@{
 }
 $timing | ConvertTo-Json | Set-Content -LiteralPath $timingPath -Encoding utf8
 
-$dishLines = if ($dimSum.available) {
+$dishLines = if ($dishPhoto.Available) {
     @(
-        "Dim sum code name: $($dimSum.codeName)"
-        "Public dish photo: [$($dimSum.assetName)]($($dimSum.photoUrl))"
-        "Public catalog: $($dimSum.catalogUrl)"
+        "Dim sum code name: $($dishPhoto.CodeName)"
+        "Attached dish photo: ``$($dishPhoto.AssetName)`` - $($dishPhoto.Description), downloadable from this release."
+        "Public dish photo source: $($dishPhoto.PhotoUrl)"
+        "Public catalog: $($dishPhoto.CatalogUrl)"
     )
 } else {
     @(
         'Dim sum code name: unavailable'
-        "Public dish photo: unavailable - $($dimSum.reason)"
-        "Public catalog: $($dimSum.catalogUrl)"
+        "Attached dish photo: none attached - $($dishPhoto.Reason)"
+        "Public catalog: $($dishPhoto.CatalogUrl)"
     )
 }
 $releaseNotesPath = Join-Path $releaseRoot 'release-notes.md'
@@ -124,7 +139,7 @@ $notes = @(
   ) -join "`n"
 $notes | Set-Content -LiteralPath $releaseNotesPath -Encoding utf8
 
-$hashInputs = @($primaryAssets + $lineCountPath + $timingPath + $releaseNotesPath)
+$hashInputs = @($primaryAssets + $dishPhotoAssets + $lineCountPath + $timingPath + $releaseNotesPath)
 $hashPath = Join-Path $releaseRoot 'SHA256SUMS.txt'
 $hashLines = foreach ($assetPath in $hashInputs) {
     $hash = (Get-FileHash -LiteralPath $assetPath -Algorithm SHA256).Hash.ToLowerInvariant()
@@ -133,8 +148,12 @@ $hashLines = foreach ($assetPath in $hashInputs) {
 $hashLines | Set-Content -LiteralPath $hashPath -Encoding ascii
 
 $evidenceAssets = @($hashPath, $timingPath, $lineCountPath, $releaseNotesPath)
-$allAssets = @($primaryAssets + $evidenceAssets)
-$expectedNames = @($manifest.artifacts.name + @('SHA256SUMS.txt', 'workflow-timing.json', 'line-count.md', 'release-notes.md'))
+$allAssets = @($primaryAssets + $dishPhotoAssets + $evidenceAssets)
+# The dish photo joins the expected-name list so the authenticated draft
+# readback and the published-release check verify it landed, exactly as every
+# sibling asset is verified. An attached asset nobody checks is an asset that
+# can go missing without anything going red.
+$expectedNames = @($manifest.artifacts.name + $dishPhotoNames + @('SHA256SUMS.txt', 'workflow-timing.json', 'line-count.md', 'release-notes.md'))
 $createArguments = @('release', 'create', $Tag, '--repo', $Repository, '--target', $CommitSha, '--title', $title, '--notes-file', $releaseNotesPath, '--draft')
 $createArguments += $allAssets
 & gh @createArguments
@@ -217,3 +236,8 @@ Write-Host "Publication completed: $($published.ToString('yyyy-MM-ddTHH:mm:ssZ')
 Write-Host "Exact end-to-end duration: $durationText"
 Write-Host 'The exact completion timestamp and duration are intentionally log-only because the release is not mutated after publication.'
 Write-Host "Published assets: $($expectedNames -join ', ')"
+if ($dishPhoto.Available) {
+    Write-Host "Attached dish photo: $($dishPhoto.AssetName) ($($dishPhoto.Description)) for $($dishPhoto.CodeName)"
+} else {
+    Write-Warning "No dim-sum dish photo was attached to $Tag - $($dishPhoto.Reason)"
+}

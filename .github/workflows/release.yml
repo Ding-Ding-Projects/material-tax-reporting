@@ -84,7 +84,7 @@ jobs:
           "version=$($releaseIdentity.version)" | Out-File -LiteralPath $env:GITHUB_OUTPUT -Encoding utf8 -Append
           "tag=$($releaseIdentity.tag)" | Out-File -LiteralPath $env:GITHUB_OUTPUT -Encoding utf8 -Append
 
-      - name: Resolve unused public dim-sum code name
+      - name: Resolve and download the public dim-sum code name and dish photo
         shell: pwsh
         run: node scripts/release/select-dim-sum.mjs dim-sum-release.json
 
