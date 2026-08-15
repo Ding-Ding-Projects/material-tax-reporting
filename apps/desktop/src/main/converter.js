@@ -18,6 +18,7 @@ const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 const { ConverterRegistry, convertWithRegistry, neutralizeCsvCell } = require('@material-tax-reporting/surface-kernel');
+const { extractPdfText } = require('./pdf-text');
 
 const MAX_ROWS = 50_000;
 const MAX_CELLS_PER_ROW = 512;
@@ -92,13 +93,30 @@ function normalizeText(input) {
   return { ok: true, body: `${input.replaceAll('\r\n', '\n').replace(/[ \t]+$/gm, '').trimEnd()}\n` };
 }
 
-function bundledAdapter({ id, category, sourceType, targetType, run, validate }) {
+/**
+ * Reads a document's existing text layer. The bytes arrive as a latin1 string,
+ * which maps one byte to one code unit and so survives the registry's string
+ * interface without loss. Extraction itself is bundled and offline; a page with
+ * no text layer is refused by name rather than returned as an empty file.
+ */
+function pdfToText(input) {
+  const outcome = extractPdfText(Buffer.from(input, 'latin1'));
+  return outcome.ok ? { ok: true, body: outcome.body } : { ok: false, reason: outcome.reason };
+}
+
+/**
+ * @param {object} options
+ * @param {'utf8'|'latin1'} [options.encoding] How the source file is read. A
+ *   binary source uses latin1 so the adapter receives the exact bytes.
+ */
+function bundledAdapter({ id, category, sourceType, targetType, run, validate, encoding = 'utf8' }) {
   return {
     id,
     category,
     sourceType,
     targetType,
     bundled: true,
+    encoding,
     validate: validate || ((input) => (input.trim().length > 0 ? { ok: true } : { ok: false, reason: 'The file is empty.' })),
     async convert(input, signal) {
       if (signal.aborted) return { ok: false, reason: 'The conversion was cancelled.' };
@@ -113,14 +131,6 @@ function bundledAdapter({ id, category, sourceType, targetType, run, validate })
 
 /** Adapters that need a runtime this build does not carry. */
 const UNBUNDLED_ADAPTERS = [
-  {
-    id: 'pdf-text-to-text',
-    category: 'Documents',
-    sourceType: 'application/pdf',
-    targetType: 'text/plain',
-    label: 'Portable document text to plain text',
-    missing: 'A bundled document text-extraction runtime is not present in this build, so this row stays disabled.',
-  },
   {
     id: 'image-to-text',
     category: 'Documents',
@@ -148,6 +158,7 @@ const ADAPTER_LABELS = new Map([
   ['json-to-csv', 'JSON rows to comma-separated values'],
   ['markdown-table-to-csv', 'Markdown pipe table to comma-separated values'],
   ['text-normalize', 'Plain text line-ending and trailing-space normalization'],
+  ['pdf-to-text', 'Portable document text layer to plain text'],
 ]);
 
 const OUTPUT_EXTENSIONS = new Map([
@@ -165,6 +176,17 @@ class FileConverter {
     this.registry.register(bundledAdapter({ id: 'json-to-csv', category: 'Tabular data', sourceType: 'application/json', targetType: 'text/csv', run: jsonToCsv }));
     this.registry.register(bundledAdapter({ id: 'markdown-table-to-csv', category: 'Documents', sourceType: 'text/markdown', targetType: 'text/csv', run: markdownTableToCsv }));
     this.registry.register(bundledAdapter({ id: 'text-normalize', category: 'Plain text', sourceType: 'text/plain', targetType: 'text/plain', run: normalizeText }));
+    this.registry.register(bundledAdapter({
+      id: 'pdf-to-text',
+      category: 'Documents',
+      sourceType: 'application/pdf',
+      targetType: 'text/plain',
+      encoding: 'latin1',
+      run: pdfToText,
+      validate: (input) => (input.slice(0, 1024).includes('%PDF-')
+        ? { ok: true }
+        : { ok: false, reason: 'This file does not begin with a portable-document header.' }),
+    }));
     this.staged = new Map();
     this.jobs = new Map();
   }
@@ -239,18 +261,38 @@ class FileConverter {
     };
   }
 
-  /** Runs the staged conversion, returning one validated result per file. */
-  async run(jobId, destinationDirectory) {
+  /**
+   * Runs the staged conversion, returning one validated result per file.
+   *
+   * `progress.onFile` fires as each file starts and `progress.onBytes` reports
+   * the running total actually written, so a transfer surface shows real
+   * movement across a batch instead of one jump at the end. A cancel through
+   * either this job or the surrounding transfer stops the batch at the next
+   * file boundary and reports the untouched files honestly.
+   *
+   * @param {string} jobId
+   * @param {string} destinationDirectory
+   * @param {{ signal?: AbortSignal, onFile?: (progress: object) => void, onBytes?: (written: number) => void }} [progress]
+   */
+  async run(jobId, destinationDirectory, progress = {}) {
     const staged = this.staged.get(jobId);
     if (!staged) throw new Error('Preview the files again before running a conversion.');
     const adapter = this.registry.list().find((entry) => entry.id === staged.adapterId);
     if (!adapter) throw new Error('That converter is not available in this build.');
     const controller = new AbortController();
+    const relayCancel = () => controller.abort();
+    if (progress.signal) {
+      if (progress.signal.aborted) controller.abort();
+      else progress.signal.addEventListener('abort', relayCancel, { once: true });
+    }
     this.jobs.set(jobId, controller);
     const outputExtension = OUTPUT_EXTENSIONS.get(adapter.targetType) ?? 'txt';
+    const encoding = adapter.encoding === 'latin1' ? 'latin1' : 'utf8';
     const results = [];
+    let written = 0;
     try {
-      for (const file of staged.files) {
+      for (const [index, file] of staged.files.entries()) {
+        progress.onFile?.({ index, total: staged.files.length, displayName: file.displayName });
         if (controller.signal.aborted) {
           results.push({ displayName: file.displayName, ok: false, reason: 'The conversion was cancelled before this file was read.' });
           continue;
@@ -261,9 +303,9 @@ class FileConverter {
         }
         let input;
         try {
-          input = fs.readFileSync(file.path, 'utf8');
+          input = fs.readFileSync(file.path, encoding);
         } catch {
-          results.push({ displayName: file.displayName, ok: false, reason: 'This file could not be read as text.' });
+          results.push({ displayName: file.displayName, ok: false, reason: 'This file could not be read.' });
           continue;
         }
         const outcome = await convertWithRegistry(this.registry, adapter.sourceType, adapter.targetType, input, controller.signal);
@@ -279,17 +321,38 @@ class FileConverter {
         }
         const bytes = Buffer.from(outcome.body, 'utf8');
         fs.writeFileSync(outputPath, bytes, { flag: 'wx', mode: 0o600 });
-        results.push({ displayName: file.displayName, ok: true, outputName, bytes: bytes.length });
+        written += bytes.length;
+        progress.onBytes?.(written);
+        results.push({
+          displayName: file.displayName,
+          ok: true,
+          outputName,
+          bytes: bytes.length,
+          sha256: crypto.createHash('sha256').update(bytes).digest('hex'),
+        });
       }
     } finally {
+      progress.signal?.removeEventListener?.('abort', relayCancel);
       this.jobs.delete(jobId);
       this.staged.delete(jobId);
     }
+    const produced = results.filter((result) => result.ok);
+    // One output has a directly verifiable digest. A batch reports a manifest
+    // digest over every output name and digest instead, which is a different
+    // claim and is named as one rather than passed off as a file hash.
+    const batchSha256 = produced.length > 0
+      ? crypto.createHash('sha256').update(produced.map((result) => `${result.outputName}\0${result.sha256}`).join('\n'), 'utf8').digest('hex')
+      : null;
     return {
       adapterId: adapter.id,
       results,
-      succeeded: results.filter((result) => result.ok).length,
+      succeeded: produced.length,
       failed: results.filter((result) => !result.ok).length,
+      bytes: written,
+      sha256: produced.length === 1 ? produced[0].sha256 : null,
+      batchSha256,
+      digestScope: produced.length === 1 ? 'file' : produced.length > 1 ? 'batch-manifest' : 'none',
+      cancelled: controller.signal.aborted,
       confirmationNotice:
         'Converted output is not confirmed tax data. Attach it and complete the manual parser-confirmation step before any value is treated as reviewed.',
     };
