@@ -124,7 +124,11 @@ $npmVersion = (& $npmCmd --version).Trim()
 $gitVersion = (& $gitExe --version).Trim()
 if ($nodeVersion -ne $node[0].version) { throw "Node.js version mismatch: expected $($node[0].version), received $nodeVersion." }
 if ($npmVersion -ne $node[0].bundledNpmVersion) { throw "npm version mismatch: expected $($node[0].bundledNpmVersion), received $npmVersion." }
-if (-not $gitVersion.Contains($git[0].version)) { throw "Git version mismatch: expected $($git[0].version), received $gitVersion." }
+if ($git[0].version -notmatch '^\d+\.\d+\.\d+\.\d+$') {
+    throw "The dependency manifest Git version has an unsupported format: $($git[0].version)."
+}
+$expectedGitVersion = 'git version ' + ($git[0].version -replace '\.(\d+)$', '.windows.$1')
+if ($gitVersion -ne $expectedGitVersion) { throw "Git version mismatch: expected $expectedGitVersion, received $gitVersion." }
 Write-Phase "Toolchain ready: Node.js $nodeVersion, npm $npmVersion, $gitVersion"
 
 $lockPath = Join-Path $repositoryRoot 'package-lock.json'
