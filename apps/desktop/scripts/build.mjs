@@ -105,9 +105,21 @@ const rendererBuild = await build({
   legalComments: 'none',
 });
 const rendererScript = rendererBuild.outputFiles[0].text.replaceAll('</script', '<\\/script');
+// Both replacements pass a FUNCTION rather than a string, and that is the whole
+// point of them. `String.prototype.replace` interprets `$` sequences inside a
+// string replacement: `$$` becomes a single literal `$`, `$&` becomes the match,
+// and so on. The renderer's own DOM helper for querySelectorAll is named `$$`,
+// so a string replacement silently rewrote every `$$(` in the bundle to `$(` —
+// turning `$$('[data-close-dialog]').forEach(...)` into a querySelector result
+// with no `forEach`. That threw four lines into `boot()`, so every feature
+// registered after it, the command palette included, never initialised in the
+// packaged application while the source stayed perfectly correct.
+//
+// A function replacement receives the matched text and performs no `$`
+// substitution, so the inlined code lands byte-for-byte as built.
 const indexHtml = htmlTemplate
-  .replace('/* BUILD:STYLES */', `${kernelTokens}\n${styleSource}`)
-  .replace('/* BUILD:SCRIPT */', rendererScript);
+  .replace('/* BUILD:STYLES */', () => `${kernelTokens}\n${styleSource}`)
+  .replace('/* BUILD:SCRIPT */', () => rendererScript);
 await writeFile(path.join(distRoot, 'renderer', 'index.html'), indexHtml, 'utf8');
 
 // --- packaged documentation --------------------------------------------------
