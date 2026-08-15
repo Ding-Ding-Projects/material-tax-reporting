@@ -3845,6 +3845,916 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
     ]
   },
   {
+    "slug": "docs-features-build-release-readme",
+    "title": "Build and release",
+    "path": "docs/features/build-release/README.md",
+    "nodes": [
+      {
+        "kind": "heading",
+        "level": 1,
+        "text": "Build and release",
+        "id": "build-and-release"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The project has one supported Windows x64 delivery path. It builds the desktop workspace, generates the application icon from the committed brand source, stages the exact offline OCR runtime closure, and packages an unsigned Squirrel.Windows installer with that runtime under Electron resources."
+          }
+        ]
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "link",
+              "text": "Fresh-Windows build",
+              "href": "windows-build.md"
+            }
+          ],
+          [
+            {
+              "kind": "link",
+              "text": "Release workflow",
+              "href": "release-workflow.md"
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The scripts fail closed when the desktop workspace has no real build command, expected output is missing or stale, the OCR staging manifest or any runtime asset is absent or inconsistent, the brand source cannot produce a valid icon, the installer is signed, or required Squirrel.Windows assets are absent."
+          }
+        ]
+      }
+    ],
+    "outline": [
+      {
+        "level": 1,
+        "text": "Build and release",
+        "id": "build-and-release"
+      }
+    ],
+    "plainText": "Build and release\nThe project has one supported Windows x64 delivery path. It builds the desktop workspace, generates the application icon from the committed brand source, stages the exact offline OCR runtime closure, and packages an unsigned Squirrel.Windows installer with that runtime under Electron resources.\nFresh-Windows build\nRelease workflow\nThe scripts fail closed when the desktop workspace has no real build command, expected output is missing or stale, the OCR staging manifest or any runtime asset is absent or inconsistent, the brand source cannot produce a valid icon, the installer is signed, or required Squirrel.Windows assets are absent.",
+    "links": [
+      {
+        "href": "windows-build.md",
+        "targetSlug": "docs-features-build-release-windows-build",
+        "text": "Fresh-Windows build"
+      },
+      {
+        "href": "release-workflow.md",
+        "targetSlug": "docs-features-build-release-release-workflow",
+        "text": "Release workflow"
+      }
+    ]
+  },
+  {
+    "slug": "docs-features-build-release-release-workflow",
+    "title": "Release workflow",
+    "path": "docs/features/build-release/release-workflow.md",
+    "nodes": [
+      {
+        "kind": "heading",
+        "level": 1,
+        "text": "Release workflow",
+        "id": "release-workflow"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "code",
+            "value": ".github/workflows/release.yml"
+          },
+          {
+            "kind": "text",
+            "value": " runs on every push and on "
+          },
+          {
+            "kind": "code",
+            "value": "workflow_dispatch"
+          },
+          {
+            "kind": "text",
+            "value": ". It uses the GitHub-hosted "
+          },
+          {
+            "kind": "code",
+            "value": "windows-2022"
+          },
+          {
+            "kind": "text",
+            "value": " image, pins action revisions and tool versions, and keeps release concurrency non-cancelling so publication cannot be interrupted midway."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Each successful run creates one unique semantic version and one non-draft release targeting the exact workflow commit. It calls "
+          },
+          {
+            "kind": "code",
+            "value": "build.bat /s"
+          },
+          {
+            "kind": "text",
+            "value": " and "
+          },
+          {
+            "kind": "code",
+            "value": "build-installer.bat /s"
+          },
+          {
+            "kind": "text",
+            "value": ", then publishes:"
+          }
+        ]
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "code",
+              "value": "Setup.exe"
+            }
+          ],
+          [
+            {
+              "kind": "code",
+              "value": "RELEASES"
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "the full "
+            },
+            {
+              "kind": "code",
+              "value": ".nupkg"
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "every delta "
+            },
+            {
+              "kind": "code",
+              "value": ".nupkg"
+            },
+            {
+              "kind": "text",
+              "value": " generated by Squirrel.Windows"
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "the generated multi-resolution "
+            },
+            {
+              "kind": "code",
+              "value": ".ico"
+            }
+          ],
+          [
+            {
+              "kind": "code",
+              "value": "SHA256SUMS.txt"
+            }
+          ],
+          [
+            {
+              "kind": "code",
+              "value": "workflow-timing.json"
+            }
+          ],
+          [
+            {
+              "kind": "code",
+              "value": "line-count.md"
+            }
+          ],
+          [
+            {
+              "kind": "code",
+              "value": "release-notes.md"
+            }
+          ],
+          [
+            {
+              "kind": "code",
+              "value": "dim-sum-<catalog asset name>.png"
+            },
+            {
+              "kind": "text",
+              "value": " — the dish photograph, when one was resolved and validated"
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The workflow prepares every primary artifact, evidence asset, and complete release-note body while the release remains a private draft. It then reads back every uploaded asset through the authenticated API, compares SHA-256 values, compares the complete note body, and makes "
+          },
+          {
+            "kind": "code",
+            "value": "draft=false"
+          },
+          {
+            "kind": "text",
+            "value": " the single final public-state mutation. A failure before that transition leaves no incomplete public release."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Release evidence identifies the exact source commit, workflow run, start timestamp, prepublication evidence timestamp, prepublication elapsed duration, unsigned status, and SmartScreen/unknown-publisher warning. GitHub reports the exact publication-completion timestamp only after the final draft-to-public transition. Embedding that timestamp would require a second public mutation, so this atomic workflow does not claim it inside the release assets or notes; it records the exact completion and end-to-end duration in the workflow log after publication. A full release-verification process must resolve that evidence limitation without weakening atomic publication."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Dim-sum code name and attached dish photo",
+        "id": "dim-sum-code-name-and-attached-dish-photo"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "code",
+            "value": "scripts/release/select-dim-sum.mjs"
+          },
+          {
+            "kind": "text",
+            "value": " reads the public catalog index of "
+          },
+          {
+            "kind": "code",
+            "value": "Ding-Ding-Projects/dim-sum-photos"
+          },
+          {
+            "kind": "text",
+            "value": ", enumerates the assets published in its "
+          },
+          {
+            "kind": "code",
+            "value": "catalog-v1*"
+          },
+          {
+            "kind": "text",
+            "value": " releases, and picks the first dish whose code name no previous release of this repository has used. It then downloads that dish's published photograph and validates it before the dish is accepted."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The photograph is the only permitted source of a release image. It is never generated, never fetched from a stock or third-party source, and never committed to this repository. The download lands in "
+          },
+          {
+            "kind": "code",
+            "value": ".tmp/dim-sum/"
+          },
+          {
+            "kind": "text",
+            "value": ", which the repository already ignores, and travels to the release as a build input."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 3,
+        "text": "Byte validation",
+        "id": "byte-validation"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "code",
+            "value": "scripts/release/validate-image.mjs"
+          },
+          {
+            "kind": "text",
+            "value": " validates the downloaded bytes rather than the file name, because a short HTML error page saved under a picture's extension is indistinguishable from a photograph until somebody opens it. It walks the container end to end:"
+          }
+        ]
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "the declared extension must be "
+            },
+            {
+              "kind": "code",
+              "value": ".png"
+            },
+            {
+              "kind": "text",
+              "value": ", "
+            },
+            {
+              "kind": "code",
+              "value": ".jpg"
+            },
+            {
+              "kind": "text",
+              "value": ", or "
+            },
+            {
+              "kind": "code",
+              "value": ".jpeg"
+            },
+            {
+              "kind": "text",
+              "value": ", the only formats this pipeline attaches"
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "the leading signature must match that format"
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "every PNG chunk's CRC-32 is recomputed, so a single flipped byte fails"
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "the header must declare a real picture — positive dimensions within bounds, and a legal bit-depth and colour-type pairing"
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "the stream must carry image data and terminate exactly at its own end marker, so a truncated download fails"
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "the payload must sit between a 64-byte floor and a 32 MiB ceiling"
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The storage host serves these assets as "
+          },
+          {
+            "kind": "code",
+            "value": "application/octet-stream"
+          },
+          {
+            "kind": "text",
+            "value": ", so the declared content type proves nothing and is deliberately not treated as evidence."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "A rejected payload is never attached and never consumes the dish's single-use code name. The selector tries the next candidate, up to a five-download bound."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 3,
+        "text": "Attaching and verifying",
+        "id": "attaching-and-verifying"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "code",
+            "value": "scripts/release/dim-sum-asset.ps1"
+          },
+          {
+            "kind": "text",
+            "value": " resolves the validated photograph into a release asset named "
+          },
+          {
+            "kind": "code",
+            "value": "dim-sum-<catalog asset name>"
+          },
+          {
+            "kind": "text",
+            "value": ", which identifies the dish. Before attaching it, the script re-checks the file at the attach boundary: the recorded SHA-256 and byte length must still match, and the file must still begin and end as its declared format. The asset then joins the expected-name list, so the authenticated draft readback and the published-release check verify it landed exactly as every sibling asset is verified, and its hash appears in "
+          },
+          {
+            "kind": "code",
+            "value": "SHA256SUMS.txt"
+          },
+          {
+            "kind": "text",
+            "value": "."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 3,
+        "text": "Failing soft",
+        "id": "failing-soft"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The code name and the photograph are decoration with a purpose and are never a release gate. An unreachable catalog, no unused dish, a failed download, a rejected payload, a missing file after the build, or an unreadable selection record all degrade to an unavailable result. The release still publishes with its version alone, the notes state the exact reason under "
+          },
+          {
+            "kind": "code",
+            "value": "Attached dish photo: none attached"
+          },
+          {
+            "kind": "text",
+            "value": ", and the workflow log carries a warning. The code name degrades together with the photograph so a dish is never consumed by a release that did not carry its picture."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Because only PNG and JPEG are attached, a catalog that published some other format would report it as unsupported and fail soft rather than attaching an unverified payload. That is deliberate: both the validator and its PowerShell counterpart stay small enough to check by hand."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The release workflow intentionally contains no test, lint, type-check, static-analysis, security, accessibility, or screenshot steps. A successful workflow proves build, packaging, publication, and attached evidence only. It does not prove runtime behavior, installation, visual appearance, accessibility, security, or tax correctness."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Release API operations use "
+          },
+          {
+            "kind": "code",
+            "value": "RELEASE_TOKEN"
+          },
+          {
+            "kind": "text",
+            "value": ", then "
+          },
+          {
+            "kind": "code",
+            "value": "ORG_TOKEN"
+          },
+          {
+            "kind": "text",
+            "value": ", then the workflow token through "
+          },
+          {
+            "kind": "code",
+            "value": "GH_TOKEN"
+          },
+          {
+            "kind": "text",
+            "value": ". Tokens are never printed or written to release evidence. Safe logs and metadata upload under "
+          },
+          {
+            "kind": "code",
+            "value": "if: always()"
+          },
+          {
+            "kind": "text",
+            "value": " with bounded retention and do not include source trees, dependency directories, caches, or credentials."
+          }
+        ]
+      }
+    ],
+    "outline": [
+      {
+        "level": 1,
+        "text": "Release workflow",
+        "id": "release-workflow"
+      },
+      {
+        "level": 2,
+        "text": "Dim-sum code name and attached dish photo",
+        "id": "dim-sum-code-name-and-attached-dish-photo"
+      },
+      {
+        "level": 3,
+        "text": "Byte validation",
+        "id": "byte-validation"
+      },
+      {
+        "level": 3,
+        "text": "Attaching and verifying",
+        "id": "attaching-and-verifying"
+      },
+      {
+        "level": 3,
+        "text": "Failing soft",
+        "id": "failing-soft"
+      }
+    ],
+    "plainText": "Release workflow\n.github/workflows/release.yml runs on every push and on workflow_dispatch. It uses the GitHub-hosted windows-2022 image, pins action revisions and tool versions, and keeps release concurrency non-cancelling so publication cannot be interrupted midway.\nEach successful run creates one unique semantic version and one non-draft release targeting the exact workflow commit. It calls build.bat /s and build-installer.bat /s, then publishes:\nSetup.exe\nRELEASES\nthe full .nupkg\nevery delta .nupkg generated by Squirrel.Windows\nthe generated multi-resolution .ico\nSHA256SUMS.txt\nworkflow-timing.json\nline-count.md\nrelease-notes.md\ndim-sum-<catalog asset name>.png — the dish photograph, when one was resolved and validated\nThe workflow prepares every primary artifact, evidence asset, and complete release-note body while the release remains a private draft. It then reads back every uploaded asset through the authenticated API, compares SHA-256 values, compares the complete note body, and makes draft=false the single final public-state mutation. A failure before that transition leaves no incomplete public release.\nRelease evidence identifies the exact source commit, workflow run, start timestamp, prepublication evidence timestamp, prepublication elapsed duration, unsigned status, and SmartScreen/unknown-publisher warning. GitHub reports the exact publication-completion timestamp only after the final draft-to-public transition. Embedding that timestamp would require a second public mutation, so this atomic workflow does not claim it inside the release assets or notes; it records the exact completion and end-to-end duration in the workflow log after publication. A full release-verification process must resolve that evidence limitation without weakening atomic publication.\nDim-sum code name and attached dish photo\nscripts/release/select-dim-sum.mjs reads the public catalog index of Ding-Ding-Projects/dim-sum-photos, enumerates the assets published in its catalog-v1* releases, and picks the first dish whose code name no previous release of this repository has used. It then downloads that dish's published photograph and validates it before the dish is accepted.\nThe photograph is the only permitted source of a release image. It is never generated, never fetched from a stock or third-party source, and never committed to this repository. The download lands in .tmp/dim-sum/, which the repository already ignores, and travels to the release as a build input.\nByte validation\nscripts/release/validate-image.mjs validates the downloaded bytes rather than the file name, because a short HTML error page saved under a picture's extension is indistinguishable from a photograph until somebody opens it. It walks the container end to end:\nthe declared extension must be .png, .jpg, or .jpeg, the only formats this pipeline attaches\nthe leading signature must match that format\nevery PNG chunk's CRC-32 is recomputed, so a single flipped byte fails\nthe header must declare a real picture — positive dimensions within bounds, and a legal bit-depth and colour-type pairing\nthe stream must carry image data and terminate exactly at its own end marker, so a truncated download fails\nthe payload must sit between a 64-byte floor and a 32 MiB ceiling\nThe storage host serves these assets as application/octet-stream, so the declared content type proves nothing and is deliberately not treated as evidence.\nA rejected payload is never attached and never consumes the dish's single-use code name. The selector tries the next candidate, up to a five-download bound.\nAttaching and verifying\nscripts/release/dim-sum-asset.ps1 resolves the validated photograph into a release asset named dim-sum-<catalog asset name>, which identifies the dish. Before attaching it, the script re-checks the file at the attach boundary: the recorded SHA-256 and byte length must still match, and the file must still begin and end as its declared format. The asset then joins the expected-name list, so the authenticated draft readback and the published-release check verify it landed exactly as every sibling asset is verified, and its hash appears in SHA256SUMS.txt.\nFailing soft\nThe code name and the photograph are decoration with a purpose and are never a release gate. An unreachable catalog, no unused dish, a failed download, a rejected payload, a missing file after the build, or an unreadable selection record all degrade to an unavailable result. The release still publishes with its version alone, the notes state the exact reason under Attached dish photo: none attached, and the workflow log carries a warning. The code name degrades together with the photograph so a dish is never consumed by a release that did not carry its picture.\nBecause only PNG and JPEG are attached, a catalog that published some other format would report it as unsupported and fail soft rather than attaching an unverified payload. That is deliberate: both the validator and its PowerShell counterpart stay small enough to check by hand.\nThe release workflow intentionally contains no test, lint, type-check, static-analysis, security, accessibility, or screenshot steps. A successful workflow proves build, packaging, publication, and attached evidence only. It does not prove runtime behavior, installation, visual appearance, accessibility, security, or tax correctness.\nRelease API operations use RELEASE_TOKEN, then ORG_TOKEN, then the workflow token through GH_TOKEN. Tokens are never printed or written to release evidence. Safe logs and metadata upload under if: always() with bounded retention and do not include source trees, dependency directories, caches, or credentials.",
+    "links": []
+  },
+  {
+    "slug": "docs-features-build-release-windows-build",
+    "title": "Fresh-Windows build",
+    "path": "docs/features/build-release/windows-build.md",
+    "nodes": [
+      {
+        "kind": "heading",
+        "level": 1,
+        "text": "Fresh-Windows build",
+        "id": "fresh-windows-build"
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Application build",
+        "id": "application-build"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Run "
+          },
+          {
+            "kind": "code",
+            "value": "build.bat"
+          },
+          {
+            "kind": "text",
+            "value": ". On a fresh 64-bit Windows installation, the script downloads the pinned portable Node.js and MinGit archives from their canonical upstreams, validates their recorded SHA-256 digests, installs the exact "
+          },
+          {
+            "kind": "code",
+            "value": "package-lock.json"
+          },
+          {
+            "kind": "text",
+            "value": " dependency graph, clears stale desktop output, and invokes the real "
+          },
+          {
+            "kind": "code",
+            "value": "@material-tax-reporting/desktop"
+          },
+          {
+            "kind": "text",
+            "value": " workspace build."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The build is accepted only when these freshly written files exist and are non-empty:"
+          }
+        ]
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "code",
+              "value": "apps/desktop/dist/main/main.js"
+            }
+          ],
+          [
+            {
+              "kind": "code",
+              "value": "apps/desktop/dist/preload/index.cjs"
+            }
+          ],
+          [
+            {
+              "kind": "code",
+              "value": "apps/desktop/dist/renderer/index.html"
+            }
+          ],
+          [
+            {
+              "kind": "code",
+              "value": "apps/desktop/dist/build-provenance.json"
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The first three files and their source commit are recorded in "
+          },
+          {
+            "kind": "code",
+            "value": "build-provenance.json"
+          },
+          {
+            "kind": "text",
+            "value": ". A later package command refuses provenance with a missing, additional, changed, or stale output."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Use "
+          },
+          {
+            "kind": "code",
+            "value": "build.bat /s"
+          },
+          {
+            "kind": "text",
+            "value": ", "
+          },
+          {
+            "kind": "code",
+            "value": "build.bat --silent"
+          },
+          {
+            "kind": "text",
+            "value": ", or "
+          },
+          {
+            "kind": "code",
+            "value": "SILENT=1 build.bat"
+          },
+          {
+            "kind": "text",
+            "value": " for non-interactive execution. Non-silent execution offers to run the built application only after the build succeeds."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Installer build",
+        "id": "installer-build"
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Run "
+          },
+          {
+            "kind": "code",
+            "value": "build-installer.bat"
+          },
+          {
+            "kind": "text",
+            "value": " with the same silent options when required. It repeats the real application build from cleared output, generates a multi-resolution ICO from "
+          },
+          {
+            "kind": "code",
+            "value": "assets/brand/material-tax-reporting-mark.png"
+          },
+          {
+            "kind": "text",
+            "value": ", clears stale package output, stages the complete offline OCR production closure, and runs electron-builder's Squirrel.Windows target with publication disabled."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Offline OCR staging calls "
+          },
+          {
+            "kind": "code",
+            "value": "packages/slip-parser/scripts/stage-offline-ocr-assets.mjs"
+          },
+          {
+            "kind": "text",
+            "value": " directly. That script creates a fresh atomic staging directory outside the repository from the exact package-lock and OCR-runtime manifests. Packaging accepts the staging directory only when its Windows x64 offline policy, package closure, file inventory, sizes, hashes, and totals are internally consistent. electron-builder copies the verified directory to "
+          },
+          {
+            "kind": "code",
+            "value": "resources/offline-ocr-runtime"
+          },
+          {
+            "kind": "text",
+            "value": "; the packaging script then reads that packaged resource directory back and requires the same manifest hash and per-file evidence before accepting the installer."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Success requires exactly one "
+          },
+          {
+            "kind": "code",
+            "value": "Setup.exe"
+          },
+          {
+            "kind": "text",
+            "value": ", one "
+          },
+          {
+            "kind": "code",
+            "value": "RELEASES"
+          },
+          {
+            "kind": "text",
+            "value": " index, one full "
+          },
+          {
+            "kind": "code",
+            "value": ".nupkg"
+          },
+          {
+            "kind": "text",
+            "value": ", any generated delta "
+          },
+          {
+            "kind": "code",
+            "value": ".nupkg"
+          },
+          {
+            "kind": "text",
+            "value": " files referenced by "
+          },
+          {
+            "kind": "code",
+            "value": "RELEASES"
+          },
+          {
+            "kind": "text",
+            "value": ", and a "
+          },
+          {
+            "kind": "code",
+            "value": "NotSigned"
+          },
+          {
+            "kind": "text",
+            "value": " Authenticode status. The script prints the setup path and SHA-256. It never tags, pushes, publishes, or creates a release."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Unsigned installers may trigger Windows SmartScreen or unknown-publisher warnings. Code signing is permanently disabled."
+          }
+        ]
+      },
+      {
+        "kind": "heading",
+        "level": 2,
+        "text": "Failure modes",
+        "id": "failure-modes"
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "An archive digest mismatch stops before extraction."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "A missing desktop build script or required output stops before packaging."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "Missing or changed build provenance stops packaging."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "A missing OCR staging script, manifest, production package, native addon, language data file, WebAssembly file, or evidence mismatch stops packaging."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "Invalid, undersized, oversized, animated, or malformed logo input stops icon generation while leaving no partial icon active."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "Missing Squirrel.Windows output, an inconsistent "
+            },
+            {
+              "kind": "code",
+              "value": "RELEASES"
+            },
+            {
+              "kind": "text",
+              "value": " index, or any signature status other than "
+            },
+            {
+              "kind": "code",
+              "value": "NotSigned"
+            },
+            {
+              "kind": "text",
+              "value": " stops the installer build."
+            }
+          ]
+        ]
+      }
+    ],
+    "outline": [
+      {
+        "level": 1,
+        "text": "Fresh-Windows build",
+        "id": "fresh-windows-build"
+      },
+      {
+        "level": 2,
+        "text": "Application build",
+        "id": "application-build"
+      },
+      {
+        "level": 2,
+        "text": "Installer build",
+        "id": "installer-build"
+      },
+      {
+        "level": 2,
+        "text": "Failure modes",
+        "id": "failure-modes"
+      }
+    ],
+    "plainText": "Fresh-Windows build\nApplication build\nRun build.bat. On a fresh 64-bit Windows installation, the script downloads the pinned portable Node.js and MinGit archives from their canonical upstreams, validates their recorded SHA-256 digests, installs the exact package-lock.json dependency graph, clears stale desktop output, and invokes the real @material-tax-reporting/desktop workspace build.\nThe build is accepted only when these freshly written files exist and are non-empty:\napps/desktop/dist/main/main.js\napps/desktop/dist/preload/index.cjs\napps/desktop/dist/renderer/index.html\napps/desktop/dist/build-provenance.json\nThe first three files and their source commit are recorded in build-provenance.json. A later package command refuses provenance with a missing, additional, changed, or stale output.\nUse build.bat /s, build.bat --silent, or SILENT=1 build.bat for non-interactive execution. Non-silent execution offers to run the built application only after the build succeeds.\nInstaller build\nRun build-installer.bat with the same silent options when required. It repeats the real application build from cleared output, generates a multi-resolution ICO from assets/brand/material-tax-reporting-mark.png, clears stale package output, stages the complete offline OCR production closure, and runs electron-builder's Squirrel.Windows target with publication disabled.\nOffline OCR staging calls packages/slip-parser/scripts/stage-offline-ocr-assets.mjs directly. That script creates a fresh atomic staging directory outside the repository from the exact package-lock and OCR-runtime manifests. Packaging accepts the staging directory only when its Windows x64 offline policy, package closure, file inventory, sizes, hashes, and totals are internally consistent. electron-builder copies the verified directory to resources/offline-ocr-runtime; the packaging script then reads that packaged resource directory back and requires the same manifest hash and per-file evidence before accepting the installer.\nSuccess requires exactly one Setup.exe, one RELEASES index, one full .nupkg, any generated delta .nupkg files referenced by RELEASES, and a NotSigned Authenticode status. The script prints the setup path and SHA-256. It never tags, pushes, publishes, or creates a release.\nUnsigned installers may trigger Windows SmartScreen or unknown-publisher warnings. Code signing is permanently disabled.\nFailure modes\nAn archive digest mismatch stops before extraction.\nA missing desktop build script or required output stops before packaging.\nMissing or changed build provenance stops packaging.\nA missing OCR staging script, manifest, production package, native addon, language data file, WebAssembly file, or evidence mismatch stops packaging.\nInvalid, undersized, oversized, animated, or malformed logo input stops icon generation while leaving no partial icon active.\nMissing Squirrel.Windows output, an inconsistent RELEASES index, or any signature status other than NotSigned stops the installer build.",
+    "links": []
+  },
+  {
     "slug": "docs-features-desktop-readme",
     "title": "Windows desktop application",
     "path": "docs/features/desktop/README.md",
@@ -21233,6 +22143,9 @@ export const DOC_AREAS: Record<string, string> = {
   "docs-site-verification-status": "Website",
   "docs-site-website-preferences-and-search": "Website",
   "docs-features-readme": "Features",
+  "docs-features-build-release-readme": "Features",
+  "docs-features-build-release-release-workflow": "Features",
+  "docs-features-build-release-windows-build": "Features",
   "docs-features-desktop-readme": "Features",
   "docs-features-desktop-appearance-editor": "Features",
   "docs-features-desktop-authenticator-and-support": "Features",

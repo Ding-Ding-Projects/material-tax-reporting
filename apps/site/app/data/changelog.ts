@@ -273,6 +273,15 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     "area": "desktop",
     "version": "Unreleased",
     "date": null,
+    "section": "Changed",
+    "entry": "Repaired the application build, which could not run at all on the pinned toolchain. Its build script imports one changelog engine from the shared surface kernel, that package's entry point resolved to raw TypeScript, and the runtime that executes the script cannot load a `.ts` file, so the build died on line six with `ERR_UNKNOWN_FILE_EXTENSION` before it compiled anything. The shared package now offers Node a compiled entry, and this package gained a `prebuild` step that produces it, so ordering is wired once and every route into the application build inherits it: the workspace build, the repository-root build script, the start script, and the committed batch entry points the release path invokes. The two must stay together — separating the import from the step that compiles what it imports puts the build straight back into a first-import failure.",
+    "commit": null,
+    "verification": null
+  },
+  {
+    "area": "desktop",
+    "version": "Unreleased",
+    "date": null,
     "section": "Boundaries",
     "entry": "The application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing.",
     "commit": null,
@@ -1616,6 +1625,24 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     "date": null,
     "section": "Changed",
     "entry": "The documentation site references the two internal packages by relative path, because its lockfile is installed on its own with `npm ci --workspaces=false` and a version range cannot resolve an unpublished package in that mode.",
+    "commit": null,
+    "verification": null
+  },
+  {
+    "area": "surface-kernel",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Changed",
+    "entry": "Split the package entry point by consumer, because a single entry could not serve both. The `.` export is now conditional: bundlers continue to take `default` and read `src/index.ts`, exactly as the documentation site and the desktop renderer bundle always have, while Node takes a new `node` condition and reads a compiled `dist/index.js`. The previous entry offered raw TypeScript to everyone, and Node cannot load a `.ts` file — it strips types only when explicitly asked, and not by default until a release newer than the pinned toolchain — so every file Node executed directly that imported this package by name failed on its first import with `ERR_UNKNOWN_FILE_EXTENSION`. That had already been worked around once in the documentation-site build configuration and was, separately, stopping the desktop application build. A consumer that now reaches the compiled entry before it has been built gets `ERR_MODULE_NOT_FOUND` naming the exact missing file, which says what to do; the error it replaces did not.",
+    "commit": null,
+    "verification": null
+  },
+  {
+    "area": "surface-kernel",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Changed",
+    "entry": "Replaced the package's `build` script, which invoked `tsc` and could never have run: TypeScript is not a declared dependency of this repository or of any workspace in it, and no `tsc` binary is installed. The script now runs a committed build that bundles the source with the same transpiler the desktop application already depends on. It transpiles and does not type-check, deliberately, so the release path depends on a compiler that produces an artifact rather than on a checker that produces a verdict; it pins its own working directory so the artifact is byte-identical wherever it is invoked from; and it asserts that a non-empty file was actually written rather than trusting the transpiler's exit code.",
     "commit": null,
     "verification": null
   },
