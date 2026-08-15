@@ -1,12 +1,21 @@
 import { access, cp, mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import { relative, resolve, sep } from "node:path";
 import type { Plugin } from "vite";
-import {
-  type ChangelogEntry,
-  type DocArticle,
-  buildDocsIndex,
-  parseChangelog,
-} from "@material-tax-reporting/surface-kernel";
+// These two engines are imported by relative path rather than through the
+// surface-kernel package entry point, and that is deliberate.
+//
+// Vite loads this configuration outside the application's module graph, and it
+// externalises bare specifiers to Node's own loader under every configuration
+// loader it offers. The package entry resolves to raw TypeScript, so a bare
+// import hands a `.ts` file to Node, and the pinned Node release used to build
+// this site cannot load one. A relative import is bundled into the
+// configuration instead, so no TypeScript source ever reaches Node's loader.
+//
+// These paths address the two engines directly rather than the barrel entry,
+// so loading the configuration compiles three self-contained modules instead of
+// the whole kernel.
+import { type ChangelogEntry, parseChangelog } from "../../../packages/surface-kernel/src/changelog.ts";
+import { type DocArticle, buildDocsIndex } from "../../../packages/surface-kernel/src/docs-index.ts";
 
 async function exists(path: string): Promise<boolean> {
   try {
