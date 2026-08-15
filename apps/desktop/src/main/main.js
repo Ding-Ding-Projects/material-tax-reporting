@@ -557,7 +557,11 @@ function addAttachmentFromPath(selectedPath) {
   if (!stat.isFile() || stat.size < 1 || stat.size > MAX_ATTACHMENT_BYTES) throw new Error('Choose a regular file between 1 byte and 96 MB.');
   const attachmentId = crypto.randomUUID();
   const bytes = fs.readFileSync(selectedPath);
+  // Measured over the plaintext that was actually taken in, so a transfer
+  // surface can name a digest the person can reproduce from the source file.
+  let sha256;
   try {
+    sha256 = crypto.createHash('sha256').update(bytes).digest('hex');
     const encrypted = encryptAttachment(active.dataKey, attachmentId, bytes);
     atomicWrite(path.join(active.projectRoot, 'attachments', `${attachmentId}.enc`), encrypted);
   } finally { bytes.fill(0); }
@@ -567,7 +571,7 @@ function addAttachmentFromPath(selectedPath) {
   const revision = active.history.transact({ action: 'attachment-add', stableId: `attachment:${attachmentId}`, summary: 'Added an encrypted local attachment for manual parser confirmation', state: nextState });
   active.state = nextState;
   persistSession();
-  return { state: clone(active.state), revision, bytes: stat.size };
+  return { state: clone(active.state), revision, bytes: stat.size, sha256 };
 }
 
 /**
@@ -669,18 +673,31 @@ async function commitTransfer(request) {
       transfers.begin(transferId, entry.plan.expectedBytes);
       const result = addAttachmentFromPath(entry.plan.sourcePath);
       transfers.report(transferId, result.bytes);
-      const finished = transfers.finish(transferId, result.bytes, null);
-      return { kind, finished, state: result.state, revision: result.revision };
+      const finished = transfers.finish(transferId, result.bytes, result.sha256);
+      return { kind, finished, state: result.state, revision: result.revision, bytes: result.bytes, sha256: result.sha256 };
     }
     if (kind === 'converter-output') {
+      // The output size is not knowable before the conversion runs, so the
+      // total stays unknown and the surface reports bytes actually written.
       transfers.begin(transferId, null);
-      const outcome = await converter.run(entry.plan.jobId, entry.plan.destinationPath);
-      const bytes = outcome.results.filter((row) => row.ok).reduce((total, row) => total + row.bytes, 0);
-      const finished = bytes > 0
-        ? transfers.finish(transferId, bytes, null)
-        : transfers.fail(transferId, 'No file was converted, so nothing was written.');
+      const outcome = await converter.run(entry.plan.jobId, entry.plan.destinationPath, {
+        signal: transfers.signal(transferId),
+        onBytes: (written) => transfers.report(transferId, written),
+      });
+      const finished = outcome.bytes > 0
+        ? transfers.finish(transferId, outcome.bytes, outcome.sha256)
+        : transfers.fail(transferId, outcome.cancelled ? 'The conversion was cancelled, so nothing was written.' : 'No file was converted, so nothing was written.');
       recordAppAction('conversion', `Converted ${outcome.succeeded} file(s) with ${outcome.adapterId}`);
-      return { kind, finished, outcome, folder: entry.plan.destinationPath };
+      return {
+        kind,
+        finished,
+        outcome,
+        folder: entry.plan.destinationPath,
+        bytes: outcome.bytes,
+        sha256: outcome.sha256,
+        batchSha256: outcome.batchSha256,
+        digestScope: outcome.digestScope,
+      };
     }
     if (kind === 'export') {
       const body = entry.body;
@@ -693,10 +710,12 @@ async function commitTransfer(request) {
       return { kind, finished, path: written.path, fileName: written.fileName, bytes: written.bytes, manifest: entry.plan.manifest };
     }
     if (kind === 'project-import-copy') {
-      transfers.begin(transferId, entry.plan.expectedBytes);
-      const destinationPath = entry.plan.destinationPath;
-      transfers.report(transferId, 1);
-      return { kind, destinationPath, finished: transfers.finish(transferId, 1, null) };
+      // This step only chooses where the copy will go. The container itself is
+      // written when the import is activated, and that write reports its own
+      // measured size and digest, so nothing is claimed as transferred here.
+      const notice = 'The destination was chosen. No bytes have been written yet; the encrypted copy is written when the import is activated.';
+      const withdrawn = transfers.withdraw(transferId, notice);
+      return { kind, destinationPath: entry.plan.destinationPath, plannedOnly: true, bytes: 0, notice, finished: withdrawn };
     }
     throw new Error('That transfer kind is not one this application performs.');
   } catch (error) {

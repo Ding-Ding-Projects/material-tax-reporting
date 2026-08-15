@@ -22,7 +22,7 @@ const CHUNK_BYTES = 4 * 1024 * 1024;
 const KINDS = new Map([
   ['project-save', 'Encrypted project file'],
   ['project-save-copy', 'Encrypted project copy'],
-  ['project-import-copy', 'Validated project copy'],
+  ['project-import-copy', 'Validated project copy destination'],
   ['attachment-intake', 'Encrypted attachment'],
   ['converter-output', 'Converted file'],
   ['export', 'Export file'],
@@ -117,6 +117,29 @@ class TransferCoordinator {
     const failed = { plan: entry.plan, state: entry.state, description: describeDownload(entry.state) };
     this.transfers.delete(transferId);
     return failed;
+  }
+
+  /**
+   * Ends a plan that only chose a destination, without writing anything.
+   *
+   * This is deliberately neither a completion nor a failure. The state machine
+   * refuses to complete without a measured byte count, and passing it a
+   * placeholder count to get past that guard would defeat the one structural
+   * guarantee it exists to provide. The transfer therefore stays in its start
+   * phase, whose own description already says nothing has transferred.
+   */
+  withdraw(transferId, notice) {
+    const entry = this.get(transferId);
+    this.emit(transferId);
+    const withdrawn = {
+      plan: entry.plan,
+      state: entry.state,
+      description: describeDownload(entry.state),
+      writtenBytes: 0,
+      notice: String(notice ?? '').slice(0, 240),
+    };
+    this.transfers.delete(transferId);
+    return withdrawn;
   }
 
   /** Cancels an in-flight transfer and removes any partial temporary file. */
