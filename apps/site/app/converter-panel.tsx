@@ -5,13 +5,19 @@
  *
  * Each chosen file is validated, converted and previewed before anything is
  * written. A rejection names the exact reason for that file, and the other
- * files in the same batch are unaffected. The output object URL is revoked
- * immediately after the download is dispatched.
+ * files in the same batch are unaffected.
+ *
+ * A converted result is written through the surface's shared export delivery
+ * rather than through a path of its own, so it carries the same manifest and
+ * the same folder-or-download behaviour every other collection carries. The
+ * pair that produced a result is recorded on the result itself, so choosing a
+ * different conversion after a batch has run cannot mislabel what is saved.
  */
 
 import { type ConversionAdapter, matchesSearch } from "@material-tax-reporting/surface-kernel";
 import { type ReactNode, useMemo, useRef, useState } from "react";
 import { CONVERTER_SCOPE_NOTE, adapterHaystack, createConverterRegistry, previewRows } from "./converter.ts";
+import { FILE_DELIVERY_NOTE, type ConvertedFileRequest, convertedManifestNote } from "./exports.ts";
 import { CompactSearchWithBuilder, type SearchBinding } from "./search-builder.tsx";
 
 const PREVIEW_ROWS = 8;
@@ -23,15 +29,20 @@ type FileOutcome = {
   reason: string;
   preview: string[];
   body: string | null;
+  /** The pair that produced this result, kept so a later selection cannot rename it. */
+  sourceType: string;
+  targetType: string;
 };
 
 export function ConverterPanel({
   binding,
   onNotify,
+  onSave,
   copy,
 }: {
   binding: SearchBinding;
   onNotify: (kind: "success" | "error" | "progress", title: string, body: string) => void;
+  onSave: (request: ConvertedFileRequest) => void;
   copy: (key: string) => string;
 }): ReactNode {
   const registry = useMemo(() => createConverterRegistry(), []);
@@ -49,6 +60,16 @@ export function ConverterPanel({
 
   const run = async (files: FileList) => {
     if (!selected) return;
+    const { sourceType, targetType } = selected;
+    const rejected = (name: string, reason: string): FileOutcome => ({
+      name,
+      ok: false,
+      reason,
+      preview: [],
+      body: null,
+      sourceType,
+      targetType,
+    });
     const controller = new AbortController();
     controllerRef.current = controller;
     setRunning(true);
@@ -58,36 +79,32 @@ export function ConverterPanel({
     const results: FileOutcome[] = [];
     for (const file of Array.from(files)) {
       if (controller.signal.aborted) {
-        results.push({ name: file.name, ok: false, reason: "The conversion was cancelled.", preview: [], body: null });
+        results.push(rejected(file.name, "The conversion was cancelled."));
         continue;
       }
       if (file.size > MAX_INPUT_BYTES) {
-        results.push({
-          name: file.name,
-          ok: false,
-          reason: `The file exceeds the ${MAX_INPUT_BYTES / 1024} KB local limit.`,
-          preview: [],
-          body: null,
-        });
+        results.push(rejected(file.name, `The file exceeds the ${MAX_INPUT_BYTES / 1024} KB local limit.`));
         continue;
       }
       const text = await file.text();
       const verdict = selected.validate(text);
       if (!verdict.ok) {
-        results.push({ name: file.name, ok: false, reason: verdict.reason ?? "The input was rejected.", preview: [], body: null });
+        results.push(rejected(file.name, verdict.reason ?? "The input was rejected."));
         continue;
       }
       const result = await selected.convert(text, controller.signal);
       if (!result.ok || result.body === undefined) {
-        results.push({ name: file.name, ok: false, reason: result.reason ?? "The conversion failed.", preview: [], body: null });
+        results.push(rejected(file.name, result.reason ?? "The conversion failed."));
         continue;
       }
       results.push({
         name: file.name,
         ok: true,
-        reason: `Converted from ${selected.sourceType} to ${selected.targetType}.`,
+        reason: `Converted from ${sourceType} to ${targetType}.`,
         preview: previewRows(result.body, PREVIEW_ROWS),
         body: result.body,
+        sourceType,
+        targetType,
       });
     }
     setOutcomes(results);
@@ -102,20 +119,13 @@ export function ConverterPanel({
   };
 
   const write = (outcome: FileOutcome) => {
-    if (outcome.body === null || !selected) return;
-    const blob = new Blob([outcome.body], { type: "text/plain;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    try {
-      const anchor = document.createElement("a");
-      anchor.href = url;
-      anchor.download = `${outcome.name.replace(/\.[^.]+$/, "")}.${selected.targetType.split("-").pop() ?? "txt"}`;
-      anchor.rel = "noopener";
-      document.body.append(anchor);
-      anchor.click();
-      anchor.remove();
-    } finally {
-      URL.revokeObjectURL(url);
-    }
+    if (outcome.body === null) return;
+    onSave({
+      sourceName: outcome.name,
+      sourceType: outcome.sourceType,
+      targetType: outcome.targetType,
+      body: outcome.body,
+    });
   };
 
   return (
@@ -174,6 +184,7 @@ export function ConverterPanel({
           Cancel
         </button>
       </div>
+      <p className="privacy-note">{FILE_DELIVERY_NOTE}</p>
 
       <ul className="outcome-list">
         {outcomes.map((outcome) => (
@@ -189,7 +200,13 @@ export function ConverterPanel({
                 <pre tabIndex={0} aria-label={`${outcome.name}: converted preview`}>
                   <code>{outcome.preview.join("\n")}</code>
                 </pre>
-                <button type="button" className="outlined-button" onClick={() => write(outcome)}>
+                <p className="privacy-note">{convertedManifestNote(outcome.targetType)}</p>
+                <button
+                  type="button"
+                  className="outlined-button"
+                  aria-label={`Save this result: ${outcome.name}`}
+                  onClick={() => write(outcome)}
+                >
                   Save this result
                 </button>
               </>

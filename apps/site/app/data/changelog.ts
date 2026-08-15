@@ -949,6 +949,24 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     "version": "Unreleased",
     "date": null,
     "section": "Changed",
+    "entry": "Routed a saved converter result through the shared export delivery instead of a second blob path of its own, so it is written to a chosen folder where the browser offers that interface, reports the file name, size and path it took, is recorded in local history, and carries the same manifest every other collection carries. A comma-separated or tab-separated result carries the manifest as leading `#` comment lines the converter's own reader discards, and a Markdown result as a heading and a bullet list; a vocabulary JSON result is written unchanged and says why, because the vocabulary schema accepts only its version and replacements fields and would refuse a stamped document on the way back in. The website's sources now create a temporary object address in exactly one place.",
+    "commit": null,
+    "verification": null
+  },
+  {
+    "area": "site",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Changed",
+    "entry": "Gave a saved converter result the target format's own extension and media type in place of the previous plain-text type for every target, and recorded the source and target formats on each result so choosing a different conversion after a batch has run can no longer mislabel what is saved.",
+    "commit": null,
+    "verification": null
+  },
+  {
+    "area": "site",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Changed",
     "entry": "Replaced the site's own preference record with the shared kernel record, migrating an existing version 1 record once so a visitor keeps their dock, theme, density, accent, font scale, motion, language and humour choices.",
     "commit": null,
     "verification": null

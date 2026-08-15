@@ -15006,7 +15006,57 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "inline": [
           {
             "kind": "text",
-            "value": "Preferences, appearance overrides, local history, notifications, the changelog view, the documentation index, support notes, locks and converter results all use the same path."
+            "value": "Preferences, appearance overrides, local history, notifications, the changelog view, the documentation index, support notes and locks all use the same path."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "A converted file uses the same delivery too, but reaches it differently. Its body is already in its target format, so it is never handed back to the serializer, which would destroy that format; the manifest is stamped onto the finished body instead, in the form the target admits. A comma-separated or tab-separated result carries it as leading "
+          },
+          {
+            "kind": "code",
+            "value": "#"
+          },
+          {
+            "kind": "text",
+            "value": " comment lines, which the converter's own reader discards, so a stamped result still reads back as the same records. A Markdown result carries it as a heading and a bullet list above the table. Those comment lines substitute a semicolon for a comma and an apostrophe for a quotation mark: a comma-separated writer would otherwise wrap the whole line in quotation marks, its first character would stop being "
+          },
+          {
+            "kind": "code",
+            "value": "#"
+          },
+          {
+            "kind": "text",
+            "value": ", and the reader would take the manifest for a data row."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "One target cannot carry it. A vocabulary JSON result is written unchanged, because the vocabulary schema in the shared kernel accepts only its "
+          },
+          {
+            "kind": "code",
+            "value": "version"
+          },
+          {
+            "kind": "text",
+            "value": " and "
+          },
+          {
+            "kind": "code",
+            "value": "replacements"
+          },
+          {
+            "kind": "text",
+            "value": " root fields and would refuse a stamped document the next time it was read back. The panel states that before the result is saved rather than implying a manifest that is not there."
           }
         ]
       },
@@ -15064,6 +15114,12 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
               "kind": "text",
               "value": "Selection controls on every list with bulk actions."
             }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "The same folder-or-download delivery for a converted file. The converter writes files and has no clipboard action, so the statement shown there names the two paths it actually offers rather than three."
+            }
           ]
         ]
       },
@@ -15108,7 +15164,16 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "inline": [
           {
             "kind": "text",
-            "value": "Personal-vocabulary values are redacted from every export, which carries key counts and lengths only. The temporary object address used by the download path is released immediately after the download is dispatched."
+            "value": "Personal-vocabulary values are redacted from every export, which carries key counts and lengths only. The temporary object address used by the download path is released immediately after the download is dispatched, and that path is now the only one in the website's sources that creates such an address."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Saving a converted file is recorded in local history as the pair of formats that produced it. The name of the file the reader chose is not written to the record."
           }
         ]
       },
@@ -15139,15 +15204,7 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
           },
           {
             "kind": "text",
-            "value": ") and the source checks in "
-          },
-          {
-            "kind": "code",
-            "value": "apps/site/src/checks"
-          },
-          {
-            "kind": "text",
-            "value": ". It did not run tests, lint checks, type checks, accessibility checks, screenshots or other captures, or browser-based user-interface quality assurance. Nothing in this article should be read as evidence from one of those activities."
+            "value": ") and read the built bundle back to confirm that the converted-file delivery, its manifest wording and its stated limitation are present in it. It did not run tests, lint checks, type checks, accessibility checks, screenshots or other captures, or browser-based user-interface quality assurance. No file has been written from a browser, so the stamped manifest and the round trip described above are read from the sources rather than observed on a written file. Nothing in this article should be read as evidence from one of those activities."
           }
         ]
       },
@@ -15161,6 +15218,13 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "kind": "list",
         "ordered": false,
         "items": [
+          [
+            {
+              "kind": "link",
+              "text": "File converter",
+              "href": "file-converter.md"
+            }
+          ],
           [
             {
               "kind": "link",
@@ -15215,8 +15279,13 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "id": "related-articles"
       }
     ],
-    "plainText": "Exports and bulk actions\nBehaviour\nAn export is serialized by the kernel into JSON, comma-separated, Markdown or plain text, and always carries a manifest stating the surface, the collection, the moment, the exact filter that produced it, the row count, and what was omitted or redacted. Comma-separated cells are neutralized so a value cannot be interpreted as a formula by a spreadsheet application.\nPreferences, appearance overrides, local history, notifications, the changelog view, the documentation index, support notes, locks and converter results all use the same path.\nA shared selection layer gives every list per-row checkboxes, select-all-visible, shift-range selection and a live selected count. A destructive bulk action is gated behind a confirmation naming the exact count and listing what would be affected.\nDelivery is honest about the browser sandbox. Where the browser supports it, an export can be written to a folder the reader chooses; elsewhere it is delivered as an ordinary download; and a copy-to-clipboard path is always available. The limitation is stated in the interface instead of offering an editor button that cannot work from a page.\nThis surface does not move the paper-only product boundary. It changes no tax figure, no rule citation, no boundary statement and no review requirement, and it implements nothing resembling NETFILE, EFILE, electronic submission, direct CRA transmission or automatic filing.\nConfiguration\nFour formats.\nA folder-choosing save where the browser supports it, a download fallback, and a clipboard path.\nSelection controls on every list with bulk actions.\nFailure modes\nA refused save reports the browser's own reason and nothing is written.\nA browser without clipboard access reports that rather than silently doing nothing.\nA destructive action cancelled at the confirmation changes nothing.\nPrivacy and security\nPersonal-vocabulary values are redacted from every export, which carries key counts and lengths only. The temporary object address used by the download path is released immediately after the download is dispatched.\nVerification status\nThis lane ran the site build (npm run pages:build in apps/site) and the source checks in apps/site/src/checks. It did not run tests, lint checks, type checks, accessibility checks, screenshots or other captures, or browser-based user-interface quality assurance. Nothing in this article should be read as evidence from one of those activities.\nRelated articles\nLocal history\nNotifications",
+    "plainText": "Exports and bulk actions\nBehaviour\nAn export is serialized by the kernel into JSON, comma-separated, Markdown or plain text, and always carries a manifest stating the surface, the collection, the moment, the exact filter that produced it, the row count, and what was omitted or redacted. Comma-separated cells are neutralized so a value cannot be interpreted as a formula by a spreadsheet application.\nPreferences, appearance overrides, local history, notifications, the changelog view, the documentation index, support notes and locks all use the same path.\nA converted file uses the same delivery too, but reaches it differently. Its body is already in its target format, so it is never handed back to the serializer, which would destroy that format; the manifest is stamped onto the finished body instead, in the form the target admits. A comma-separated or tab-separated result carries it as leading # comment lines, which the converter's own reader discards, so a stamped result still reads back as the same records. A Markdown result carries it as a heading and a bullet list above the table. Those comment lines substitute a semicolon for a comma and an apostrophe for a quotation mark: a comma-separated writer would otherwise wrap the whole line in quotation marks, its first character would stop being #, and the reader would take the manifest for a data row.\nOne target cannot carry it. A vocabulary JSON result is written unchanged, because the vocabulary schema in the shared kernel accepts only its version and replacements root fields and would refuse a stamped document the next time it was read back. The panel states that before the result is saved rather than implying a manifest that is not there.\nA shared selection layer gives every list per-row checkboxes, select-all-visible, shift-range selection and a live selected count. A destructive bulk action is gated behind a confirmation naming the exact count and listing what would be affected.\nDelivery is honest about the browser sandbox. Where the browser supports it, an export can be written to a folder the reader chooses; elsewhere it is delivered as an ordinary download; and a copy-to-clipboard path is always available. The limitation is stated in the interface instead of offering an editor button that cannot work from a page.\nThis surface does not move the paper-only product boundary. It changes no tax figure, no rule citation, no boundary statement and no review requirement, and it implements nothing resembling NETFILE, EFILE, electronic submission, direct CRA transmission or automatic filing.\nConfiguration\nFour formats.\nA folder-choosing save where the browser supports it, a download fallback, and a clipboard path.\nSelection controls on every list with bulk actions.\nThe same folder-or-download delivery for a converted file. The converter writes files and has no clipboard action, so the statement shown there names the two paths it actually offers rather than three.\nFailure modes\nA refused save reports the browser's own reason and nothing is written.\nA browser without clipboard access reports that rather than silently doing nothing.\nA destructive action cancelled at the confirmation changes nothing.\nPrivacy and security\nPersonal-vocabulary values are redacted from every export, which carries key counts and lengths only. The temporary object address used by the download path is released immediately after the download is dispatched, and that path is now the only one in the website's sources that creates such an address.\nSaving a converted file is recorded in local history as the pair of formats that produced it. The name of the file the reader chose is not written to the record.\nVerification status\nThis lane ran the site build (npm run pages:build in apps/site) and read the built bundle back to confirm that the converted-file delivery, its manifest wording and its stated limitation are present in it. It did not run tests, lint checks, type checks, accessibility checks, screenshots or other captures, or browser-based user-interface quality assurance. No file has been written from a browser, so the stamped manifest and the round trip described above are read from the sources rather than observed on a written file. Nothing in this article should be read as evidence from one of those activities.\nRelated articles\nFile converter\nLocal history\nNotifications",
     "links": [
+      {
+        "href": "file-converter.md",
+        "targetSlug": "docs-features-site-file-converter",
+        "text": "File converter"
+      },
       {
         "href": "local-history.md",
         "targetSlug": "docs-features-site-local-history",
@@ -15278,6 +15347,48 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "inline": [
           {
             "kind": "text",
+            "value": "A saved result leaves through the surface's shared export delivery rather than a path of its own, so it is written to a folder the reader chooses where the browser offers that interface and delivered as an ordinary download where it does not, it reports the file name, the size and the path it took, and it carries the same manifest an export carries. The pair of formats that produced a result is recorded on the result itself, so choosing a different conversion after a batch has run cannot mislabel what is saved."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "A vocabulary JSON result is the one target written without an inline manifest, because the vocabulary schema accepts only its "
+          },
+          {
+            "kind": "code",
+            "value": "version"
+          },
+          {
+            "kind": "text",
+            "value": " and "
+          },
+          {
+            "kind": "code",
+            "value": "replacements"
+          },
+          {
+            "kind": "text",
+            "value": " root fields and would refuse a stamped document the next time it was read. The panel states that beside the result before it is saved. Every other target carries the manifest: a comma-separated or tab-separated result as leading "
+          },
+          {
+            "kind": "code",
+            "value": "#"
+          },
+          {
+            "kind": "text",
+            "value": " comment lines the converter's own reader discards, and a Markdown result as a heading and a bullet list above the table."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
             "value": "The converter never accepts tax slips or return data, and no adapter for them exists."
           }
         ]
@@ -15318,6 +15429,12 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
               "kind": "text",
               "value": "A cancel control backed by an abort signal."
             }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "A per-result save that states what the written file will carry before it is written."
+            }
           ]
         ]
       },
@@ -15348,6 +15465,12 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
               "kind": "text",
               "value": "A cancelled batch reports the remaining files as cancelled rather than as converted."
             }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "A refused save reports the browser's own reason and nothing is written."
+            }
           ]
         ]
       },
@@ -15362,7 +15485,16 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "inline": [
           {
             "kind": "text",
-            "value": "Conversion happens in the browser. Output is delivered through a temporary object address that is released immediately after the download is dispatched."
+            "value": "Conversion happens in the browser. Where the browser has no folder-choosing interface, output is delivered through a temporary object address that is released immediately after the download is dispatched; that address is created in the shared export delivery, which is the only place in the website's sources that creates one."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Saving a result is recorded in local history as the pair of formats that produced it. The name of the file the reader chose is not written to the record."
           }
         ]
       },
@@ -15393,15 +15525,7 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
           },
           {
             "kind": "text",
-            "value": ") and the source checks in "
-          },
-          {
-            "kind": "code",
-            "value": "apps/site/src/checks"
-          },
-          {
-            "kind": "text",
-            "value": ". It did not run tests, lint checks, type checks, accessibility checks, screenshots or other captures, or browser-based user-interface quality assurance. Nothing in this article should be read as evidence from one of those activities."
+            "value": ") and read the built bundle back to confirm that the shared delivery, its manifest wording and its stated limitation are present in it. It did not run tests, lint checks, type checks, accessibility checks, screenshots or other captures, or browser-based user-interface quality assurance. No file has been converted or written by a browser, so everything above is read from the sources rather than observed. Nothing in this article should be read as evidence from one of those activities."
           }
         ]
       },
@@ -15469,7 +15593,7 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "id": "related-articles"
       }
     ],
-    "plainText": "File converter\nBehaviour\nThe converter changes this site's own records between formats. The registered adapters cover the personal-vocabulary map between JSON, comma-separated and two-column tab-separated form, and the documentation index, the changelog view and the notification history from their JSON form into comma-separated or Markdown tables.\nThe registry is fail-closed. A pair nothing is registered for produces a named refusal rather than a partial result, because a partially converted document is worse than no document.\nEach chosen file is validated, converted and previewed before anything is written. The panel shows the first converted rows for each file, and only then offers to save. A cancel control aborts the batch; a file rejected during a batch names its own reason and does not affect the others.\nThe converter never accepts tax slips or return data, and no adapter for them exists.\nThis surface does not move the paper-only product boundary. It changes no tax figure, no rule citation, no boundary statement and no review requirement, and it implements nothing resembling NETFILE, EFILE, electronic submission, direct CRA transmission or automatic filing.\nConfiguration\nA searchable adapter catalogue, with its own anchored builder.\nA per-file preview of the first converted rows.\nA cancel control backed by an abort signal.\nFailure modes\nAn input over the local size limit is rejected by name.\nAn input the adapter rejects reports the adapter's own reason.\nA cancelled batch reports the remaining files as cancelled rather than as converted.\nPrivacy and security\nConversion happens in the browser. Output is delivered through a temporary object address that is released immediately after the download is dispatched.\nVerification status\nThis lane ran the site build (npm run pages:build in apps/site) and the source checks in apps/site/src/checks. It did not run tests, lint checks, type checks, accessibility checks, screenshots or other captures, or browser-based user-interface quality assurance. Nothing in this article should be read as evidence from one of those activities.\nRelated articles\nPersonal vocabulary\nExports and bulk actions",
+    "plainText": "File converter\nBehaviour\nThe converter changes this site's own records between formats. The registered adapters cover the personal-vocabulary map between JSON, comma-separated and two-column tab-separated form, and the documentation index, the changelog view and the notification history from their JSON form into comma-separated or Markdown tables.\nThe registry is fail-closed. A pair nothing is registered for produces a named refusal rather than a partial result, because a partially converted document is worse than no document.\nEach chosen file is validated, converted and previewed before anything is written. The panel shows the first converted rows for each file, and only then offers to save. A cancel control aborts the batch; a file rejected during a batch names its own reason and does not affect the others.\nA saved result leaves through the surface's shared export delivery rather than a path of its own, so it is written to a folder the reader chooses where the browser offers that interface and delivered as an ordinary download where it does not, it reports the file name, the size and the path it took, and it carries the same manifest an export carries. The pair of formats that produced a result is recorded on the result itself, so choosing a different conversion after a batch has run cannot mislabel what is saved.\nA vocabulary JSON result is the one target written without an inline manifest, because the vocabulary schema accepts only its version and replacements root fields and would refuse a stamped document the next time it was read. The panel states that beside the result before it is saved. Every other target carries the manifest: a comma-separated or tab-separated result as leading # comment lines the converter's own reader discards, and a Markdown result as a heading and a bullet list above the table.\nThe converter never accepts tax slips or return data, and no adapter for them exists.\nThis surface does not move the paper-only product boundary. It changes no tax figure, no rule citation, no boundary statement and no review requirement, and it implements nothing resembling NETFILE, EFILE, electronic submission, direct CRA transmission or automatic filing.\nConfiguration\nA searchable adapter catalogue, with its own anchored builder.\nA per-file preview of the first converted rows.\nA cancel control backed by an abort signal.\nA per-result save that states what the written file will carry before it is written.\nFailure modes\nAn input over the local size limit is rejected by name.\nAn input the adapter rejects reports the adapter's own reason.\nA cancelled batch reports the remaining files as cancelled rather than as converted.\nA refused save reports the browser's own reason and nothing is written.\nPrivacy and security\nConversion happens in the browser. Where the browser has no folder-choosing interface, output is delivered through a temporary object address that is released immediately after the download is dispatched; that address is created in the shared export delivery, which is the only place in the website's sources that creates one.\nSaving a result is recorded in local history as the pair of formats that produced it. The name of the file the reader chose is not written to the record.\nVerification status\nThis lane ran the site build (npm run pages:build in apps/site) and read the built bundle back to confirm that the shared delivery, its manifest wording and its stated limitation are present in it. It did not run tests, lint checks, type checks, accessibility checks, screenshots or other captures, or browser-based user-interface quality assurance. No file has been converted or written by a browser, so everything above is read from the sources rather than observed. Nothing in this article should be read as evidence from one of those activities.\nRelated articles\nPersonal vocabulary\nExports and bulk actions",
     "links": [
       {
         "href": "personal-vocabulary.md",
@@ -17358,6 +17482,15 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "inline": [
           {
             "kind": "text",
+            "value": "A change to a rule or to the external switch is recorded in the local history like any other settings change. The record carries how many rules exist, how many are active, a one-line description of each rule, whether the external half is on, and whether an address is set. The address itself is never written to a record."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
             "value": "This surface does not move the paper-only product boundary. It changes no tax figure, no rule citation, no boundary statement and no review requirement, and it implements nothing resembling NETFILE, EFILE, electronic submission, direct CRA transmission or automatic filing."
           }
         ]
@@ -17396,6 +17529,48 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         ]
       },
       {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "The value control follows the target it belongs to, so a rule can carry any value the setting itself accepts:"
+          }
+        ]
+      },
+      {
+        "kind": "list",
+        "ordered": false,
+        "items": [
+          [
+            {
+              "kind": "text",
+              "value": "Accent colour is a colour control over the whole range, with the chosen value shown beside it. Any six-digit hexadecimal colour can be scheduled, not a shortlist of them."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "Font scale is a slider between the smallest and largest scale the shared validator accepts, shown as a percentage."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "Theme, density, motion, dock edge and the decorative emoji are lists of their own choices, taken from the shared validator's own sets so the editor and the validator cannot disagree. These are enumerations, so a list is the correct control rather than a limit on what can be scheduled."
+            }
+          ]
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "Every value passes through one normalizer, both when it is edited and when the stored record is read."
+          }
+        ]
+      },
+      {
         "kind": "heading",
         "level": 2,
         "text": "Failure modes",
@@ -17409,6 +17584,12 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
             {
               "kind": "text",
               "value": "A malformed time or an empty window makes the rule inactive rather than raising an error."
+            }
+          ],
+          [
+            {
+              "kind": "text",
+              "value": "A stored value outside the range its target accepts is corrected when the record is read, so the editor shows the value that will actually be used. A scale beyond either end is brought to that end, and a colour or a choice that is not recognized returns to the shipped default for that setting."
             }
           ],
           [
@@ -17467,7 +17648,7 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
           },
           {
             "kind": "text",
-            "value": ") and the source checks in "
+            "value": "), the source checks in "
           },
           {
             "kind": "code",
@@ -17475,7 +17656,40 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
           },
           {
             "kind": "text",
-            "value": ". It did not run tests, lint checks, type checks, accessibility checks, screenshots or other captures, or browser-based user-interface quality assurance. Nothing in this article should be read as evidence from one of those activities."
+            "value": " ("
+          },
+          {
+            "kind": "code",
+            "value": "search-builders"
+          },
+          {
+            "kind": "text",
+            "value": ", "
+          },
+          {
+            "kind": "code",
+            "value": "command-coverage"
+          },
+          {
+            "kind": "text",
+            "value": " and "
+          },
+          {
+            "kind": "code",
+            "value": "copy-facts"
+          },
+          {
+            "kind": "text",
+            "value": "), and the server-side render smoke check, which reported that the shell rendered and its structural checks held. The normalizer and the overlay were exercised in process against the shared validator, and an arbitrary accent colour and an arbitrary scale were observed reaching the effective presentation without changing the stored baseline."
+          }
+        ]
+      },
+      {
+        "kind": "paragraph",
+        "inline": [
+          {
+            "kind": "text",
+            "value": "It did not run tests, lint checks, type checks, accessibility checks, screenshots or other captures, or browser-based user-interface quality assurance. No rule has fired from a real clock in a browser, no external document has been read from a running page, and the rendered value controls have not been operated by a person. Nothing in this article should be read as evidence from one of those activities."
           }
         ]
       },
@@ -17543,7 +17757,7 @@ export const DOC_ENTRIES: DocsIndexEntry[] = [
         "id": "related-articles"
       }
     ],
-    "plainText": "Scheduled and external presentation settings\nBehaviour\nThis article is about the site's own presentation settings. It has nothing to do with a tax schedule or an official form.\nA rule changes a presentation setting during a time window. A rule never writes to the stored preference: the kernel evaluates the active rules into an overlay, and precedence is fixed and documented, with a change made by hand winning over an active rule and an active rule winning over the stored default. Turning a rule off therefore restores the stored value exactly, because that value was never replaced.\nThe window is evaluated in the browser's own time zone, including a window that crosses midnight. One interval re-evaluates while the tab is visible, and a visibility change re-evaluates immediately, so a tab that was in the background catches up instead of showing a stale window.\nThe external half is off by default. When it is switched on, one address the reader types may supply presentation values only. The address must be a complete https address, the fetch is bounded by an abort timeout, and the document is validated against the kernel's bounded schema and must declare the same origin it was served from. Any failure falls back to the local rules and states the exact reason.\nThis surface does not move the paper-only product boundary. It changes no tax figure, no rule citation, no boundary statement and no review requirement, and it implements nothing resembling NETFILE, EFILE, electronic submission, direct CRA transmission or automatic filing.\nConfiguration\nRules, each with a target setting, a value, a start time, an end time and an optional set of weekdays.\nExternal presentation settings: off by default, with an address and an explicit read control.\nOnly presentation settings are reachable: theme, density, motion, dock edge, accent colour, font scale and the decorative emoji. A key outside that set is ignored by name.\nFailure modes\nA malformed time or an empty window makes the rule inactive rather than raising an error.\nA non-https address, a failed request, a timeout, a document that is too large, a document with unknown fields, or a document declaring a different origin all fall back to the local rules with the reason shown.\nValues that are not presentation settings are listed as ignored rather than silently dropped.\nPrivacy and security\nNothing is uploaded. The external read is a plain request for a document the reader chose, made without credentials and without following a redirect, and it can change presentation only.\nVerification status\nThis lane ran the site build (npm run pages:build in apps/site) and the source checks in apps/site/src/checks. It did not run tests, lint checks, type checks, accessibility checks, screenshots or other captures, or browser-based user-interface quality assurance. Nothing in this article should be read as evidence from one of those activities.\nRelated articles\nMaterial 3 shell and appearance\nLocal history",
+    "plainText": "Scheduled and external presentation settings\nBehaviour\nThis article is about the site's own presentation settings. It has nothing to do with a tax schedule or an official form.\nA rule changes a presentation setting during a time window. A rule never writes to the stored preference: the kernel evaluates the active rules into an overlay, and precedence is fixed and documented, with a change made by hand winning over an active rule and an active rule winning over the stored default. Turning a rule off therefore restores the stored value exactly, because that value was never replaced.\nThe window is evaluated in the browser's own time zone, including a window that crosses midnight. One interval re-evaluates while the tab is visible, and a visibility change re-evaluates immediately, so a tab that was in the background catches up instead of showing a stale window.\nThe external half is off by default. When it is switched on, one address the reader types may supply presentation values only. The address must be a complete https address, the fetch is bounded by an abort timeout, and the document is validated against the kernel's bounded schema and must declare the same origin it was served from. Any failure falls back to the local rules and states the exact reason.\nA change to a rule or to the external switch is recorded in the local history like any other settings change. The record carries how many rules exist, how many are active, a one-line description of each rule, whether the external half is on, and whether an address is set. The address itself is never written to a record.\nThis surface does not move the paper-only product boundary. It changes no tax figure, no rule citation, no boundary statement and no review requirement, and it implements nothing resembling NETFILE, EFILE, electronic submission, direct CRA transmission or automatic filing.\nConfiguration\nRules, each with a target setting, a value, a start time, an end time and an optional set of weekdays.\nExternal presentation settings: off by default, with an address and an explicit read control.\nOnly presentation settings are reachable: theme, density, motion, dock edge, accent colour, font scale and the decorative emoji. A key outside that set is ignored by name.\nThe value control follows the target it belongs to, so a rule can carry any value the setting itself accepts:\nAccent colour is a colour control over the whole range, with the chosen value shown beside it. Any six-digit hexadecimal colour can be scheduled, not a shortlist of them.\nFont scale is a slider between the smallest and largest scale the shared validator accepts, shown as a percentage.\nTheme, density, motion, dock edge and the decorative emoji are lists of their own choices, taken from the shared validator's own sets so the editor and the validator cannot disagree. These are enumerations, so a list is the correct control rather than a limit on what can be scheduled.\nEvery value passes through one normalizer, both when it is edited and when the stored record is read.\nFailure modes\nA malformed time or an empty window makes the rule inactive rather than raising an error.\nA stored value outside the range its target accepts is corrected when the record is read, so the editor shows the value that will actually be used. A scale beyond either end is brought to that end, and a colour or a choice that is not recognized returns to the shipped default for that setting.\nA non-https address, a failed request, a timeout, a document that is too large, a document with unknown fields, or a document declaring a different origin all fall back to the local rules with the reason shown.\nValues that are not presentation settings are listed as ignored rather than silently dropped.\nPrivacy and security\nNothing is uploaded. The external read is a plain request for a document the reader chose, made without credentials and without following a redirect, and it can change presentation only.\nVerification status\nThis lane ran the site build (npm run pages:build in apps/site), the source checks in apps/site/src/checks (search-builders, command-coverage and copy-facts), and the server-side render smoke check, which reported that the shell rendered and its structural checks held. The normalizer and the overlay were exercised in process against the shared validator, and an arbitrary accent colour and an arbitrary scale were observed reaching the effective presentation without changing the stored baseline.\nIt did not run tests, lint checks, type checks, accessibility checks, screenshots or other captures, or browser-based user-interface quality assurance. No rule has fired from a real clock in a browser, no external document has been read from a running page, and the rendered value controls have not been operated by a person. Nothing in this article should be read as evidence from one of those activities.\nRelated articles\nMaterial 3 shell and appearance\nLocal history",
     "links": [
       {
         "href": "material-3-shell-and-appearance.md",

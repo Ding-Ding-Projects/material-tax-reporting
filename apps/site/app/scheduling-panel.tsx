@@ -9,29 +9,34 @@
  * requirement is reachable from either card.
  */
 
-import { type ScheduleRule, matchesSearch } from "@material-tax-reporting/surface-kernel";
+import {
+  type ScheduleRule,
+  MAX_FONT_SCALE,
+  MIN_FONT_SCALE,
+  matchesSearch,
+} from "@material-tax-reporting/surface-kernel";
 import { type ReactNode, useMemo } from "react";
 import {
   SCHEDULABLE_TARGETS,
+  SCHEDULE_FONT_SCALE_STEP,
+  SCHEDULE_VALUE_CHOICES,
   WEEKDAY_LABELS,
+  defaultScheduleValue,
+  isSchedulableTarget,
+  normalizeScheduleValue,
+  scheduleValueControl,
+  type SchedulableTarget,
   type SchedulingApi,
 } from "./scheduling.ts";
 import { CompactSearchWithBuilder, type SearchBinding } from "./search-builder.tsx";
 
-const TARGET_VALUES: Record<string, string[]> = {
-  theme: ["system", "light", "dark"],
-  density: ["comfortable", "compact"],
-  motion: ["system", "reduce", "full"],
-  dock: ["left", "top", "right", "bottom"],
-  accent: ["#4355b9", "#7a4bbd", "#1f6f5c", "#8a4b2f"],
-  fontScale: ["0.9", "1", "1.1", "1.25"],
-  dialogEmoji: ["true", "false"],
-};
-
-function coerce(target: string, raw: string): unknown {
-  if (target === "fontScale") return Number(raw);
-  if (target === "dialogEmoji") return raw === "true";
-  return raw;
+/**
+ * A stored rule always carries a schedulable target, because a rule naming
+ * anything else is dropped when the record is read. The fallback only satisfies
+ * the type; it is not a reachable state.
+ */
+function targetOf(rule: ScheduleRule): SchedulableTarget {
+  return isSchedulableTarget(rule.target) ? rule.target : SCHEDULABLE_TARGETS[0];
 }
 
 function newRuleId(): string {
@@ -74,96 +79,129 @@ export function SchedulePanel({
       <CompactSearchWithBuilder {...binding} />
 
       <ul className="rule-list">
-        {visible.map((rule) => (
-          <li key={rule.id}>
-            <label className="inline-check">
-              <input
-                type="checkbox"
-                checked={rule.enabled}
-                aria-label={`Enable the ${rule.target} rule`}
-                onChange={(event) => update(rule.id, { enabled: event.target.checked })}
-              />
-              Active
-            </label>
-            <label className="field-label" htmlFor={`rule-target-${rule.id}`}>
-              Setting
-            </label>
-            <select
-              id={`rule-target-${rule.id}`}
-              value={rule.target}
-              onChange={(event) =>
-                update(rule.id, {
-                  target: event.target.value,
-                  value: coerce(event.target.value, TARGET_VALUES[event.target.value]?.[0] ?? ""),
-                })
-              }
-            >
-              {SCHEDULABLE_TARGETS.map((target) => (
-                <option key={target} value={target}>
-                  {target}
-                </option>
-              ))}
-            </select>
-            <label className="field-label" htmlFor={`rule-value-${rule.id}`}>
-              Value while active
-            </label>
-            <select
-              id={`rule-value-${rule.id}`}
-              value={String(rule.value)}
-              onChange={(event) => update(rule.id, { value: coerce(rule.target, event.target.value) })}
-            >
-              {(TARGET_VALUES[rule.target] ?? []).map((value) => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
-            <label className="field-label" htmlFor={`rule-start-${rule.id}`}>
-              From
-            </label>
-            <input
-              id={`rule-start-${rule.id}`}
-              type="time"
-              value={rule.startTime}
-              onChange={(event) => update(rule.id, { startTime: event.target.value })}
-            />
-            <label className="field-label" htmlFor={`rule-end-${rule.id}`}>
-              Until
-            </label>
-            <input
-              id={`rule-end-${rule.id}`}
-              type="time"
-              value={rule.endTime}
-              onChange={(event) => update(rule.id, { endTime: event.target.value })}
-            />
-            <fieldset className="filter-row">
-              <legend>Days (none selected means every day)</legend>
-              {WEEKDAY_LABELS.map((weekday, index) => (
-                <label key={weekday} className="inline-check">
+        {visible.map((rule) => {
+          const target = targetOf(rule);
+          const control = scheduleValueControl(target);
+          const value = normalizeScheduleValue(target, rule.value);
+          const scale = Number(value);
+          return (
+            <li key={rule.id}>
+              <label className="inline-check">
+                <input
+                  type="checkbox"
+                  checked={rule.enabled}
+                  aria-label={`Enable the ${rule.target} rule`}
+                  onChange={(event) => update(rule.id, { enabled: event.target.checked })}
+                />
+                Active
+              </label>
+              <label className="field-label" htmlFor={`rule-target-${rule.id}`}>
+                Setting
+              </label>
+              <select
+                id={`rule-target-${rule.id}`}
+                value={rule.target}
+                onChange={(event) => {
+                  const next = isSchedulableTarget(event.target.value) ? event.target.value : target;
+                  update(rule.id, { target: next, value: defaultScheduleValue(next) });
+                }}
+              >
+                {SCHEDULABLE_TARGETS.map((choice) => (
+                  <option key={choice} value={choice}>
+                    {choice}
+                  </option>
+                ))}
+              </select>
+              <label className="field-label" htmlFor={`rule-value-${rule.id}`}>
+                Value while active
+              </label>
+              {control === "choice" && (
+                <select
+                  id={`rule-value-${rule.id}`}
+                  value={String(value)}
+                  onChange={(event) => update(rule.id, { value: normalizeScheduleValue(target, event.target.value) })}
+                >
+                  {(SCHEDULE_VALUE_CHOICES[target] ?? []).map((choice) => (
+                    <option key={choice} value={choice}>
+                      {choice}
+                    </option>
+                  ))}
+                </select>
+              )}
+              {control === "colour" && (
+                <div className="color-control">
                   <input
-                    type="checkbox"
-                    checked={rule.weekdays.includes(index)}
-                    onChange={(event) =>
-                      update(rule.id, {
-                        weekdays: event.target.checked
-                          ? [...rule.weekdays, index].sort()
-                          : rule.weekdays.filter((day) => day !== index),
-                      })
-                    }
+                    id={`rule-value-${rule.id}`}
+                    type="color"
+                    value={String(value)}
+                    onChange={(event) => update(rule.id, { value: normalizeScheduleValue(target, event.target.value) })}
                   />
-                  {weekday}
-                </label>
-              ))}
-            </fieldset>
-            <button
-              type="button"
-              className="text-button"
-              onClick={() => api.setRules(api.state.rules.filter((entry) => entry.id !== rule.id))}
-            >
-              Remove this rule
-            </button>
-          </li>
-        ))}
+                  <span>{String(value).toUpperCase()}</span>
+                </div>
+              )}
+              {control === "scale" && (
+                <div className="range-control">
+                  <span>{Math.round(scale * 100)}%</span>
+                  <input
+                    id={`rule-value-${rule.id}`}
+                    type="range"
+                    min={MIN_FONT_SCALE}
+                    max={MAX_FONT_SCALE}
+                    step={SCHEDULE_FONT_SCALE_STEP}
+                    value={scale}
+                    aria-valuetext={`${Math.round(scale * 100)} percent`}
+                    onChange={(event) => update(rule.id, { value: normalizeScheduleValue(target, event.target.value) })}
+                  />
+                  <span>{`Between ${MIN_FONT_SCALE * 100}% and ${MAX_FONT_SCALE * 100}%.`}</span>
+                </div>
+              )}
+              <label className="field-label" htmlFor={`rule-start-${rule.id}`}>
+                From
+              </label>
+              <input
+                id={`rule-start-${rule.id}`}
+                type="time"
+                value={rule.startTime}
+                onChange={(event) => update(rule.id, { startTime: event.target.value })}
+              />
+              <label className="field-label" htmlFor={`rule-end-${rule.id}`}>
+                Until
+              </label>
+              <input
+                id={`rule-end-${rule.id}`}
+                type="time"
+                value={rule.endTime}
+                onChange={(event) => update(rule.id, { endTime: event.target.value })}
+              />
+              <fieldset className="filter-row">
+                <legend>Days (none selected means every day)</legend>
+                {WEEKDAY_LABELS.map((weekday, index) => (
+                  <label key={weekday} className="inline-check">
+                    <input
+                      type="checkbox"
+                      checked={rule.weekdays.includes(index)}
+                      onChange={(event) =>
+                        update(rule.id, {
+                          weekdays: event.target.checked
+                            ? [...rule.weekdays, index].sort()
+                            : rule.weekdays.filter((day) => day !== index),
+                        })
+                      }
+                    />
+                    {weekday}
+                  </label>
+                ))}
+              </fieldset>
+              <button
+                type="button"
+                className="text-button"
+                onClick={() => api.setRules(api.state.rules.filter((entry) => entry.id !== rule.id))}
+              >
+                Remove this rule
+              </button>
+            </li>
+          );
+        })}
         {visible.length === 0 && <li>No rule matches the filter.</li>}
       </ul>
 
@@ -189,7 +227,9 @@ export function SchedulePanel({
       </button>
       <small>
         A later rule wins when two rules name the same setting. A change you make by hand always wins over an
-        active rule, and the stored value returns the moment no rule applies.
+        active rule, and the stored value returns the moment no rule applies. The accent colour is any colour and
+        the text size is any supported scale; the remaining settings offer their own choices, because a value
+        outside that set has no meaning.
       </small>
     </section>
   );

@@ -1,7 +1,11 @@
 {
   "schemaVersion": 1,
   "repository": "material-tax-reporting",
-  "surfaces": ["site", "desktop", "packages"],
+  "surfaces": [
+    "site",
+    "desktop",
+    "packages"
+  ],
   "evidencePolicy": "A row may claim runtime or capture evidence only after a real built surface was exercised and the result recorded; reading source, reviewing a diff, or completing a build never upgrades a pending row, so an empty test array, a runtimeInteraction nobody has performed, and captureEvidence of \"none\" are the honest default rather than an omission.",
   "productBoundary": {
     "terminalOutput": "CRA mail-in PDF package",
@@ -25,8 +29,12 @@
         "apps/site/app/SiteApp.tsx",
         "apps/site/app/layout.tsx"
       ],
-      "documentation": ["docs/features/site/material-3-shell-and-appearance.md"],
-      "changelog": ["CHANGELOG.site.md"],
+      "documentation": [
+        "docs/features/site/material-3-shell-and-appearance.md"
+      ],
+      "changelog": [
+        "CHANGELOG.site.md"
+      ],
       "test": [],
       "runtimeInteraction": "Build the site, serve the output, and open it in a browser at several viewport widths, in light and dark system settings, and with the operating system's reduced-motion setting on and off.",
       "captureEvidence": "none",
@@ -47,8 +55,12 @@
         "apps/site/app/SiteApp.tsx",
         "apps/site/src/checks/copy-facts.check.ts"
       ],
-      "documentation": ["docs/features/site/language-and-funny-levels.md"],
-      "changelog": ["CHANGELOG.site.md"],
+      "documentation": [
+        "docs/features/site/language-and-funny-levels.md"
+      ],
+      "changelog": [
+        "CHANGELOG.site.md"
+      ],
       "test": [],
       "runtimeInteraction": "Open the site, change the language mode and each humour slider, and read the same fact-bearing string at all five levels in both languages to confirm the facts do not drift.",
       "captureEvidence": "none",
@@ -69,8 +81,12 @@
         "apps/site/app/data/copy.ts",
         "apps/site/src/checks/copy-facts.check.ts"
       ],
-      "documentation": ["docs/features/site/personal-vocabulary.md"],
-      "changelog": ["CHANGELOG.site.md"],
+      "documentation": [
+        "docs/features/site/personal-vocabulary.md"
+      ],
+      "changelog": [
+        "CHANGELOG.site.md"
+      ],
       "test": [],
       "runtimeInteraction": "Open the site, supply a vocabulary document, and confirm that ordinary wording is replaced while the immutable spans covering legal, boundary, and disclosure sentences are left alone.",
       "captureEvidence": "none",
@@ -85,9 +101,16 @@
       "title": "Read aloud",
       "surface": "site",
       "state": "implemented",
-      "implementation": ["apps/site/app/narration.ts", "apps/site/app/SiteApp.tsx"],
-      "documentation": ["docs/features/site/narration.md"],
-      "changelog": ["CHANGELOG.site.md"],
+      "implementation": [
+        "apps/site/app/narration.ts",
+        "apps/site/app/SiteApp.tsx"
+      ],
+      "documentation": [
+        "docs/features/site/narration.md"
+      ],
+      "changelog": [
+        "CHANGELOG.site.md"
+      ],
       "test": [],
       "runtimeInteraction": "Open the site in a browser that provides speech synthesis, choose voices per language, and use a section's read control to hear the queue play one utterance at a time.",
       "captureEvidence": "none",
@@ -102,15 +125,23 @@
       "title": "Scheduled and external presentation settings",
       "surface": "site",
       "state": "partial",
-      "implementation": ["apps/site/app/scheduling.ts", "apps/site/app/scheduling-panel.tsx"],
-      "documentation": ["docs/features/site/scheduled-and-external-settings.md"],
-      "changelog": ["CHANGELOG.site.md"],
+      "implementation": [
+        "apps/site/app/scheduling.ts",
+        "apps/site/app/scheduling-panel.tsx"
+      ],
+      "documentation": [
+        "docs/features/site/scheduled-and-external-settings.md"
+      ],
+      "changelog": [
+        "CHANGELOG.site.md"
+      ],
       "test": [],
       "runtimeInteraction": "Open the site, add a time-window rule, wait for or simulate the window boundary, and confirm precedence of a manual override over an active rule; separately, point the external source at an allowlisted https origin serving a settings document and confirm the validated values are applied.",
       "captureEvidence": "none",
       "boundaryNote": "Presentation values only. No schedule and no external document can change a tax figure, a rule citation, or the paper-only boundary, and no external source is enabled by default.",
       "evidenceGaps": [
-        "The rules editor offers a fixed value list per target rather than a free-form value, so values such as an arbitrary accent colour cannot be scheduled; this is why the row is partial.",
+        "The documented manual-over-rule precedence is not implemented. apps/site/app/scheduling.ts calls resolvePrecedence with an empty manual-override map, so an active rule always wins and a settings control for a key that rule targets is inert: selecting a value diffs against an unchanged baseline, writes nothing, and the control snaps back. This is why the row is partial.",
+        "A scheduled rule reaches the effective settings through applyOverlay without passing the guarded preference setter, so an element lock on a locked setting is bypassed by a rule targeting the same key.",
         "No external settings request has been made from a running page, so the allowlist, the abort path, and the validator have not been exercised end to end.",
         "No capture of an applied overlay exists."
       ]
@@ -120,9 +151,15 @@
       "title": "Display name and mark",
       "surface": "site",
       "state": "implemented",
-      "implementation": ["apps/site/app/identity.tsx"],
-      "documentation": ["docs/features/site/display-name-and-logo.md"],
-      "changelog": ["CHANGELOG.site.md"],
+      "implementation": [
+        "apps/site/app/identity.tsx"
+      ],
+      "documentation": [
+        "docs/features/site/display-name-and-logo.md"
+      ],
+      "changelog": [
+        "CHANGELOG.site.md"
+      ],
       "test": [],
       "runtimeInteraction": "Open the site, set a display name, choose among the shipped marks, and attempt an upload of an oversized file and of a vector image to see both refused with a stated reason.",
       "captureEvidence": "none",
@@ -137,16 +174,22 @@
       "title": "File converter",
       "surface": "site",
       "state": "implemented",
-      "implementation": ["apps/site/app/converter.ts", "apps/site/app/converter-panel.tsx"],
-      "documentation": ["docs/features/site/file-converter.md"],
-      "changelog": ["CHANGELOG.site.md"],
+      "implementation": [
+        "apps/site/app/converter.ts",
+        "apps/site/app/converter-panel.tsx"
+      ],
+      "documentation": [
+        "docs/features/site/file-converter.md"
+      ],
+      "changelog": [
+        "CHANGELOG.site.md"
+      ],
       "test": [],
       "runtimeInteraction": "Open the site, add files of a supported source format, run a conversion, cancel one mid-run, and confirm the per-file reason shown for an unsupported pair.",
       "captureEvidence": "none",
       "boundaryNote": "Converts this site's own record formats. It produces no tax form, no return, and no package for a tax authority, and nothing leaves the browser.",
       "evidenceGaps": [
-        "No conversion has been run; the adapter registry's refusal path and the object-URL revocation are unobserved.",
-        "Converter output does not carry the export manifest the other collections carry, because it is written through its own blob path rather than the shared export path."
+        "No conversion has been run; the adapter registry refusal path and the object-URL revocation are unobserved."
       ]
     },
     {
@@ -154,9 +197,16 @@
       "title": "Local model runtime view",
       "surface": "site",
       "state": "partial",
-      "implementation": ["apps/site/app/ollama-tab.tsx"],
-      "documentation": ["docs/features/local-ollama-suite/README.md"],
-      "changelog": ["CHANGELOG.site.md", "CHANGELOG.ollama.md"],
+      "implementation": [
+        "apps/site/app/ollama-tab.tsx"
+      ],
+      "documentation": [
+        "docs/features/local-ollama-suite/README.md"
+      ],
+      "changelog": [
+        "CHANGELOG.site.md",
+        "CHANGELOG.ollama.md"
+      ],
       "test": [],
       "runtimeInteraction": "Open the site on a computer with and without a local runtime listening on loopback, and confirm that each of the five health branches is reported from the observed check results rather than assumed.",
       "captureEvidence": "none",
@@ -173,9 +223,16 @@
       "title": "Tabs and navigation",
       "surface": "site",
       "state": "implemented",
-      "implementation": ["apps/site/app/tabs.ts", "apps/site/app/tab-strip.tsx"],
-      "documentation": ["docs/features/site/tabs-and-navigation.md"],
-      "changelog": ["CHANGELOG.site.md"],
+      "implementation": [
+        "apps/site/app/tabs.ts",
+        "apps/site/app/tab-strip.tsx"
+      ],
+      "documentation": [
+        "docs/features/site/tabs-and-navigation.md"
+      ],
+      "changelog": [
+        "CHANGELOG.site.md"
+      ],
       "test": [],
       "runtimeInteraction": "Open the site, move focus through the tab strip with the arrow keys and Home and End, reorder with the keyboard and by dragging, pin and group tabs, shrink the window until the overflow menu appears, and run a bulk close.",
       "captureEvidence": "none",
@@ -190,9 +247,16 @@
       "title": "Appearance editor and colour translator",
       "surface": "site",
       "state": "implemented",
-      "implementation": ["apps/site/app/appearance.tsx", "apps/site/app/globals.css"],
-      "documentation": ["docs/features/site/appearance-editor.md"],
-      "changelog": ["CHANGELOG.site.md"],
+      "implementation": [
+        "apps/site/app/appearance.tsx",
+        "apps/site/app/globals.css"
+      ],
+      "documentation": [
+        "docs/features/site/appearance-editor.md"
+      ],
+      "changelog": [
+        "CHANGELOG.site.md"
+      ],
       "test": [],
       "runtimeInteraction": "Open the site, override a property on a chosen element, read the contrast verdict, convert a colour between the supported spaces, export a preset, import it again, and reset one element and then all of them.",
       "captureEvidence": "none",
@@ -207,9 +271,15 @@
       "title": "Element locks",
       "surface": "site",
       "state": "partial",
-      "implementation": ["apps/site/app/locks.tsx"],
-      "documentation": ["docs/features/site/element-locks.md"],
-      "changelog": ["CHANGELOG.site.md"],
+      "implementation": [
+        "apps/site/app/locks.tsx"
+      ],
+      "documentation": [
+        "docs/features/site/element-locks.md"
+      ],
+      "changelog": [
+        "CHANGELOG.site.md"
+      ],
       "test": [],
       "runtimeInteraction": "Open the site, create a lock, attempt a blocked change, answer correctly and incorrectly, leave and return to the tab to confirm the relock, and follow the documented reset.",
       "captureEvidence": "none",
@@ -224,9 +294,16 @@
       "title": "Authenticator utility and support notes",
       "surface": "site",
       "state": "implemented",
-      "implementation": ["apps/site/app/totp-panel.tsx", "apps/site/app/support-tickets.tsx"],
-      "documentation": ["docs/features/site/authenticator-and-support.md"],
-      "changelog": ["CHANGELOG.site.md"],
+      "implementation": [
+        "apps/site/app/totp-panel.tsx",
+        "apps/site/app/support-tickets.tsx"
+      ],
+      "documentation": [
+        "docs/features/site/authenticator-and-support.md"
+      ],
+      "changelog": [
+        "CHANGELOG.site.md"
+      ],
       "test": [],
       "runtimeInteraction": "Open the site, generate a secret, watch the countdown roll to the next code, verify a code typed back in, scan the rendered matrix with a real authenticator application, and create, edit, resolve, and reopen a support note.",
       "captureEvidence": "none",
@@ -247,8 +324,12 @@
         "apps/site/app/history-panel.tsx",
         "apps/site/app/storage.ts"
       ],
-      "documentation": ["docs/features/site/local-history.md"],
-      "changelog": ["CHANGELOG.site.md"],
+      "documentation": [
+        "docs/features/site/local-history.md"
+      ],
+      "changelog": [
+        "CHANGELOG.site.md"
+      ],
       "test": [],
       "runtimeInteraction": "Open the site, make several personalization changes, filter the resulting records by date and action, inspect a difference, restore an earlier revision and confirm it is appended as a new record, and run the prune control at the documented cap.",
       "captureEvidence": "none",
@@ -263,9 +344,16 @@
       "title": "Notifications",
       "surface": "site",
       "state": "implemented",
-      "implementation": ["apps/site/app/notifications.ts", "apps/site/app/notifications-centre.tsx"],
-      "documentation": ["docs/features/site/notifications.md"],
-      "changelog": ["CHANGELOG.site.md"],
+      "implementation": [
+        "apps/site/app/notifications.ts",
+        "apps/site/app/notifications-centre.tsx"
+      ],
+      "documentation": [
+        "docs/features/site/notifications.md"
+      ],
+      "changelog": [
+        "CHANGELOG.site.md"
+      ],
       "test": [],
       "runtimeInteraction": "Open the site, trigger notices of each severity, confirm that progress and error notices do not dismiss themselves, filter by kind and date, select a scope, and use the counted dismiss-all control.",
       "captureEvidence": "none",
@@ -285,8 +373,12 @@
         "apps/site/app/data/changelog.ts",
         "apps/site/build/sites-vite-plugin.ts"
       ],
-      "documentation": ["docs/features/site/changelog-viewer.md"],
-      "changelog": ["CHANGELOG.site.md"],
+      "documentation": [
+        "docs/features/site/changelog-viewer.md"
+      ],
+      "changelog": [
+        "CHANGELOG.site.md"
+      ],
       "test": [],
       "runtimeInteraction": "Open the site, group entries by area and release, filter by date range, read a Verification block, and export the filtered set.",
       "captureEvidence": "none",
@@ -307,8 +399,12 @@
         "apps/site/app/data/features.ts",
         "apps/site/build/sites-vite-plugin.ts"
       ],
-      "documentation": ["docs/features/site/documentation-browser.md"],
-      "changelog": ["CHANGELOG.site.md"],
+      "documentation": [
+        "docs/features/site/documentation-browser.md"
+      ],
+      "changelog": [
+        "CHANGELOG.site.md"
+      ],
       "test": [],
       "runtimeInteraction": "Open the site, search the bundled articles, follow an internal link and an in-page anchor, and read the feature library, whose state statements are taken from the tracked website verification status rather than written into a component.",
       "captureEvidence": "none",
@@ -328,8 +424,12 @@
         "apps/site/app/data/commands.ts",
         "apps/site/src/checks/command-coverage.check.ts"
       ],
-      "documentation": ["docs/features/site/command-palette.md"],
-      "changelog": ["CHANGELOG.site.md"],
+      "documentation": [
+        "docs/features/site/command-palette.md"
+      ],
+      "changelog": [
+        "CHANGELOG.site.md"
+      ],
       "test": [],
       "runtimeInteraction": "Open the site, open the palette from its keyboard shortcut, move through results with the arrow keys, change a setting from an inline control in a result, teleport to a destination, and close the palette to confirm focus returns to where it started.",
       "captureEvidence": "none",
@@ -348,8 +448,12 @@
         "apps/site/app/search-builder.tsx",
         "apps/site/src/checks/search-builders.check.ts"
       ],
-      "documentation": ["docs/features/site/regex-builders.md"],
-      "changelog": ["CHANGELOG.site.md"],
+      "documentation": [
+        "docs/features/site/regex-builders.md"
+      ],
+      "changelog": [
+        "CHANGELOG.site.md"
+      ],
       "test": [],
       "runtimeInteraction": "Open the site, enable pattern mode beside any search field, insert the start-anchor and end-anchor tokens from the palette, supply an invalid pattern to see the reason reported rather than applied, and confirm the sample feedback and the visible-of-total count.",
       "captureEvidence": "none",
@@ -364,17 +468,25 @@
       "title": "Exports and bulk actions",
       "surface": "site",
       "state": "partial",
-      "implementation": ["apps/site/app/exports.ts"],
-      "documentation": ["docs/features/site/exports-and-bulk-actions.md"],
-      "changelog": ["CHANGELOG.site.md"],
+      "implementation": [
+        "apps/site/app/exports.ts"
+      ],
+      "documentation": [
+        "docs/features/site/exports-and-bulk-actions.md"
+      ],
+      "changelog": [
+        "CHANGELOG.site.md"
+      ],
       "test": [],
-      "runtimeInteraction": "Open the site, select rows in a collection, export in each supported format, save to a folder and to the clipboard, and confirm the stamped manifest and the omissions note on the written file.",
+      "runtimeInteraction": "Open the site, select rows in a collection, export in each supported format, save to a folder and to the clipboard, save a converted result from the converter panel, and confirm the stamped manifest and the omissions note on each written file.",
       "captureEvidence": "none",
       "boundaryNote": "Exports this surface's own personalization records. It produces no tax form and no package for a tax authority, and an export is written where the visitor chooses rather than sent anywhere.",
       "evidenceGaps": [
-        "Converter output is written through its own path and does not carry the export manifest the other collections carry, which is why the row is partial.",
-        "No export has been written from a browser, so the folder-save, download, and clipboard paths are unobserved.",
-        "Spreadsheet-cell neutralization is exercised only by the shared package's tests, never by a written file from this surface."
+        "No export-format control exists on the surface. EXPORT_FORMATS in apps/site/app/exports.ts has no consumer; every call site hard-codes a literal, and only json and markdown are ever used. The csv and text formats have no call site, so the four documented formats are not reachable by a visitor. This is why the row is partial.",
+        "A copy-to-clipboard path is not always available. The only clipboard control is hard-coded to the Preferences collection in markdown and ignores selection; no other collection exposes one.",
+        "A converted file written to a vocabulary JSON target carries no inline manifest, because the vocabulary schema accepts only the version and replacement fields.",
+        "No export has been written from a browser, so the folder-save and download paths are unobserved.",
+        "Spreadsheet-cell neutralization is unreachable from the interface, because no call site selects a delimited format."
       ]
     },
     {
@@ -382,9 +494,16 @@
       "title": "Transfer surfaces",
       "surface": "site",
       "state": "partial",
-      "implementation": ["apps/site/app/download-surfaces.tsx", "apps/site/app/data/releases.json"],
-      "documentation": ["docs/features/site/download-surfaces.md"],
-      "changelog": ["CHANGELOG.site.md"],
+      "implementation": [
+        "apps/site/app/download-surfaces.tsx",
+        "apps/site/app/data/releases.json"
+      ],
+      "documentation": [
+        "docs/features/site/download-surfaces.md"
+      ],
+      "changelog": [
+        "CHANGELOG.site.md"
+      ],
       "test": [],
       "runtimeInteraction": "This surface cannot be exercised today: the release manifest carries no assets, so the site renders its unavailable state. Exercising it would require a published, verified, immutable release asset that does not exist.",
       "captureEvidence": "none",
@@ -405,8 +524,12 @@
         "apps/desktop/src/renderer/index.html",
         "apps/desktop/scripts/build.mjs"
       ],
-      "documentation": ["docs/features/desktop/settings-and-preferences.md"],
-      "changelog": ["CHANGELOG.desktop.md"],
+      "documentation": [
+        "docs/features/desktop/settings-and-preferences.md"
+      ],
+      "changelog": [
+        "CHANGELOG.desktop.md"
+      ],
       "test": [],
       "runtimeInteraction": "Install the application's dependencies, run the build, launch the application, and view the shell in light and dark settings, at several window sizes, and with reduced motion on and off.",
       "captureEvidence": "none",
@@ -427,8 +550,12 @@
         "apps/desktop/src/renderer/app.js",
         "apps/desktop/src/renderer/settings.js"
       ],
-      "documentation": ["docs/features/desktop/language-and-funny-levels.md"],
-      "changelog": ["CHANGELOG.desktop.md"],
+      "documentation": [
+        "docs/features/desktop/language-and-funny-levels.md"
+      ],
+      "changelog": [
+        "CHANGELOG.desktop.md"
+      ],
       "test": [],
       "runtimeInteraction": "Launch the application, change the language mode and each humour slider, and read the wizard questions, validation lines, and review labels at all five levels in both languages.",
       "captureEvidence": "none",
@@ -450,8 +577,12 @@
         "apps/desktop/src/main/main.js",
         "apps/desktop/src/renderer/settings.js"
       ],
-      "documentation": ["docs/features/desktop/personal-vocabulary.md"],
-      "changelog": ["CHANGELOG.desktop.md"],
+      "documentation": [
+        "docs/features/desktop/personal-vocabulary.md"
+      ],
+      "changelog": [
+        "CHANGELOG.desktop.md"
+      ],
       "test": [],
       "runtimeInteraction": "Launch the application, supply a vocabulary document, and confirm that ordinary wording is replaced while legal, boundary, and disclosure sentences are left alone.",
       "captureEvidence": "none",
@@ -471,8 +602,12 @@
         "apps/desktop/src/renderer/index.html",
         "apps/desktop/src/renderer/app.js"
       ],
-      "documentation": ["docs/features/desktop/narration.md"],
-      "changelog": ["CHANGELOG.desktop.md"],
+      "documentation": [
+        "docs/features/desktop/narration.md"
+      ],
+      "changelog": [
+        "CHANGELOG.desktop.md"
+      ],
       "test": [],
       "runtimeInteraction": "Launch the application, choose a voice per language, and use a read control to hear the queue play one utterance at a time.",
       "captureEvidence": "none",
@@ -492,8 +627,12 @@
         "apps/desktop/src/main/main.js",
         "apps/desktop/src/renderer/settings.js"
       ],
-      "documentation": ["docs/features/desktop/scheduled-and-external-settings.md"],
-      "changelog": ["CHANGELOG.desktop.md"],
+      "documentation": [
+        "docs/features/desktop/scheduled-and-external-settings.md"
+      ],
+      "changelog": [
+        "CHANGELOG.desktop.md"
+      ],
       "test": [],
       "runtimeInteraction": "Launch the application, add a time-window rule, cross the window boundary, confirm that a manual override takes precedence over an active rule, and separately point the external source at an allowlisted https origin serving a settings document.",
       "captureEvidence": "none",
@@ -508,9 +647,16 @@
       "title": "Display name and logo",
       "surface": "desktop",
       "state": "implemented",
-      "implementation": ["apps/desktop/src/main/main.js", "apps/desktop/src/renderer/settings.js"],
-      "documentation": ["docs/features/desktop/display-name-and-logo.md"],
-      "changelog": ["CHANGELOG.desktop.md"],
+      "implementation": [
+        "apps/desktop/src/main/main.js",
+        "apps/desktop/src/renderer/settings.js"
+      ],
+      "documentation": [
+        "docs/features/desktop/display-name-and-logo.md"
+      ],
+      "changelog": [
+        "CHANGELOG.desktop.md"
+      ],
       "test": [],
       "runtimeInteraction": "Launch the application, set a display name, choose a logo file, and confirm both the window title and the About card follow the choice, and that an oversized or vector image is refused with a stated reason.",
       "captureEvidence": "none",
@@ -530,8 +676,12 @@
         "apps/desktop/src/main/pdf-text.js",
         "apps/desktop/src/renderer/converter.js"
       ],
-      "documentation": ["docs/features/desktop/file-converter.md"],
-      "changelog": ["CHANGELOG.desktop.md"],
+      "documentation": [
+        "docs/features/desktop/file-converter.md"
+      ],
+      "changelog": [
+        "CHANGELOG.desktop.md"
+      ],
       "test": [],
       "runtimeInteraction": "Launch the application, add files of a supported source format, run a conversion, and read the stated reason on the disabled optical-character-recognition row.",
       "captureEvidence": "none",
@@ -552,8 +702,13 @@
         "apps/desktop/src/main/main.js",
         "apps/desktop/src/renderer/ollama.js"
       ],
-      "documentation": ["docs/features/local-ollama-suite/README.md"],
-      "changelog": ["CHANGELOG.desktop.md", "CHANGELOG.ollama.md"],
+      "documentation": [
+        "docs/features/local-ollama-suite/README.md"
+      ],
+      "changelog": [
+        "CHANGELOG.desktop.md",
+        "CHANGELOG.ollama.md"
+      ],
       "test": [],
       "runtimeInteraction": "Launch the application on a computer with a local runtime listening on loopback, probe the runtime, refresh the official catalogue, review and commit a batch, hold a local chat, preview and launch an allowlisted harness, and confirm that model deletion requires both confirmations and the completion control.",
       "captureEvidence": "none",
@@ -574,8 +729,12 @@
         "apps/desktop/src/renderer/index.html",
         "apps/desktop/src/main/preferences-store.js"
       ],
-      "documentation": ["docs/features/desktop/tabs-and-navigation.md"],
-      "changelog": ["CHANGELOG.desktop.md"],
+      "documentation": [
+        "docs/features/desktop/tabs-and-navigation.md"
+      ],
+      "changelog": [
+        "CHANGELOG.desktop.md"
+      ],
       "test": [],
       "runtimeInteraction": "Launch the application, move through the tab strip with the arrow keys and Home and End in each dock position, reorder and pin tabs, group them, run a bulk close and confirm the matched set before it applies, then restart and confirm the layout was restored.",
       "captureEvidence": "none",
@@ -590,9 +749,16 @@
       "title": "Appearance editor",
       "surface": "desktop",
       "state": "implemented",
-      "implementation": ["apps/desktop/src/renderer/appearance.js", "apps/desktop/src/main/main.js"],
-      "documentation": ["docs/features/desktop/appearance-editor.md"],
-      "changelog": ["CHANGELOG.desktop.md"],
+      "implementation": [
+        "apps/desktop/src/renderer/appearance.js",
+        "apps/desktop/src/main/main.js"
+      ],
+      "documentation": [
+        "docs/features/desktop/appearance-editor.md"
+      ],
+      "changelog": [
+        "CHANGELOG.desktop.md"
+      ],
       "test": [],
       "runtimeInteraction": "Launch the application, override a property on a chosen element, export a preset, import it again, and reset one element and then all of them.",
       "captureEvidence": "none",
@@ -607,9 +773,16 @@
       "title": "Element locks",
       "surface": "desktop",
       "state": "implemented",
-      "implementation": ["apps/desktop/src/main/element-locks.js", "apps/desktop/src/renderer/locks.js"],
-      "documentation": ["docs/features/desktop/element-locks.md"],
-      "changelog": ["CHANGELOG.desktop.md"],
+      "implementation": [
+        "apps/desktop/src/main/element-locks.js",
+        "apps/desktop/src/renderer/locks.js"
+      ],
+      "documentation": [
+        "docs/features/desktop/element-locks.md"
+      ],
+      "changelog": [
+        "CHANGELOG.desktop.md"
+      ],
       "test": [],
       "runtimeInteraction": "Launch the application, create a lock, attempt a blocked change, answer correctly and incorrectly, and follow the documented reset.",
       "captureEvidence": "none",
@@ -629,8 +802,12 @@
         "apps/desktop/src/main/support-tickets.js",
         "apps/desktop/src/renderer/authenticator.js"
       ],
-      "documentation": ["docs/features/desktop/authenticator-and-support.md"],
-      "changelog": ["CHANGELOG.desktop.md"],
+      "documentation": [
+        "docs/features/desktop/authenticator-and-support.md"
+      ],
+      "changelog": [
+        "CHANGELOG.desktop.md"
+      ],
       "test": [],
       "runtimeInteraction": "Launch the application, generate a secret, verify a code typed back in, scan the rendered matrix with a real authenticator application, and create, edit, resolve, and reopen a support ticket.",
       "captureEvidence": "none",
@@ -650,8 +827,12 @@
         "apps/desktop/src/main/history-store.js",
         "apps/desktop/src/renderer/app.js"
       ],
-      "documentation": ["docs/features/desktop/local-history.md"],
-      "changelog": ["CHANGELOG.desktop.md"],
+      "documentation": [
+        "docs/features/desktop/local-history.md"
+      ],
+      "changelog": [
+        "CHANGELOG.desktop.md"
+      ],
       "test": [],
       "runtimeInteraction": "Launch the application, make several changes, filter the resulting records, inspect a difference, and restore an earlier revision to confirm it is appended as a new record rather than replacing one.",
       "captureEvidence": "none",
@@ -671,8 +852,12 @@
         "apps/desktop/src/renderer/notifications.js",
         "apps/desktop/src/renderer/dom.js"
       ],
-      "documentation": ["docs/features/desktop/notifications.md"],
-      "changelog": ["CHANGELOG.desktop.md"],
+      "documentation": [
+        "docs/features/desktop/notifications.md"
+      ],
+      "changelog": [
+        "CHANGELOG.desktop.md"
+      ],
       "test": [],
       "runtimeInteraction": "Launch the application, trigger notices of each severity, confirm that progress and error notices do not dismiss themselves, filter and select a scope, and run a bulk action.",
       "captureEvidence": "none",
@@ -692,8 +877,12 @@
         "apps/desktop/src/renderer/changelog.js",
         "apps/desktop/scripts/build.mjs"
       ],
-      "documentation": ["docs/features/desktop/changelog-viewer.md"],
-      "changelog": ["CHANGELOG.desktop.md"],
+      "documentation": [
+        "docs/features/desktop/changelog-viewer.md"
+      ],
+      "changelog": [
+        "CHANGELOG.desktop.md"
+      ],
       "test": [],
       "runtimeInteraction": "Launch the application, group entries by area and release, filter by date range, and read a Verification block.",
       "captureEvidence": "none",
@@ -713,8 +902,12 @@
         "apps/desktop/src/renderer/docs.js",
         "apps/desktop/scripts/build.mjs"
       ],
-      "documentation": ["docs/features/desktop/documentation-browser.md"],
-      "changelog": ["CHANGELOG.desktop.md"],
+      "documentation": [
+        "docs/features/desktop/documentation-browser.md"
+      ],
+      "changelog": [
+        "CHANGELOG.desktop.md"
+      ],
       "test": [],
       "runtimeInteraction": "Launch the application, search the packaged articles, follow an internal link and an in-page anchor, and confirm the application reads its documentation with no network access.",
       "captureEvidence": "none",
@@ -729,9 +922,15 @@
       "title": "Command palette",
       "surface": "desktop",
       "state": "implemented",
-      "implementation": ["apps/desktop/src/renderer/palette.js"],
-      "documentation": ["docs/features/desktop/command-palette.md"],
-      "changelog": ["CHANGELOG.desktop.md"],
+      "implementation": [
+        "apps/desktop/src/renderer/palette.js"
+      ],
+      "documentation": [
+        "docs/features/desktop/command-palette.md"
+      ],
+      "changelog": [
+        "CHANGELOG.desktop.md"
+      ],
       "test": [],
       "runtimeInteraction": "Launch the application, open the palette from its keyboard shortcut and from the title-bar button, change a setting from an inline control in a result, teleport to a destination, and close the palette to confirm focus returns to where it started.",
       "captureEvidence": "none",
@@ -750,8 +949,12 @@
         "apps/desktop/src/renderer/regex-builder.js",
         "apps/desktop/src/main/history-store.js"
       ],
-      "documentation": ["docs/features/desktop/regex-builders.md"],
-      "changelog": ["CHANGELOG.desktop.md"],
+      "documentation": [
+        "docs/features/desktop/regex-builders.md"
+      ],
+      "changelog": [
+        "CHANGELOG.desktop.md"
+      ],
       "test": [],
       "runtimeInteraction": "Launch the application, enable pattern mode beside any search field, insert the anchor tokens from the palette, and supply an invalid pattern to see the reason reported rather than applied.",
       "captureEvidence": "none",
@@ -771,8 +974,13 @@
         "apps/desktop/src/main/editor-handoff.js",
         "apps/desktop/src/renderer/app.js"
       ],
-      "documentation": ["docs/features/desktop/exports-and-bulk-actions.md"],
-      "changelog": ["CHANGELOG.desktop.md", "CHANGELOG.local-coding-assistants.md"],
+      "documentation": [
+        "docs/features/desktop/exports-and-bulk-actions.md"
+      ],
+      "changelog": [
+        "CHANGELOG.desktop.md",
+        "CHANGELOG.local-coding-assistants.md"
+      ],
       "test": [],
       "runtimeInteraction": "Launch the application, select records in a collection, export in each supported format, confirm the stamped manifest and the omissions note on the written file, and hand an export to an editor to confirm the discovery path refuses when no allowed executable is present.",
       "captureEvidence": "none",
@@ -793,8 +1001,12 @@
         "apps/desktop/src/main/main.js",
         "apps/desktop/src/renderer/download-surfaces.js"
       ],
-      "documentation": ["docs/features/desktop/transfer-surfaces.md"],
-      "changelog": ["CHANGELOG.desktop.md"],
+      "documentation": [
+        "docs/features/desktop/transfer-surfaces.md"
+      ],
+      "changelog": [
+        "CHANGELOG.desktop.md"
+      ],
       "test": [],
       "runtimeInteraction": "Launch the application and perform a local transfer large enough to show the Downloading state, then confirm that the Complete state is reached only with a measured byte count and an agreeing digest.",
       "captureEvidence": "none",
@@ -817,8 +1029,12 @@
         "apps/desktop/src/renderer/index.html",
         "apps/desktop/src/main/main.js"
       ],
-      "documentation": ["docs/features/desktop/guided-report-wizard.md"],
-      "changelog": ["CHANGELOG.desktop.md"],
+      "documentation": [
+        "docs/features/desktop/guided-report-wizard.md"
+      ],
+      "changelog": [
+        "CHANGELOG.desktop.md"
+      ],
       "test": [],
       "runtimeInteraction": "Launch the application, answer the guided questions with synthetic values, and confirm each validation message and next-step statement against the article.",
       "captureEvidence": "none",
@@ -839,8 +1055,12 @@
         "apps/desktop/src/main/key-vault.js",
         "apps/desktop/src/main/main.js"
       ],
-      "documentation": ["docs/features/desktop/encrypted-project-files.md"],
-      "changelog": ["CHANGELOG.desktop.md"],
+      "documentation": [
+        "docs/features/desktop/encrypted-project-files.md"
+      ],
+      "changelog": [
+        "CHANGELOG.desktop.md"
+      ],
       "test": [],
       "runtimeInteraction": "Launch the application, create a project, close and reopen it, and confirm that the container on disk is unreadable without the key and that a wrong key fails rather than producing partial content.",
       "captureEvidence": "none",
@@ -860,8 +1080,12 @@
         "apps/desktop/src/renderer/settings.js",
         "apps/desktop/src/main/main.js"
       ],
-      "documentation": ["docs/features/desktop/settings-and-preferences.md"],
-      "changelog": ["CHANGELOG.desktop.md"],
+      "documentation": [
+        "docs/features/desktop/settings-and-preferences.md"
+      ],
+      "changelog": [
+        "CHANGELOG.desktop.md"
+      ],
       "test": [],
       "runtimeInteraction": "Launch the application, change each preference, restart, and confirm every value was restored and that an invalid stored value falls back to the documented default rather than failing.",
       "captureEvidence": "none",
@@ -904,8 +1128,12 @@
         "packages/surface-kernel/src/tokens.ts",
         "packages/surface-kernel/src/tokens.css"
       ],
-      "documentation": ["docs/features/shared-surface-kernel/README.md"],
-      "changelog": ["CHANGELOG.surface-kernel.md"],
+      "documentation": [
+        "docs/features/shared-surface-kernel/README.md"
+      ],
+      "changelog": [
+        "CHANGELOG.surface-kernel.md"
+      ],
       "test": [
         "packages/surface-kernel/test/regex-builder.test.ts",
         "packages/surface-kernel/test/vocabulary.test.ts",
@@ -944,8 +1172,12 @@
         "packages/local-ollama/src/pull-queue.ts",
         "packages/local-ollama/src/types.ts"
       ],
-      "documentation": ["docs/features/local-ollama-suite/README.md"],
-      "changelog": ["CHANGELOG.ollama.md"],
+      "documentation": [
+        "docs/features/local-ollama-suite/README.md"
+      ],
+      "changelog": [
+        "CHANGELOG.ollama.md"
+      ],
       "test": [
         "packages/local-ollama/test/catalog-completeness.test.ts",
         "packages/local-ollama/test/chat-attachment-capability.test.ts",
@@ -977,9 +1209,15 @@
         "packages/local-coding-assistants/src/prompt.ts",
         "packages/local-coding-assistants/src/types.ts"
       ],
-      "documentation": ["docs/features/local-coding-assistants/README.md"],
-      "changelog": ["CHANGELOG.local-coding-assistants.md"],
-      "test": ["packages/local-coding-assistants/test/launch-preflight.test.ts"],
+      "documentation": [
+        "docs/features/local-coding-assistants/README.md"
+      ],
+      "changelog": [
+        "CHANGELOG.local-coding-assistants.md"
+      ],
+      "test": [
+        "packages/local-coding-assistants/test/launch-preflight.test.ts"
+      ],
       "runtimeInteraction": "Run `npm test --workspace @material-tax-reporting/local-coding-assistants`. Exercising discovery and launch for real requires an allowed executable present on the computer.",
       "captureEvidence": "none",
       "boundaryNote": "The package discovers and launches a local editor or assistant only. It never sends a return anywhere and holds no tax data.",
@@ -1007,7 +1245,9 @@
         "docs/features/tax/data-import-export.md",
         "docs/features/tax/privacy-and-filing-boundaries.md"
       ],
-      "changelog": ["CHANGELOG.tax.md"],
+      "changelog": [
+        "CHANGELOG.tax.md"
+      ],
       "test": [],
       "runtimeInteraction": "Import the package and evaluate its rules against figures taken from a current official Canada Revenue Agency or Ontario publication for the tax year the article names, then compare each result to that publication.",
       "captureEvidence": "none",
@@ -1039,7 +1279,9 @@
         "docs/features/pdf/cra-mail-package.md",
         "docs/features/pdf/manual-review.md"
       ],
-      "changelog": ["CHANGELOG.tax.md"],
+      "changelog": [
+        "CHANGELOG.tax.md"
+      ],
       "test": [],
       "runtimeInteraction": "Import the package, generate a package from synthetic figures, and compare every populated field, calculation, attachment, mailing destination, and signature field against the current official form before any print or export is allowed.",
       "captureEvidence": "none",
@@ -1073,7 +1315,9 @@
         "docs/features/slip-parser/README.md",
         "docs/features/slip-parser/official-mappings.md"
       ],
-      "changelog": ["CHANGELOG.slip-parser.md"],
+      "changelog": [
+        "CHANGELOG.slip-parser.md"
+      ],
       "test": [],
       "runtimeInteraction": "Import the package, admit a synthetic slip file, and confirm the classification, the extracted values, and the required user confirmation before any value is accepted into a report.",
       "captureEvidence": "none",
