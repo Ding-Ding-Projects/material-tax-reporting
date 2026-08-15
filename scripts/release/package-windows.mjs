@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
-import { mkdtemp, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
+import { mkdtemp, readFile, readdir, realpath, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -53,6 +53,16 @@ async function requiredFile(filePath, label) {
   return details;
 }
 
+// The staged OCR closure mirrors an installed dependency tree, which legitimately
+// contains empty marker files such as .gitkeep. Their presence is still proven by
+// the exact byte count and hash recorded in the manifest, so emptiness alone is
+// not a defect here the way it would be for an installer artifact.
+async function existingFile(filePath, label) {
+  const details = await stat(filePath).catch(() => null);
+  if (!details?.isFile()) fail(`${label} is missing at ${filePath}`);
+  return details;
+}
+
 function normalizedPortablePath(value, label) {
   if (typeof value !== "string" || value.length === 0 || value.includes("\\")) {
     fail(`${label} must be a non-empty portable path`);
@@ -100,7 +110,7 @@ async function verifyOfflineOcrRuntime(root, expectedManifestHash = null) {
     seenPaths.add(file.path);
     const filePath = path.resolve(root, ...segments);
     if (!filePath.startsWith(resolvedRoot)) fail(`offline OCR file escapes the staged runtime: ${file.path}`);
-    const details = await requiredFile(filePath, `offline OCR file ${file.path}`);
+    const details = await existingFile(filePath, `offline OCR file ${file.path}`);
     const actualHash = await sha256(filePath);
     if (details.size !== file.bytes || actualHash !== file.sha256) {
       fail(`offline OCR file evidence does not match ${file.path}`);
@@ -169,8 +179,14 @@ const packageEnvironment = {
   WIN_CSC_LINK: "",
   CSC_KEY_PASSWORD: "",
 };
+// Resolve the temporary root to its canonical form before staging. On Windows
+// the temporary directory is frequently reported as an 8.3 short path, and the
+// stager rejects an output whose parent does not survive a realpath comparison
+// unchanged. Short-path expansion is not symbolic-link traversal, but it looks
+// identical to a string comparison, so canonicalize here rather than relaxing
+// that check.
 const offlineOcrTemporaryRoot = await mkdtemp(
-  path.join(tmpdir(), "material-tax-reporting-offline-ocr-"),
+  path.join(await realpath(tmpdir()), "material-tax-reporting-offline-ocr-"),
 );
 const stagedOfflineOcrRoot = path.join(offlineOcrTemporaryRoot, "runtime");
 let packagedOfflineOcr;
