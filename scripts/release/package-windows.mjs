@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
-import { copyFile, mkdtemp, readFile, readdir, realpath, rm, stat, writeFile } from "node:fs/promises";
+import { copyFile, cp, mkdtemp, readFile, readdir, realpath, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -193,17 +193,26 @@ const offlineOcrTemporaryRoot = await mkdtemp(
   path.join(await realpath(tmpdir()), "material-tax-reporting-offline-ocr-"),
 );
 const stagedOfflineOcrRoot = path.join(offlineOcrTemporaryRoot, "runtime");
+// electron-builder expands ${env...} inside extraResources.from only after it has
+// joined that value onto the project directory, so the placeholder never looks
+// absolute and the real path is appended to apps/desktop. Relativizing the
+// temporary directory instead is not portable either, because the repository and
+// the temporary directory can sit on different drives. Copy the verified runtime
+// to a fixed location inside the repository and reference it relatively. The
+// stager itself still refuses to write inside the repository, which is why this
+// is a copy rather than a different output directory.
+const repositoryOfflineOcrStage = path.join(repositoryRoot, "dist", "offline-ocr-stage");
 let packagedOfflineOcr;
 try {
   run(process.execPath, [offlineOcrStager, "--output", stagedOfflineOcrRoot]);
   const stagedOfflineOcr = await verifyOfflineOcrRuntime(stagedOfflineOcrRoot);
-  // Hand the staging root to electron-builder with forward slashes. It resolves
-  // extraResources.from with glob semantics, where a Windows backslash is an
-  // escape character rather than a separator, so a native absolute path stops
-  // looking absolute and gets appended to the project directory instead. A
-  // missing source is only a warning there, so the packaged runtime would then
-  // be silently absent; the packaged verification below is what catches it.
-  packageEnvironment.MTR_OFFLINE_OCR_STAGE = stagedOfflineOcrRoot.split(path.sep).join("/");
+  await rm(repositoryOfflineOcrStage, { recursive: true, force: true });
+  await cp(stagedOfflineOcrRoot, repositoryOfflineOcrStage, { recursive: true });
+  await verifyOfflineOcrRuntime(repositoryOfflineOcrStage, stagedOfflineOcr.manifestHash);
+  packageEnvironment.MTR_OFFLINE_OCR_STAGE = path
+    .relative(appRoot, repositoryOfflineOcrStage)
+    .split(path.sep)
+    .join("/");
   run(
     process.execPath,
     [
@@ -231,6 +240,7 @@ try {
   );
 } finally {
   await rm(offlineOcrTemporaryRoot, { recursive: true, force: true });
+  await rm(repositoryOfflineOcrStage, { recursive: true, force: true });
 }
 
 const expectedSetupName = `MaterialTaxReporting-${packageJson.version}-Setup.exe`;
