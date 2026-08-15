@@ -13,12 +13,42 @@ Each successful run creates one unique semantic version and one non-draft releas
 - `workflow-timing.json`
 - `line-count.md`
 - `release-notes.md`
+- `dim-sum-<catalog asset name>.png` — the dish photograph, when one was resolved and validated
 
 The workflow prepares every primary artifact, evidence asset, and complete release-note body while the release remains a private draft. It then reads back every uploaded asset through the authenticated API, compares SHA-256 values, compares the complete note body, and makes `draft=false` the single final public-state mutation. A failure before that transition leaves no incomplete public release.
 
 Release evidence identifies the exact source commit, workflow run, start timestamp, prepublication evidence timestamp, prepublication elapsed duration, unsigned status, and SmartScreen/unknown-publisher warning. GitHub reports the exact publication-completion timestamp only after the final draft-to-public transition. Embedding that timestamp would require a second public mutation, so this atomic workflow does not claim it inside the release assets or notes; it records the exact completion and end-to-end duration in the workflow log after publication. A full release-verification process must resolve that evidence limitation without weakening atomic publication.
 
-The workflow selects the next unused dish only when its image exists in a published `catalog-v1*` release of `Ding-Ding-Projects/dim-sum-photos`; it links that public asset without copying or attaching the photo.
+## Dim-sum code name and attached dish photo
+
+`scripts/release/select-dim-sum.mjs` reads the public catalog index of `Ding-Ding-Projects/dim-sum-photos`, enumerates the assets published in its `catalog-v1*` releases, and picks the first dish whose code name no previous release of this repository has used. It then downloads that dish's published photograph and validates it before the dish is accepted.
+
+The photograph is the only permitted source of a release image. It is never generated, never fetched from a stock or third-party source, and never committed to this repository. The download lands in `.tmp/dim-sum/`, which the repository already ignores, and travels to the release as a build input.
+
+### Byte validation
+
+`scripts/release/validate-image.mjs` validates the downloaded bytes rather than the file name, because a short HTML error page saved under a picture's extension is indistinguishable from a photograph until somebody opens it. It walks the container end to end:
+
+- the declared extension must be `.png`, `.jpg`, or `.jpeg`, the only formats this pipeline attaches
+- the leading signature must match that format
+- every PNG chunk's CRC-32 is recomputed, so a single flipped byte fails
+- the header must declare a real picture — positive dimensions within bounds, and a legal bit-depth and colour-type pairing
+- the stream must carry image data and terminate exactly at its own end marker, so a truncated download fails
+- the payload must sit between a 64-byte floor and a 32 MiB ceiling
+
+The storage host serves these assets as `application/octet-stream`, so the declared content type proves nothing and is deliberately not treated as evidence.
+
+A rejected payload is never attached and never consumes the dish's single-use code name. The selector tries the next candidate, up to a five-download bound.
+
+### Attaching and verifying
+
+`scripts/release/dim-sum-asset.ps1` resolves the validated photograph into a release asset named `dim-sum-<catalog asset name>`, which identifies the dish. Before attaching it, the script re-checks the file at the attach boundary: the recorded SHA-256 and byte length must still match, and the file must still begin and end as its declared format. The asset then joins the expected-name list, so the authenticated draft readback and the published-release check verify it landed exactly as every sibling asset is verified, and its hash appears in `SHA256SUMS.txt`.
+
+### Failing soft
+
+The code name and the photograph are decoration with a purpose and are never a release gate. An unreachable catalog, no unused dish, a failed download, a rejected payload, a missing file after the build, or an unreadable selection record all degrade to an unavailable result. The release still publishes with its version alone, the notes state the exact reason under `Attached dish photo: none attached`, and the workflow log carries a warning. The code name degrades together with the photograph so a dish is never consumed by a release that did not carry its picture.
+
+Because only PNG and JPEG are attached, a catalog that published some other format would report it as unsupported and fail soft rather than attaching an unverified payload. That is deliberate: both the validator and its PowerShell counterpart stay small enough to check by hand.
 
 The release workflow intentionally contains no test, lint, type-check, static-analysis, security, accessibility, or screenshot steps. A successful workflow proves build, packaging, publication, and attached evidence only. It does not prove runtime behavior, installation, visual appearance, accessibility, security, or tax correctness.
 
