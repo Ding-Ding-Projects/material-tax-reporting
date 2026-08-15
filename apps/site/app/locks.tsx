@@ -8,8 +8,22 @@
  * and is repeated on every lock surface.
  *
  * The answer is never stored. The kernel keeps a salted key-derivation
- * verifier, and every mutation the settings grid, the palette, the appearance
- * editor or a scheduled rule performs is routed through one guarded setter.
+ * verifier.
+ *
+ * A locked setting is enforced at two places, not one, because a value can be
+ * changed in two ways. The settings grid, the palette and the appearance editor
+ * all write through the one guarded setter in `SiteApp`, which refuses a write
+ * to a locked setting. A scheduled rule and an external document do not write
+ * at all: they contribute an overlay that `applyOverlay` resolves, so the same
+ * lock check is applied there, and a locked target is withheld from the
+ * overlay. Both halves read `isMutationBlocked` from the kernel, so the two
+ * cannot come to disagree about what is locked.
+ *
+ * An earlier version of this comment claimed a single guarded setter covered a
+ * scheduled rule as well. It did not and could not: a rule never writes the
+ * stored preference, by design, so it never reached that setter and a lock on a
+ * setting was bypassed by a rule naming it. The second half above is the guard
+ * that makes the claim true; do not delete it and restore the shorter sentence.
  */
 
 import {

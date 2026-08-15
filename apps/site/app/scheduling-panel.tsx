@@ -4,9 +4,13 @@
  * The scheduled and external presentation settings cards.
  *
  * A rule contributes an overlay and never writes to the stored preference, so
- * turning a rule off restores the stored value exactly. Only presentation may
- * be changed: no tax figure, rule citation, boundary statement or review
- * requirement is reachable from either card.
+ * turning a rule off restores the stored value exactly. A setting the reader
+ * changed by hand while a rule was setting it is listed here as held, with the
+ * control that hands it back, so a hold is never something the reader can only
+ * discover by wondering why a rule stopped applying.
+ *
+ * Only presentation may be changed: no tax figure, rule citation, boundary
+ * statement or review requirement is reachable from either card.
  */
 
 import {
@@ -48,10 +52,15 @@ export function SchedulePanel({
   api,
   binding,
   copy,
+  held,
+  onRelease,
 }: {
   api: SchedulingApi;
   binding: SearchBinding;
   copy: (key: string) => string;
+  /** Settings the reader is currently holding by hand against a rule. */
+  held: readonly string[];
+  onRelease: (target: string) => void;
 }): ReactNode {
   const visible = useMemo(
     () =>
@@ -74,6 +83,28 @@ export function SchedulePanel({
           Times are evaluated in this browser's time zone, {api.timeZone}. Active rules:{" "}
           {api.overlay.activeRuleIds.length === 0 ? "none" : api.overlay.activeRuleIds.join(", ")}.
         </p>
+        <p className="privacy-note" role="status">
+          {held.length === 0
+            ? "No setting is being held by hand. Change a setting while a rule is setting it and your change is held here until the rule stops."
+            : `Held by hand, so the rule setting each one does not apply: ${held.join(", ")}.`}
+        </p>
+        {held.length > 0 && (
+          <ul className="rule-list">
+            {held.map((target) => (
+              <li key={target}>
+                <span>{target}</span>
+                <button
+                  type="button"
+                  className="text-button"
+                  aria-label={`Follow the schedule rule again for ${target}`}
+                  onClick={() => onRelease(target)}
+                >
+                  Follow the schedule rule again
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       <CompactSearchWithBuilder {...binding} />
@@ -226,10 +257,11 @@ export function SchedulePanel({
         Add a rule
       </button>
       <small>
-        A later rule wins when two rules name the same setting. A change you make by hand always wins over an
-        active rule, and the stored value returns the moment no rule applies. The accent colour is any colour and
-        the text size is any supported scale; the remaining settings offer their own choices, because a value
-        outside that set has no meaning.
+        A later rule wins when two rules name the same setting. A change you make by hand wins over an active
+        rule and is held until nothing is scheduling that setting, or until you hand it back above; either way
+        your stored value is what shows afterwards, because a rule never wrote over it. A setting locked in the
+        settings tab takes no rule at all. The accent colour is any colour and the text size is any supported
+        scale; the remaining settings offer their own choices, because a value outside that set has no meaning.
       </small>
     </section>
   );

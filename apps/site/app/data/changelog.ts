@@ -246,6 +246,33 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     "area": "desktop",
     "version": "Unreleased",
     "date": null,
+    "section": "Added",
+    "entry": "Added a bundled portable-document text-layer extractor, which turns the converter catalogue's portable-document row from a permanently disabled entry into an adapter the build can actually run. It inflates compressed streams with the runtime's own `zlib`, so it adds no dependency, stages no packaged resource and makes no network call; it locates objects by scanning rather than by following the cross-reference table, so an incrementally updated or slightly damaged file still reads, expands compressed object streams to reach the page tree, and decodes text through the font's ToUnicode map where one exists and Windows-1252 where one does not. It refuses instead of returning an empty file that reads as a successful conversion: a document carrying no text layer is refused by name and pointed at optical character recognition, which stays honestly disabled; an encrypted document is refused rather than decoded into confident mojibake; and a file that does not begin with a portable-document header is refused on its bytes rather than its extension. Extracted text is not confirmed tax data and still has to pass the manual parser-confirmation step.",
+    "commit": null,
+    "verification": null
+  },
+  {
+    "area": "desktop",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Changed",
+    "entry": "Removed three completion claims from the transfer surfaces that reported bytes and digests nothing had measured. The import-copy step, which deliberately writes nothing until the import is activated, no longer reports one fabricated byte to satisfy the shared state machine's refusal to complete without a measured byte count; it withdraws in its start phase and returns the chosen destination instead, and its card is labelled a destination rather than a copy. Conversion now reports the running byte total as each output lands, relays a cancellation from the surrounding transfer, and completes with a digest measured over the bytes actually on disk — a single output reporting that file's own hash and a batch reporting a manifest digest that is named as one rather than passed off as a file hash. Attachment intake reports the plaintext digest it was already computing and discarding.",
+    "commit": null,
+    "verification": null
+  },
+  {
+    "area": "desktop",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Changed",
+    "entry": "Corrected the transfer card's terminal copy, which worded every committed transfer as a write to a path and headed it complete, including the import-copy step that had just reported writing nothing. The card now takes its wording from the phase the main process reported: complete and a named path only where the state machine reached its complete phase, which it cannot do without a measured byte count; destination chosen, carrying the main process's own no-bytes-written-yet notice, where the plan was withdrawn; and nothing written, carrying the recorded reason, otherwise. A byte count and a digest appear only in the first case, and the digest sentence names what that digest covers, because a project container and an export are hashed over the bytes written, an attachment over the plaintext taken in before it is encrypted, and a converted batch carries a manifest hash rather than a file hash. A card that reached a failed progress event no longer removes itself twelve seconds after its terminal state is rendered.",
+    "commit": null,
+    "verification": null
+  },
+  {
+    "area": "desktop",
+    "version": "Unreleased",
+    "date": null,
     "section": "Boundaries",
     "entry": "The application prepares information for a manually reviewed CRA mail-in PDF package only. It does not provide NETFILE, EFILE, electronic submission, direct CRA transmission, or automatic filing.",
     "commit": null,
@@ -302,6 +329,24 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     "date": null,
     "section": "Verification",
     "entry": "The earlier statement that no build was run applies to the previous implementation lane recorded above; it is superseded for this change by the two run-and-observed lines.",
+    "commit": null,
+    "verification": null
+  },
+  {
+    "area": "desktop",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Verification",
+    "entry": "Run and observed for the transfer-card copy correction recorded under Changed: `npm run build --workspace @material-tax-reporting/desktop` completed with exit status 0, and the generated main bundle, preload bundle and inlined renderer script were each parsed without error afterwards.",
+    "commit": null,
+    "verification": null
+  },
+  {
+    "area": "desktop",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Verification",
+    "entry": "Not run, and therefore not claimed, for the entries recorded in this set: tests, lint, type checks, packaging, installer creation, release, application launch, screenshots, accessibility conformance checks and performance measurements. The transfer surfaces were not exercised at run time, so the corrected terminal wording has not been observed rendering, and the portable-document extractor's own conversion results were not re-run here.",
     "commit": null,
     "verification": null
   },
@@ -751,7 +796,16 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     "version": "Unreleased",
     "date": null,
     "section": "Added",
-    "entry": "Added scheduled presentation rules that contribute an overlay rather than overwriting the stored preference, evaluated on one interval and again when the tab becomes visible, with the shared kernel resolving precedence.",
+    "entry": "Added scheduled presentation rules that contribute an overlay rather than overwriting the stored preference, evaluated on one interval and again when the tab becomes visible, with the shared kernel resolving precedence between a hold placed by hand, an active rule, the external document and the stored preference.",
+    "commit": null,
+    "verification": null
+  },
+  {
+    "area": "site",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Added",
+    "entry": "Added a hold, so a setting changed by hand while a rule is setting it keeps the chosen value: the hold is stored under its own key in this browser, survives a reload, is recorded in local history and announced as a notification, and is listed in the schedule panel with a `Follow the schedule rule again` control that also appears on the settings card whose value it decides. A hold expires by itself once nothing is scheduling that setting, so the rule's next window still applies.",
     "commit": null,
     "verification": null
   },
@@ -823,7 +877,7 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     "version": "Unreleased",
     "date": null,
     "section": "Added",
-    "entry": "Added element locks bound to the shared kernel, routing every mutation through one guarded setter, counting incorrect attempts, relocking on a timer that is re-checked when the tab becomes visible, and repeating the kernel's disclosure that a lock is a presentation guard with no security property.",
+    "entry": "Added element locks bound to the shared kernel, refusing a preference write through one guarded setter and withholding a locked setting from the schedule overlay, counting incorrect attempts, relocking on a timer that is re-checked when the tab becomes visible, and repeating the kernel's disclosure that a lock is a presentation guard with no security property.",
     "commit": null,
     "verification": null
   },
@@ -941,6 +995,24 @@ export const CHANGELOG_ENTRIES: ChangelogEntry[] = [
     "date": null,
     "section": "Added",
     "entry": "Added the website feature documentation set under `docs/features/site/`, one article per shipped capability.",
+    "commit": null,
+    "verification": null
+  },
+  {
+    "area": "site",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Fixed",
+    "entry": "Fixed the documented manual-over-rule precedence, which was described in three places and implemented in none. The site called the kernel's `resolvePrecedence` with an empty override map, so an active rule always won and every settings control that rule named was inert: choosing the value the rule was hiding diffed against an unchanged stored preference, wrote nothing, recorded nothing, announced nothing, and left the control showing the rule's value. A change made by hand now records a hold that the kernel resolves as the manual layer, and the settings card reports which of the four layers its value came from.",
+    "commit": null,
+    "verification": null
+  },
+  {
+    "area": "site",
+    "version": "Unreleased",
+    "date": null,
+    "section": "Fixed",
+    "entry": "Fixed an element lock being bypassed by a schedule rule naming the same setting. A comment asserted that every mutation, a scheduled rule included, was routed through one guarded setter; a rule never writes the stored preference at all, so it never reached that setter and changed a locked setting freely. A locked setting is now withheld from the overlay, the external document and any hold, resolving from the stored preference alone, and the comment describes the two guards that exist rather than the one that did not.",
     "commit": null,
     "verification": null
   },
