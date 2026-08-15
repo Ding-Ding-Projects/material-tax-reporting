@@ -127,7 +127,9 @@
       "state": "partial",
       "implementation": [
         "apps/site/app/scheduling.ts",
-        "apps/site/app/scheduling-panel.tsx"
+        "apps/site/app/scheduling-panel.tsx",
+        "apps/site/app/SiteApp.tsx",
+        "packages/surface-kernel/src/scheduling.ts"
       ],
       "documentation": [
         "docs/features/site/scheduled-and-external-settings.md"
@@ -136,14 +138,18 @@
         "CHANGELOG.site.md"
       ],
       "test": [],
-      "runtimeInteraction": "Open the site, add a time-window rule, wait for or simulate the window boundary, and confirm precedence of a manual override over an active rule; separately, point the external source at an allowlisted https origin serving a settings document and confirm the validated values are applied.",
+      "runtimeInteraction": "Open the site, add a time-window rule, wait for or simulate the window boundary, and confirm precedence of a manual hold over an active rule, that the hold survives a reload, that it expires when the window ends, and that Follow the schedule rule again ends it early; lock the same setting and confirm the rule no longer changes it; separately, point the external source at an allowlisted https origin serving a settings document and confirm the validated values are applied.",
       "captureEvidence": "none",
       "boundaryNote": "Presentation values only. No schedule and no external document can change a tax figure, a rule citation, or the paper-only boundary, and no external source is enabled by default.",
       "evidenceGaps": [
-        "The documented manual-over-rule precedence is not implemented. apps/site/app/scheduling.ts calls resolvePrecedence with an empty manual-override map, so an active rule always wins and a settings control for a key that rule targets is inert: selecting a value diffs against an unchanged baseline, writes nothing, and the control snaps back. This is why the row is partial.",
-        "A scheduled rule reaches the effective settings through applyOverlay without passing the guarded preference setter, so an element lock on a locked setting is bypassed by a rule targeting the same key.",
+        "A rule carries a start time, an end time and an optional set of weekdays, but no optional start and end date and no label, and a rule's value comes only from local data or the one external document rather than being selectable per rule. The feature contract asks for all three. This is why the row is partial.",
         "No external settings request has been made from a running page, so the allowlist, the abort path, and the validator have not been exercised end to end.",
-        "No capture of an applied overlay exists."
+        "No capture of an applied overlay, a held setting, or a locked setting refusing a rule exists.",
+        "apps/site carries no TypeScript project configuration and the build strips types without checking them, so no type check has been run against this application."
+      ],
+      "resolvedGaps": [
+        "The documented manual-over-rule precedence was not implemented: resolvePrecedence was called with an empty override map, so an active rule always won and a settings control the rule named was inert. A change made by hand is now recorded as a hold, persisted under its own key, passed to the kernel as the manual layer, and expires when nothing is scheduling that setting or when the reader hands it back.",
+        "A scheduled rule reached the effective settings without passing the guarded preference setter, so an element lock was bypassed by a rule targeting the same key. A locked target is now withheld from the overlay, the external document and any hold, and resolves from the stored preference alone."
       ]
     },
     {
