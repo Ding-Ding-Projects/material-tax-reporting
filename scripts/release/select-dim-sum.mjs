@@ -19,6 +19,14 @@ const photoDirectory = path.join(repositoryRoot, ...photoDirectoryName.split("/"
 const PHOTO_SOURCE_PREFIX = "https://github.com/Ding-Ding-Projects/dim-sum-photos/releases/download/";
 const MAX_PHOTO_CANDIDATES = 5;
 const MAX_PHOTO_BYTES = 32 * 1024 * 1024;
+// Every request here is bounded. Node's fetch has no default timeout, so a
+// connection that stalls rather than fails would hold the whole release job
+// open until its own timeout hours later. That is the single failure mode this
+// step must not have: the dish photo is decoration and must never be able to
+// keep a built installer from reaching anyone. A timeout raises an ordinary
+// error, which the surrounding handling already degrades to "no photo" with the
+// reason stated in the release notes.
+const REQUEST_TIMEOUT_MS = 120_000;
 
 const headers = {
   Accept: "application/vnd.github+json",
@@ -28,7 +36,11 @@ const headers = {
 if (process.env.GH_TOKEN) headers.Authorization = `Bearer ${process.env.GH_TOKEN}`;
 
 async function readJson(url, requestHeaders = {}) {
-  const response = await fetch(url, { headers: { ...headers, ...requestHeaders }, redirect: "error" });
+  const response = await fetch(url, {
+    headers: { ...headers, ...requestHeaders },
+    redirect: "error",
+    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+  });
   if (!response.ok) throw new Error(`${url} returned HTTP ${response.status}.`);
   const contentLength = Number.parseInt(response.headers.get("content-length") ?? "0", 10);
   if (contentLength > 32 * 1024 * 1024) throw new Error(`${url} exceeded the 32 MiB response bound.`);
@@ -68,6 +80,7 @@ async function downloadPhoto(photoUrl) {
   const response = await fetch(photoUrl, {
     headers: { "User-Agent": "material-tax-reporting-release" },
     redirect: "follow",
+    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
   });
   if (!response.ok) throw new Error(`the download returned HTTP ${response.status}`);
   const declaredLength = Number.parseInt(response.headers.get("content-length") ?? "0", 10);
