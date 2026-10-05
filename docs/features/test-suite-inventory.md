@@ -31,10 +31,11 @@ installs the workspace links and runs the `prepare` hook that compiles `packages
 `dist/`, which `apps/desktop` and `apps/site` both load through Node's `node` export condition. Without
 that build, those two suites fail at their first import with `ERR_MODULE_NOT_FOUND`.
 
-The existing TypeScript source suites use `node:module.registerHooks`, so run those suites with
-Node 22.15.0 or newer (including Node 24). The pinned build runtime, Node 22.14.0, does not expose
-that API. The package-build regression itself runs on Node 22.14.0 and npm 10.9.2 without type
-stripping. Test runtime requirements do not change the pinned release toolchain.
+The TypeScript source suites register their source-resolution hooks through `node:module.register`,
+which is available on the pinned Node 22.14.0 runtime. Run them with the committed test commands,
+which explicitly enable type stripping. All 430 workspace tests have been checked on Node 22.14.0
+and Node 24.19.0. The package-build regression runs on Node 22.14.0 and npm 10.9.2 without type
+stripping. No test command has been added to a release workflow.
 
 `tax-domain`, `cra-pdf`, and `local-ollama` declare their own pinned TypeScript compiler. After the
 root install, each existing `npm run build --workspace @material-tax-reporting/<name>` command

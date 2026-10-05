@@ -15,7 +15,7 @@
  */
 
 import { existsSync } from "node:fs";
-import { registerHooks } from "node:module";
+import { register } from "node:module";
 import { fileURLToPath } from "node:url";
 
 let installed = false;
@@ -23,15 +23,17 @@ let installed = false;
 export function useTypeScriptSources(): void {
   if (installed) return;
   installed = true;
-  registerHooks({
-    resolve(specifier, context, nextResolve) {
-      if (specifier.startsWith(".") && specifier.endsWith(".js") && context.parentURL) {
-        const candidate = new URL(`${specifier.slice(0, -3)}.ts`, context.parentURL);
-        if (candidate.protocol === "file:" && existsSync(fileURLToPath(candidate))) {
-          return nextResolve(candidate.href, context);
-        }
-      }
-      return nextResolve(specifier, context);
-    },
-  });
+  // registerHooks is newer than the pinned Node 22.14 build/test runtime.
+  // Register this helper in the loader thread before tests dynamically import source.
+  register(import.meta.url);
+}
+
+export function resolve(specifier, context, nextResolve) {
+  if (specifier.startsWith(".") && specifier.endsWith(".js") && context.parentURL) {
+    const candidate = new URL(`${specifier.slice(0, -3)}.ts`, context.parentURL);
+    if (candidate.protocol === "file:" && existsSync(fileURLToPath(candidate))) {
+      return nextResolve(candidate.href, context);
+    }
+  }
+  return nextResolve(specifier, context);
 }
