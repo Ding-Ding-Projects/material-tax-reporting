@@ -23,12 +23,25 @@ Every suite uses Node's built-in test runner. No test framework is installed, an
 ```
 npm ci                                   # once, at the repository root
 npm test --workspace <workspace-name>    # one workspace
+npm run test:package-builds              # clean-output package build regression
 ```
 
 `npm ci` at the root is a genuine prerequisite for two of the suites rather than a formality. It
 installs the workspace links and runs the `prepare` hook that compiles `packages/surface-kernel` to
 `dist/`, which `apps/desktop` and `apps/site` both load through Node's `node` export condition. Without
 that build, those two suites fail at their first import with `ERR_MODULE_NOT_FOUND`.
+
+The existing TypeScript source suites use `node:module.registerHooks`, so run those suites with
+Node 22.15.0 or newer (including Node 24). The pinned build runtime, Node 22.14.0, does not expose
+that API. The package-build regression itself runs on Node 22.14.0 and npm 10.9.2 without type
+stripping. Test runtime requirements do not change the pinned release toolchain.
+
+`tax-domain`, `cra-pdf`, and `local-ollama` declare their own pinned TypeScript compiler. After the
+root install, each existing `npm run build --workspace @material-tax-reporting/<name>` command
+produces that package's ignored `dist/` directory. Build `tax-domain` and `cra-pdf` before importing
+them by package name; those exports resolve compiled JavaScript and declarations. `local-ollama`
+continues to offer TypeScript source to its bundler consumers. No package build or test command
+has been added to a release workflow.
 
 ## Every workspace
 
@@ -42,11 +55,24 @@ that build, those two suites fail at their first import with `ERR_MODULE_NOT_FOU
 | `packages/local-coding-assistants` | 1 file | 6 | `npm test --workspace @material-tax-reporting/local-coding-assistants` |
 | `apps/desktop` | 2 files | 44 | `npm test --workspace @material-tax-reporting/desktop` |
 | `apps/site` | 1 file | 31 | `npm test --workspace @material-tax-reporting/site` |
-| repository root | **none, and none intended** | — | the root is the workspace container and holds no source |
+| repository root | 1 build regression file | 3 | `npm run test:package-builds` |
 
-**430 tests across eight workspaces**, all passing as recorded here.
+**430 tests across eight workspaces**, plus **3 package-build regressions** at the root.
 
 ## What each suite covers
+
+### Package builds — 3 tests
+
+`scripts/test-package-builds.mjs` copies each compiler-backed package's manifest, configuration,
+and source into a fresh temporary directory. It checks that the package declares the installed
+compiler, invokes its actual build script, requires nonempty JavaScript and declaration entries,
+and imports the output with Node type stripping disabled. `tax-domain` and `cra-pdf` are imported
+by their public package names; `local-ollama` is checked through its emitted entry because its
+public export is intentionally source-oriented. An installed workspace dependency tree is required.
+
+This catches missing compiler dependencies, stale-output false positives, and broken compiled
+entry resolution. It does not launch an application, exercise PDF/OCR adapters, or validate tax
+results. The suites below cover their existing source-level contracts separately.
 
 ### `packages/tax-domain` — 88 tests
 

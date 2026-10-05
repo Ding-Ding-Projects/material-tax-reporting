@@ -19,5 +19,8 @@
     "README.md"
   ],
   "sideEffects": false,
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "5.9.3"
+  }
 }
